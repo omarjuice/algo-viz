@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -12,8 +12,14 @@
     "@babel/core": "^7.4.4",
     "@babel/generator": "^7.4.0",
     "@babel/parser": "^7.4.3",
+    "@babel/plugin-transform-destructuring": "^7.4.4",
+    "@babel/plugin-transform-parameters": "^7.4.4",
     "@babel/traverse": "^7.4.3",
     "@babel/types": "^7.4.0",
-    "babel": "^6.23.0"
+    "babel": "^6.23.0",
+    "babel-plugin-transform-remove-console": "^6.9.4"
+  },
+  "devDependencies": {
+    "jest": "^24.7.1"
   }
 }
