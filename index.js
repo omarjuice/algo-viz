@@ -1,7 +1,7 @@
 const step = require('./stepify')
 const twoNumberSum = `function twoNumberSum(array, targetSum) {
 	const hash = {}
-	for(let i= 0; i<array.length; i++){
+	for(let i = 0; i<array.length; i++){
         const number = array[i]
 		if(hash[number]){
 			return number > hash[number] ? [hash[number], number] : [number, hash[number]]
@@ -61,4 +61,13 @@ const binarySearch = `function binarySearch(array, target) {
 binarySearch([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], 13)
 `
 
-console.log(step(binarySearch))
+const objectAccessor = `function hello(){
+    return hash[obj].cool[target - num].some[1 + hello() + 1]
+    while(obj[i++]){
+        console.log("Hello")
+    }
+}
+hello["goodbye" + "e"] = 'bye';
+`
+
+console.log(step(objectAccessor))
