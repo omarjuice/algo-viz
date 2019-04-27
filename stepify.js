@@ -3,13 +3,6 @@ const { parse } = require('@babel/parser');
 const generate = require('@babel/generator');
 const { default: traverse } = require('@babel/traverse')
 const t = require('@babel/types');
-// const ast = parse(code);
-// // const _wrapper_id = t.identifier('_wrapper')
-// const name = t.identifier('name')
-
-// const body = t.blockStatement([])
-// const wrapper = t.functionDeclaration(_wrapper_id, [name], body)
-// t.callExpression
 const randomString = (l = 3) => {
     let id = (Math.random() * 26 + 10 | 0).toString(36)
     for (let i = 1; i < l; i++)
@@ -68,7 +61,7 @@ module.exports = function (code) {
             path.node.declarations.forEach((declaration) => {
                 const { id: identifier, init } = declaration
                 if (init && !t.isFunction(init)) {
-                    declaration.init = t.expressionStatement(proxy(init, t.stringLiteral(identifier.name)))
+                    declaration.init = proxy(init, t.stringLiteral(identifier.name))
                 }
             });
             newNodes.forEach(node => path.insertAfter(node))
@@ -82,11 +75,8 @@ module.exports = function (code) {
         },
 
         Expression: {
-            enter() {
-                return
-            },
-            exit(path) {
-                if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && path.node.callee.object.name === _name && path.node.callee.object.name === _name) {
+            enter(path) {
+                if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && path.node.callee.object.name === _name) {
                     return
                 }
                 if (t.isLiteral(path) && !t.isVariableDeclarator(path.parent)) return
@@ -95,11 +85,20 @@ module.exports = function (code) {
                 if (t.isCallExpression(path) && path.node.callee.name === "_wrapper") return
                 if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) return;
 
-                // console.log(code.slice(path.node.start, path.node.end))
-                path.replaceWith(proxy(path.node))
-                path.stop()
-            }
+                path.replaceWith(proxy(path.node, t.stringLiteral(code.slice(path.node.start, path.node.end))))
+                path.skip()
+            },
         },
+        Identifier(path) {
+            if (path.node.name === _name) path.skip()
+        },
+        CallExpression(path) {
+            if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && path.node.callee.object.name === _name) {
+                return
+            } else {
+                // console.log(path.node.callee)
+            }
+        }
         // ReturnStatement(path) {
         //     path.node.argument = t.expressionStatement(proxy(path.node.argument))
         //     // console.log(path.node)
@@ -113,7 +112,7 @@ module.exports = function (code) {
         //         return
         //     }
         //     path.replaceWith(t.expressionStatement(t.callExpression(_wrapper_id, [path.node])))
-        //     path.stop()
+        //     path.skip()
         // }
         // ,
         // MemberExpression(path) {
