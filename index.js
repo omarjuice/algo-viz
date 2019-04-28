@@ -62,7 +62,7 @@ binarySearch([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], 13)
 `
 
 const objectAccessor = `function hello(){
-    return hash[obj].cool[target - num].some[1 + hello() + 1]
+    hash[obj].cool[target - num].some[1 + hello() + 1] = hash[Math.floor(max)].crazy[0 ** 1000]
     while(obj[i++]){
         console.log("Hello")
     }
@@ -125,7 +125,47 @@ const stack = `class MinMaxStack {
         return this.maxes[this.maxes.length - 1]
     }
 }`
+const forLoop = `function forLoop(array){
+    const newArr = []
+    for(i = 0; i < array.length; i++){
+        const num = array[i]
+        newArr.push(num)
+    }
+    for(let num of newArr){
+        console.log(num)
+    }
+    return newArr
+}
+forLoop([1,2,3])
+`
 
+const tester = `function test() {
+    const hello = hello();
+    let num = 9
+    num= 888;
+    hash[num + 1] = hash[num + 99] = 1+10;
+
+    const member = array.splice(start, delCount, ...insert)
+    const sum = 10 + hash[num]
+}`
+const template = `function template() { return '(function () { map.set("' + this.name + '",' + newValue + ')\nreturn "' + this.name + '"})()' }`
+const simple = `function simple(){
+    num += target + 1
+    const yum = "YUM"
+    
+}
+    `
+const simpleOject = `function simple(obj){
+    obj[1 + 1] = 2
+    return obj
+}
+simple({})
+`
+const accessors = `function accessor(obj, arr){
+    arr[i] = 0
+    obj.prop.inside[gee + 1] = arr[i+1]
+
+}`
 const randomString = (l = 3) => {
     let id = (Math.random() * 26 + 10 | 0).toString(36)
     for (let i = 1; i < l; i++)
@@ -148,3 +188,4 @@ const { code } = babel.transformSync(stack, {
     ]
 })
 console.log(code)
+
