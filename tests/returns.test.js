@@ -270,9 +270,9 @@ async function testRunner(funcString) {
             }]
         ]
     })
-    // console.log(code)
     const normalResult = eval(funcString)
     const transpiledResult = eval(code)
+
     console.log(normalResult)
     console.log(transpiledResult)
     expect(normalResult).toEqual(transpiledResult)
@@ -281,6 +281,6 @@ async function testRunner(funcString) {
 
 for (let func in funcs) {
     test(func, async () => {
-        await testRunner(funcs[func])
+        if (func === 'mergeSort') await testRunner(funcs[func])
     })
 }
