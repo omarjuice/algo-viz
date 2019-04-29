@@ -187,7 +187,7 @@ const randomString = (l = 3) => {
     return id
 }
 const _name = '__' + randomString()
-const { code } = babel.transformSync(mergeSort, {
+const { code } = babel.transformSync(accessors, {
     plugins: [
         '@babel/plugin-transform-destructuring',
         '@babel/plugin-transform-parameters',
