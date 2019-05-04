@@ -16,9 +16,7 @@ const mergeSort = `function mergeSort(arr) {
     if (arr.length < 2) {
         return arr
     }
-   const newArr = split(arr)
-   const firstHalf = newArr[0]
-   const secondHalf = newArr[1]
+   const [firstHalf, secondHalf] = split(arr)
    const _sorted1 = mergeSort(firstHalf)
    const _sorted2 = mergeSort(secondHalf)
     const sorted = merge(sorted1, sorted2)
@@ -156,13 +154,16 @@ const simple = `function simple(){
 }
     `
 const simpleObject = `function simple(obj){
-    if(i < arr[i + 1]) i++
+    while(i++){
+
+    }
+
 }
 
 `
 const accessors = `function accessor(obj, arr){
     arr[i] = 0
-    obj.prop.inside[gee + 1] = arr[arr[i]+1]
+    obj.prop.inside[gee + 1] = arr[arr[i+1]+1]
     this.eggs = 12
 
 
@@ -182,7 +183,7 @@ const randomString = (l = 3) => {
 }
 const _name = '__' + randomString()
 console.log('________________________________________')
-const { code } = babel.transformSync(simpleObject, {
+const { code } = babel.transformSync(stack, {
     plugins: [
         '@babel/plugin-transform-destructuring',
         '@babel/plugin-transform-parameters',

@@ -17,7 +17,8 @@
     "@babel/traverse": "^7.4.3",
     "@babel/types": "^7.4.0",
     "babel": "^6.23.0",
-    "babel-plugin-transform-remove-console": "^6.9.4"
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
     "jest": "^24.7.1"
