@@ -12,7 +12,7 @@ const TYPES = {
 }
 
 module.exports = function ({ types }) {
-    let Node, execute;
+    let Node, execute, code;
     const randomString = (l = 3) => {
         let id = (Math.random() * 26 + 10 | 0).toString(36)
         for (let i = 1; i < l; i++)
@@ -21,26 +21,13 @@ module.exports = function ({ types }) {
     }
     let _name = '__' + randomString()
 
-    const constructCall = (_wrapper_id, node, args) => {
-        return (_id) => t.callExpression(
-            t.memberExpression(_wrapper_id, t.identifier(_id)),
-            [node, args || t.nullLiteral()]
-        )
-    }
-    const proxy = (node, details, type) => {
+
+    const proxy = (node, details) => {
         const _wrapper_id = t.identifier(_name)
-        const call = constructCall(_wrapper_id, node, details)
-        if (t.isObjectExpression(node)) {
-            return call('_o')
-        } else if (t.isArrayExpression(node)) {
-            return call('_a')
-        } else if (t.isCallExpression(node)) {
-            return call('_c')
-        } else if (t.isMemberExpression(node)) {
-            return call('_p')
-        } else {
-            return call('__')
-        }
+        return t.callExpression(
+            t.memberExpression(_wrapper_id, t.identifier('__')),
+            [node, details || t.nullLiteral()]
+        )
     }
     const proxyAssignment = (node, code, details) => {
         const varName = '_' + randomString(6);
@@ -125,13 +112,40 @@ module.exports = function ({ types }) {
         }
         return t.objectExpression(props)
     }
+    const reassignComputedProperty = (path, node) => {
+        if (!t.isIdentifier((node.property))) {
+            if (!t.isLiteral(node.property) && !t.isUpdateExpression(node.property)) {
+                const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
+                let i = 0;
+                while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
+                const newAssignment = proxyAssignment(node.property, code, { scope: path.scope.uid })
+                nearestSibling.parent.body.splice(i, 0, newAssignment)
+                node.property = newAssignment.declarations[0].id
+            }
+        }
+    }
+    const getAccessorProxy = (path, node) => {
+        const { object, expression } = computeAccessor(node)
+        const details = {
+            type: TYPES.ACCESSOR,
+            scope: path.scope.uid,
+
+        }
+        const name = node.start && code.slice(node.start, node.end)
+        if (name) details.name = name
+        details.object = object;
+        details.access = expression
+        return (proxy(node,
+            construct(details)))
+    }
     return {
         visitor: {
-            Program(path, { opts }) {
+            Program(path, { file: { code: original }, opts }) {
                 Node = path.node.constructor
                 _name = opts.spyName || _name
+                code = original
             },
-            Function(path, { file: { code }, opts }) {
+            Function(path, { opts }) {
                 if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
                     return
                 }
@@ -154,12 +168,12 @@ module.exports = function ({ types }) {
                     path.node.body.body = [...params.filter(p => p), ...path.node.body.body]
                 }
             },
-            VariableDeclaration(path, { opts }) {
+            VariableDeclaration(path) {
                 if (t.isFor(path.parent) || t.isWhile(path.parent) || t.isIfStatement(path.parent) || t.isDoWhileStatement(path.parent)) {
                     path.node.declarations.forEach((declaration) => {
                         const { id: identifier, init } = declaration
                         if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [opts.spyName || _name].includes(init.callee.object.name)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
                                 return
                             }
                             declaration.init = proxy(init, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid }))
@@ -170,7 +184,7 @@ module.exports = function ({ types }) {
                     path.node.declarations.forEach((declaration) => {
                         const { id: identifier, init } = declaration
                         if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [opts.spyName || _name].includes(init.callee.object.name)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
                                 return
                             }
                             newNodes.push(proxy(identifier, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid })))
@@ -181,7 +195,7 @@ module.exports = function ({ types }) {
 
             },
             AssignmentExpression: {
-                exit(path, { file: { code }, opts }) {
+                exit(path) {
                     const name = path.node.left.start && code.slice(path.node.left.start, path.node.left.end)
                     const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
                     if (name) details.name = name
@@ -202,25 +216,16 @@ module.exports = function ({ types }) {
                     }
                 }
             },
-            UpdateExpression(path, { file: { code }, opts }) {
+            UpdateExpression(path) {
                 const name = path.node.argument.start && code.slice(path.node.argument.start, path.node.argument.end)
                 const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
                 if (name) details.name = name
                 if (t.isMemberExpression(path.node.argument)) {
+                    reassignComputedProperty(path, path.node.argument)
                     const { object, expression } = computeAccessor(path.node.argument)
                     details.type = TYPES.PROP_ASSIGNMENT;
                     details.object = object
                     details.access = expression
-                    if (!t.isIdentifier((path.node.argument.property))) {
-                        if (!t.isLiteral(path.node.argument.property) && !t.isUpdateExpression(path.node.argument.property)) {
-                            const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
-                            let i = 0;
-                            while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
-                            const newAssignment = proxyAssignment(path.node.argument.property, code, { scope: path.scope.uid })
-                            nearestSibling.parent.body.splice(i, 0, newAssignment)
-                            path.node.property = newAssignment.declarations[0].id
-                        }
-                    }
                 }
                 if (t.isExpressionStatement(path.parent)) {
                     const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
@@ -231,21 +236,12 @@ module.exports = function ({ types }) {
                 }
             },
             MemberExpression: {
-                enter(path, { file: { code }, opts }) {
+                enter(path) {
                     if (path.node.object.name !== _name) {
-                        if (!t.isIdentifier((path.node.property))) {
-                            if (!t.isLiteral(path.node.property) && !t.isUpdateExpression(path.node.property)) {
-                                const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
-                                let i = 0;
-                                while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
-                                const newAssignment = proxyAssignment(path.node.property, code, { scope: path.scope.uid })
-                                nearestSibling.parent.body.splice(i, 0, newAssignment)
-                                path.node.property = newAssignment.declarations[0].id
-                            }
-                        }
+                        reassignComputedProperty(path, path.node)
                     }
                 },
-                exit(path, { file: { code }, opts }) {
+                exit(path) {
                     const { object, expression } = computeAccessor(path.node)
                     if (object.name !== _name) {
                         if (!t.isMemberExpression(path.parent)) {
@@ -267,7 +263,7 @@ module.exports = function ({ types }) {
                     }
                 }
             },
-            ForStatement(path, { file: { code }, opts }) {
+            ForStatement(path) {
                 if (path.node.init) {
                     if (t.isDeclaration(path.node.init)) {
                         const name = path.node.init.declarations[0].id.name
@@ -278,7 +274,7 @@ module.exports = function ({ types }) {
                     }
                 }
             },
-            "ForOfStatement|ForInStatement"(path, { opts }) {
+            "ForOfStatement|ForInStatement"(path) {
                 const variables = path.node.left.declarations.map((declaration) => {
                     const { id: identifier } = declaration
                     return t.expressionStatement(proxy(
@@ -295,14 +291,15 @@ module.exports = function ({ types }) {
                 path.node.body.body = [...variables, ...path.node.body.body]
             },
             Expression: {
-                enter(path, { file: { code }, opts }) {
+                enter(path) {
                     if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
                         return
                     }
                     if (t.isMemberExpression(path) && path.node.object.name === _name) path.stop()
                     if (t.isUpdateExpression(path) && t.isForStatement(path.parent)) return
+                    if (t.isUpdateExpression(path) && t.isMemberExpression(path.node.argument)) return
                     if (t.isThisExpression(path)) return
-                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && [opts.spyName || _name, 'console'].includes(path.node.callee.object.name)) {
+                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && [_name, 'console'].includes(path.node.callee.object.name)) {
                         return
                     }
                     if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') {
@@ -319,34 +316,13 @@ module.exports = function ({ types }) {
                     if (t.isBinaryExpression(path)) {
                         //REFACTOR
                         if (t.isMemberExpression(path.node.right)) {
-                            console.log(path.node)
                             if (path.node.right.object.name !== _name) {
-                                const { object, expression } = computeAccessor(path.node.right)
-                                const details = {
-                                    type: TYPES.ACCESSOR,
-                                    scope: path.scope.uid,
-                                }
-                                const name = path.node.right.start && code.slice(path.node.right.start, path.node.right.end)
-                                if (name) details.name = name
-                                details.object = object;
-                                details.access = expression
-                                path.node.right = (proxy(path.node.right,
-                                    construct(details)))
+                                path.node.right = getAccessorProxy(path, path.node.right)
                             }
                         }
                         if (t.isMemberExpression(path.node.left)) {
                             if (path.node.left.object.name !== _name) {
-                                const { object, expression } = computeAccessor(path.node.left)
-                                const details = {
-                                    type: TYPES.ACCESSOR,
-                                    scope: path.scope.uid,
-                                }
-                                const name = path.node.left.start && code.slice(path.node.left.start, path.node.left.end)
-                                if (name) details.name = name
-                                details.object = object;
-                                details.access = expression
-                                path.node.left = (proxy(path.node.left,
-                                    construct(details)))
+                                path.node.left = getAccessorProxy(path, path.node.left)
                             }
                         }
                         //REFACTOR
@@ -360,35 +336,13 @@ module.exports = function ({ types }) {
                         } else {
                             details.type = TYPES.CALL
                         }
-                        //REFACTOR
                         path.node.arguments = path.node.arguments.map(node => {
                             if (t.isMemberExpression(node)) {
-                                if (!t.isIdentifier((node.property))) {
-                                    if (!t.isLiteral(node.property) && !t.isUpdateExpression(path.node.property)) {
-                                        const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
-                                        let i = 0;
-                                        while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
-                                        const newAssignment = proxyAssignment(node.property, code, { scope: path.scope.uid })
-                                        nearestSibling.parent.body.splice(i, 0, newAssignment)
-                                        node.property = newAssignment.declarations[0].id
-                                    }
-                                }
-                                const { object, expression } = computeAccessor(node)
-                                const details = {
-                                    type: TYPES.ACCESSOR,
-                                    scope: path.scope.uid,
-
-                                }
-                                const name = node.start && code.slice(node.start, node.end)
-                                if (name) details.name = name
-                                details.object = object;
-                                details.access = expression
-                                node = (proxy(node,
-                                    construct(details)))
+                                reassignComputedProperty(path, node)
+                                node = getAccessorProxy(path, node)
                             }
                             return node
                         })
-                        //REFACTOR
                     } else {
                         details.type = TYPES.EXPRESSION
                     }

@@ -156,10 +156,8 @@ const simple = `function simple(){
 }
     `
 const simpleObject = `function simple(obj){
-    obj[1 + 1] += 2
 
-    object[1+1][2+2]++
-    return obj
+    obj[t()+1][2+2]++
 }
 simple({}, great[good])
 `
@@ -169,13 +167,10 @@ const accessors = `function accessor(obj, arr){
     this.eggs = 12
 
 
-    if(i < arr[i]){
+    if(i < arr[arr.length - 1]){
         
     }
-
-    object.array.insert(1)
-
-    arr.slice(1,2)
+    arr[i + 1]++
 
     arr.splice(1, arr[2 + 1])
 
@@ -187,7 +182,8 @@ const randomString = (l = 3) => {
     return id
 }
 const _name = '__' + randomString()
-const { code } = babel.transformSync(accessors, {
+console.log('________________________________________')
+const { code } = babel.transformSync(simpleObject, {
     plugins: [
         '@babel/plugin-transform-destructuring',
         '@babel/plugin-transform-parameters',
