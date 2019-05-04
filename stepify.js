@@ -216,23 +216,25 @@ module.exports = function ({ types }) {
                     }
                 }
             },
-            UpdateExpression(path) {
-                const name = path.node.argument.start && code.slice(path.node.argument.start, path.node.argument.end)
-                const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
-                if (name) details.name = name
-                if (t.isMemberExpression(path.node.argument)) {
-                    reassignComputedProperty(path, path.node.argument)
-                    const { object, expression } = computeAccessor(path.node.argument)
-                    details.type = TYPES.PROP_ASSIGNMENT;
-                    details.object = object
-                    details.access = expression
-                }
-                if (t.isExpressionStatement(path.parent)) {
-                    const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
-                    let i = 0;
-                    while (nearestSibling.parent.body[i] !== path.parent) i++
-                    const newNode = proxy(path.node.argument, construct(details))
-                    nearestSibling.parent.body.splice(i + 1, 0, newNode)
+            UpdateExpression: {
+                exit(path) {
+                    const name = path.node.argument.start && code.slice(path.node.argument.start, path.node.argument.end)
+                    const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
+                    if (name) details.name = name
+                    if (t.isMemberExpression(path.node.argument)) {
+                        reassignComputedProperty(path, path.node.argument)
+                        const { object, expression } = computeAccessor(path.node.argument)
+                        details.type = TYPES.PROP_ASSIGNMENT;
+                        details.object = object
+                        details.access = expression
+                    }
+                    if (t.isExpressionStatement(path.parent)) {
+                        const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
+                        let i = 0;
+                        while (nearestSibling.parent.body[i] !== path.parent) i++
+                        const newNode = proxy(path.node.argument, construct(details))
+                        nearestSibling.parent.body.splice(i + 1, 0, newNode)
+                    }
                 }
             },
             MemberExpression: {
@@ -245,7 +247,7 @@ module.exports = function ({ types }) {
                     const { object, expression } = computeAccessor(path.node)
                     if (object.name !== _name) {
                         if (!t.isMemberExpression(path.parent)) {
-                            if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node) return
+                            if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
                             const details = {
                                 type: TYPES.ACCESSOR,
                                 scope: path.scope.uid,
@@ -314,7 +316,6 @@ module.exports = function ({ types }) {
                         scope: path.scope.uid
                     }
                     if (t.isBinaryExpression(path)) {
-                        //REFACTOR
                         if (t.isMemberExpression(path.node.right)) {
                             if (path.node.right.object.name !== _name) {
                                 path.node.right = getAccessorProxy(path, path.node.right)
@@ -325,7 +326,6 @@ module.exports = function ({ types }) {
                                 path.node.left = getAccessorProxy(path, path.node.left)
                             }
                         }
-                        //REFACTOR
                     }
                     if (t.isCallExpression(path)) {
                         if (t.isMemberExpression(path.node.callee)) {

@@ -156,10 +156,9 @@ const simple = `function simple(){
 }
     `
 const simpleObject = `function simple(obj){
-
-    obj[t()+1][2+2]++
+    if(i < arr[i + 1]) i++
 }
-simple({}, great[good])
+
 `
 const accessors = `function accessor(obj, arr){
     arr[i] = 0
