@@ -154,10 +154,11 @@ const simple = `function simple(){
 }
     `
 const simpleObject = `function simple(obj){
-    while(i++){
+    // if (balance > 0 && prevBracket && (prevBracket.type !== info.type && (prevBracket.val === 1 && info.val !== 1))) {
+    //     return false
+    // }
 
-    }
-
+    const num = obj[1+1][j++] + arr[i()] + arr[k**2] && arr[z-1]
 }
 
 `
@@ -183,7 +184,8 @@ const randomString = (l = 3) => {
 }
 const _name = '__' + randomString()
 console.log('________________________________________')
-const { code } = babel.transformSync(stack, {
+const start = Date.now()
+const { code } = babel.transformSync(simpleObject, {
     plugins: [
         '@babel/plugin-transform-destructuring',
         '@babel/plugin-transform-parameters',
@@ -198,4 +200,5 @@ const { code } = babel.transformSync(stack, {
     ]
 })
 console.log(code)
+console.log('TIME: ', Date.now() - start, '----------------------------')
 
