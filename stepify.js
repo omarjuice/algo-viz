@@ -119,6 +119,11 @@ module.exports = function ({ types }) {
         if (t.isAssignmentExpression(node.property)) return
         if (!t.isIdentifier((node.property))) {
             if (!t.isLiteral(node.property)) {
+                if (t.isCallExpression(node.property)) {
+                    node.property = traverseCall(path, node.property)
+                } else if (t.isBinaryExpression(node.property) || t.isLogicalExpression(node.property)) {
+                    node.property = traverseBinary(path, node.property)
+                }
                 const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
                 let i = 0;
                 while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
@@ -161,25 +166,49 @@ module.exports = function ({ types }) {
         }
         return nodeCopy
     }
-    const traverseBinary = (path, expression) => {
-        const queue = [expression]
-        while (queue.length) {
-            const current = queue.shift()
-            if (t.isMemberExpression(current.left)) {
-                if (current.left.object.name !== _name) {
-                    current.left = getAccessorProxy(path, current.left)
-                }
-            } else if (t.isBinaryExpression(current.left) || t.isLogicalExpression(current.left)) {
-                queue.push(current.left)
+    const traverseBinaryHelper = (path, expression, side) => {
+        if (t.isMemberExpression(expression[side])) {
+            if (expression[side].object.name !== _name) {
+                expression[side] = getAccessorProxy(path, expression[side])
             }
-            if (t.isMemberExpression(current.right)) {
-                if (current.right.object.name !== _name) {
-                    current.right = getAccessorProxy(path, current.right)
-                }
-            } else if (t.isBinaryExpression(current.right) || t.isLogicalExpression(current.right)) {
-                queue.push(current.right)
-            }
+        } else if (t.isCallExpression(expression[side])) {
+            expression[side] = traverseCall(path, expression[side])
+        } else if (t.isBinaryExpression(expression[side]) || t.isLogicalExpression(expression[side])) {
+            expression[side] = traverseBinary(path, expression[side])
         }
+    }
+    const traverseBinary = (path, expression) => {
+        traverseBinaryHelper(path, expression, 'left')
+        traverseBinaryHelper(path, expression, 'right')
+        const details = {
+            scope: path.scope.uid,
+            type: TYPES.EXPRESSION,
+        }
+        if (expression.start) details.name = code.slice(expression.start, expression.end)
+        return proxy(expression, construct(details))
+    }
+    const traverseCall = (path, call) => {
+        call.arguments = call.arguments.map(node => {
+            if (t.isMemberExpression(node)) {
+                node = getAccessorProxy(path, node)
+            } else if (t.isCallExpression(node)) {
+                node = traverseCall(path, node)
+            } else if (t.isBinaryExpression(node) || t.isLogicalExpression(node)) {
+                node = traverseBinary(path, node)
+            }
+            return node
+        })
+        const details = {}
+        if (t.isMemberExpression(call.callee)) {
+            details.type = TYPES.METHODCALL
+            const { object, expression } = computeAccessor(path, call.callee)
+            details.object = object
+            details.access = expression
+        } else {
+            details.type = TYPES.CALL
+        }
+        if (call.start) details.name = code.slice(call.start, call.end)
+        return proxy(call, construct(details))
     }
     return {
         visitor: {
@@ -230,6 +259,7 @@ module.exports = function ({ types }) {
                             if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
                                 return
                             }
+                            if (t.isLiteral(init)) return
                             newNodes.push(proxy(identifier, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid })))
                         }
                     });
@@ -310,31 +340,35 @@ module.exports = function ({ types }) {
                 }
             },
             ForStatement(path) {
-                if (path.node.init) {
-                    if (t.isDeclaration(path.node.init)) {
-                        const name = path.node.init.declarations[0].id.name
-                        path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
-                    } else if (t.isAssignmentExpression(path.node.init)) {
-                        const name = path.node.init.left.name
-                        path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                if (t.isBlockStatement(path.node.body)) {
+                    if (path.node.init) {
+                        if (t.isDeclaration(path.node.init)) {
+                            const name = path.node.init.declarations[0].id.name
+                            path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                        } else if (t.isAssignmentExpression(path.node.init)) {
+                            const name = path.node.init.left.name
+                            path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                        }
                     }
                 }
             },
             "ForOfStatement|ForInStatement"(path) {
-                const variables = path.node.left.declarations.map((declaration) => {
-                    const { id: identifier } = declaration
-                    return t.expressionStatement(proxy(
-                        identifier,
-                        construct({
-                            type: TYPES.ASSIGNMENT,
-                            name: identifier.name,
-                            iterates: {
-                                over: path.node.right,
-                            },
-                            scope: path.scope.uid + 1
-                        })))
-                })
-                path.node.body.body = [...variables, ...path.node.body.body]
+                if (t.isBlockStatement(path.node.body)) {
+                    const variables = path.node.left.declarations.map((declaration) => {
+                        const { id: identifier } = declaration
+                        return t.expressionStatement(proxy(
+                            identifier,
+                            construct({
+                                type: TYPES.ASSIGNMENT,
+                                name: identifier.name,
+                                iterates: {
+                                    over: path.node.right,
+                                },
+                                scope: path.scope.uid + 1
+                            })))
+                    })
+                    path.node.body.body = [...variables, ...path.node.body.body]
+                }
             },
             Expression: {
                 enter(path) {
@@ -355,37 +389,21 @@ module.exports = function ({ types }) {
                     if (t.isArrayExpression(path) && !t.isAssignmentExpression(path.parent) && !t.isReturnStatement(path.parent)) return
                     if (t.isObjectExpression(path) && !t.isVariableDeclarator(path.parent)) return
                     if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) return;
-                    const name = code.slice(path.node.start, path.node.end)
-                    const details = {
-                        scope: path.scope.uid
-                    }
+
                     if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
-                        traverseBinary(path, path.node)
-                    }
-                    if (t.isCallExpression(path)) {
-                        if (t.isMemberExpression(path.node.callee)) {
-                            details.type = TYPES.METHODCALL
-                            const { object, expression } = computeAccessor(path, path.node.callee)
-                            details.object = object
-                            details.access = expression
-                        } else {
-                            details.type = TYPES.CALL
-                        }
-                        path.node.arguments = path.node.arguments.map(node => {
-                            if (t.isMemberExpression(node)) {
-                                node = getAccessorProxy(path, node)
-                            }
-                            return node
-                        })
+                        path.replaceWith(traverseBinary(path, path.node))
+                    } else if (t.isCallExpression(path)) {
+                        path.replaceWith(traverseCall(path, path.node))
                     } else {
+                        const name = code.slice(path.node.start, path.node.end)
+                        const details = {
+                            scope: path.scope.uid
+                        }
                         details.type = TYPES.EXPRESSION
+                        if (path.node.start) details.name = name;
+                        const node = proxy(path.node, construct(details))
+                        path.replaceWith(node)
                     }
-
-                    if (path.node.start) details.name = name;
-                    const node = proxy(path.node, construct(details))
-
-
-                    path.replaceWith(node)
                     path.skip()
                 },
             },

@@ -176,6 +176,9 @@ const accessors = `function accessor(obj, arr){
     arr.splice(1, arr[2 + 1])
 
 }`
+const callFunc = `function calling() {
+    for(let num of arr) i++
+}`
 const randomString = (l = 3) => {
     let id = (Math.random() * 26 + 10 | 0).toString(36)
     for (let i = 1; i < l; i++)
