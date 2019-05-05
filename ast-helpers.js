@@ -169,6 +169,11 @@ module.exports = function ({ t = types, _name, code, Node }) {
             expression[key] = traverseBinary(path, expression[key])
         } else if (t.isConditionalExpression(expression[key])) {
             expression[key] = traverseConditional(path, expression[key])
+        } else if (t.isAssignmentExpression(expression[key])) {
+            if (t.isIdentifier(expression.left) && expression.left.name[0] === '_') return
+            expression[key] = traverseAssignment(path, expression[key])
+        } else if (t.isUnaryExpression(expression[key])) {
+            expression[key] = traverseUnary(path, expression[key])
         }
     }
     const traverseBinary = (path, expression) => {
@@ -224,20 +229,49 @@ module.exports = function ({ t = types, _name, code, Node }) {
 
         return proxy(conditional, details)
     }
+    const traverseAssignment = (path, assignment) => {
+        const name = assignment.left.start && code.slice(assignment.left.start, assignment.left.end)
+        const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
+        if (name) details.name = name
+        if (t.isMemberExpression(assignment.left)) {
+            const { object, expression } = computeAccessor(path, assignment.left)
+            details.type = TYPES.PROP_ASSIGNMENT;
+            details.object = object
+            details.access = expression
+        }
+        traverseExpressionHelper(path, assignment, 'right')
+        return proxy(assignment, details)
+    }
+    const traverseUnary = (path, unary) => {
+        if (unary.operator === 'delete' && t.isMemberExpression(unary.argument)) {
+            const { object, expression } = computeAccessor(path, unary.argument)
+            const details = {
+                type: TYPES.DELETE,
+                scope: path.scope.uid,
+                object,
+                access: expression,
+                name: code.slice(unary.start, unary.end)
+            }
+            return proxy(unary, details)
+        }
+        return unary
 
+    }
     return {
+        TYPES,
+        randomString,
+        construct,
+        isBarredObject,
+        reducePropExpressions,
+        reassignComputedProperty,
+        traverseAssignment,
         traverseCall,
         traverseBinary,
-        reducePropExpressions,
+        traverseConditional,
+        traverseUnary,
         getAccessorProxy,
-        reassignComputedProperty,
-        construct,
         computeAccessor,
         proxyAssignment,
         proxy,
-        randomString,
-        TYPES,
-        traverseConditional,
-        isBarredObject
     }
 }

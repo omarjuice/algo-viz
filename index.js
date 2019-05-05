@@ -13,6 +13,8 @@ module.exports = function ({ types }) {
         traverseBinary,
         traverseConditional,
         reducePropExpressions,
+        traverseAssignment,
+        traverseUnary,
         getAccessorProxy,
         reassignComputedProperty,
         construct,
@@ -33,6 +35,8 @@ module.exports = function ({ types }) {
                 traverseCall = helpers.traverseCall
                 traverseBinary = helpers.traverseBinary
                 traverseConditional = helpers.traverseConditional
+                traverseAssignment = helpers.traverseAssignment
+                traverseUnary = helpers.traverseUnary
                 reducePropExpressions = helpers.reducePropExpressions
                 getAccessorProxy = helpers.getAccessorProxy
                 reassignComputedProperty = helpers.reassignComputedProperty
@@ -81,7 +85,6 @@ module.exports = function ({ types }) {
                 } else {
                     const newNodes = []
                     path.node.declarations.forEach((declaration) => {
-                        console.log(declaration)
                         const { id: identifier, init } = declaration
                         if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
                             if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
@@ -95,26 +98,27 @@ module.exports = function ({ types }) {
                 }
             },
             AssignmentExpression: {
-                exit(path) {
+                enter(path) {
                     if (!t.isMemberExpression(path.parent)) {
-                        const name = path.node.left.start && code.slice(path.node.left.start, path.node.left.end)
-                        const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
-                        if (name) details.name = name
-                        if (t.isMemberExpression(path.node.left)) {
-                            const { object, expression } = computeAccessor(path, path.node.left)
-                            details.type = TYPES.PROP_ASSIGNMENT;
-                            details.object = object
-                            details.access = expression
-                        }
-                        if (t.isExpressionStatement(path.parent)) {
-                            const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
-                            let i = 0;
-                            while (nearestSibling.parent.body[i] !== path.parent) i++
-                            const newNode = proxy(reducePropExpressions(path.node.left), details)
-                            nearestSibling.parent.body.splice(i + 1, 0, newNode)
-                        } else {
-                            path.node.right = proxy(path.node.right, details)
-                        }
+                        // const name = path.node.left.start && code.slice(path.node.left.start, path.node.left.end)
+                        // const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
+                        // if (name) details.name = name
+                        // if (t.isMemberExpression(path.node.left)) {
+                        //     const { object, expression } = computeAccessor(path, path.node.left)
+                        //     details.type = TYPES.PROP_ASSIGNMENT;
+                        //     details.object = object
+                        //     details.access = expression
+                        // }
+                        // if (t.isExpressionStatement(path.parent)) {
+                        //     const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
+                        //     let i = 0;
+                        //     while (nearestSibling.parent.body[i] !== path.parent) i++
+                        //     const newNode = proxy(reducePropExpressions(path.node.left), details)
+                        //     nearestSibling.parent.body.splice(i + 1, 0, newNode)
+                        // } else {
+                        //     path.node.right = proxy(path.node.right, details)
+                        // }
+                        path.replaceWith(traverseAssignment(path, path.node))
                     }
                 }
             },
@@ -222,16 +226,16 @@ module.exports = function ({ types }) {
                         path.replaceWith(traverseCall(path, path.node))
                     } else if (t.isConditionalExpression(path)) {
                         path.replaceWith(traverseConditional(path, path.node))
-                    } else if (t.isUnaryExpression(path) && path.node.operator === 'delete' && t.isMemberExpression(path.node.argument)) {
-                        const { object, expression } = computeAccessor(path, path.node.argument)
-                        const details = {
-                            type: TYPES.DELETE,
-                            scope: path.scope.uid,
-                            object,
-                            access: expression,
-                            name: code.slice(path.node.start, path.node.end)
-                        }
-                        path.replaceWith(proxy(path.node, details))
+                    } else if (t.isUnaryExpression(path)) {
+                        // const { object, expression } = computeAccessor(path, path.node.argument)
+                        // const details = {
+                        //     type: TYPES.DELETE,
+                        //     scope: path.scope.uid,
+                        //     object,
+                        //     access: expression,
+                        //     name: code.slice(path.node.start, path.node.end)
+                        // }
+                        path.replaceWith(traverseUnary(path, path.node))
                     } else {
                         const name = code.slice(path.node.start, path.node.end)
                         const details = {
