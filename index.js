@@ -11,6 +11,7 @@ module.exports = function ({ types }) {
         code,
         traverseCall,
         traverseBinary,
+        traverseConditional,
         reducePropExpressions,
         getAccessorProxy,
         reassignComputedProperty,
@@ -19,6 +20,7 @@ module.exports = function ({ types }) {
         proxyAssignment,
         proxy,
         randomString,
+        isBarredObject,
         TYPES;
 
     return {
@@ -30,6 +32,7 @@ module.exports = function ({ types }) {
                 const helpers = ASThelpers({ t, _name, code, Node })
                 traverseCall = helpers.traverseCall
                 traverseBinary = helpers.traverseBinary
+                traverseConditional = helpers.traverseConditional
                 reducePropExpressions = helpers.reducePropExpressions
                 getAccessorProxy = helpers.getAccessorProxy
                 reassignComputedProperty = helpers.reassignComputedProperty
@@ -39,6 +42,7 @@ module.exports = function ({ types }) {
                 proxy = helpers.proxy
                 randomString = helpers.randomString
                 TYPES = helpers.TYPES
+                isBarredObject = helpers.isBarredObject
             },
             Function(path, { opts }) {
                 if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
@@ -52,13 +56,13 @@ module.exports = function ({ types }) {
                 const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
                     proxy(
                         param,
-                        construct({
+                        {
                             type: TYPES.DECLARATION,
                             name: param.name,
                             scope: path.scope.uid,
-                        })
+                        }
                     )
-                ));
+                ) || param);
                 if (t.isBlockStatement(path.node.body)) {
                     path.node.body.body = [...params.filter(p => p), ...path.node.body.body]
                 }
@@ -68,27 +72,27 @@ module.exports = function ({ types }) {
                     path.node.declarations.forEach((declaration) => {
                         const { id: identifier, init } = declaration
                         if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
                                 return
                             }
-                            declaration.init = proxy(init, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid }))
+                            declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid })
                         }
                     });
                 } else {
                     const newNodes = []
                     path.node.declarations.forEach((declaration) => {
+                        console.log(declaration)
                         const { id: identifier, init } = declaration
                         if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
                             if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
                                 return
                             }
                             if (t.isLiteral(init)) return
-                            newNodes.push(proxy(identifier, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid })))
+                            newNodes.push(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid }))
                         }
                     });
                     newNodes.forEach(node => path.insertAfter(node))
                 }
-
             },
             AssignmentExpression: {
                 exit(path) {
@@ -106,10 +110,10 @@ module.exports = function ({ types }) {
                             const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
                             let i = 0;
                             while (nearestSibling.parent.body[i] !== path.parent) i++
-                            const newNode = proxy(reducePropExpressions(path.node.left), construct(details))
+                            const newNode = proxy(reducePropExpressions(path.node.left), details)
                             nearestSibling.parent.body.splice(i + 1, 0, newNode)
                         } else {
-                            path.node.right = proxy(path.node.right, construct(details))
+                            path.node.right = proxy(path.node.right, details)
                         }
                     }
                 }
@@ -129,20 +133,20 @@ module.exports = function ({ types }) {
                         const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
                         let i = 0;
                         while (nearestSibling.parent.body[i] !== path.parent) i++
-                        const newNode = proxy(reducePropExpressions(path.node.argument), construct(details))
+                        const newNode = proxy(reducePropExpressions(path.node.argument), details)
                         nearestSibling.parent.body.splice(i + 1, 0, newNode)
                     }
                 }
             },
             MemberExpression: {
                 enter(path) {
-                    if (path.node.object.name !== _name) {
+                    if (!isBarredObject(path.node.object.name)) {
                         reassignComputedProperty(path, path.node)
                     }
                 },
                 exit(path) {
                     const { object, expression } = computeAccessor(path, path.node)
-                    if (!object.name || (object.name !== _name && object.name[0] !== '_')) {
+                    if (!isBarredObject(object.name)) {
                         if (!t.isMemberExpression(path.parent)) {
                             if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
                             const details = {
@@ -154,8 +158,7 @@ module.exports = function ({ types }) {
                             if (name) details.name = name
                             details.object = object;
                             details.access = expression
-                            path.replaceWith(proxy(path.node,
-                                construct(details)))
+                            path.replaceWith(proxy(path.node, details))
                         }
                     } else {
                         path.stop()
@@ -167,10 +170,10 @@ module.exports = function ({ types }) {
                     if (path.node.init) {
                         if (t.isDeclaration(path.node.init)) {
                             const name = path.node.init.declarations[0].id.name
-                            path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                            path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 }))
                         } else if (t.isAssignmentExpression(path.node.init)) {
                             const name = path.node.init.left.name
-                            path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                            path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 }))
                         }
                     }
                 }
@@ -181,14 +184,14 @@ module.exports = function ({ types }) {
                         const { id: identifier } = declaration
                         return t.expressionStatement(proxy(
                             identifier,
-                            construct({
+                            {
                                 type: TYPES.ASSIGNMENT,
                                 name: identifier.name,
                                 iterates: {
                                     over: path.node.right,
                                 },
                                 scope: path.scope.uid + 1
-                            })))
+                            }))
                     })
                     path.node.body.body = [...variables, ...path.node.body.body]
                 }
@@ -202,7 +205,7 @@ module.exports = function ({ types }) {
                     if (t.isUpdateExpression(path) && t.isForStatement(path.parent)) return
                     if (t.isUpdateExpression(path) && t.isMemberExpression(path.node.argument)) return
                     if (t.isThisExpression(path)) return
-                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && [_name, 'console'].includes(path.node.callee.object.name)) {
+                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && isBarredObject(path.node.callee.object.name)) {
                         return
                     }
                     if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') {
@@ -217,6 +220,18 @@ module.exports = function ({ types }) {
                         path.replaceWith(traverseBinary(path, path.node))
                     } else if (t.isCallExpression(path)) {
                         path.replaceWith(traverseCall(path, path.node))
+                    } else if (t.isConditionalExpression(path)) {
+                        path.replaceWith(traverseConditional(path, path.node))
+                    } else if (t.isUnaryExpression(path) && path.node.operator === 'delete' && t.isMemberExpression(path.node.argument)) {
+                        const { object, expression } = computeAccessor(path, path.node.argument)
+                        const details = {
+                            type: TYPES.DELETE,
+                            scope: path.scope.uid,
+                            object,
+                            access: expression,
+                            name: code.slice(path.node.start, path.node.end)
+                        }
+                        path.replaceWith(proxy(path.node, details))
                     } else {
                         const name = code.slice(path.node.start, path.node.end)
                         const details = {
@@ -224,7 +239,7 @@ module.exports = function ({ types }) {
                         }
                         details.type = TYPES.EXPRESSION
                         if (path.node.start) details.name = name;
-                        const node = proxy(path.node, construct(details))
+                        const node = proxy(path.node, details)
                         path.replaceWith(node)
                     }
                     path.skip()

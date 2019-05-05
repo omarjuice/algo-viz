@@ -1,4 +1,4 @@
-const stepify = require('../stepify')
+const stepify = require('../')
 const babel = require('@babel/core')
 const funcs = {
     twoNumberSum: `function twoNumberSum(array, targetSum) {

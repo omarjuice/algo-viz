@@ -8,9 +8,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
         ACCESSOR: 'ACCESSOR',
         EXPRESSION: 'EXPRESSION',
         METHODCALL: 'METHODCALL',
-        CALL: 'CALL'
+        CALL: 'CALL',
+        DELETE: 'DELETE'
     }
-
+    const isBarredObject = (name) => name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
     const randomString = (l = 3) => {
         let id = (Math.random() * 26 + 10 | 0).toString(36)
         for (let i = 1; i < l; i++)
@@ -24,7 +25,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         const _wrapper_id = t.identifier(_name)
         return t.callExpression(
             t.memberExpression(_wrapper_id, t.identifier('__')),
-            [node, details || t.nullLiteral()]
+            [node, construct(details) || t.nullLiteral()]
         )
     }
     // creates an outer variable declaration to assign expressions within properties
@@ -114,11 +115,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         if (t.isAssignmentExpression(node.property)) return
         if (!t.isIdentifier((node.property))) {
             if (!t.isLiteral(node.property)) {
-                if (t.isCallExpression(node.property)) {
-                    node.property = traverseCall(path, node.property)
-                } else if (t.isBinaryExpression(node.property) || t.isLogicalExpression(node.property)) {
-                    node.property = traverseBinary(path, node.property)
-                }
+                traverseExpressionHelper(path, node, 'property')
                 const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
                 let i = 0;
                 while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
@@ -130,6 +127,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
     }
     // returns proxy for accessors
     const getAccessorProxy = (path, node) => {
+        if (isBarredObject(node.object.name)) return node
         if (t.isMemberExpression(node)) {
             reassignComputedProperty(path, node)
         } else {
@@ -145,8 +143,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         if (name) details.name = name
         details.object = object;
         details.access = expression
-        return (proxy(node,
-            construct(details)))
+        return proxy(node, details)
     }
     // takes assignments generated from `reassignComputedProperty` and flattens them for use by the
     const reducePropExpressions = (node) => {
@@ -161,38 +158,35 @@ module.exports = function ({ t = types, _name, code, Node }) {
         }
         return nodeCopy
     }
-    const traverseBinaryHelper = (path, expression, side) => {
-        if (t.isMemberExpression(expression[side])) {
-            if (expression[side].object.name !== _name) {
-                expression[side] = getAccessorProxy(path, expression[side])
+    const traverseExpressionHelper = (path, expression, key) => {
+        if (t.isMemberExpression(expression[key])) {
+            if (expression[key].object.name !== _name) {
+                expression[key] = getAccessorProxy(path, expression[key])
             }
-        } else if (t.isCallExpression(expression[side])) {
-            expression[side] = traverseCall(path, expression[side])
-        } else if (t.isBinaryExpression(expression[side]) || t.isLogicalExpression(expression[side])) {
-            expression[side] = traverseBinary(path, expression[side])
+        } else if (t.isCallExpression(expression[key])) {
+            expression[key] = traverseCall(path, expression[key])
+        } else if (t.isBinaryExpression(expression[key]) || t.isLogicalExpression(expression[key])) {
+            expression[key] = traverseBinary(path, expression[key])
+        } else if (t.isConditionalExpression(expression[key])) {
+            expression[key] = traverseConditional(path, expression[key])
         }
     }
     const traverseBinary = (path, expression) => {
-        traverseBinaryHelper(path, expression, 'left')
-        traverseBinaryHelper(path, expression, 'right')
         const details = {
             scope: path.scope.uid,
             type: TYPES.EXPRESSION,
         }
-        if (expression.start) details.name = code.slice(expression.start, expression.end)
-        return proxy(expression, construct(details))
+        if (expression.start) {
+            details.name = code.slice(expression.start, expression.end)
+        } else {
+            return expression
+        }
+        traverseExpressionHelper(path, expression, 'left')
+        traverseExpressionHelper(path, expression, 'right')
+
+        return proxy(expression, details)
     }
     const traverseCall = (path, call) => {
-        call.arguments = call.arguments.map(node => {
-            if (t.isMemberExpression(node)) {
-                node = getAccessorProxy(path, node)
-            } else if (t.isCallExpression(node)) {
-                node = traverseCall(path, node)
-            } else if (t.isBinaryExpression(node) || t.isLogicalExpression(node)) {
-                node = traverseBinary(path, node)
-            }
-            return node
-        })
         const details = {}
         if (t.isMemberExpression(call.callee)) {
             details.type = TYPES.METHODCALL
@@ -202,9 +196,48 @@ module.exports = function ({ t = types, _name, code, Node }) {
         } else {
             details.type = TYPES.CALL
         }
-        if (call.start) details.name = code.slice(call.start, call.end)
-        return proxy(call, construct(details))
+        if (call.start) {
+            details.name = code.slice(call.start, call.end)
+        } else {
+            // return call
+        }
+        call.arguments.forEach((_, i) => {
+            traverseExpressionHelper(path, call.arguments, i)
+        })
+
+        return proxy(call, details)
     }
 
-    return { traverseCall, traverseBinary, reducePropExpressions, getAccessorProxy, reassignComputedProperty, construct, computeAccessor, proxyAssignment, proxy, randomString, TYPES }
+    const traverseConditional = (path, conditional) => {
+        const details = {
+            scope: path.scope.uid,
+            type: TYPES.EXPRESSION,
+        }
+        if (conditional.start) {
+            details.name = code.slice(conditional.start, conditional.end)
+        } else {
+            return conditional
+        }
+        traverseExpressionHelper(path, conditional, 'test')
+        traverseExpressionHelper(path, conditional, 'consequent')
+        traverseExpressionHelper(path, conditional, 'alternate')
+
+        return proxy(conditional, details)
+    }
+
+    return {
+        traverseCall,
+        traverseBinary,
+        reducePropExpressions,
+        getAccessorProxy,
+        reassignComputedProperty,
+        construct,
+        computeAccessor,
+        proxyAssignment,
+        proxy,
+        randomString,
+        TYPES,
+        traverseConditional,
+        isBarredObject
+    }
 }
