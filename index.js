@@ -1,207 +1,235 @@
-const stepify = require('./stepify')
-const babel = require('@babel/core')
-const twoNumberSum = `function twoNumberSum(array, targetSum) {
-	const hash = {}
-	for(let number of array){
-		if(hash[number]){
-			return number > hash[number] ? [hash[number], number] : [number, hash[number]]
-		}
-		hash[targetSum - number] = number;
-	}
-	return []
-}
-twoNumberSum([1,2], 3)
-`
-const mergeSort = `function mergeSort(arr) {
-    if (arr.length < 2) {
-        return arr
-    }
-   const [firstHalf, secondHalf] = split(arr)
-   const _sorted1 = mergeSort(firstHalf)
-   const _sorted2 = mergeSort(secondHalf)
-    const sorted = merge(sorted1, sorted2)
-    return sorted
-}
-function split(arr) {
-    const splitIdx = Math.floor(arr.length / 2)
-    const firstHalf = arr.slice(0, splitIdx)
-    const secondHalf = arr.slice(splitIdx, arr.length)
-    return [firstHalf, secondHalf]
-}
-function merge(arr1, arr2) {
-    let i = 0
-    while (arr2.length>0) {
-        const num = arr2.shift()
-        while (num > arr1[i] && i < arr1.length) {
-            i++
-        }
-        arr1.splice(i, 0, num)
-    }
-    return arr1
-}
-mergeSort([5,4,3,2,1])`
 
-const binarySearch = `function binarySearch(array, target) {
-    let left = 0;
-    let right = array.length - 1
-    while (left <= right) {
-        let middle = Math.floor((right + left) / 2)
-        if (array[middle] < target) {
-            left = middle + 1
-        } else if (array[middle] > target) {
-            right = middle - 1
-        } else {
-            return middle
-        }
-    }
-    return -1
-}
-binarySearch([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], 13)
-`
+// const { parseExpression } = require('@babel/parser')
+// const { CodeGenerator } = require('@babel/generator')
+const ASThelpers = require('./ast-helpers')
+const t = require('@babel/types')
 
-const objectAccessor = `function hello(){
-    hash[obj].cool[target - num].some[1 + hello() + 1] = hash[Math.floor(max)].crazy[0 ** 1000]
-    while(obj[i++]){
-        console.log("Hello")
-    }
-}
-hello["goodbye" + "e"] = 'bye';
-`
-const destructuring = `function destruct({x}, y){
-    console.log(x);
-    const {z} = y;
-    const [a,b] = z;
-    return a
-}`
-const HOF = `function filterFalsy(arr){
-    const filterer = (element) =>{
-        return !!element
-    }
-    return arr.filter(filterer)
-}`
+module.exports = function ({ types }) {
+    let Node,
+        _name,
+        execute,
+        code,
+        traverseCall,
+        traverseBinary,
+        reducePropExpressions,
+        getAccessorProxy,
+        reassignComputedProperty,
+        construct,
+        computeAccessor,
+        proxyAssignment,
+        proxy,
+        randomString,
+        TYPES;
 
-const stack = `class MinMaxStack {
-    constructor() {
-        this.mins = []
-        this.maxes = []
-        this.stack = []
-    }
-    peek() {
-        // Write your code here.
-        return this.stack[this.stack.length - 1]
-    }
-
-    pop() {
-        // Write your code here.
-        this.mins.pop()
-        this.maxes.pop()
-        return this.stack.pop()
-    }
-
-    push(number) {
-        // Write your code here.
-        this.stack.push(number)
-        if (this.getMax() === undefined || number > this.getMax()) {
-            this.maxes.push(number)
-        } else {
-            this.maxes.push(this.getMax())
-        }
-        if (this.getMin() === undefined || number < this.getMin()) {
-            this.mins.push(number)
-        } else {
-            this.mins.push(this.getMin())
-        }
-    }
-
-    getMin() {
-        // Write your code here.
-        return this.mins[this.mins.length - 1]
-    }
-
-    getMax() {
-        // Write your code here.
-        return this.maxes[this.maxes.length - 1]
-    }
-}`
-const forLoop = `function forLoop(array){
-    const newArr = []
-    for(i = 0; i < array.length; i++){
-        const num = array[i]
-        newArr.push(num)
-    }
-    for(let num of newArr){
-        console.log(num)
-    }
-    return newArr
-}
-forLoop([1,2,3])
-`
-
-const tester = `function test() {
-    const hello = hello();
-    let num = 9
-    num= 888;
-    hash[num + 1] = hash[num + 99] = 1+10;
-
-    const member = array.splice(start, delCount, ...insert)
-    const sum = 10 + hash[num]
-}`
-const template = `function template() { return '(function () { map.set("' + this.name + '",' + newValue + ')\nreturn "' + this.name + '"})()' }`
-const simple = `function simple(){
-    num += target + 1
-    const yum = "YUM"
-    
-}
-    `
-const simpleObject = `function simple(obj){
-    // if (balance > 0 && prevBracket && (prevBracket.type !== info.type && (prevBracket.val === 1 && info.val !== 1))) {
-    //     return false
-    // }
-
-    const num = obj[1+1][j++] + arr[i()] + arr[k**2] && arr[z-1]
-}
-
-`
-const accessors = `function accessor(obj, arr){
-    arr[i] = 0
-    obj.prop.inside[gee + 1] = arr[arr[i+1]+1]
-    this.eggs = 12
-
-
-    if(i < arr[arr.length - 1]){
-        
-    }
-    arr[i + 1]++
-
-    arr.splice(1, arr[2 + 1])
-
-}`
-const callFunc = `function calling() {
-    for(let num of arr) i++
-}`
-const randomString = (l = 3) => {
-    let id = (Math.random() * 26 + 10 | 0).toString(36)
-    for (let i = 1; i < l; i++)
-        id += (Math.random() * 26 | 0).toString(36)
-    return id
-}
-const _name = '__' + randomString()
-console.log('________________________________________')
-const start = Date.now()
-const { code } = babel.transformSync(simpleObject, {
-    plugins: [
-        '@babel/plugin-transform-destructuring',
-        '@babel/plugin-transform-parameters',
-        'babel-plugin-transform-remove-console',
-        [stepify, {
-            disallow: {
-                async: true,
-                generator: true
+    return {
+        visitor: {
+            Program(path, { file: { code: original }, opts }) {
+                Node = path.node.constructor
+                _name = opts.spyName
+                code = original
+                const helpers = ASThelpers({ t, _name, code, Node })
+                traverseCall = helpers.traverseCall
+                traverseBinary = helpers.traverseBinary
+                reducePropExpressions = helpers.reducePropExpressions
+                getAccessorProxy = helpers.getAccessorProxy
+                reassignComputedProperty = helpers.reassignComputedProperty
+                construct = helpers.construct
+                computeAccessor = helpers.computeAccessor
+                proxyAssignment = helpers.proxyAssignment
+                proxy = helpers.proxy
+                randomString = helpers.randomString
+                TYPES = helpers.TYPES
             },
-            spyName: _name
-        }]
-    ]
-})
-console.log(code)
-console.log('TIME: ', Date.now() - start, '----------------------------')
+            Function(path, { opts }) {
+                if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
+                    return
+                }
+                if (path.node.id && path.node.id.name && path.node.id.name[0] === '_') {
+                    return path.stop()
+                }
+                if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
+                if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
+                const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
+                    proxy(
+                        param,
+                        construct({
+                            type: TYPES.DECLARATION,
+                            name: param.name,
+                            scope: path.scope.uid,
+                        })
+                    )
+                ));
+                if (t.isBlockStatement(path.node.body)) {
+                    path.node.body.body = [...params.filter(p => p), ...path.node.body.body]
+                }
+            },
+            VariableDeclaration(path) {
+                if (t.isFor(path.parent) || t.isWhile(path.parent) || t.isIfStatement(path.parent) || t.isDoWhileStatement(path.parent)) {
+                    path.node.declarations.forEach((declaration) => {
+                        const { id: identifier, init } = declaration
+                        if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
+                                return
+                            }
+                            declaration.init = proxy(init, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid }))
+                        }
+                    });
+                } else {
+                    const newNodes = []
+                    path.node.declarations.forEach((declaration) => {
+                        const { id: identifier, init } = declaration
+                        if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
+                                return
+                            }
+                            if (t.isLiteral(init)) return
+                            newNodes.push(proxy(identifier, construct({ type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid })))
+                        }
+                    });
+                    newNodes.forEach(node => path.insertAfter(node))
+                }
 
+            },
+            AssignmentExpression: {
+                exit(path) {
+                    if (!t.isMemberExpression(path.parent)) {
+                        const name = path.node.left.start && code.slice(path.node.left.start, path.node.left.end)
+                        const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
+                        if (name) details.name = name
+                        if (t.isMemberExpression(path.node.left)) {
+                            const { object, expression } = computeAccessor(path, path.node.left)
+                            details.type = TYPES.PROP_ASSIGNMENT;
+                            details.object = object
+                            details.access = expression
+                        }
+                        if (t.isExpressionStatement(path.parent)) {
+                            const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
+                            let i = 0;
+                            while (nearestSibling.parent.body[i] !== path.parent) i++
+                            const newNode = proxy(reducePropExpressions(path.node.left), construct(details))
+                            nearestSibling.parent.body.splice(i + 1, 0, newNode)
+                        } else {
+                            path.node.right = proxy(path.node.right, construct(details))
+                        }
+                    }
+                }
+            },
+            UpdateExpression: {
+                exit(path) {
+                    const name = path.node.argument.start && code.slice(path.node.argument.start, path.node.argument.end)
+                    const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
+                    if (name) details.name = name
+                    if (t.isMemberExpression(path.node.argument)) {
+                        const { object, expression } = computeAccessor(path, path.node.argument)
+                        details.type = TYPES.PROP_ASSIGNMENT;
+                        details.object = object
+                        details.access = expression
+                    }
+                    if (t.isExpressionStatement(path.parent)) {
+                        const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
+                        let i = 0;
+                        while (nearestSibling.parent.body[i] !== path.parent) i++
+                        const newNode = proxy(reducePropExpressions(path.node.argument), construct(details))
+                        nearestSibling.parent.body.splice(i + 1, 0, newNode)
+                    }
+                }
+            },
+            MemberExpression: {
+                enter(path) {
+                    if (path.node.object.name !== _name) {
+                        reassignComputedProperty(path, path.node)
+                    }
+                },
+                exit(path) {
+                    const { object, expression } = computeAccessor(path, path.node)
+                    if (!object.name || (object.name !== _name && object.name[0] !== '_')) {
+                        if (!t.isMemberExpression(path.parent)) {
+                            if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
+                            const details = {
+                                type: TYPES.ACCESSOR,
+                                scope: path.scope.uid,
+
+                            }
+                            const name = path.node.start && code.slice(path.node.start, path.node.end)
+                            if (name) details.name = name
+                            details.object = object;
+                            details.access = expression
+                            path.replaceWith(proxy(path.node,
+                                construct(details)))
+                        }
+                    } else {
+                        path.stop()
+                    }
+                }
+            },
+            ForStatement(path) {
+                if (t.isBlockStatement(path.node.body)) {
+                    if (path.node.init) {
+                        if (t.isDeclaration(path.node.init)) {
+                            const name = path.node.init.declarations[0].id.name
+                            path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                        } else if (t.isAssignmentExpression(path.node.init)) {
+                            const name = path.node.init.left.name
+                            path.node.body.body.unshift(proxy(t.identifier(name), construct({ type: TYPES.ASSIGNMENT, name, scope: path.scope.uid + 1 })))
+                        }
+                    }
+                }
+            },
+            "ForOfStatement|ForInStatement"(path) {
+                if (t.isBlockStatement(path.node.body)) {
+                    const variables = path.node.left.declarations.map((declaration) => {
+                        const { id: identifier } = declaration
+                        return t.expressionStatement(proxy(
+                            identifier,
+                            construct({
+                                type: TYPES.ASSIGNMENT,
+                                name: identifier.name,
+                                iterates: {
+                                    over: path.node.right,
+                                },
+                                scope: path.scope.uid + 1
+                            })))
+                    })
+                    path.node.body.body = [...variables, ...path.node.body.body]
+                }
+            },
+            Expression: {
+                enter(path) {
+                    if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
+                        return
+                    }
+                    if (t.isMemberExpression(path) && path.node.object.name === _name) path.stop()
+                    if (t.isUpdateExpression(path) && t.isForStatement(path.parent)) return
+                    if (t.isUpdateExpression(path) && t.isMemberExpression(path.node.argument)) return
+                    if (t.isThisExpression(path)) return
+                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && [_name, 'console'].includes(path.node.callee.object.name)) {
+                        return
+                    }
+                    if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') {
+                        return
+                    }
+                    if (t.isLiteral(path)) return
+                    if (t.isArrayExpression(path) && !t.isAssignmentExpression(path.parent) && !t.isReturnStatement(path.parent)) return
+                    if (t.isObjectExpression(path) && !t.isVariableDeclarator(path.parent)) return
+                    if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) return;
+
+                    if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
+                        path.replaceWith(traverseBinary(path, path.node))
+                    } else if (t.isCallExpression(path)) {
+                        path.replaceWith(traverseCall(path, path.node))
+                    } else {
+                        const name = code.slice(path.node.start, path.node.end)
+                        const details = {
+                            scope: path.scope.uid
+                        }
+                        details.type = TYPES.EXPRESSION
+                        if (path.node.start) details.name = name;
+                        const node = proxy(path.node, construct(details))
+                        path.replaceWith(node)
+                    }
+                    path.skip()
+                },
+            },
+        }
+    }
+}
