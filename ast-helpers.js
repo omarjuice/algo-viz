@@ -11,7 +11,6 @@ module.exports = function ({ t = types, _name, code, Node }) {
         CALL: 'CALL',
         DELETE: 'DELETE'
     }
-    const isBarredObject = (name) => name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
     const randomString = (l = 3) => {
         let id = (Math.random() * 26 + 10 | 0).toString(36)
         for (let i = 1; i < l; i++)
@@ -19,6 +18,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return id
     }
     _name = _name || '__' + randomString()
+    const isBarredObject = (name) => name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
+
 
     // Creates a wrapper around expressions to be used by the runner
     const proxy = (node, details) => {
@@ -159,10 +160,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return nodeCopy
     }
     const traverseExpressionHelper = (path, expression, key) => {
-        if (t.isMemberExpression(expression[key])) {
-            if (expression[key].object.name !== _name) {
-                expression[key] = getAccessorProxy(path, expression[key])
-            }
+        if (t.isMemberExpression(expression[key]) && !isBarredObject(expression[key].object.name)) {
+            expression[key] = getAccessorProxy(path, expression[key])
         } else if (t.isCallExpression(expression[key])) {
             expression[key] = traverseCall(path, expression[key])
         } else if (t.isBinaryExpression(expression[key]) || t.isLogicalExpression(expression[key])) {
@@ -192,6 +191,12 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return proxy(expression, details)
     }
     const traverseCall = (path, call) => {
+        if (t.isMemberExpression(path.node.callee) && isBarredObject(path.node.callee.object.name)) {
+            return call
+        }
+        if (t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') {
+            return call
+        }
         const details = {}
         if (t.isMemberExpression(call.callee)) {
             details.type = TYPES.METHODCALL

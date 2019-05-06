@@ -49,9 +49,6 @@ module.exports = function ({ types }) {
                 isBarredObject = helpers.isBarredObject
             },
             Function(path, { opts }) {
-                if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
-                    return
-                }
                 if (path.node.id && path.node.id.name && path.node.id.name[0] === '_') {
                     return path.stop()
                 }
@@ -100,24 +97,6 @@ module.exports = function ({ types }) {
             AssignmentExpression: {
                 enter(path) {
                     if (!t.isMemberExpression(path.parent)) {
-                        // const name = path.node.left.start && code.slice(path.node.left.start, path.node.left.end)
-                        // const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
-                        // if (name) details.name = name
-                        // if (t.isMemberExpression(path.node.left)) {
-                        //     const { object, expression } = computeAccessor(path, path.node.left)
-                        //     details.type = TYPES.PROP_ASSIGNMENT;
-                        //     details.object = object
-                        //     details.access = expression
-                        // }
-                        // if (t.isExpressionStatement(path.parent)) {
-                        //     const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
-                        //     let i = 0;
-                        //     while (nearestSibling.parent.body[i] !== path.parent) i++
-                        //     const newNode = proxy(reducePropExpressions(path.node.left), details)
-                        //     nearestSibling.parent.body.splice(i + 1, 0, newNode)
-                        // } else {
-                        //     path.node.right = proxy(path.node.right, details)
-                        // }
                         path.replaceWith(traverseAssignment(path, path.node))
                     }
                 }
@@ -200,43 +179,43 @@ module.exports = function ({ types }) {
                     path.node.body.body = [...variables, ...path.node.body.body]
                 }
             },
+            "BinaryExpression|LogicalExpression"(path) {
+                path.replaceWith(traverseBinary(path, path.node))
+            },
+            CallExpression(path) {
+
+                path.replaceWith(traverseCall(path, path.node))
+            },
+            ConditionalExpression(path) {
+                path.replaceWith(traverseConditional(path, path.node))
+            },
+            UnaryExpression(path) {
+                path.replaceWith(traverseUnary(path, path.node))
+            },
             Expression: {
                 enter(path) {
-                    if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') {
-                        return
-                    }
-                    if (t.isMemberExpression(path) && path.node.object.name === _name) path.stop()
-                    if (t.isUpdateExpression(path) && t.isForStatement(path.parent)) return
-                    if (t.isUpdateExpression(path) && t.isMemberExpression(path.node.argument)) return
+                    if (t.isMemberExpression(path) && path.node.object.name === _name) return path.stop()
+                    if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') return
+                    if (t.isUpdateExpression(path)) return
                     if (t.isThisExpression(path)) return
-                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && isBarredObject(path.node.callee.object.name)) {
-                        return
-                    }
-                    if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') {
-                        return
-                    }
+                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && isBarredObject(path.node.callee.object.name)) return
+
+                    if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') return
                     if (t.isLiteral(path)) return
                     if (t.isArrayExpression(path) && !t.isAssignmentExpression(path.parent) && !t.isReturnStatement(path.parent)) return
                     if (t.isObjectExpression(path) && !t.isVariableDeclarator(path.parent)) return
                     if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) return;
 
                     if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
-                        path.replaceWith(traverseBinary(path, path.node))
+                        return
                     } else if (t.isCallExpression(path)) {
-                        path.replaceWith(traverseCall(path, path.node))
+                        return
                     } else if (t.isConditionalExpression(path)) {
-                        path.replaceWith(traverseConditional(path, path.node))
+                        return
                     } else if (t.isUnaryExpression(path)) {
-                        // const { object, expression } = computeAccessor(path, path.node.argument)
-                        // const details = {
-                        //     type: TYPES.DELETE,
-                        //     scope: path.scope.uid,
-                        //     object,
-                        //     access: expression,
-                        //     name: code.slice(path.node.start, path.node.end)
-                        // }
-                        path.replaceWith(traverseUnary(path, path.node))
+                        return
                     } else {
+                        console.log(path.node.type)
                         const name = code.slice(path.node.start, path.node.end)
                         const details = {
                             scope: path.scope.uid

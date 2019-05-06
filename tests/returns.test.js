@@ -224,7 +224,23 @@ const funcs = {
   stack.push(6);
     
     [stack.pop(), stack.pop(), stack.pop()]
-    `
+    `,
+    kadanes: `function kadanesAlgorithm(array) {
+          let max = -Infinity
+          let maxAtCurrent = 0
+          for(let i = 0; i < array.length; i++){
+              maxAtCurrent += array[i]
+              if(maxAtCurrent > max){
+                  max = maxAtCurrent
+              }
+              if(maxAtCurrent < 0){
+                  maxAtCurrent = 0
+              }
+          }
+          return max
+      }
+      kadanesAlgorithm([1,2,3,4,5])
+      `
 }
 
 
