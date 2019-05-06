@@ -49,7 +49,7 @@ module.exports = function ({ types }) {
                 isBarredObject = helpers.isBarredObject
             },
             Function(path, { opts }) {
-                if (path.node.id && path.node.id.name && path.node.id.name[0] === '_') {
+                if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
                     return path.stop()
                 }
                 if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
@@ -84,21 +84,18 @@ module.exports = function ({ types }) {
                     path.node.declarations.forEach((declaration) => {
                         const { id: identifier, init } = declaration
                         if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && [_name].includes(init.callee.object.name)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
                                 return
                             }
-                            if (t.isLiteral(init)) return
                             newNodes.push(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: path.scope.uid }))
                         }
                     });
                     newNodes.forEach(node => path.insertAfter(node))
                 }
             },
-            AssignmentExpression: {
-                enter(path) {
-                    if (!t.isMemberExpression(path.parent)) {
-                        path.replaceWith(traverseAssignment(path, path.node))
-                    }
+            AssignmentExpression(path) {
+                if (!t.isMemberExpression(path.parent)) {
+                    path.replaceWith(traverseAssignment(path, path.node))
                 }
             },
             UpdateExpression: {
@@ -119,6 +116,18 @@ module.exports = function ({ types }) {
                         const newNode = proxy(reducePropExpressions(path.node.argument), details)
                         nearestSibling.parent.body.splice(i + 1, 0, newNode)
                     }
+                    t.isDo
+                }
+
+            },
+            "For|While|DoWhileStatement"(path) {
+                if (!t.isBlockStatement(path.node.body)) {
+                    path.node.body = t.blockStatement([path.node.body])
+                }
+            },
+            IfStatement(path) {
+                if (!t.isBlockStatement(path.node.consequent)) {
+                    path.node.consequent = t.blockStatement([path.node.consequent])
                 }
             },
             MemberExpression: {
@@ -182,8 +191,7 @@ module.exports = function ({ types }) {
             "BinaryExpression|LogicalExpression"(path) {
                 path.replaceWith(traverseBinary(path, path.node))
             },
-            CallExpression(path) {
-
+            "CallExpression|NewExpression"(path) {
                 path.replaceWith(traverseCall(path, path.node))
             },
             ConditionalExpression(path) {
@@ -194,7 +202,7 @@ module.exports = function ({ types }) {
             },
             Expression: {
                 enter(path) {
-                    if (t.isMemberExpression(path) && path.node.object.name === _name) return path.stop()
+                    if (t.isMemberExpression(path) && path.node.object.name === _name) return
                     if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') return
                     if (t.isUpdateExpression(path)) return
                     if (t.isThisExpression(path)) return
@@ -202,20 +210,25 @@ module.exports = function ({ types }) {
 
                     if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') return
                     if (t.isLiteral(path)) return
-                    if (t.isArrayExpression(path) && !t.isAssignmentExpression(path.parent) && !t.isReturnStatement(path.parent)) return
-                    if (t.isObjectExpression(path) && !t.isVariableDeclarator(path.parent)) return
-                    if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) return;
+                    if (t.isArrayExpression(path) && !t.isAssignmentExpression(path.parent) && !t.isReturnStatement(path.parent)) {
+                        return
+                    }
+                    if (t.isObjectExpression(path) && !t.isVariableDeclarator(path.parent)) {
+                        return
+                    }
+                    if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) {
+                        return
+                    };
 
                     if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
                         return
-                    } else if (t.isCallExpression(path)) {
+                    } else if (t.isCallExpression(path) || t.isNewExpression(path)) {
                         return
                     } else if (t.isConditionalExpression(path)) {
                         return
                     } else if (t.isUnaryExpression(path)) {
                         return
                     } else {
-                        console.log(path.node.type)
                         const name = code.slice(path.node.start, path.node.end)
                         const details = {
                             scope: path.scope.uid

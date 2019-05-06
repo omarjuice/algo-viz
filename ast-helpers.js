@@ -1,6 +1,6 @@
-const types = require('@babel/types')
-const _ = require('lodash')
-module.exports = function ({ t = types, _name, code, Node }) {
+// const types = require('@babel/types')
+// const _ = require('lodash')
+const traverse = function ({ t = types, _name, code, Node }) {
     const TYPES = {
         DECLARATION: 'DECLARATION',
         ASSIGNMENT: 'ASSIGNMENT',
@@ -146,7 +146,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         details.access = expression
         return proxy(node, details)
     }
-    // takes assignments generated from `reassignComputedProperty` and flattens them for use by the
+    // takes assignments generated from reassignComputedProperty and flattens them for use by the
     const reducePropExpressions = (node) => {
         if (!t.isMemberExpression(node)) return node
         let nodeCopy = _.cloneDeep(node)
@@ -280,3 +280,4 @@ module.exports = function ({ t = types, _name, code, Node }) {
         proxy,
     }
 }
+module.exports = traverse
