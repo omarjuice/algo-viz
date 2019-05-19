@@ -271,18 +271,6 @@ async function testRunner(funcString) {
         __: function (val) {
             return val
         },
-        _o: function (val) {
-            return val
-        },
-        _a: function (val) {
-            return val
-        },
-        _c: function (val) {
-            return val
-        },
-        _p: function (val) {
-            return val
-        }
     }
     const { code } = await babel.transformAsync(funcString, {
         plugins: [
