@@ -148,7 +148,7 @@ module.exports = function ({ types }) {
                             }
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
-                            details.object = object;
+                            details.object = object instanceof Node ? object : object.name ? object.name : 'this'
                             details.access = expression
                             path.replaceWith(proxy(path.node, details))
                         }

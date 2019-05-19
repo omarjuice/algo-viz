@@ -91,7 +91,9 @@ const traverse = function ({ t = types, _name, code, Node }) {
             const val = obj[key];
 
             let value;
-            if (_keys.includes(key)) {
+            if (key === 'object') {
+                value = typeof val === 'string' ? t.identifier(val) : val
+            } else if (_keys.includes(key)) {
                 value = val
             } else if (val instanceof Node) {
                 value = val
