@@ -59,7 +59,13 @@ module.exports = function ({ t = types, _name, code, Node }) {
         let expression = []
         for (let i = 1; i < props.length; i++) {
             if (computed[i]) reassignComputedValue(path, props[i])
-            expression.push(t.isAssignmentExpression(props[i].property) ? props[i].property.left : props[i].property)
+            if (t.isAssignmentExpression(props[i].property)) {
+                expression.push(props[i].property.left)
+            } else if (!t.isIdentifier(props[i].property)) {
+                expression.push(props[i].property)
+            } else {
+                expression.push(t.stringLiteral(props[i].property.name))
+            }
         }
         return { object, expression: t.arrayExpression(expression) }
     }

@@ -1,16 +1,30 @@
 const stepify = require('./stepify')
 const babel = require('@babel/core')
-const func = `function twoNumberSum(array, targetSum) {
-	const hash = {}
-	for(let number of array){
-		if(hash[number]){
-			return number > hash[number] ? [hash[number], number] : [number, hash[number]]
-		}
-		hash[targetSum - number] = number;
-	}
-	return []
+const func = `function mergeSort(arr) {
+    if (arr.length < 2) {
+        return arr
+    }
+   const [firstHalf, secondHalf] = split(arr)
+    return merge(mergeSort(firstHalf), mergeSort(secondHalf))
 }
-twoNumberSum([1,2], 3)
+function split(arr) {
+    const splitIdx = Math.floor(arr.length / 2)
+    const firstHalf = arr.slice(0, splitIdx)
+    const secondHalf = arr.slice(splitIdx, arr.length)
+    return [firstHalf, secondHalf]
+}
+function merge(arr1, arr2) {
+    let i = 0
+    while (arr2.length>0) {
+        const num = arr2.shift()
+        while (num > arr1[i] && i < arr1.length) {
+            i++
+        }
+        arr1.splice(i, 0, num)
+    }
+    return arr1
+}
+mergeSort([5,4,3,2,1])
 `
 
 class Runner {
@@ -18,7 +32,7 @@ class Runner {
         this.steps = []
     }
     __(val, info) {
-        info.value = typeof val === 'boolean' ? String(val) : val
+        info.value = typeof val === 'boolean' ? String(val) : typeof val === 'object' ? JSON.stringify(val, null, 2) : val
 
         this.steps.push(info)
 
