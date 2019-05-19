@@ -16,7 +16,7 @@ module.exports = function ({ types }) {
         traverseAssignment,
         traverseUnary,
         getAccessorProxy,
-        reassignComputedProperty,
+        reassignComputedValue,
         construct,
         computeAccessor,
         proxyAssignment,
@@ -39,7 +39,7 @@ module.exports = function ({ types }) {
                 traverseUnary = helpers.traverseUnary
                 reducePropExpressions = helpers.reducePropExpressions
                 getAccessorProxy = helpers.getAccessorProxy
-                reassignComputedProperty = helpers.reassignComputedProperty
+                reassignComputedValue = helpers.reassignComputedValue
                 construct = helpers.construct
                 computeAccessor = helpers.computeAccessor
                 proxyAssignment = helpers.proxyAssignment
@@ -135,7 +135,7 @@ module.exports = function ({ types }) {
             MemberExpression: {
                 enter(path) {
                     if (!isBarredObject(path.node.object.name)) {
-                        reassignComputedProperty(path, path.node)
+                        reassignComputedValue(path, path.node)
                     }
                 },
                 exit(path) {

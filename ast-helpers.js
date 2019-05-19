@@ -67,7 +67,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
                     )
                 )
             } else {
-                reassignComputedProperty(path, props[i])
+                reassignComputedValue(path, props[i])
                 expression = t.binaryExpression('+',
                     expression || t.stringLiteral(""),
                     t.binaryExpression('+',
@@ -114,17 +114,17 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return t.objectExpression(props)
     }
     // makes the computed property into an assignment to a new variable so that it can be used for the runner
-    const reassignComputedProperty = (path, node) => {
-        if (t.isAssignmentExpression(node.property)) return
-        if (!t.isIdentifier((node.property))) {
-            if (!t.isLiteral(node.property)) {
-                traverseExpressionHelper(path, node, 'property')
+    const reassignComputedValue = (path, node, key = 'property') => {
+        if (t.isAssignmentExpression(node[key])) return
+        if (!t.isIdentifier((node[key]))) {
+            if (!t.isLiteral(node[key])) {
+                traverseExpressionHelper(path, node, key)
                 const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
                 let i = 0;
                 while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
-                const { variable, assignment } = proxyAssignment(node.property, code, { scope: path.scope.uid })
+                const { variable, assignment } = proxyAssignment(node[key], code, { scope: path.scope.uid })
                 nearestSibling.parent.body.splice(i, 0, variable)
-                node.property = assignment
+                node[key] = assignment
             }
         }
     }
@@ -132,7 +132,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
     const getAccessorProxy = (path, node) => {
         if (isBarredObject(node.object.name)) return node
         if (t.isMemberExpression(node)) {
-            reassignComputedProperty(path, node)
+            reassignComputedValue(path, node)
         } else {
             return node
         }
@@ -148,7 +148,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         details.access = expression
         return proxy(node, details)
     }
-    // takes assignments generated from reassignComputedProperty and flattens them for use by the
+    // takes assignments generated from reassignComputedValue and flattens them for use by the
     const reducePropExpressions = (node) => {
         if (!t.isMemberExpression(node)) return node
         let nodeCopy = _.cloneDeep(node)
@@ -213,8 +213,17 @@ module.exports = function ({ t = types, _name, code, Node }) {
         } else {
             // return call
         }
+        details.arguments = []
         call.arguments.forEach((_, i) => {
-            traverseExpressionHelper(path, call.arguments, i)
+            if (t.isAssignmentExpression(call.arguments[i])) {
+                const assignmentProxy = traverseAssignment(path, call.arguments[i])
+                call.arguments[i] = assignmentProxy
+                details.arguments.push(reducePropExpressions(assignmentProxy.arguments[0].left))
+            } else {
+                reassignComputedValue(path, call.arguments, i)
+                details.arguments.push(t.isAssignmentExpression(call.arguments[i]) ? call.arguments[i].left : call.arguments[i])
+            }
+
         })
 
         return proxy(call, details)
@@ -270,7 +279,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         construct,
         isBarredObject,
         reducePropExpressions,
-        reassignComputedProperty,
+        reassignComputedValue,
         traverseAssignment,
         traverseCall,
         traverseBinary,
