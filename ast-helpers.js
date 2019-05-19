@@ -1,6 +1,6 @@
-// const types = require('@babel/types')
+const types = require('@babel/types')
 // const _ = require('lodash')
-const traverse = function ({ t = types, _name, code, Node }) {
+module.exports = function ({ t = types, _name, code, Node }) {
     const TYPES = {
         DECLARATION: 'DECLARATION',
         ASSIGNMENT: 'ASSIGNMENT',
@@ -282,4 +282,4 @@ const traverse = function ({ t = types, _name, code, Node }) {
         proxy,
     }
 }
-module.exports = traverse
+

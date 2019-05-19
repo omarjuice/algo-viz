@@ -93,9 +93,11 @@ module.exports = function ({ types }) {
                     newNodes.forEach(node => path.insertAfter(node))
                 }
             },
-            AssignmentExpression(path) {
-                if (!t.isMemberExpression(path.parent)) {
-                    path.replaceWith(traverseAssignment(path, path.node))
+            AssignmentExpression: {
+                exit(path) {
+                    if (!t.isMemberExpression(path.parent)) {
+                        path.replaceWith(traverseAssignment(path, path.node))
+                    }
                 }
             },
             UpdateExpression: {
