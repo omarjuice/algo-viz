@@ -1,5 +1,5 @@
 const types = require('@babel/types')
-// const _ = require('lodash')
+const _ = require('lodash')
 module.exports = function ({ t = types, _name, code, Node }) {
     const TYPES = {
         DECLARATION: 'DECLARATION',
@@ -193,10 +193,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return proxy(expression, details)
     }
     const traverseCall = (path, call) => {
-        if (t.isMemberExpression(path.node.callee) && isBarredObject(path.node.callee.object.name)) {
+        if (t.isMemberExpression(call.callee) && isBarredObject(call.callee.object.name)) {
             return call
         }
-        if (t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') {
+        if (t.isIdentifier(call.callee) && call.callee.name[0] === '_') {
             return call
         }
         const details = {}
