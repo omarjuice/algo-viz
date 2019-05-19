@@ -15,6 +15,8 @@ module.exports = function ({ types }) {
         reducePropExpressions,
         traverseAssignment,
         traverseUnary,
+        traverseArray,
+        traverseObject,
         getAccessorProxy,
         reassignComputedValue,
         construct,
@@ -37,6 +39,8 @@ module.exports = function ({ types }) {
                 traverseConditional = helpers.traverseConditional
                 traverseAssignment = helpers.traverseAssignment
                 traverseUnary = helpers.traverseUnary
+                traverseArray = helpers.traverseArray
+                traverseObject = helpers.traverseObject
                 reducePropExpressions = helpers.reducePropExpressions
                 getAccessorProxy = helpers.getAccessorProxy
                 reassignComputedValue = helpers.reassignComputedValue
@@ -204,6 +208,14 @@ module.exports = function ({ types }) {
             },
             Expression: {
                 enter(path) {
+                    if (t.isObjectExpression(path)) {
+                        traverseObject(path, path.node)
+                        return path.skip()
+                    }
+                    if (t.isArrayExpression(path)) {
+                        traverseArray(path, path.node)
+                        return path.skip()
+                    }
                     if (t.isMemberExpression(path) && path.node.object.name === _name) return
                     if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') return
                     if (t.isUpdateExpression(path)) return
@@ -229,6 +241,8 @@ module.exports = function ({ types }) {
                     } else if (t.isConditionalExpression(path)) {
                         return
                     } else if (t.isUnaryExpression(path)) {
+                        return
+                    } else if (t.isObjectExpression(path) || t.isArrayExpression(path)) {
                         return
                     } else {
                         const name = code.slice(path.node.start, path.node.end)

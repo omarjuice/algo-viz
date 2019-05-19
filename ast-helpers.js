@@ -101,16 +101,12 @@ module.exports = function ({ t = types, _name, code, Node }) {
                 value = t.stringLiteral(val)
             } else if (typeof val === 'number') {
                 value = t.numericLiteral(val)
-            }
-            else if (typeof val === 'boolean') {
+            } else if (typeof val === 'boolean') {
                 value = t.booleanLiteral(val)
             } else if (Array.isArray(val)) {
                 value = t.arrayExpression(val)
             } else if (typeof val === 'object') {
                 value = construct(val)
-            }
-            if (!value) {
-                console.log(val)
             }
             props.push(t.objectProperty(t.identifier(key), value))
         }
@@ -166,20 +162,24 @@ module.exports = function ({ t = types, _name, code, Node }) {
         }
         return nodeCopy
     }
-    const traverseExpressionHelper = (path, expression, key) => {
-        if (t.isMemberExpression(expression[key]) && !isBarredObject(expression[key].object.name)) {
-            expression[key] = getAccessorProxy(path, expression[key])
-        } else if (t.isCallExpression(expression[key])) {
-            expression[key] = traverseCall(path, expression[key])
-        } else if (t.isBinaryExpression(expression[key]) || t.isLogicalExpression(expression[key])) {
-            expression[key] = traverseBinary(path, expression[key])
-        } else if (t.isConditionalExpression(expression[key])) {
-            expression[key] = traverseConditional(path, expression[key])
-        } else if (t.isAssignmentExpression(expression[key])) {
-            if (t.isIdentifier(expression.left) && expression.left.name[0] === '_') return
-            expression[key] = traverseAssignment(path, expression[key])
-        } else if (t.isUnaryExpression(expression[key])) {
-            expression[key] = traverseUnary(path, expression[key])
+    const traverseExpressionHelper = (path, node, key) => {
+        if (t.isMemberExpression(node[key]) && !isBarredObject(node[key].object.name)) {
+            node[key] = getAccessorProxy(path, node[key])
+        } else if (t.isCallExpression(node[key])) {
+            node[key] = traverseCall(path, node[key])
+        } else if (t.isBinaryExpression(node[key]) || t.isLogicalExpression(node[key])) {
+            node[key] = traverseBinary(path, node[key])
+        } else if (t.isConditionalExpression(node[key])) {
+            node[key] = traverseConditional(path, node[key])
+        } else if (t.isAssignmentExpression(node[key])) {
+            if (t.isIdentifier(node.left) && node.left.name[0] === '_') return
+            node[key] = traverseAssignment(path, node[key])
+        } else if (t.isUnaryExpression(node[key])) {
+            node[key] = traverseUnary(path, node[key])
+        } else if (t.isArrayExpression(node[key])) {
+            node[key] = traverseArray(path, node[key])
+        } else if (t.isObjectExpression(node[key])) {
+            node[key] = traverseObject(path, node[key])
         }
     }
     const traverseBinary = (path, expression) => {
@@ -282,7 +282,19 @@ module.exports = function ({ t = types, _name, code, Node }) {
             return proxy(unary, details)
         }
         return unary
-
+    }
+    const traverseArray = (path, array) => {
+        array.elements.forEach((_, i) => {
+            traverseExpressionHelper(path, array.elements, i)
+        })
+        return array
+    }
+    const traverseObject = (path, object) => {
+        object.properties.forEach(prop => {
+            traverseExpressionHelper(path, prop, 'key')
+            traverseExpressionHelper(path, prop, 'value')
+        })
+        return object
     }
     return {
         TYPES,
@@ -296,6 +308,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         traverseBinary,
         traverseConditional,
         traverseUnary,
+        traverseArray,
+        traverseObject,
         getAccessorProxy,
         computeAccessor,
         proxyAssignment,
