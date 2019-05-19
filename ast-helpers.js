@@ -109,6 +109,9 @@ module.exports = function ({ t = types, _name, code, Node }) {
             } else if (typeof val === 'object') {
                 value = construct(val)
             }
+            if (!value) {
+                console.log(val)
+            }
             props.push(t.objectProperty(t.identifier(key), value))
         }
         return t.objectExpression(props)
@@ -125,8 +128,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
                 const { variable, assignment } = proxyAssignment(node[key], code, { scope: path.scope.uid })
                 nearestSibling.parent.body.splice(i, 0, variable)
                 node[key] = assignment
+                return true
             }
         }
+        return false
     }
     // returns proxy for accessors
     const getAccessorProxy = (path, node) => {
@@ -180,15 +185,21 @@ module.exports = function ({ t = types, _name, code, Node }) {
     const traverseBinary = (path, expression) => {
         const details = {
             scope: path.scope.uid,
-            type: TYPES.EXPRESSION,
         }
         if (expression.start) {
             details.name = code.slice(expression.start, expression.end)
         } else {
             return expression
         }
-        traverseExpressionHelper(path, expression, 'left')
-        traverseExpressionHelper(path, expression, 'right')
+        if (expression.operator === 'in') {
+            details.access = reassignComputedValue(path, expression, 'left') ? expression.left.left : expression.left
+            details.object = reassignComputedValue(path, expression, 'right') ? expression.right.left : expression.right
+            details.type = TYPES.ACCESSOR
+        } else {
+            traverseExpressionHelper(path, expression, 'left')
+            traverseExpressionHelper(path, expression, 'right')
+            details.type = TYPES.EXPRESSION
+        }
 
         return proxy(expression, details)
     }
