@@ -56,31 +56,12 @@ module.exports = function ({ t = types, _name, code, Node }) {
         props.unshift(object)
         computed.unshift(object.computed)
 
-        let expression;
+        let expression = []
         for (let i = 1; i < props.length; i++) {
-            if (!computed[i]) {
-                expression = t.binaryExpression('+',
-                    expression || t.stringLiteral(""),
-                    t.binaryExpression('+',
-                        t.stringLiteral('.'),
-                        t.stringLiteral(props[i].property.name),
-                    )
-                )
-            } else {
-                reassignComputedValue(path, props[i])
-                expression = t.binaryExpression('+',
-                    expression || t.stringLiteral(""),
-                    t.binaryExpression('+',
-                        t.binaryExpression('+',
-                            t.stringLiteral('['),
-                            t.isAssignmentExpression(props[i].property) ? props[i].property.left : props[i].property
-                        ),
-                        t.stringLiteral(']')
-                    )
-                )
-            }
+            if (computed[i]) reassignComputedValue(path, props[i])
+            expression.push(t.isAssignmentExpression(props[i].property) ? props[i].property.left : props[i].property)
         }
-        return { object, expression }
+        return { object, expression: t.arrayExpression(expression) }
     }
     const _keys = ['_exec', 'access']
     // creates a node for the details object

@@ -178,22 +178,30 @@ module.exports = function ({ types }) {
                     }
                 }
             },
-            "ForOfStatement|ForInStatement"(path) {
-                if (t.isBlockStatement(path.node.body)) {
-                    const variables = path.node.left.declarations.map((declaration) => {
-                        const { id: identifier } = declaration
-                        return t.expressionStatement(proxy(
-                            identifier,
-                            {
-                                type: TYPES.ASSIGNMENT,
-                                name: identifier.name,
-                                iterates: {
-                                    over: path.node.right,
-                                },
-                                scope: path.scope.uid + 1
-                            }))
-                    })
-                    path.node.body.body = [...variables, ...path.node.body.body]
+            "ForOfStatement|ForInStatement": {
+                exit(path) {
+                    if (t.isBlockStatement(path.node.body)) {
+                        const iterationName = '_' + randomString(5)
+                        const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent) || t.isProgram(parent))
+                        let i = 0;
+                        while (nearestSibling.node.body[i] !== path.node) i++
+                        const newNode = t.variableDeclaration('let', [t.variableDeclarator(t.identifier(iterationName), t.numericLiteral(-1))])
+                        nearestSibling.node.body.splice(i, 0, newNode)
+                        const variables = path.node.left.declarations.map((declaration) => {
+                            const { id: identifier } = declaration
+                            return t.expressionStatement(proxy(
+                                identifier,
+                                {
+                                    type: TYPES.ACCESSOR,
+                                    name: identifier.name,
+                                    object: path.node.right,
+                                    access: t.arrayExpression([newNode.declarations[0].id]),
+                                    scope: path.scope.uid + 1
+                                }))
+                        })
+                        console.log(newNode);
+                        path.node.body.body = [t.expressionStatement(t.updateExpression('++', newNode.declarations[0].id)), ...variables, ...path.node.body.body]
+                    }
                 }
             },
             "BinaryExpression|LogicalExpression"(path) {
