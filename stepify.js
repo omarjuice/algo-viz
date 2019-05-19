@@ -9,6 +9,7 @@ module.exports = function ({ types }) {
         _name,
         execute,
         code,
+        willTraverse,
         traverseCall,
         traverseBinary,
         traverseConditional,
@@ -34,6 +35,7 @@ module.exports = function ({ types }) {
                 _name = opts.spyName
                 code = original
                 const helpers = ASThelpers({ t, _name, code, Node })
+                willTraverse = helpers.willTraverse
                 traverseCall = helpers.traverseCall
                 traverseBinary = helpers.traverseBinary
                 traverseConditional = helpers.traverseConditional
@@ -234,15 +236,7 @@ module.exports = function ({ types }) {
                         return
                     };
 
-                    if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
-                        return
-                    } else if (t.isCallExpression(path) || t.isNewExpression(path)) {
-                        return
-                    } else if (t.isConditionalExpression(path)) {
-                        return
-                    } else if (t.isUnaryExpression(path)) {
-                        return
-                    } else if (t.isObjectExpression(path) || t.isArrayExpression(path)) {
+                    if (willTraverse(path)) {
                         return
                     } else {
                         const name = code.slice(path.node.start, path.node.end)

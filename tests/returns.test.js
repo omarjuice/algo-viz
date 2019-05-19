@@ -1,4 +1,4 @@
-const stepify = require('../')
+const stepify = require('../stepify')
 const babel = require('@babel/core')
 const funcs = {
     twoNumberSum: `function twoNumberSum(array, targetSum) {
@@ -116,7 +116,6 @@ const funcs = {
         const encryptedLetters = 'abcdefghijklmnopqrstuvwxyz'.split('')
             .reduce((acc, letter, i, self) => {
                 let idx = (i + key) % 26
-                console.log(letter, self[idx]);
                 acc[letter] = self[idx]
                 return acc
             }, {})
@@ -125,7 +124,9 @@ const funcs = {
             cipher += encryptedLetters[string[i]]
         }
         return cipher
-    }`,
+    }
+    caesarCipherEncryptor('hello', 1)
+    `,
     bubbleSort: `function bubbleSort(array) {
         let swapped = false
         for (let i = 0; i < array.length; i++) {
@@ -240,7 +241,18 @@ const funcs = {
           return max
       }
       kadanesAlgorithm([1,2,3,4,5])
-      `
+      `,
+    deepAccessor: `function access(obj){
+        return obj[obj.name * obj[obj.x]]
+    }
+        const object = {
+            name: 2,
+            x: 3,
+            '3' : 30,
+            '60': 'FOUND'
+        }
+        access(object)
+    `
 }
 
 

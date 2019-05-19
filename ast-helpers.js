@@ -149,7 +149,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         details.access = expression
         return proxy(node, details)
     }
-    // takes assignments generated from reassignComputedValue and flattens them for use by the
+    // takes assignments generated from reassignComputedValue and flattens them for use by the proxy
     const reducePropExpressions = (node) => {
         if (!t.isMemberExpression(node)) return node
         let nodeCopy = _.cloneDeep(node)
@@ -296,6 +296,21 @@ module.exports = function ({ t = types, _name, code, Node }) {
         })
         return object
     }
+    // returns whether the path with be manually traversed
+    const willTraverse = path => {
+        if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
+            return true
+        } else if (t.isCallExpression(path) || t.isNewExpression(path)) {
+            return true
+        } else if (t.isConditionalExpression(path)) {
+            return true
+        } else if (t.isUnaryExpression(path)) {
+            return true
+        } else if (t.isObjectExpression(path) || t.isArrayExpression(path)) {
+            return true
+        }
+        return false
+    }
     return {
         TYPES,
         randomString,
@@ -314,6 +329,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         computeAccessor,
         proxyAssignment,
         proxy,
+        willTraverse
     }
 }
 
