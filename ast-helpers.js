@@ -9,7 +9,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
         EXPRESSION: 'EXPRESSION',
         METHODCALL: 'METHODCALL',
         CALL: 'CALL',
-        DELETE: 'DELETE'
+        DELETE: 'DELETE',
+        SPREAD: 'SPREAD',
+        ARRAY: 'ARRAY',
+        OBJECT: 'OBJECT'
     }
     const randomString = (l = 3) => {
         let id = (Math.random() * 26 + 10 | 0).toString(36)
@@ -30,7 +33,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         )
     }
     // creates an outer variable declaration to assign expressions within properties
-    const proxyAssignment = (node, code, details) => {
+    const proxyAssignment = node => {
         const varName = '_' + randomString(6);
         const id = t.identifier(varName)
         return {
@@ -90,8 +93,12 @@ module.exports = function ({ t = types, _name, code, Node }) {
                 value = t.numericLiteral(val)
             } else if (typeof val === 'boolean') {
                 value = t.booleanLiteral(val)
+            } else if (t.isExpression(val)) {
+                value = val
             } else if (Array.isArray(val)) {
                 value = t.arrayExpression(val)
+            } else if (t.isExpression(val)) {
+                value = val
             } else if (typeof val === 'object') {
                 value = construct(val)
             }
@@ -101,14 +108,14 @@ module.exports = function ({ t = types, _name, code, Node }) {
     }
     // makes the computed property into an assignment to a new variable so that it can be used for the runner
     const reassignComputedValue = (path, node, key = 'property') => {
-        if (t.isAssignmentExpression(node[key])) return
+        if (t.isAssignmentExpression(node[key])) return true
         if (!t.isIdentifier((node[key]))) {
             if (!t.isLiteral(node[key])) {
                 traverseExpressionHelper(path, node, key)
                 const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
                 let i = 0;
                 while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
-                const { variable, assignment } = proxyAssignment(node[key], code, { scope: path.scope.uid })
+                const { variable, assignment } = proxyAssignment(node[key], code, { scope: getScope(path) })
                 nearestSibling.parent.body.splice(i, 0, variable)
                 node[key] = assignment
                 return true
@@ -127,7 +134,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         const { object, expression } = computeAccessor(path, node)
         const details = {
             type: TYPES.ACCESSOR,
-            scope: path.scope.uid,
+            scope: getScope(path),
 
         }
         const name = node.start && code.slice(node.start, node.end)
@@ -149,29 +156,52 @@ module.exports = function ({ t = types, _name, code, Node }) {
         }
         return nodeCopy
     }
-    const traverseExpressionHelper = (path, node, key) => {
+    const traverseExpressionHelper = (path, node, key, extra = {}) => {
         if (t.isMemberExpression(node[key]) && !isBarredObject(node[key].object.name)) {
-            node[key] = getAccessorProxy(path, node[key])
+            node[key] = getAccessorProxy(path, node[key], extra)
+            return true
         } else if (t.isCallExpression(node[key])) {
-            node[key] = traverseCall(path, node[key])
+            node[key] = traverseCall(path, node[key], extra)
+            return true
         } else if (t.isBinaryExpression(node[key]) || t.isLogicalExpression(node[key])) {
-            node[key] = traverseBinary(path, node[key])
+            node[key] = traverseBinary(path, node[key], extra)
+            return true
         } else if (t.isConditionalExpression(node[key])) {
-            node[key] = traverseConditional(path, node[key])
+            node[key] = traverseConditional(path, node[key], extra)
+            return true
         } else if (t.isAssignmentExpression(node[key])) {
-            if (t.isIdentifier(node.left) && node.left.name[0] === '_') return
-            node[key] = traverseAssignment(path, node[key])
+            if (t.isIdentifier(node.left) && node.left.name[0] === '_') return false
+            node[key] = traverseAssignment(path, node[key], extra)
+            return true
         } else if (t.isUnaryExpression(node[key])) {
-            node[key] = traverseUnary(path, node[key])
+            node[key] = traverseUnary(path, node[key], extra)
+            return true
         } else if (t.isArrayExpression(node[key])) {
-            node[key] = traverseArray(path, node[key])
+            node[key] = traverseArray(path, node[key], extra)
+            return true
         } else if (t.isObjectExpression(node[key])) {
-            node[key] = traverseObject(path, node[key])
+            node[key] = traverseObject(path, node[key], extra)
+            return true
+        } else if (t.isSpreadElement(node[key])) {
+            reassignSpread(path, node[key])
+            return true
         }
+        return false
     }
-    const traverseBinary = (path, expression) => {
+    const reassignSpread = (path, node) => {
+        const reassigned = reassignComputedValue(path, node, 'argument')
+        const object = reassigned ? node.argument.left : node.argument
+        node.argument = proxy(node.argument, {
+            type: TYPES.SPREAD,
+            object,
+            scope: getScope(path)
+        })
+        return object
+    }
+    const traverseBinary = (path, expression, extra = {}) => {
         const details = {
-            scope: path.scope.uid,
+            ...extra,
+            scope: getScope(path),
         }
         if (expression.start) {
             details.name = code.slice(expression.start, expression.end)
@@ -190,14 +220,14 @@ module.exports = function ({ t = types, _name, code, Node }) {
 
         return proxy(expression, details)
     }
-    const traverseCall = (path, call) => {
+    const traverseCall = (path, call, extra) => {
         if (t.isMemberExpression(call.callee) && isBarredObject(call.callee.object.name)) {
             return call
         }
         if (t.isIdentifier(call.callee) && call.callee.name[0] === '_') {
             return call
         }
-        const details = {}
+        const details = { scope: getScope(path), ...extra }
         if (t.isMemberExpression(call.callee)) {
             details.type = TYPES.METHODCALL
             const { object, expression } = computeAccessor(path, call.callee)
@@ -209,27 +239,30 @@ module.exports = function ({ t = types, _name, code, Node }) {
         if (call.start) {
             details.name = code.slice(call.start, call.end)
         } else {
-            // return call
+            return call
         }
         details.arguments = []
-        call.arguments.forEach((_, i) => {
-            if (t.isAssignmentExpression(call.arguments[i])) {
-                const assignmentProxy = traverseAssignment(path, call.arguments[i])
+        call.arguments.forEach((arg, i) => {
+            if (t.isAssignmentExpression(arg)) {
+                const assignmentProxy = traverseAssignment(path, arg)
                 call.arguments[i] = assignmentProxy
                 details.arguments.push(reducePropExpressions(assignmentProxy.arguments[0].left))
+            } else if (t.isSpreadElement(arg)) {
+                const object = reassignSpread(path, arg)
+                details.arguments.push(t.spreadElement(object))
             } else {
-                reassignComputedValue(path, call.arguments, i)
-                details.arguments.push(t.isAssignmentExpression(call.arguments[i]) ? call.arguments[i].left : call.arguments[i])
+                const reassigned = reassignComputedValue(path, call.arguments, i)
+                details.arguments.push(reassigned ? call.arguments[i].left : arg)
             }
-
         })
 
         return proxy(call, details)
     }
 
-    const traverseConditional = (path, conditional) => {
+    const traverseConditional = (path, conditional, extra = {}) => {
         const details = {
-            scope: path.scope.uid,
+            ...extra,
+            scope: getScope(path),
             type: TYPES.EXPRESSION,
         }
         if (conditional.start) {
@@ -243,9 +276,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
 
         return proxy(conditional, details)
     }
-    const traverseAssignment = (path, assignment) => {
+    const traverseAssignment = (path, assignment, extra = {}) => {
+        if (assignment.left.name && assignment.left.name[0] === '_') return assignment
         const name = assignment.left.start && code.slice(assignment.left.start, assignment.left.end)
-        const details = { type: TYPES.ASSIGNMENT, scope: path.scope.uid }
+        const details = { ...extra, type: TYPES.ASSIGNMENT, scope: getScope(path) }
         if (name) details.name = name
         if (t.isMemberExpression(assignment.left)) {
             const { object, expression } = computeAccessor(path, assignment.left)
@@ -256,12 +290,13 @@ module.exports = function ({ t = types, _name, code, Node }) {
         traverseExpressionHelper(path, assignment, 'right')
         return proxy(assignment, details)
     }
-    const traverseUnary = (path, unary) => {
+    const traverseUnary = (path, unary, extra = {}) => {
         if (unary.operator === 'delete' && t.isMemberExpression(unary.argument)) {
             const { object, expression } = computeAccessor(path, unary.argument)
             const details = {
+                ...extra,
                 type: TYPES.DELETE,
-                scope: path.scope.uid,
+                scope: getScope(path),
                 object,
                 access: expression,
                 name: code.slice(unary.start, unary.end)
@@ -271,13 +306,16 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return unary
     }
     const traverseArray = (path, array) => {
-        array.elements.forEach((_, i) => {
+        array.elements.forEach((el, i) => {
             traverseExpressionHelper(path, array.elements, i)
         })
         return array
     }
     const traverseObject = (path, object) => {
-        object.properties.forEach(prop => {
+        object.properties.forEach((prop, i) => {
+            if (t.isSpreadElement(prop)) {
+                traverseExpressionHelper(path, object.properties, i)
+            }
             traverseExpressionHelper(path, prop, 'key')
             traverseExpressionHelper(path, prop, 'value')
         })
@@ -298,6 +336,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         }
         return false
     }
+    2
+    const getScope = path => path.scope.parent ? t.arrayExpression([t.numericLiteral(path.scope.parent.uid), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
     return {
         TYPES,
         randomString,
@@ -316,7 +356,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         computeAccessor,
         proxyAssignment,
         proxy,
-        willTraverse
+        willTraverse,
+        getScope
     }
 }
 

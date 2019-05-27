@@ -1,5 +1,6 @@
 const stepify = require('./stepify')
 const babel = require('@babel/core')
+const fs = require('fs')
 const func = `function mergeSort(arr) {
     if (arr.length < 2) {
         return arr
@@ -30,10 +31,13 @@ mergeSort([5,4,3,2,1])
 class Runner {
     constructor() {
         this.steps = []
+        this.temp = {}
     }
     __(val, info) {
-        info.value = typeof val === 'boolean' ? String(val) : typeof val === 'object' ? JSON.stringify(val, null, 2) : val
-
+        info.value = typeof val === 'boolean' ? String(val) : typeof val === 'object' ? JSON.stringify(val) : val
+        if (info.arguments) {
+            info.arguments = JSON.stringify(info.arguments)
+        }
         this.steps.push(info)
 
         return val
@@ -67,5 +71,7 @@ const { code } = babel.transformSync(func, {
 global[_name] = new Runner()
 
 eval(code)
-console.log(global[_name].steps);
+console.log(code)
+console.log('NUMBER OF STEPS ', global[_name].steps.length);
+fs.writeFileSync('executed.json', JSON.stringify(global[_name].steps))
 
