@@ -63,7 +63,7 @@ const funcs = {
     `,
     threeLargest: `function findThreeLargestNumbers(array) {
         const nums = [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY]
-        for (let i = 0; i < array.length; i++) {
+        for (i = 0; i < array.length; i++) {
             let num = array[i]
             let j = nums.length - 1
             while (j >= 0) {

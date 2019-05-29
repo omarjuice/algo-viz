@@ -179,6 +179,7 @@ module.exports = function ({ types }) {
                     if (path.node.init) {
                         if (t.isDeclaration(path.node.init)) {
                             const name = path.node.init.declarations[0].id.name
+                            if (name[0] === '_') return
                             path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: t.arrayExpression([t.numericLiteral(path.scope.uid), t.numericLiteral(path.scope.uid + 1)]) }))
                         } else if (t.isAssignmentExpression(path.node.init)) {
                             const name = path.node.init.left.name
@@ -188,6 +189,9 @@ module.exports = function ({ types }) {
                 }
             },
             ForOfStatement: {
+                enter(path) {
+                    reassignComputedValue(path, path.node, 'right', true)
+                },
                 exit(path) {
                     if (t.isBlockStatement(path.node.body)) {
                         const iterationName = '_' + randomString(5)
@@ -197,14 +201,14 @@ module.exports = function ({ types }) {
                         const newNode = t.variableDeclaration('let', [t.variableDeclarator(t.identifier(iterationName), t.numericLiteral(-1))])
                         // const newNode = t.assignmentExpression('=', t.memberExpression(t.identifier(_name), t.identifier(iterationName)), t.numericLiteral(-1))
                         nearestSibling.node.body.splice(i, 0, newNode)
-                        const variables = path.node.left.declarations.map((declaration) => {
+                        const variables = (path.node.left.declarations || [{ id: path.node.left }]).map((declaration) => {
                             const { id: identifier } = declaration
                             return t.expressionStatement(proxy(
                                 identifier,
                                 {
                                     type: TYPES.ACCESSOR,
                                     name: identifier.name,
-                                    object: path.node.right,
+                                    object: t.isAssignmentExpression(path.node.right) ? path.node.right.left : path.node.right,
                                     access: t.arrayExpression([newNode.declarations[0].id]),
                                     scope: t.arrayExpression([t.numericLiteral(path.scope.uid), t.numericLiteral(path.scope.uid + 1)])
                                 }))

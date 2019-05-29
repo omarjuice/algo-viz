@@ -1,37 +1,21 @@
 const stepify = require('./stepify')
 const babel = require('@babel/core')
 const fs = require('fs')
-const func = `function mergeSort(arr) {
-    if (arr.length < 2) {
-        return arr
-    }
-   const [firstHalf, secondHalf] = split(arr)
-    return merge(mergeSort(firstHalf), mergeSort(secondHalf))
+const func = `function append1(...arr){
+    arr.push(1)
+    return arr
 }
-function split(arr) {
-    const splitIdx = Math.floor(arr.length / 2)
-    const firstHalf = arr.slice(0, splitIdx)
-    const secondHalf = arr.slice(splitIdx, arr.length)
-    return [firstHalf, secondHalf]
-}
-function merge(arr1, arr2) {
-    let i = 0
-    while (arr2.length>0) {
-        const num = arr2.shift()
-        while (num > arr1[i] && i < arr1.length) {
-            i++
-        }
-        arr1.splice(i, 0, num)
-    }
-    return arr1
-}
-mergeSort([5,4,3,2,1])
+append1(3,2)
 `
-
+function JSONreplacer(_, value) {
+    if (value === undefined) {
+        return 'undefined'
+    }
+    return value
+}
 class Runner {
     constructor() {
         this.steps = []
-        this.temp = {}
     }
     __(val, info) {
         info.value = typeof val === 'boolean' ? String(val) : typeof val === 'object' ? JSON.stringify(val) : val
@@ -56,7 +40,7 @@ const _name = '__' + randomString()
 const { code } = babel.transformSync(func, {
     plugins: [
         ['@babel/plugin-transform-destructuring', { loose: true }],
-        '@babel/plugin-transform-parameters',
+        ['@babel/plugin-transform-parameters', { loose: true }],
         'babel-plugin-transform-remove-console',
         [stepify, {
             disallow: {

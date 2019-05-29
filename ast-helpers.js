@@ -64,7 +64,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
             if (computed[i]) reassignComputedValue(path, props[i])
             if (t.isAssignmentExpression(props[i].property)) {
                 expression.push(props[i].property.left)
-            } else if (!t.isIdentifier(props[i].property)) {
+            } else if (!t.isIdentifier(props[i].property) || computed[i]) {
                 expression.push(props[i].property)
             } else {
                 expression.push(t.stringLiteral(props[i].property.name))
@@ -107,16 +107,17 @@ module.exports = function ({ t = types, _name, code, Node }) {
         return t.objectExpression(props)
     }
     // makes the computed property into an assignment to a new variable so that it can be used for the runner
-    const reassignComputedValue = (path, node, key = 'property') => {
+    // primarily for nested computations, can be used for reassignments otherwise with directChild
+    const reassignComputedValue = (path, node, key = 'property', directChild = false) => {
         if (t.isAssignmentExpression(node[key])) return true
         if (!t.isIdentifier((node[key]))) {
             if (!t.isLiteral(node[key])) {
                 traverseExpressionHelper(path, node, key)
-                const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent.parent) || t.isProgram(parent.parent))
+                const nearestSibling = path.findParent((parent) => t.isBlockStatement(directChild ? parent : parent.parent) || t.isProgram(directChild ? parent : parent.parent))
                 let i = 0;
-                while (nearestSibling.parent.body[i] !== nearestSibling.node) i++
+                while (nearestSibling[directChild ? 'node' : 'parent'].body[i] !== (directChild ? node : nearestSibling.node)) i++
                 const { variable, assignment } = proxyAssignment(node[key], code, { scope: getScope(path) })
-                nearestSibling.parent.body.splice(i, 0, variable)
+                nearestSibling[directChild ? 'node' : 'parent'].body.splice(i, 0, variable)
                 node[key] = assignment
                 return true
             }
