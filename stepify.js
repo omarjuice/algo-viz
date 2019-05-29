@@ -160,8 +160,7 @@ module.exports = function ({ types }) {
                             if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
                             const details = {
                                 type: TYPES.ACCESSOR,
-                                scope: getScope(path),
-
+                                scope: getScope(path)
                             }
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
