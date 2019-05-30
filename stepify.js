@@ -7,15 +7,9 @@ const t = require('@babel/types')
 module.exports = function ({ types }) {
     let Node,
         _name,
-        execute,
         code,
         willTraverse,
-        traverseCall,
-        traverseBinary,
-        traverseConditional,
         reducePropExpressions,
-        traverseAssignment,
-
         getAccessorProxy,
         reassignComputedValue,
         construct,
@@ -83,29 +77,22 @@ module.exports = function ({ types }) {
                 }
             },
             VariableDeclaration(path) {
-                if (t.isFor(path.parent) || t.isWhile(path.parent) || t.isIfStatement(path.parent) || t.isDoWhileStatement(path.parent)) {
-                    path.node.declarations.forEach((declaration) => {
-                        const { id: identifier, init } = declaration
-                        if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
-                                return
-                            }
-                            declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                const newNodes = []
+                path.node.declarations.forEach((declaration) => {
+                    const { id: identifier, init } = declaration
+                    if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
+                        if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
+                            return
                         }
-                    });
-                } else {
-                    const newNodes = []
-                    path.node.declarations.forEach((declaration) => {
-                        const { id: identifier, init } = declaration
-                        if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
-                                return
-                            }
+                        if (t.isFor(path.parent) || t.isWhile(path.parent) || t.isIfStatement(path.parent) || t.isDoWhileStatement(path.parent)) {
+                            declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                        } else {
                             newNodes.push(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                         }
-                    });
-                    newNodes.forEach(node => path.insertAfter(node))
-                }
+
+                    }
+                });
+                newNodes.forEach(node => path.insertAfter(node))
             },
             AssignmentExpression: {
                 exit(path) {
