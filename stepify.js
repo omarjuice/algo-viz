@@ -15,9 +15,7 @@ module.exports = function ({ types }) {
         traverseConditional,
         reducePropExpressions,
         traverseAssignment,
-        traverseUnary,
-        traverseArray,
-        traverseObject,
+
         getAccessorProxy,
         reassignComputedValue,
         construct,
@@ -27,6 +25,7 @@ module.exports = function ({ types }) {
         randomString,
         isBarredObject,
         getScope,
+        reassignSpread,
         TYPES;
 
     return {
@@ -37,13 +36,6 @@ module.exports = function ({ types }) {
                 code = original
                 const helpers = ASThelpers({ t, _name, code, Node })
                 willTraverse = helpers.willTraverse
-                traverseCall = helpers.traverseCall
-                traverseBinary = helpers.traverseBinary
-                traverseConditional = helpers.traverseConditional
-                traverseAssignment = helpers.traverseAssignment
-                traverseUnary = helpers.traverseUnary
-                traverseArray = helpers.traverseArray
-                traverseObject = helpers.traverseObject
                 reducePropExpressions = helpers.reducePropExpressions
                 getAccessorProxy = helpers.getAccessorProxy
                 reassignComputedValue = helpers.reassignComputedValue
@@ -55,6 +47,7 @@ module.exports = function ({ types }) {
                 TYPES = helpers.TYPES
                 isBarredObject = helpers.isBarredObject
                 getScope = helpers.getScope
+                reassignSpread = helpers.reassignSpread
             },
             Function(path, { opts }) {
                 if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
@@ -116,17 +109,19 @@ module.exports = function ({ types }) {
             },
             AssignmentExpression: {
                 exit(path) {
-                    if (!t.isMemberExpression(path.parent)) {
-                        if (t.isMemberExpression(path.node.left)) {
-                            let obj = path.node.left.object
-                            while (t.isMemberExpression(obj)) {
-                                obj = obj.object
-                            }
-                            if (isBarredObject(obj.name)) return
-                        }
-
-                        path.replaceWith(traverseAssignment(path, path.node))
+                    const assignment = path.node
+                    if (assignment.left.name && assignment.left.name[0] === '_') return
+                    const name = assignment.left.start && code.slice(assignment.left.start, assignment.left.end)
+                    const details = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
+                    if (name) details.name = name
+                    if (t.isMemberExpression(assignment.left)) {
+                        const { object, expression } = computeAccessor(path, assignment.left)
+                        details.type = TYPES.PROP_ASSIGNMENT;
+                        details.object = object
+                        details.objectName = object.name
+                        details.access = expression
                     }
+                    path.replaceWith(proxy(assignment, details))
                 }
             },
             UpdateExpression: {
@@ -167,9 +162,11 @@ module.exports = function ({ types }) {
                     }
                 },
                 exit(path) {
+                    if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
                     const { object, expression } = computeAccessor(path, path.node)
                     if (!isBarredObject(object.name)) {
                         if (!t.isMemberExpression(path.parent)) {
+                            if (t.isCallExpression(path.parent)) return
                             if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
                             const details = {
                                 type: TYPES.ACCESSOR,
@@ -178,7 +175,7 @@ module.exports = function ({ types }) {
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
                             details.object = object instanceof Node ? object : object.name ? object.name : 'this'
-                            details.objectName = object.name
+                            if (object.name) details.objectName = object.name
                             details.access = expression
                             path.replaceWith(proxy(path.node, details))
                         }
@@ -230,44 +227,116 @@ module.exports = function ({ types }) {
                     }
                 }
             },
-            "BinaryExpression|LogicalExpression"(path) {
-                path.replaceWith(traverseBinary(path, path.node))
+            "BinaryExpression|LogicalExpression": {
+                exit(path) {
+                    const expression = path.node
+                    const details = {
+                        scope: getScope(path),
+                    }
+                    if (expression.start) {
+                        details.name = code.slice(expression.start, expression.end)
+                    } else {
+                        return
+                    }
+                    if (expression.operator === 'in') {
+                        details.access = reassignComputedValue(path, expression, 'left') ? expression.left.left : expression.left
+                        details.object = reassignComputedValue(path, expression, 'right') ? expression.right.left : expression.right
+                        details.type = TYPES.ACCESSOR
+                    } else {
+                        details.type = TYPES.EXPRESSION
+                    }
+
+                    path.replaceWith(proxy(expression, details))
+                }
             },
-            "CallExpression|NewExpression"(path) {
-                path.replaceWith(traverseCall(path, path.node))
+            "CallExpression|NewExpression": {
+                exit(path) {
+                    const call = path.node
+                    if (t.isMemberExpression(call.callee) && isBarredObject(call.callee.object.name)) {
+                        return
+                    }
+                    if (t.isIdentifier(call.callee) && call.callee.name[0] === '_') {
+                        return
+                    }
+                    const details = { scope: getScope(path) }
+                    if (call.start) {
+                        details.name = code.slice(call.start, call.end)
+                    } else {
+                        return
+                    }
+                    if (t.isMemberExpression(call.callee)) {
+                        details.type = TYPES.METHODCALL
+                        const { object, expression } = computeAccessor(path, call.callee)
+                        details.object = object
+                        details.objectName = object.name
+                        details.access = expression
+                    } else {
+                        details.type = TYPES.CALL
+                    }
+
+                    details.arguments = []
+                    call.arguments.forEach((arg, i) => {
+                        if (t.isAssignmentExpression(arg)) {
+                            call.arguments[i] = assignmentProxy
+                            details.arguments.push(reducePropExpressions(assignmentProxy.arguments[0].left))
+                        } else if (t.isSpreadElement(arg)) {
+                            const object = reassignSpread(path, arg)
+                            details.arguments.push(t.spreadElement(object))
+                        } else {
+                            const reassigned = reassignComputedValue(path, call.arguments, i)
+                            details.arguments.push(reassigned ? call.arguments[i].left : arg)
+                        }
+                    })
+                    path.replaceWith(proxy(call, details))
+                }
             },
-            ConditionalExpression(path) {
-                path.replaceWith(traverseConditional(path, path.node))
+            SpreadElement: {
+                exit(path) {
+                    if (!t.isCallExpression(path.parent)) {
+                        reassignSpread(path, path.node)
+                    }
+                }
             },
-            UnaryExpression(path) {
-                path.replaceWith(traverseUnary(path, path.node))
+            ConditionalExpression: {
+                exit(path) {
+                    const conditional = path.node
+                    const details = {
+                        scope: getScope(path),
+                        type: TYPES.EXPRESSION,
+                    }
+                    if (conditional.start) {
+                        details.name = code.slice(conditional.start, conditional.end)
+                    } else {
+                        return
+                    }
+                    path.replaceWith(proxy(conditional, details))
+                }
             },
-            ObjectExpression(path) {
-                traverseObject(path, path.node)
-            },
-            ArrayExpression(path) {
-                traverseArray(path, path.node)
+            UnaryExpression: {
+                exit(path) {
+                    const unary = path.node
+                    if (unary.operator === 'delete' && t.isMemberExpression(unary.argument)) {
+                        const { object, expression } = computeAccessor(path, unary.argument)
+                        const details = {
+                            type: TYPES.DELETE,
+                            scope: getScope(path),
+                            object,
+                            access: expression,
+                            name: code.slice(unary.start, unary.end)
+                        }
+                        path.replaceWith(proxy(unary, details))
+                    }
+                }
             },
             Expression: {
                 enter(path) {
                     if (t.isMemberExpression(path) && path.node.object.name === _name) return
-                    if (t.isObjectProperty(path.parent) && path.parent.key.name === '_exec') return
                     if (t.isUpdateExpression(path)) return
                     if (t.isThisExpression(path)) return
-                    if (t.isCallExpression(path) && t.isMemberExpression(path.node.callee) && isBarredObject(path.node.callee.object.name)) return
-
-                    if (t.isCallExpression(path) && t.isIdentifier(path.node.callee) && path.node.callee.name[0] === '_') return
                     if (t.isLiteral(path)) return
-                    if (t.isArrayExpression(path) && !t.isAssignmentExpression(path.parent) && !t.isReturnStatement(path.parent)) {
-                        return
-                    }
-                    if (t.isObjectExpression(path) && !t.isVariableDeclarator(path.parent)) {
-                        return
-                    }
-                    if (t.isLVal(path) || t.isAssignmentExpression(path) || t.isFunction(path)) {
+                    if (t.isLVal(path) || t.isFunction(path)) {
                         return
                     };
-
                     if (willTraverse(path)) {
                         return
                     } else {
@@ -280,7 +349,6 @@ module.exports = function ({ types }) {
                         if (path.node.start) details.name = name;
                         const node = proxy(path.node, details)
                         path.replaceWith(node)
-                        path.skip()
                     }
                 },
             },
