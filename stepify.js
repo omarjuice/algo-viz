@@ -73,7 +73,20 @@ module.exports = function ({ types }) {
                     )
                 ) || param);
                 if (t.isBlockStatement(path.node.body)) {
-                    path.node.body.body = [...params.filter(p => p), ...path.node.body.body]
+                    const block = path.node.body
+                    block.body = [...params.filter(p => p), ...block.body]
+                    if (!t.isReturnStatement(block.body[block.body.length - 1])) {
+                        block.body.push(t.returnStatement(t.identifier('undefined')))
+                    }
+                }
+            },
+            ReturnStatement: {
+                exit(path) {
+                    const parent = path.findParent(parent => t.isFunction(parent))
+                    path.node.argument = proxy(path.node.argument, {
+                        type: TYPES.RETURN,
+                        scope: getScope(parent)
+                    })
                 }
             },
             VariableDeclaration(path) {
@@ -165,6 +178,7 @@ module.exports = function ({ types }) {
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
                             details.object = object instanceof Node ? object : object.name ? object.name : 'this'
+                            details.objectName = object.name
                             details.access = expression
                             path.replaceWith(proxy(path.node, details))
                         }

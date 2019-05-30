@@ -12,7 +12,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         DELETE: 'DELETE',
         SPREAD: 'SPREAD',
         ARRAY: 'ARRAY',
-        OBJECT: 'OBJECT'
+        OBJECT: 'OBJECT',
+        RETURN: 'RETURN'
     }
     const randomString = (l = 3) => {
         let id = (Math.random() * 26 + 10 | 0).toString(36)
@@ -233,6 +234,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
             details.type = TYPES.METHODCALL
             const { object, expression } = computeAccessor(path, call.callee)
             details.object = object
+            details.objectName = object.name
             details.access = expression
         } else {
             details.type = TYPES.CALL
@@ -286,6 +288,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
             const { object, expression } = computeAccessor(path, assignment.left)
             details.type = TYPES.PROP_ASSIGNMENT;
             details.object = object
+            details.objectName = object.name
             details.access = expression
         }
         traverseExpressionHelper(path, assignment, 'right')
@@ -337,7 +340,6 @@ module.exports = function ({ t = types, _name, code, Node }) {
         }
         return false
     }
-    2
     const getScope = path => path.scope.parent ? t.arrayExpression([t.numericLiteral(path.scope.parent.uid), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
     return {
         TYPES,

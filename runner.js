@@ -2,10 +2,11 @@ const stepify = require('./stepify')
 const babel = require('@babel/core')
 const fs = require('fs')
 const func = `function append1(...arr){
-    arr.push(function(k){ k++})
+    arr.push(0+1)
     return arr
 }
-append1(3,2)
+const arr = [3,2]
+append1(...arr)
 `
 function JSONreplacer(_, value) {
     if (value === undefined) {
