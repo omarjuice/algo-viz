@@ -1,35 +1,35 @@
 const stepify = require('./stepify')
 const babel = require('@babel/core')
 const fs = require('fs')
+const stringify = require('./utils/stringify')
+const TYPES = require('./utils/types')
 const func = `function append1(...arr){
+    const z = arr.slice()
     arr.push(0+1)
     return arr
 }
 const arr = [3,2]
 append1(...arr)
 `
-function JSONreplacer(_, value) {
-    if (value === undefined) {
-        return 'undefined'
-    }
-    if (typeof value === 'function') {
-        if (value.name) {
-            return value.name && value.name[0] !== '_' ? value.name : 'function'
-        }
-    }
-    return value
-}
+
 class Runner {
     constructor() {
         this.steps = []
+        this.map = new Map()
+        this.objects = {}
+        this.aliases = {}
     }
     __(val, info) {
-        info.value = typeof val === 'boolean' ? String(val) : typeof val === 'object' ? JSON.stringify(val, JSONreplacer) : val
-        if (info.arguments) {
-            info.arguments = JSON.stringify(info.arguments)
+        if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
+            const id = stringify({ obj: info.arguments, map: this.map, objects: this.objects })
+            info.arguments = this.objects[id]
+            delete this.objects[id]
         }
+        if ([TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR].includes(info.type)) {
+            info.object = stringify({ obj: info.object, map: this.map, objects: this.objects })
+        }
+        info.value = stringify({ obj: val, map: this.map, objects: this.objects })
         this.steps.push(info)
-
         return val
     }
 }
@@ -63,7 +63,10 @@ global[_name] = new Runner()
 eval(code)
 console.log(code)
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
-fs.writeFileSync('executed.json', JSON.stringify(global[_name].steps))
+fs.writeFileSync('executed.json', JSON.stringify({
+    steps: global[_name].steps,
+    objects: global[_name].objects
+}))
 
 
 

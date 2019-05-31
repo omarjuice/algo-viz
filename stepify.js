@@ -3,6 +3,7 @@
 // const { CodeGenerator } = require('@babel/generator')
 const ASThelpers = require('./ast-helpers')
 const t = require('@babel/types')
+const TYPES = require('./utils/types')
 
 module.exports = function ({ types }) {
     let Node,
@@ -19,8 +20,7 @@ module.exports = function ({ types }) {
         randomString,
         isBarredObject,
         getScope,
-        reassignSpread,
-        TYPES;
+        reassignSpread;
 
     return {
         visitor: {
@@ -38,7 +38,6 @@ module.exports = function ({ types }) {
                 proxyAssignment = helpers.proxyAssignment
                 proxy = helpers.proxy
                 randomString = helpers.randomString
-                TYPES = helpers.TYPES
                 isBarredObject = helpers.isBarredObject
                 getScope = helpers.getScope
                 reassignSpread = helpers.reassignSpread

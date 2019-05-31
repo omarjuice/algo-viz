@@ -1,21 +1,9 @@
 const types = require('@babel/types')
 const _ = require('lodash')
 const randomString = require('./utils/randomString')
+const TYPES = require('./utils/types')
 module.exports = function ({ t = types, _name, code, Node }) {
-    const TYPES = {
-        DECLARATION: 'DECLARATION',
-        ASSIGNMENT: 'ASSIGNMENT',
-        PROP_ASSIGNMENT: 'PROP_ASSIGNMENT',
-        ACCESSOR: 'ACCESSOR',
-        EXPRESSION: 'EXPRESSION',
-        METHODCALL: 'METHODCALL',
-        CALL: 'CALL',
-        DELETE: 'DELETE',
-        SPREAD: 'SPREAD',
-        ARRAY: 'ARRAY',
-        OBJECT: 'OBJECT',
-        RETURN: 'RETURN'
-    }
+
     _name = _name || '__' + randomString()
     const isBarredObject = (name) => name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
 
@@ -181,7 +169,6 @@ module.exports = function ({ t = types, _name, code, Node }) {
     }
     const getScope = path => path.scope.parent ? t.arrayExpression([t.numericLiteral(path.scope.parent.uid), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
     return {
-        TYPES,
         randomString,
         construct,
         isBarredObject,

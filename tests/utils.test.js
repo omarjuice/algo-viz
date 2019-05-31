@@ -24,9 +24,6 @@ describe('stringify', () => {
         }
     }
 
-    // console.log(new Circular())
-
-
     test('does not throw errors', () => {
         const map = new Map()
         const objects = {}

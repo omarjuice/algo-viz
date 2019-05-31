@@ -39,7 +39,9 @@ const NATIVE_OBJECTS = [
     Promise,
     Reflect,
     Proxy,
-    Intl
+    Intl,
+    global,
+    process
 ]
 
 module.exports = function isNative(object) {
