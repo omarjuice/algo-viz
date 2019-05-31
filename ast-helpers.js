@@ -67,6 +67,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
                 expression.push(t.stringLiteral(props[i].property.name))
             }
         }
+        console.log(t.isIdentifier(object) || object);
         return {
             object: object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : t.thisExpression(),
             expression: t.arrayExpression(expression)
