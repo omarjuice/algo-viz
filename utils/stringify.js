@@ -6,9 +6,11 @@ module.exports = function stringify({ obj, map = new Map(), objects = {} }) {
         if (map.has(obj)) return map.get(obj)
         const copy = Array.isArray(obj) ? [...obj] : { ...obj }
         let newId = '___' + randomString(5)
-        while (map.has(newId)) newId = randomString(5)
+        while (map.has(newId)) {
+            newId = '___' + randomString(5)
+        }
         map.set(obj, newId)
-        for (let key in copy) {
+        for (const key in copy) {
             copy[key] = stringify({ obj: obj[key], map, objects })
         }
         objects[newId] = copy

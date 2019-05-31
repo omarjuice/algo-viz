@@ -35,13 +35,24 @@ module.exports = function ({ t = types, _name, code, Node }) {
         let props = [memberExpression]
         let computed = [memberExpression.computed]
         let object = memberExpression.object
-        while (t.isMemberExpression(object)) {
-            props.unshift(object)
-            computed.unshift(object.computed)
-            object = object.object
+        while (object && !t.isLVal(object)) {
+            if (!t.isMemberExpression(object)) {
+                reassignComputedValue(path, props[props.length - 1], 'object');
+                object = props[props.length - 1].object
+                object.computed = false
+            }
+            if (object.object) {
+                props.unshift(object)
+                computed.unshift(object.computed)
+                object = object.object
+            } else {
+                break
+            }
+
         }
         props.unshift(object)
         computed.unshift(object.computed)
+
 
         let expression = []
         for (let i = 1; i < props.length; i++) {

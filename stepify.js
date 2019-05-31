@@ -144,13 +144,13 @@ module.exports = function ({ types }) {
             MemberExpression: {
                 enter(path) {
                     if (!isBarredObject(path.node.object.name)) {
-                        reassignComputedValue(path, path.node)
+                        // reassignComputedValue(path, path.node)
                     }
                 },
                 exit(path) {
                     if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
                     const { object, expression } = computeAccessor(path, path.node)
-                    if (!isBarredObject(object.name)) {
+                    if (object && !isBarredObject(object.name)) {
                         if (!t.isMemberExpression(path.parent)) {
                             if (t.isCallExpression(path.parent)) return
                             if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
@@ -160,7 +160,7 @@ module.exports = function ({ types }) {
                             }
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
-                            details.object = object instanceof Node ? object : object.name ? object.name : 'this'
+                            details.object = object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : 'this'
                             if (object.name) details.objectName = object.name
                             details.access = expression
                             path.replaceWith(proxy(path.node, details))
@@ -253,7 +253,7 @@ module.exports = function ({ types }) {
                     if (t.isMemberExpression(call.callee)) {
                         details.type = TYPES.METHODCALL
                         const { object, expression } = computeAccessor(path, call.callee)
-                        details.object = object
+                        details.object = object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : 'this'
                         details.objectName = object.name
                         details.access = expression
                     } else {
