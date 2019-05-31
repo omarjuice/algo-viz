@@ -35,10 +35,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
         let props = [memberExpression]
         let computed = [memberExpression.computed]
         let object = memberExpression.object
-        while (object && !t.isLVal(object)) {
+        while (t.isExpression(object)) {
             if (!t.isMemberExpression(object)) {
-                reassignComputedValue(path, props[props.length - 1], 'object');
-                object = props[props.length - 1].object
+                reassignComputedValue(path, props[0], 'object');
+                object = props[0].object
                 object.computed = false
             }
             if (object.object) {
@@ -67,7 +67,6 @@ module.exports = function ({ t = types, _name, code, Node }) {
                 expression.push(t.stringLiteral(props[i].property.name))
             }
         }
-        console.log(t.isIdentifier(object) || object);
         return {
             object: object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : t.thisExpression(),
             expression: t.arrayExpression(expression)
