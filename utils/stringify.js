@@ -1,34 +1,31 @@
-
-const stringify = {
-    value(val) {
-        const final = { stringified: true, val }
-        if (typeof val === 'boolean') {
-            final.val = String(val)
-        } else if (typeof val === 'undefined') {
-            final.val = 'undefined'
-        } else if (typeof val === 'function') {
-            final.val = val.name && val.name[0] !== '_' ? val.name : 'function'
-        } else {
-            final.stringified = false
+const randomString = require('./randomString')
+module.exports = function stringify({ obj, map = new Map(), objects = {} }) {
+    if (obj && typeof obj === 'object') {
+        if (obj instanceof RegExp) return obj.toString()
+        if (obj instanceof String) return obj.toString()
+        if (map.has(obj)) return map.get(obj)
+        const copy = Array.isArray(obj) ? [...obj] : { ...obj }
+        let newId = '___' + randomString(5)
+        while (map.has(newId)) newId = randomString(5)
+        map.set(obj, newId)
+        for (let key in copy) {
+            copy[key] = stringify({ obj: obj[key], map, objects })
         }
-        return final
-
-    },
-    object(original, map = new Map()) {
-        const obj = { ...original }
-        for (let key in obj) {
-            const { stringified, val } = this.value(obj[key])
-            if (stringified) {
-                obj[key] = val
-            } else {
-
-            }
+        objects[newId] = copy
+        return newId
+    } else {
+        if (typeof obj === 'boolean') {
+            return String(obj)
+        } else if (typeof obj === 'undefined') {
+            return 'undefined'
+        } else if (typeof obj === 'function') {
+            return obj.name && obj.name[0] !== '_' ? obj.name : 'function'
+        } else if (typeof obj === 'symbol') {
+            return obj.toString()
         }
-    },
-    array(arr, map = new Map) {
-
+        return obj
     }
-
 }
 
-console.log(typeof Symbol('hello'))
+
+

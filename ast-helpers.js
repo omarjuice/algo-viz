@@ -1,5 +1,6 @@
 const types = require('@babel/types')
 const _ = require('lodash')
+const randomString = require('./utils/randomString')
 module.exports = function ({ t = types, _name, code, Node }) {
     const TYPES = {
         DECLARATION: 'DECLARATION',
@@ -14,12 +15,6 @@ module.exports = function ({ t = types, _name, code, Node }) {
         ARRAY: 'ARRAY',
         OBJECT: 'OBJECT',
         RETURN: 'RETURN'
-    }
-    const randomString = (l = 3) => {
-        let id = (Math.random() * 26 + 10 | 0).toString(36)
-        for (let i = 1; i < l; i++)
-            id += (Math.random() * 26 | 0).toString(36)
-        return id
     }
     _name = _name || '__' + randomString()
     const isBarredObject = (name) => name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
