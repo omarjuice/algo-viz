@@ -127,6 +127,8 @@ module.exports = function ({ types }) {
                         while (blockParent.node.body[i] !== path.parent) i++
                         const newNode = proxy(reducePropExpressions(path.node.argument), details)
                         blockParent.node.body.splice(i + 1, 0, newNode)
+                    } else {
+                        path.replaceWith(proxy(path.node, details))
                     }
                 }
 
@@ -144,7 +146,7 @@ module.exports = function ({ types }) {
             MemberExpression: {
                 enter(path) {
                     if (!isBarredObject(path.node.object.name)) {
-                        // reassignComputedValue(path, path.node)
+                        reassignComputedValue(path, path.node)
                     }
                 },
                 exit(path) {

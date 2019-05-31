@@ -36,7 +36,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         let computed = [memberExpression.computed]
         let object = memberExpression.object
         while (t.isExpression(object)) {
-            if (!t.isMemberExpression(object)) {
+            if (!t.isMemberExpression(object) && !t.isThisExpression(object)) {
                 reassignComputedValue(path, props[0], 'object');
                 object = props[0].object
                 object.computed = false
