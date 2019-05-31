@@ -53,7 +53,9 @@ module.exports = function ({ t = types, _name, code, Node }) {
         props.unshift(object)
         computed.unshift(object.computed)
 
-
+        if (isBarredObject(object.name)) {
+            return { object: null, expression: null }
+        }
         let expression = []
         for (let i = 1; i < props.length; i++) {
             if (computed[i]) reassignComputedValue(path, props[i])
@@ -65,7 +67,10 @@ module.exports = function ({ t = types, _name, code, Node }) {
                 expression.push(t.stringLiteral(props[i].property.name))
             }
         }
-        return { object, expression: t.arrayExpression(expression) }
+        return {
+            object: object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : t.thisExpression(),
+            expression: t.arrayExpression(expression)
+        }
     }
     const _keys = ['_exec', 'access']
     // creates a node for the details object

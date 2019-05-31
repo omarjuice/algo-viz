@@ -160,7 +160,7 @@ module.exports = function ({ types }) {
                             }
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
-                            details.object = object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : 'this'
+                            details.object = object
                             if (object.name) details.objectName = object.name
                             details.access = expression
                             path.replaceWith(proxy(path.node, details))
@@ -253,7 +253,7 @@ module.exports = function ({ types }) {
                     if (t.isMemberExpression(call.callee)) {
                         details.type = TYPES.METHODCALL
                         const { object, expression } = computeAccessor(path, call.callee)
-                        details.object = object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : 'this'
+                        details.object = object
                         details.objectName = object.name
                         details.access = expression
                     } else {
