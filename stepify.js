@@ -75,18 +75,19 @@ module.exports = function ({ types }) {
                     })
                 }
             },
-            VariableDeclaration(path) {
-                const newNodes = []
-                path.node.declarations.forEach((declaration) => {
-                    const { id: identifier, init } = declaration
-                    if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                        if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
-                            return
+            VariableDeclaration: {
+                exit(path) {
+                    path.node.declarations.forEach((declaration) => {
+                        const { id: identifier, init } = declaration
+                        if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
+                            if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
+                                if (init.callee.object.name !== _name) return
+                            }
+                            declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                            // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                         }
-                        declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
-                        // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
-                    }
-                });
+                    });
+                },
             },
             AssignmentExpression: {
                 exit(path) {
