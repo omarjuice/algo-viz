@@ -83,15 +83,10 @@ module.exports = function ({ types }) {
                         if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
                             return
                         }
-                        if (t.isFor(path.parent) || t.isWhile(path.parent) || t.isIfStatement(path.parent) || t.isDoWhileStatement(path.parent)) {
-                            declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
-                        } else {
-                            newNodes.push(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
-                        }
-
+                        declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                        // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                     }
                 });
-                newNodes.forEach(node => path.insertAfter(node))
             },
             AssignmentExpression: {
                 exit(path) {
@@ -112,24 +107,30 @@ module.exports = function ({ types }) {
             },
             UpdateExpression: {
                 exit(path) {
+
                     const name = path.node.argument.start && code.slice(path.node.argument.start, path.node.argument.end)
                     const details = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
-                    if (name) details.name = name
+                    if (name) {
+                        details.name = name
+                    }
                     if (t.isMemberExpression(path.node.argument)) {
                         const { object, expression } = computeAccessor(path, path.node.argument)
+                        if (!object) return
                         details.type = TYPES.PROP_ASSIGNMENT;
                         details.object = object
+                        details.objectName = object.name
                         details.access = expression
+                        if (object.name) details
+                    } else if (t.isIdentifier(path.node.argument)) {
+                        if (isBarredObject(path.node.argument.name)) return
                     }
                     if (t.isExpressionStatement(path.parent)) {
-                        const blockParent = path.findParent((parent) => t.isBlockStatement(parent) || t.isProgram(parent))
-                        let i = 0;
-                        while (blockParent.node.body[i] !== path.parent) i++
-                        const newNode = proxy(reducePropExpressions(path.node.argument), details)
-                        blockParent.node.body.splice(i + 1, 0, newNode)
+                        path.node.prefix = true
                     } else {
-                        path.replaceWith(proxy(path.node, details))
+                        details.update = path.node.operator === '++' ? 1 : -1
                     }
+                    path.replaceWith(proxy(path.node, details))
+
                 }
 
             },
@@ -163,7 +164,7 @@ module.exports = function ({ types }) {
                             const name = path.node.start && code.slice(path.node.start, path.node.end)
                             if (name) details.name = name
                             details.object = object
-                            if (object.name) details.objectName = object.name
+                            details.objectName = object.name
                             details.access = expression
                             path.replaceWith(proxy(path.node, details))
                         }
@@ -175,14 +176,17 @@ module.exports = function ({ types }) {
             ForStatement(path) {
                 if (t.isBlockStatement(path.node.body)) {
                     if (path.node.init) {
+                        let name;
                         if (t.isDeclaration(path.node.init)) {
-                            const name = path.node.init.declarations[0].id.name
-                            if (name[0] === '_') return
-                            path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: t.arrayExpression([t.numericLiteral(path.scope.uid), t.numericLiteral(path.scope.uid + 1)]) }))
+                            name = path.node.init.declarations[0].id.name
                         } else if (t.isAssignmentExpression(path.node.init)) {
-                            const name = path.node.init.left.name
-                            path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: t.arrayExpression([t.numericLiteral(path.scope.uid), t.numericLiteral(path.scope.uid + 1)]) }))
+                            name = path.node.init.left.name
                         }
+                        if (!name || name[0] === '_') return
+                        // path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: getScope(path) }))
+                    }
+                    if (path.node.update && t.isUpdateExpression(path.node.update)) {
+                        path.node.update.prefix = true
                     }
                 }
             },
@@ -309,6 +313,7 @@ module.exports = function ({ types }) {
                             type: TYPES.DELETE,
                             scope: getScope(path),
                             object,
+                            objectName: object.name,
                             access: expression,
                             name: code.slice(unary.start, unary.end)
                         }
@@ -317,7 +322,7 @@ module.exports = function ({ types }) {
                 }
             },
             Expression: {
-                enter(path) {
+                exit(path) {
                     if (t.isMemberExpression(path) && path.node.object.name === _name) return
                     if (t.isUpdateExpression(path)) return
                     if (t.isThisExpression(path)) return

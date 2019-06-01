@@ -5,7 +5,7 @@ const TYPES = require('./utils/types')
 module.exports = function ({ t = types, _name, code, Node }) {
 
     _name = _name || '__' + randomString()
-    const isBarredObject = (name) => name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
+    const isBarredObject = (name, bar_ = true) => bar_ && name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
 
 
     // Creates a wrapper around expressions to be used by the runner
@@ -53,7 +53,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
         props.unshift(object)
         computed.unshift(object.computed)
 
-        if (isBarredObject(object.name)) {
+        if (isBarredObject(object.name, false)) {
             return { object: null, expression: null }
         }
         let expression = []

@@ -46,4 +46,12 @@ describe('stringify', () => {
             }
         }
     })
+    // test('Refs are accurate', () => {
+    //     const map = new Map()
+    //     const objects = {}
+    //     const refs = {}
+    //     const obj = new Circular
+    //     stringify({ obj, objects, map, refs })
+
+    // })
 })

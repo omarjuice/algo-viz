@@ -3,13 +3,31 @@ const babel = require('@babel/core')
 const fs = require('fs')
 const stringify = require('./utils/stringify')
 const TYPES = require('./utils/types')
-const func = `function append1(...arr){
-    const z = arr.slice()
-    arr.push(0+1)
-    return arr
+
+class Circular {
+    constructor() {
+        this.value = this
+        this.array = [this]
+        this.object = { value: this }
+        this.object.obj = this.object
+        this.val = 'VALUE'
+        this.notCircular = { hello: true }
+        this.arr = [1, 2, 3, this.notCircular]
+        this.arrContainer = [this.arr]
+    }
 }
-const arr = [3,2]
-append1(...arr)
+const print = (val) => console.log(val)
+const func = `
+
+function init(){
+    const circle = new Circular
+    for(let i = 0; i < circle.arr.length; i++){
+        let val = 2
+    }
+}
+
+init()
+
 `
 
 class Runner {
@@ -17,7 +35,8 @@ class Runner {
         this.steps = []
         this.map = new Map()
         this.objects = {}
-        this.aliases = {}
+        this.refs = {}
+        this.scopeStack = [0]
     }
     __(val, info) {
         if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
@@ -29,6 +48,17 @@ class Runner {
             info.object = stringify({ obj: info.object, map: this.map, objects: this.objects })
         }
         info.value = stringify({ obj: val, map: this.map, objects: this.objects })
+        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION, TYPES.RETURN].includes(info.type) && info.scope) {
+            const [parent, scope] = info.scope
+            while (this.scopeStack[this.scopeStack.length - 1] !== parent) {
+                this.scopeStack.pop()
+            }
+            if (info.type !== TYPES.RETURN) this.scopeStack.push(scope)
+        }
+        if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
+            info.value += info.update
+        }
+        console.log(info.name, info.value)
         this.steps.push(info)
         return val
     }
@@ -61,12 +91,13 @@ const { code } = babel.transformSync(func, {
 global[_name] = new Runner()
 
 eval(code)
-console.log(code)
+// console.log(code)
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,
-    objects: global[_name].objects
+    objects: global[_name].objects,
+    refs: global[_name].refs
 }))
-
+fs.writeFileSync('transpiled.js', code)
 
 

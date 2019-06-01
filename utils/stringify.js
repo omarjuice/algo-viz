@@ -1,15 +1,18 @@
 const randomString = require('./randomString')
-module.exports = function stringify({ obj, map = new Map(), objects = {} }) {
+
+function stringify({ obj, map = new Map(), objects = {} }) {
     if (obj && typeof obj === 'object') {
-        if (obj instanceof RegExp) return obj.toString()
-        if (obj instanceof String) return obj.toString()
-        if (map.has(obj)) return map.get(obj)
+        if (obj instanceof RegExp || obj instanceof String) return obj.toString()
+        if (map.has(obj)) {
+            return map.get(obj)
+        }
         const copy = Array.isArray(obj) ? [...obj] : { ...obj }
         let newId = '___' + randomString(5)
         while (map.has(newId)) {
             newId = '___' + randomString(5)
         }
         map.set(obj, newId)
+
         for (const key in copy) {
             copy[key] = stringify({ obj: obj[key], map, objects })
         }
@@ -30,4 +33,6 @@ module.exports = function stringify({ obj, map = new Map(), objects = {} }) {
 }
 
 
+
+module.exports = stringify
 
