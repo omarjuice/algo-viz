@@ -36,7 +36,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
                 }
                 objects[newId] = copy
             } else {
-                const copy = Array.isArray(obj) ? [...obj] : { ...obj }
+                const copy = isArray(obj) ? [...obj] : { ...obj }
                 for (const key in copy) {
                     copy[key] = stringify(obj[key])
                 }
@@ -58,5 +58,12 @@ module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
     }
 }
 
-
+const isArray = (obj) => Array.isArray(obj) || ['Int8Array',
+    'Uint8Array',
+    'Int16Array',
+    'Uint16Array',
+    'Int32Array',
+    'Uint32Array',
+    'Float32Array',
+    'Float64Array'].includes(obj.constructor.name)
 

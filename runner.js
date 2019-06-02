@@ -2,6 +2,7 @@ const stepify = require('./stepify')
 const babel = require('@babel/core')
 const fs = require('fs')
 const stringify = require('./utils/stringify')
+const configEnv = require('./utils/setup')
 const TYPES = require('./utils/types')
 
 class Circular {
@@ -20,34 +21,19 @@ const print = (val) => {
     console.log(val)
     return val
 }
-const obj = new Set()
-obj.add([1, 2])
-obj.add({ key: 'value' })
+const arr = [new Int32Array(10).fill(1), new Int8Array(10).fill(1)]
 const func = `
 
 function init(){
-    let a = 1
-    {
-        let b = 2
-    }
-    {
-        {
-            let c = 3
-        }
-    }
-    for(let d = 4; d < 5; ++d){
-        let e = 5
-    }
-    second()
+    const arr = [1, 2, 3, 4, 5]
+   const arr2 =  [...arr.reverse()]
 }
-function second(){
-    let f = 6
-}
+
 init()
 
 `
 class Runner {
-    constructor() {
+    constructor(name) {
         this.steps = []
         this.map = new Map()
         this.objects = {}
@@ -55,8 +41,12 @@ class Runner {
         this.refs = {}
         this.scopeStack = [0]
         this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types })
+        this.setup = null
+        this.reset = null
+        this.name = name
     }
     __(val, info) {
+        this.reset && this.reset()
         if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
             const id = this.stringify(info.arguments)
             info.arguments = this.objects[id]
@@ -79,6 +69,7 @@ class Runner {
             info.value += info.update
         }
         this.steps.push(info)
+        this.setup && this.setup(this.name)
         return val
     }
 }
@@ -112,10 +103,11 @@ const { code } = babel.transformSync(func, {
 fs.writeFileSync('transpiled.js', code)
 
 
-global[_name] = new Runner()
+global[_name] = new Runner(_name)
+global[_name].reset = configEnv.reset
+global[_name].setup = configEnv.setup
 
 eval(code)
-// console.log(code)
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,
