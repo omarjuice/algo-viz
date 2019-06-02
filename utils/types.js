@@ -10,5 +10,6 @@ module.exports = {
     SPREAD: 'SPREAD',
     ARRAY: 'ARRAY',
     OBJECT: 'OBJECT',
-    RETURN: 'RETURN'
+    RETURN: 'RETURN',
+    BLOCK: 'BLOCK'
 }

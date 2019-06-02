@@ -41,29 +41,42 @@ module.exports = function ({ types }) {
                 isBarredObject = helpers.isBarredObject
                 getScope = helpers.getScope
                 reassignSpread = helpers.reassignSpread
+                path.node.body.unshift(t.stringLiteral("use strict"))
             },
-            Function(path, { opts }) {
-                if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
-                    return path.stop()
-                }
-                if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
-                if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
-                const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
-                    proxy(
-                        param,
-                        {
-                            type: TYPES.DECLARATION,
-                            name: param.name,
-                            scope: getScope(path),
-                        }
-                    )
-                ) || param);
-                if (t.isBlockStatement(path.node.body)) {
-                    const block = path.node.body
-                    block.body = [...params.filter(p => p), ...block.body]
-                    if (!t.isReturnStatement(block.body[block.body.length - 1])) {
-                        block.body.push(t.returnStatement(t.identifier('undefined')))
+            Function: {
+                exit(path, { opts }) {
+                    if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
+                        return path.stop()
                     }
+                    if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
+                    if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
+                    const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
+                        proxy(
+                            param,
+                            {
+                                type: TYPES.DECLARATION,
+                                name: param.name,
+                                scope: getScope(path),
+                            }
+                        )
+                    ) || param);
+                    if (t.isBlockStatement(path.node.body)) {
+                        const block = path.node.body
+                        block.body = [...params.filter(p => p), ...block.body]
+                        if (!t.isReturnStatement(block.body[block.body.length - 1])) {
+                            block.body.push(t.returnStatement(t.identifier('undefined')))
+                        }
+                    } else {
+                        path.node.body = proxy(path.node.body, {
+                            type: TYPES.RETURN,
+                            scope: getScope(path)
+                        })
+                    }
+                }
+            },
+            BlockStatement(path) {
+                if (!path.node.body.length || t.isBlockStatement(path.node.body[0])) {
+                    path.node.body.unshift(proxy(t.nullLiteral(), { type: TYPES.BLOCK, scope: getScope(path) }))
                 }
             },
             ReturnStatement: {

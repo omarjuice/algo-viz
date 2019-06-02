@@ -16,22 +16,36 @@ class Circular {
         this.arrContainer = [this.arr]
     }
 }
-const print = (val) => console.log(val)
-// const obj = new Map()
-// obj.set([1, 2], [3, 4])
-// obj.set({ key: 'value' }, { a: 'z' })
-const arr = [1, 2, 3]
+const print = (val) => {
+    console.log(val)
+    return val
+}
+const obj = new Set()
+obj.add([1, 2])
+obj.add({ key: 'value' })
 const func = `
 
 function init(){
-    const obj = arr.slice()
-    const obj2 = obj.slice()
+    let a = 1
+    {
+        let b = 2
+    }
+    {
+        {
+            let c = 3
+        }
+    }
+    for(let d = 4; d < 5; ++d){
+        let e = 5
+    }
+    second()
 }
-
+function second(){
+    let f = 6
+}
 init()
 
 `
-
 class Runner {
     constructor() {
         this.steps = []
@@ -40,21 +54,22 @@ class Runner {
         this.types = {}
         this.refs = {}
         this.scopeStack = [0]
-        this._stringifierOpts = { map: this.map, objects: this.objects, types: this.types }
+        this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types })
     }
     __(val, info) {
         if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
-            const id = stringify({ obj: info.arguments, ...this._stringifierOpts })
+            const id = this.stringify(info.arguments)
             info.arguments = this.objects[id]
             delete this.objects[id]
             delete this.types[id]
         }
         if ([TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR].includes(info.type)) {
-            info.object = stringify({ obj: info.object, ...this._stringifierOpts })
+            info.object = this.stringify(info.object)
         }
-        info.value = stringify({ obj: val, ...this._stringifierOpts })
-        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION, TYPES.RETURN].includes(info.type) && info.scope) {
+        info.value = this.stringify(val)
+        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION, TYPES.RETURN, TYPES.BLOCK].includes(info.type) && info.scope) {
             const [parent, scope] = info.scope
+            console.log(info.scope);
             while (this.scopeStack[this.scopeStack.length - 1] !== parent) {
                 this.scopeStack.pop()
             }
@@ -63,7 +78,6 @@ class Runner {
         if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update
         }
-        // console.log(info.name, info.value)
         this.steps.push(info)
         return val
     }
@@ -90,8 +104,13 @@ const { code } = babel.transformSync(func, {
             },
             spyName: _name
         }]
-    ]
+    ],
+    parserOpts: {
+        strictMode: true
+    }
 })
+fs.writeFileSync('transpiled.js', code)
+
 
 global[_name] = new Runner()
 
@@ -104,6 +123,5 @@ fs.writeFileSync('executed.json', JSON.stringify({
     refs: global[_name].refs,
     types: global[_name].types
 }))
-fs.writeFileSync('transpiled.js', code)
 
 
