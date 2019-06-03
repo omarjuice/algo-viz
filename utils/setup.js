@@ -399,7 +399,7 @@ module.exports = {
         Array.prototype.reverse = __reverse
 
 
-        return (bool) => allow = bool
+        return bool => allow = bool
     },
     reset: function () {
         Array.prototype.copyWithin = copyWithin

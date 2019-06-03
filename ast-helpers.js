@@ -2,9 +2,16 @@ const types = require('@babel/types')
 const _ = require('lodash')
 const randomString = require('./utils/randomString')
 const TYPES = require('./utils/types')
-module.exports = function ({ t = types, _name, code, Node }) {
+module.exports = function ({ t = types, input, code, Node }) {
 
-    _name = _name || '__' + randomString()
+    const createId = (l = 3, num_ = 2) => {
+        let id;
+        while (!id || id in input.references) id = '_'.repeat(num_) + randomString(l)
+        input.references[id] = true
+        return id
+    }
+    input._name = createId()
+    const { _name } = input
     const isBarredObject = (name, bar_ = true) => bar_ && name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
 
 
@@ -18,7 +25,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
     }
     // creates an outer variable declaration to assign expressions within properties
     const proxyAssignment = node => {
-        const varName = '_' + randomString(6);
+        const varName = createId(5, 1);
         const id = t.identifier(varName)
         return {
             variable: t.variableDeclaration(
@@ -185,7 +192,7 @@ module.exports = function ({ t = types, _name, code, Node }) {
     }
     const getScope = path => path.scope.parent ? t.arrayExpression([t.numericLiteral(path.scope.parent.uid), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
     return {
-        randomString,
+        createId,
         construct,
         isBarredObject,
         reducePropExpressions,
@@ -196,7 +203,8 @@ module.exports = function ({ t = types, _name, code, Node }) {
         proxy,
         willTraverse,
         getScope,
-        reassignSpread
+        reassignSpread,
+        createId
     }
 }
 

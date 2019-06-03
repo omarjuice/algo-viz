@@ -79,20 +79,19 @@ const randomString = (l = 3) => {
         id += (Math.random() * 26 | 0).toString(36)
     return id
 }
-const _name = '__' + randomString()
 
 
+const input = { _name: null, references: {} }
 const { code } = babel.transformSync(func, {
     plugins: [
         ['@babel/plugin-transform-destructuring', { loose: true }],
         ['@babel/plugin-transform-parameters', { loose: true }],
         'babel-plugin-transform-remove-console',
-        [stepify, {
+        [stepify(input), {
             disallow: {
                 async: true,
                 generator: true
             },
-            spyName: _name
         }]
     ],
     parserOpts: {
@@ -100,7 +99,7 @@ const { code } = babel.transformSync(func, {
     }
 })
 fs.writeFileSync('transpiled.js', code)
-
+const { _name } = input
 
 global[_name] = new Runner(_name)
 global[_name].allow = configEnv.setup(_name)
