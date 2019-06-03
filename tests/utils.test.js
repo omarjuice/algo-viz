@@ -1,5 +1,5 @@
 const isNative = require('../utils/isNative')
-const stringify = require('../utils/stringify')
+const stringifier = require('../utils/stringify')
 
 describe('isNative', () => {
     test('Should detect native objects', () => {
@@ -28,14 +28,16 @@ describe('stringify', () => {
         const map = new Map()
         const objects = {}
         const obj = new Circular
-        expect(() => stringify({ obj, objects, map })).not.toThrow()
+        expect(() => stringifier({ obj, objects, map })(obj)).not.toThrow()
 
     })
     test('Primitive values remain intact and refs are created for objects', () => {
         const map = new Map()
         const objects = {}
         const obj = new Circular
-        stringify({ obj, objects, map })
+        const types = {}
+        const stringify = stringifier({ map, objects, types })
+        stringify(obj)
         const copy = objects[map.get(obj)]
         for (let key in obj) {
             if (typeof obj[key] === 'object') {

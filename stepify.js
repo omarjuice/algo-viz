@@ -347,6 +347,13 @@ module.exports = function (input) {
                                 name: code.slice(unary.start, unary.end)
                             }
                             path.replaceWith(proxy(unary, details))
+                        } else {
+                            const details = {
+                                type: TYPES.EXPRESSION,
+                                scope: getScope(path),
+                                name: code.slice(unary.start, unary.end)
+                            }
+                            path.replaceWith(proxy(unary, details))
                         }
                     }
                 },

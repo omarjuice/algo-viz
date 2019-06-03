@@ -18,17 +18,16 @@ class Circular {
     }
 }
 const print = (val) => {
-    console.log(val)
+    // console.log(val)
     return val
 }
 const arr = [new Int32Array(10).fill(1), new Int8Array(10).fill(1)]
 const func = `
 
-function factorial(x) {
-    const arr = [1,2,3,4,5]
-   const arr1 = [1,2,3,4,5].filter(el => el % 2 === 1)
+function init(x) {
+    print(x) && init(x-1)
 }
-factorial(10)
+init(5)
 
 `
 class Runner {
@@ -39,9 +38,11 @@ class Runner {
         this.types = {}
         this.refs = {}
         this.scopeStack = [0]
+        this.callStack = []
         this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types })
         this.allow = null
         this.name = name
+        this.callSt
     }
     __(val, info) {
         this.allow && this.allow(false)
@@ -61,6 +62,14 @@ class Runner {
                 this.scopeStack.pop()
             }
             if (info.type !== TYPES.RETURN) this.scopeStack.push(scope)
+        }
+        if ([TYPES.FUNC, TYPES.RETURN].includes(info.type)) {
+            if (info.type === TYPES.FUNC) {
+                this.callStack.push(info.name)
+            } else {
+                this.callStack.pop()
+            }
+            console.log(this.callStack);
         }
         if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update

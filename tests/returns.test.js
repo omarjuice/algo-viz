@@ -266,33 +266,39 @@ const randomString = (l = 3) => {
 
 
 async function testRunner(funcString) {
-    const name = '__' + randomString()
-    global[name] = {
-        __: function (val) {
-            return val
-        },
-    }
+
+    const input = { _name: null, references: {} }
     const { code } = await babel.transformAsync(funcString, {
         plugins: [
-            '@babel/plugin-transform-destructuring',
+            ['@babel/plugin-transform-destructuring', { loose: true }],
             '@babel/plugin-transform-parameters',
             'babel-plugin-transform-remove-console',
-            [stepify, {
+            [stepify(input), {
                 disallow: {
                     async: true,
                     generator: true
                 },
-                spyName: name
             }]
-        ]
+        ],
+        parserOpts: {
+            plugins: [
+                "objectRestSpread",
+            ]
+        }
     })
+    const { _name } = input
+    global[_name] = {
+        __: function (val) {
+            return val
+        },
+    }
     const normalResult = eval(funcString)
     const transpiledResult = eval(code)
 
     // console.log(normalResult)
     // console.log(transpiledResult)
     expect(normalResult).toEqual(transpiledResult)
-    global[name] = undefined
+    global[_name] = undefined
 }
 
 for (let func in funcs) {
