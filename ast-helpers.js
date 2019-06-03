@@ -190,7 +190,7 @@ module.exports = function ({ t = types, input, code, Node }) {
         }
         return false
     }
-    const getScope = path => path.scope.parent ? t.arrayExpression([t.numericLiteral(path.scope.parent.uid), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
+    const getScope = path => path.scope ? t.arrayExpression([path.scope.parent ? t.numericLiteral(path.scope.parent.uid) : t.nullLiteral(), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
     return {
         createId,
         construct,

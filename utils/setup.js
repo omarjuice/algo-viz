@@ -256,7 +256,7 @@ module.exports = {
                     type: TYPES.ACCESSOR,
                     scope: null,
                     object: this,
-                    access: [i]
+                    access: [k]
                 }) === searchElement) {
                     return k;
                 }

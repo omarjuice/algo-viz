@@ -21,13 +21,21 @@ const print = (val) => {
     // console.log(val)
     return val
 }
-const arr = [new Int32Array(10).fill(1), new Int8Array(10).fill(1)]
+const arr = new Array(3).fill('x').map((_, i) => 100 - i)
 const func = `
 
 function init(x) {
-    print(x) && init(x-1)
+   { let y = x
+    {let k = x
+        y--;
+        print(x) && init(y)
+    }
+   }
 }
+
 init(5)
+
+
 
 `
 class Runner {
@@ -37,12 +45,15 @@ class Runner {
         this.objects = {}
         this.types = {}
         this.refs = {}
-        this.scopeStack = [0]
-        this.callStack = []
+        this.scopeStack = [null, 0] //TEMPORARY
+        this.callStack = [] // TEMPORARY
+        this.scopeChain = { '0': { parent: null, children: [] } } //TEMPORARY
+        this.identifiers = {}
+        this.funcScopes = {}
+        this.calls = {}
         this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types })
         this.allow = null
         this.name = name
-        this.callSt
     }
     __(val, info) {
         this.allow && this.allow(false)
@@ -56,35 +67,90 @@ class Runner {
             info.object = this.stringify(info.object)
         }
         info.value = this.stringify(val)
-        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION, TYPES.RETURN, TYPES.BLOCK].includes(info.type) && info.scope) {
+
+        if (info.scope) {
             const [parent, scope] = info.scope
-            while (this.scopeStack[this.scopeStack.length - 1] !== parent) {
-                this.scopeStack.pop()
+            if (!(scope in this.identifiers)) {
+                this.identifiers[scope] = {}
             }
-            if (info.type !== TYPES.RETURN) this.scopeStack.push(scope)
+            if (!(scope in this.scopeChain)) {
+                this.scopeChain[scope] = { parent, children: [] }
+                if (parent !== null) {
+                    this.scopeChain[parent].children.push(scope)
+                }
+            }
+            const stack = this.scopeStack
+            let funcParent = this.scopeChain[scope].parent
+            while (funcParent && !(funcParent in this.funcScopes)) {
+                funcParent = this.scopeChain[funcParent].parent
+            }
+            if (stack[stack.length - 1] !== scope) {
+                while (stack.length && (stack[stack.length - 1] !== parent && stack[stack.length - 1] !== scope)) {
+                    const discardedScope = stack.pop()
+                    if (funcParent) {
+                        const name = this.funcScopes[funcParent]
+                        if (this.calls[name] <= 1) {
+                            delete this.identifiers[discardedScope]
+                        }
+                    }
+                }
+                if (info.type !== TYPES.RETURN && stack[stack.length - 1] !== scope) stack.push(scope)
+
+            }
+            // console.log(this.scopeStack);
         }
+        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION].includes(info.type) && info.scope && info.name) {
+            const { name, scope: [_, scope] } = info
+            if (info.type === TYPES.DECLARATION) {
+                if (!this.identifiers[scope][name]) {
+                    this.identifiers[scope][name] = []
+                }
+                this.identifiers[scope][name].push(info.value)
+            } else if (info.type === TYPES.ASSIGNMENT) {
+                let vals = this.identifiers[scope][name]
+                while (!vals) {
+                    const { parent } = this.scopeChain[scope]
+                    vals = this.identifiers[parent][name]
+                }
+                if (vals) {
+                    vals[vals.length - 1] = val
+                }
+            }
+        }
+
         if ([TYPES.FUNC, TYPES.RETURN].includes(info.type)) {
             if (info.type === TYPES.FUNC) {
                 this.callStack.push(info.name)
+                if (!this.calls[info.name]) this.calls[info.name] = 0
+                this.calls[info.name]++
+                // ---------
+                this.funcScopes[info.scope[1]] = info.name
+                // ---------
             } else {
                 this.callStack.pop()
+                const queue = [info.scope[1]]
+                while (queue.length) {
+                    const scope = queue.shift()
+                    const identifiers = this.identifiers[scope]
+                    for (const id in identifiers) {
+                        identifiers[id].pop()
+                    }
+                    const { children } = this.scopeChain[scope]
+                    for (const child of children) {
+                        queue.push(child)
+                    }
+                }
+                this.calls[info.name]--
             }
-            console.log(this.callStack);
         }
         if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update
         }
         this.steps.push(info)
+        console.log(this.identifiers);
         this.allow && this.allow(true)
         return val
     }
-}
-
-const randomString = (l = 3) => {
-    let id = (Math.random() * 26 + 10 | 0).toString(36)
-    for (let i = 1; i < l; i++)
-        id += (Math.random() * 26 | 0).toString(36)
-    return id
 }
 
 
@@ -114,7 +180,7 @@ global[_name].allow = configEnv.setup(_name)
 eval(code)
 configEnv.reset()
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
-console.log(input)
+console.log(global[_name].scopeChain);
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,
     objects: global[_name].objects,
