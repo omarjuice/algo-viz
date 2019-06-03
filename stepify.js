@@ -44,6 +44,7 @@ module.exports = function (input) {
                     isBarredObject = helpers.isBarredObject
                     getScope = helpers.getScope
                     reassignSpread = helpers.reassignSpread
+                    createId = helpers.createId
                     references = path.scope.references
                     path.node.body.unshift(t.stringLiteral("use strict"))
                 },
@@ -64,20 +65,23 @@ module.exports = function (input) {
                                 }
                             )
                         ) || param);
+
+                        path.node.id = path.node.id || t.identifier(createId(4, 1))
+                        const newNode = proxy(t.nullLiteral(), {
+                            type: TYPES.FUNC,
+                            scope: getScope(path),
+                            name: path.node.id.name
+                        })
                         if (t.isBlockStatement(path.node.body)) {
                             const block = path.node.body
-                            block.body = [proxy(t.nullLiteral(), { type: TYPES.FUNC, scope: getScope(path) }), ...params.filter(p => p), ...block.body]
+                            block.body = [newNode, ...params.filter(p => p), ...block.body]
                             if (!t.isReturnStatement(block.body[block.body.length - 1])) {
                                 block.body.push(t.returnStatement(t.identifier('undefined')))
                             }
                         } else {
-
                             path.node.body = t.blockStatement([
                                 t.expressionStatement(
-                                    proxy(t.nullLiteral(), {
-                                        type: TYPES.FUNC,
-                                        scope: getScope(path)
-                                    })),
+                                    newNode),
                                 t.returnStatement(path.node.body)
                             ])
                         }
@@ -93,7 +97,8 @@ module.exports = function (input) {
                         const parent = path.findParent(parent => t.isFunction(parent))
                         path.node.argument = proxy(path.node.argument, {
                             type: TYPES.RETURN,
-                            scope: getScope(parent)
+                            scope: getScope(parent),
+                            name: parent.node.id.name
                         })
                     }
                 },
@@ -176,7 +181,7 @@ module.exports = function (input) {
                     exit(path) {
                         if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
                         const { object, expression } = computeAccessor(path, path.node)
-                        if (object && !isBarredObject(object.name)) {
+                        if (object) {
                             if (!t.isMemberExpression(path.parent)) {
                                 if (t.isCallExpression(path.parent)) return
                                 if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
@@ -267,6 +272,7 @@ module.exports = function (input) {
                 "CallExpression|NewExpression": {
                     exit(path) {
                         const call = path.node
+
                         if (t.isMemberExpression(call.callee) && isBarredObject(call.callee.object.name)) {
                             return
                         }

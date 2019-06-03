@@ -26,10 +26,9 @@ const func = `
 
 function factorial(x) {
     const arr = [1,2,3,4,5]
-    const arr1 = [...arr.reverse()]
+   const arr1 = [1,2,3,4,5].filter(el => el % 2 === 1)
 }
-
-factorial(3)
+factorial(10)
 
 `
 class Runner {
@@ -58,7 +57,6 @@ class Runner {
         info.value = this.stringify(val)
         if ([TYPES.ASSIGNMENT, TYPES.DECLARATION, TYPES.RETURN, TYPES.BLOCK].includes(info.type) && info.scope) {
             const [parent, scope] = info.scope
-            console.log(info.scope);
             while (this.scopeStack[this.scopeStack.length - 1] !== parent) {
                 this.scopeStack.pop()
             }
@@ -107,6 +105,7 @@ global[_name].allow = configEnv.setup(_name)
 eval(code)
 configEnv.reset()
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
+console.log(input)
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,
     objects: global[_name].objects,

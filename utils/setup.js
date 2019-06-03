@@ -140,7 +140,7 @@ module.exports = {
             // https://cljs.github.io/api/compiler-options/rewrite-polyfills
             let length = this.length || 0;
             if (opt_start < 0) {
-                opt_start = Math.max(0, length + /** @type {number} */ (opt_start));
+                opt_start = Math.max(0, length + (opt_start));
             }
             if (opt_end == null || opt_end > length) opt_end = length;
             opt_end = Number(opt_end);
