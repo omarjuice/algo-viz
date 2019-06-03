@@ -44,7 +44,6 @@ class Runner {
         this.map = new Map()
         this.objects = {}
         this.types = {}
-        this.refs = {}
         this.scopeStack = [null, 0] //TEMPORARY
         this.callStack = [] // TEMPORARY
         this.scopeChain = { '0': { parent: null, children: [] } } //TEMPORARY
