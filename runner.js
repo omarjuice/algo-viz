@@ -24,12 +24,12 @@ const print = (val) => {
 const arr = [new Int32Array(10).fill(1), new Int8Array(10).fill(1)]
 const func = `
 
-function init(){
-    const arr = [1, 2, 3, 4, 5]
-   const arr2 =  [...arr.reverse()]
+function factorial(x) {
+    const arr = [1,2,3,4,5]
+    const arr1 = [...arr.reverse()]
 }
 
-init()
+factorial(3)
 
 `
 class Runner {
@@ -41,12 +41,11 @@ class Runner {
         this.refs = {}
         this.scopeStack = [0]
         this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types })
-        this.setup = null
-        this.reset = null
+        this.allow = null
         this.name = name
     }
     __(val, info) {
-        this.reset && this.reset()
+        this.allow && this.allow(false)
         if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
             const id = this.stringify(info.arguments)
             info.arguments = this.objects[id]
@@ -69,7 +68,7 @@ class Runner {
             info.value += info.update
         }
         this.steps.push(info)
-        this.setup && this.setup(this.name)
+        this.allow && this.allow(true)
         return val
     }
 }
@@ -104,10 +103,10 @@ fs.writeFileSync('transpiled.js', code)
 
 
 global[_name] = new Runner(_name)
-global[_name].reset = configEnv.reset
-global[_name].setup = configEnv.setup
+global[_name].allow = configEnv.setup(_name)
 
 eval(code)
+configEnv.reset()
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,

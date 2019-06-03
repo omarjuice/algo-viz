@@ -44,7 +44,7 @@ module.exports = function ({ types }) {
                 path.node.body.unshift(t.stringLiteral("use strict"))
             },
             Function: {
-                exit(path, { opts }) {
+                enter(path, { opts }) {
                     if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
                         return path.stop()
                     }
@@ -62,15 +62,20 @@ module.exports = function ({ types }) {
                     ) || param);
                     if (t.isBlockStatement(path.node.body)) {
                         const block = path.node.body
-                        block.body = [...params.filter(p => p), ...block.body]
+                        block.body = [proxy(t.nullLiteral(), { type: TYPES.FUNC, scope: getScope(path) }), ...params.filter(p => p), ...block.body]
                         if (!t.isReturnStatement(block.body[block.body.length - 1])) {
                             block.body.push(t.returnStatement(t.identifier('undefined')))
                         }
                     } else {
-                        path.node.body = proxy(path.node.body, {
-                            type: TYPES.RETURN,
-                            scope: getScope(path)
-                        })
+
+                        path.node.body = t.blockStatement([
+                            t.expressionStatement(
+                                proxy(t.nullLiteral(), {
+                                    type: TYPES.FUNC,
+                                    scope: getScope(path)
+                                })),
+                            t.returnStatement(path.node.body)
+                        ])
                     }
                 }
             },
@@ -347,7 +352,6 @@ module.exports = function ({ types }) {
                     if (willTraverse(path)) {
                         return
                     } else {
-                        console.log(path.node)
                         const name = code.slice(path.node.start, path.node.end)
                         const details = {
                             scope: getScope(path)

@@ -11,5 +11,7 @@ module.exports = {
     ARRAY: 'ARRAY',
     OBJECT: 'OBJECT',
     RETURN: 'RETURN',
-    BLOCK: 'BLOCK'
+    BLOCK: 'BLOCK',
+    ACTION: 'ACTION',
+    FUNC: 'FUNC'
 }
