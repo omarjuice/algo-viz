@@ -75,6 +75,12 @@ module.exports = function (input) {
                         if (t.isBlockStatement(path.node.body)) {
                             const block = path.node.body
                             block.body = [newNode, ...params.filter(p => p), ...block.body]
+                            if (t.isClassMethod(path.node)) {
+                                block.body.unshift(proxy(t.nullLiteral(), {
+                                    type: TYPES.BLOCK,
+                                    scope: t.arrayExpression([t.numericLiteral(path.scope.parent.parent.uid), t.numericLiteral(path.scope.parent.uid)])
+                                }))
+                            }
                             if (!t.isReturnStatement(block.body[block.body.length - 1])) {
                                 block.body.push(t.returnStatement(t.identifier('undefined')))
                             }
@@ -88,10 +94,11 @@ module.exports = function (input) {
                     }
                 },
                 BlockStatement(path) {
-                    if (!path.node.body.length || t.isBlockStatement(path.node.body[0])) {
+                    if (!t.isFunction(path.parent)) {
                         path.node.body.unshift(proxy(t.nullLiteral(), { type: TYPES.BLOCK, scope: getScope(path) }))
                     }
                 },
+
                 ReturnStatement: {
                     exit(path) {
                         const parent = path.findParent(parent => t.isFunction(parent))
@@ -121,6 +128,7 @@ module.exports = function (input) {
                                 declaration.init.visited = true
                                 // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                             }
+
                         });
                     },
                 },
@@ -174,10 +182,36 @@ module.exports = function (input) {
                     if (!t.isBlockStatement(path.node.body)) {
                         path.node.body = t.blockStatement([path.node.body])
                     }
+                    if (t.isFor(path.node)) {
+                        const { init, test, update } = path.node
+                        if (!t.isExpression(init) && !t.isExpression(update)) {
+                            if (t.isIdentifier(test)) {
+                                path.node.test = proxy(path.node.test, {
+                                    type: TYPES.BLOCK,
+                                    scope: getScope(path)
+                                })
+                            }
+                        }
+                    }
+                    if (t.isWhile(path.node)) {
+                        const { test } = path.node
+                        if (t.isIdentifier(test)) {
+                            path.node.test = proxy(path.node.test, {
+                                type: TYPES.BLOCK,
+                                scope: getScope(path)
+                            })
+                        }
+                    }
                 },
                 IfStatement(path) {
                     if (!t.isBlockStatement(path.node.consequent)) {
                         path.node.consequent = t.blockStatement([path.node.consequent])
+                    }
+                    if (!t.isExpression(path.node.test) || t.isIdentifier(path.node.test)) {
+                        path.node.test = proxy(path.node.test, {
+                            type: TYPES.BLOCK,
+                            scope: getScope(path)
+                        })
                     }
                 },
                 MemberExpression: {
@@ -248,7 +282,7 @@ module.exports = function (input) {
                                         name: identifier.name,
                                         object: t.isAssignmentExpression(path.node.right) ? path.node.right.left : path.node.right,
                                         access: t.arrayExpression([newNode.declarations[0].id]),
-                                        scope: t.arrayExpression([t.numericLiteral(path.scope.uid), t.numericLiteral(path.scope.uid + 1)])
+                                        scope: getScope(path)
                                     }))
                             })
                             path.node.body.body = [t.expressionStatement(t.updateExpression('++', newNode.declarations[0].id)), ...variables, ...path.node.body.body]

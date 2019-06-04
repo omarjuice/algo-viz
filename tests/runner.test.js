@@ -5,6 +5,7 @@ const stringify = require('../utils/stringify')
 const configEnv = require('../utils/setup')
 const TYPES = require('../utils/types')
 const stepIterator = require('../stepIterator')
+const funcs = require('./funcs')
 class Circular {
     constructor() {
         this.value = this
@@ -21,15 +22,6 @@ const print = (val) => {
     // console.log(val)
     return val
 }
-const func = `
-function init(x){
-   const val = print(x)
-   const y = val - 1
-   val && init(y)
-}
-init
-
-`
 async function main(program) {
     class Runner {
         constructor(name) {
@@ -100,27 +92,25 @@ async function main(program) {
     delete global[_name]
     return { steps, objects, types }
 }
-describe('Code Runner', () => {
-    test('Runner does not throw', async () => {
-        expect(async () => await main(func)).not.toThrow()
-    })
-    test('Returns steps, objects, and types', async () => {
-        const { steps, objects, types } = await main(func)
-        expect(Array.isArray(steps) && steps.length > 0).toBe(true)
-        expect(typeof objects).toBe('object')
-        expect(typeof types).toBe('object')
-    })
-    test('stack algorithm', async () => {
-        const { steps, objects, types } = await main(func)
-        const scopeStack = [null]
-        const callStack = []
-        const scopeChain = {}
-        const identifiers = {}
-        const funcScopes = {}
-        const calls = {}
-        fs.writeFileSync('states.json', '')
-        stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls })
+
+async function testRunner(func) {
+
+    const { steps, objects, types } = await main(func)
+    expect(Array.isArray(steps) && steps.length > 0).toBe(true)
+    expect(typeof objects).toBe('object')
+    expect(typeof types).toBe('object')
+    const scopeStack = [null]
+    const callStack = []
+    const scopeChain = {}
+    const identifiers = {}
+    const funcScopes = {}
+    const calls = {}
+    stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls })
 
 
+}
+for (let func in funcs) {
+    test(func, async () => {
+        await testRunner(funcs[func])
     })
-})
+}

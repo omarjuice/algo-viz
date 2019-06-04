@@ -6,7 +6,9 @@ module.exports = function (steps, {
     scopeChain = {},
     identifiers = {},
     funcScopes = {},
-    calls = {} }) {
+    calls = {}
+}) {
+    const states = []
     for (const step of steps) {
         if (step.scope) {
             const [parent, scope] = step.scope
@@ -16,25 +18,27 @@ module.exports = function (steps, {
             if (!(scope in scopeChain)) {
                 scopeChain[scope] = { parent, children: [] }
                 if (parent !== null) {
-                    scopeChain[parent].children.push(scope)
+                    // if(!(parent in scopeChain)){
+                    //     for(const s in scopeChain){
+                    //         for(const child of s.children){
+
+                    //         }
+                    //     }
+                    // }
+                    try {
+                        scopeChain[parent].children.push(scope)
+                    } catch (e) {
+                        console.log(scopeStack)
+                        console.log(parent, scope)
+                        console.log(scopeChain)
+                        throw (e)
+                    }
                 }
             }
             const s = scopeStack
             if (s[s.length - 1] !== scope) {
                 while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
-                    const exitedScope = s.pop()
-                    let funcParent = exitedScope
-                    while (funcParent && !(funcParent in funcScopes)) {
-                        funcParent = scopeChain[funcParent].parent
-                    }
-                    if (funcParent) {
-                        const name = funcScopes[funcParent]
-                        if (calls[name] <= 1) {
-                            // console.log('DELETE');
-                            // delete identifiers[exitedScope]
-                        }
-                    }
-
+                    s.pop()
                 }
                 if (step.type !== TYPES.RETURN && s[s.length - 1] !== scope) s.push(scope)
             }
@@ -48,9 +52,10 @@ module.exports = function (steps, {
                     }
                 }
                 if (!identifiers[scope][name]) {
-                    identifiers[scope][name] = []
+                    identifiers[scope][name] = [undefined]
                 }
-                identifiers[scope][name].push(step.value)
+                const ids = identifiers[scope][name]
+                ids[ids.length - 1] = step.value
             } else if (step.type === TYPES.ASSIGNMENT) {
                 let current = scope
                 let vals = null
@@ -68,9 +73,19 @@ module.exports = function (steps, {
             const fScope = step.scope[1]
             if (step.type === TYPES.FUNC) {
                 callStack.push(step.name)
-                if (!calls[step.name]) calls[step.name] = 0
-                calls[step.name]++
                 funcScopes[fScope] = step.name
+                const queue = [fScope]
+                while (queue.length) {
+                    const scope = queue.shift()
+                    const ids = identifiers[scope]
+                    for (const id in ids) {
+                        ids[id].push(undefined)
+                    }
+                    const { children } = scopeChain[scope]
+                    for (const child of children) {
+                        queue.push(child)
+                    }
+                }
             } else {
                 callStack.pop()
                 const queue = [fScope]
@@ -79,17 +94,21 @@ module.exports = function (steps, {
                     const ids = identifiers[scope]
                     for (const id in ids) {
                         ids[id].pop()
+                        if (!ids[id].length) {
+                            ids[id].push(undefined)
+                        }
                     }
                     const { children } = scopeChain[scope]
                     for (const child of children) {
                         queue.push(child)
                     }
                 }
-                calls[step.name]--
             }
         }
-        // fs.appendFileSync('states.json', JSON.stringify(identifiers))
+        states.push(JSON.stringify(identifiers))
         console.log(step.type, step.name, identifiers);
+        // console.log(callStack)
     }
-    return { scopeChain, scopeStack, calls, callStack, identifiers, funcScopes }
+    fs.writeFileSync('states.json', states)
+    return { scopeChain, scopeStack, callStack, identifiers, funcScopes }
 }

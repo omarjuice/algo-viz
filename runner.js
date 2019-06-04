@@ -10,22 +10,61 @@ const print = v => v
 
 const func = `
 
-function init(x){
-    var val = print(x)
-    {
-        var d = val + 1
-        {
-            {
-                var g = val + 3
-                let z = 1
-            }
+class MinMaxStack {
+    constructor() {
+        this.mins = []
+        this.maxes = []
+        this.stack = []
+    }
+    peek() {
+        // Write your code here.
+        return this.stack[this.stack.length - 1]
+    }
+
+    pop() {
+        // Write your code here.
+        this.mins.pop()
+        this.maxes.pop()
+        return this.stack.pop()
+    }
+
+    push(number) {
+        // Write your code here.
+        this.stack.push(number)
+        if (this.getMax() === undefined || number > this.getMax()) {
+            this.maxes.push(number)
+        } else {
+            this.maxes.push(this.getMax())
+        }
+        if (this.getMin() === undefined || number < this.getMin()) {
+            this.mins.push(number)
+        } else {
+            this.mins.push(this.getMin())
         }
     }
-    var f = val + 4
-    
- }
- init(1)
 
+    getMin() {
+        // Write your code here.
+        return this.mins[this.mins.length - 1]
+    }
+
+    getMax() {
+        // Write your code here.
+        return this.maxes[this.maxes.length - 1]
+    }
+}
+const stack = new MinMaxStack()
+stack.push(2);
+stack.push(0);
+stack.push(5);
+stack.push(4);
+stack.push(4);
+stack.push(11);
+stack.push(-11);
+
+stack.push(6);
+
+[stack.pop(), stack.pop(), stack.pop()]
 
 `
 class Runner {
