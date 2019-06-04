@@ -22,11 +22,12 @@ const print = (val) => {
     return val
 }
 const func = `
-function init(){
-    {{{{{{{let i = 0}}}}}}}
+function init(x){
+   const val = print(x)
+   const y = val - 1
+   val && init(y)
 }
-init()
-
+init
 
 `
 async function main(program) {

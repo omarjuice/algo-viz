@@ -6,13 +6,25 @@ const configEnv = require('./utils/setup')
 const TYPES = require('./utils/types')
 const stepIterator = require('./stepIterator')
 
+const print = v => v
 
 const func = `
 
-function init({g = '1', z = []}){
-    const f = Number(g) + 2
-}
-init({})
+function init(x){
+    var val = print(x)
+    {
+        var d = val + 1
+        {
+            {
+                var g = val + 3
+                let z = 1
+            }
+        }
+    }
+    var f = val + 4
+    
+ }
+ init(1)
 
 
 `
@@ -78,7 +90,7 @@ eval(code)
 configEnv.reset()
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
 const { identifiers } = stepIterator(global[_name].steps, {})
-console.log(identifiers);
+// console.log(identifiers);
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,
     objects: global[_name].objects,

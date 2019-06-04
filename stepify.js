@@ -110,7 +110,14 @@ module.exports = function (input) {
                                 if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
                                     if (init.callee.object.name !== _name) return
                                 }
-                                if (!declaration.init.visited) declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                                if (!declaration.init.visited) declaration.init = proxy(
+                                    init, {
+                                        type: TYPES.DECLARATION,
+                                        name: identifier.name,
+                                        scope: getScope(path),
+                                        block: path.node.kind !== 'var'
+                                    }
+                                )
                                 declaration.init.visited = true
                                 // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                             }

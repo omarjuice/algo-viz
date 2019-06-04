@@ -21,16 +21,17 @@ module.exports = function (steps, {
             }
             const s = scopeStack
             if (s[s.length - 1] !== scope) {
-                let funcParent = scopeChain[scope].parent
-                while (funcParent && !(funcParent in funcScopes)) {
-                    funcParent = scopeChain[funcParent].parent
-                }
                 while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
                     const exitedScope = s.pop()
+                    let funcParent = exitedScope
+                    while (funcParent && !(funcParent in funcScopes)) {
+                        funcParent = scopeChain[funcParent].parent
+                    }
                     if (funcParent) {
                         const name = funcScopes[funcParent]
                         if (calls[name] <= 1) {
-                            delete identifiers[exitedScope]
+                            // console.log('DELETE');
+                            // delete identifiers[exitedScope]
                         }
                     }
 
@@ -39,8 +40,13 @@ module.exports = function (steps, {
             }
         }
         if ([TYPES.ASSIGNMENT, TYPES.DECLARATION].includes(step.type) && step.scope && step.name) {
-            const { name, scope: [_, scope] } = step
+            let { name, scope: [_, scope], block } = step
             if (step.type === TYPES.DECLARATION) {
+                if (!block) {
+                    while (scope && !(scope in funcScopes)) {
+                        scope = scopeChain[scope].parent
+                    }
+                }
                 if (!identifiers[scope][name]) {
                     identifiers[scope][name] = []
                 }
@@ -59,14 +65,15 @@ module.exports = function (steps, {
             }
         }
         if ([TYPES.FUNC, TYPES.RETURN].includes(step.type)) {
+            const fScope = step.scope[1]
             if (step.type === TYPES.FUNC) {
                 callStack.push(step.name)
                 if (!calls[step.name]) calls[step.name] = 0
                 calls[step.name]++
-                funcScopes[step.scope[1]] = step.name
+                funcScopes[fScope] = step.name
             } else {
                 callStack.pop()
-                const queue = [step.scope[1]]
+                const queue = [fScope]
                 while (queue.length) {
                     const scope = queue.shift()
                     const ids = identifiers[scope]
@@ -81,7 +88,8 @@ module.exports = function (steps, {
                 calls[step.name]--
             }
         }
-        fs.appendFileSync('states.json', JSON.stringify(identifiers))
+        // fs.appendFileSync('states.json', JSON.stringify(identifiers))
+        console.log(step.type, step.name, identifiers);
     }
     return { scopeChain, scopeStack, calls, callStack, identifiers, funcScopes }
 }
