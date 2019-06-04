@@ -13,5 +13,6 @@ module.exports = {
     RETURN: 'RETURN',
     BLOCK: 'BLOCK',
     ACTION: 'ACTION',
-    FUNC: 'FUNC'
+    FUNC: 'FUNC',
+    PROGRAM: 'PROGRAM'
 }

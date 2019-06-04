@@ -4,7 +4,7 @@ const fs = require('fs')
 const stringify = require('../utils/stringify')
 const configEnv = require('../utils/setup')
 const TYPES = require('../utils/types')
-
+const stepIterator = require('../stepIterator')
 class Circular {
     constructor() {
         this.value = this
@@ -22,18 +22,10 @@ const print = (val) => {
     return val
 }
 const func = `
-
-function init(x) {
-   { let y = x
-    {let k = x
-        y--;
-        print(x) && init(y)
-    }
-   }
+function init(){
+    {{{{{{{let i = 0}}}}}}}
 }
-let z = new Circular
-init(5)
-
+init()
 
 
 `
@@ -111,10 +103,23 @@ describe('Code Runner', () => {
     test('Runner does not throw', async () => {
         expect(async () => await main(func)).not.toThrow()
     })
-    test('Returns steps', async () => {
+    test('Returns steps, objects, and types', async () => {
         const { steps, objects, types } = await main(func)
         expect(Array.isArray(steps) && steps.length > 0).toBe(true)
         expect(typeof objects).toBe('object')
         expect(typeof types).toBe('object')
+    })
+    test('stack algorithm', async () => {
+        const { steps, objects, types } = await main(func)
+        const scopeStack = [null]
+        const callStack = []
+        const scopeChain = {}
+        const identifiers = {}
+        const funcScopes = {}
+        const calls = {}
+        fs.writeFileSync('states.json', '')
+        stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls })
+
+
     })
 })

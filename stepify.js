@@ -46,7 +46,7 @@ module.exports = function (input) {
                     reassignSpread = helpers.reassignSpread
                     createId = helpers.createId
                     references = path.scope.references
-                    path.node.body.unshift(t.stringLiteral("use strict"))
+                    path.node.body.unshift(t.stringLiteral("use strict"), proxy(t.nullLiteral(), { type: TYPES.PROGRAM, scope: getScope(path) }))
                 },
                 Function: {
                     enter(path, { opts }) {
@@ -110,7 +110,8 @@ module.exports = function (input) {
                                 if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
                                     if (init.callee.object.name !== _name) return
                                 }
-                                declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                                if (!declaration.init.visited) declaration.init = proxy(init, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) })
+                                declaration.init.visited = true
                                 // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                             }
                         });
@@ -344,15 +345,16 @@ module.exports = function (input) {
                                 object,
                                 objectName: object.name,
                                 access: expression,
-                                name: code.slice(unary.start, unary.end)
+                                name: unary.start && code.slice(unary.start, unary.end)
                             }
                             path.replaceWith(proxy(unary, details))
                         } else {
                             const details = {
                                 type: TYPES.EXPRESSION,
                                 scope: getScope(path),
-                                name: code.slice(unary.start, unary.end)
+
                             }
+                            if (unary.start) details.name = unary.start && code.slice(unary.start, unary.end)
                             path.replaceWith(proxy(unary, details))
                         }
                     }
