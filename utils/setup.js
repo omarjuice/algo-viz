@@ -40,7 +40,7 @@ module.exports = {
             }
         }
         let allow = true
-        const { __: _inspector } = global[_name]
+        const { __: _inspector, map: objMap } = global[_name]
         const __ = (...args) => allow ? _inspector.call(global[_name], ...args) : args[0]
 
         const __copyWithin = function (..._args) {
@@ -100,10 +100,11 @@ module.exports = {
                 _args[0] = (el, i, ...args) => {
                     const result = cb.call(null, el, i, ...args)
                     __(el, {
-                        type: TYPES.ACCESSOR,
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
@@ -114,14 +115,14 @@ module.exports = {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    const result = cb.call(null, el, i, ...args)
+                    cb.call(null, el, i, ...args)
                     __(el, {
-                        type: TYPES.ACCESSOR,
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result: objMap.get('undefined')
                     })
-                    return result
                 }
             }
             return forEach.call(this, ..._args)

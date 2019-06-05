@@ -5,37 +5,15 @@ const stringify = require('./utils/stringify')
 const configEnv = require('./utils/setup')
 const TYPES = require('./utils/types')
 const stepIterator = require('./stepIterator')
-
+const randomString = require('./utils/randomString')
 const print = v => { return console.log(v), v };
 
 
 const func = `
-class BST {
-    constructor(value) {
-      this.value = value;
-      this.left = null;
-      this.right = null;
-    }
+const arr = [1,2,3,4,5]
+arr.forEach(el => print(el))
   
-    insert(value) {
-      if (value < this.value) {
-        if (!this.left) {
-          this.left = new BST(value);
-        } else {
-          this.left.insert(value);
-        }
-      } else {
-        if (!this.right) {
-          this.right = new BST(value);
-        } else {
-          this.right.insert(value);
-        }
-      }
-      return this;
-    }
-  }
-  
-  const test1 = new BST(10).insert(5).insert(15);
+
     
 `
 class Runner {
@@ -48,10 +26,16 @@ class Runner {
         this.callStack = []
         this.allow = null
         this.name = name
+        const undefLiteral = '_' + randomString(5)
+        const nullLiteral = '_' + randomString(5)
+        this.map.set('undefined', undefLiteral)
+        this.map.set('null', nullLiteral)
+        this.objects[undefLiteral] = 'undefined'
+        this.objects[nullLiteral] = 'null'
     }
     __(val, info) {
         this.allow && this.allow(false)
-        const objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.ACTION, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR]
+        const objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.ACTION, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR, TYPES.ITERATE]
         if ([TYPES.CALL, TYPES.METHODCALL, TYPES.ACTION].includes(info.type)) {
             const id = this.stringify(info.arguments)
             info.arguments = this.objects[id]
@@ -62,26 +46,22 @@ class Runner {
             if (info.type === TYPES.RETURN) {
                 this.callStack.pop()
             } else {
+                info.object = this.stringify(info.object)
                 this.callStack.push(info)
             }
         }
-
-
-
-
         if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update
         }
         const currentFunc = this.callStack[this.callStack.length - 1]
         const isConstructor = currentFunc && currentFunc.type === TYPES.METHOD && currentFunc.kind === 'constructor'
-        if (!(isConstructor && objectTypes.includes(info.type) && info.object === currentFunc.object)) {
+        if (!(isConstructor && objectTypes.concat([TYPES.DECLARATION]).includes(info.type) && info.object === currentFunc.object)) {
             if (objectTypes.includes(info.type)) {
                 info.object = this.stringify(info.object)
             }
             info.value = this.stringify(val)
             this.steps.push(info)
         }
-        console.log(this.callStack)
         this.allow && this.allow(true)
         return val
     }

@@ -54,8 +54,10 @@ module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
             types[newId] = obj.constructor.name
             return newId
         } else {
-            if (typeof obj === 'undefined') {
-                return 'undefined'
+            if (obj === undefined) {
+                return map.get('undefined')
+            } else if (obj === null) {
+                return map.get('null')
             } else if (typeof obj === 'function') {
                 return obj.name && obj.name[0] !== '_' ? obj.name : 'function'
             } else if (typeof obj === 'symbol') {

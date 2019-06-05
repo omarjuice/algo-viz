@@ -62,6 +62,7 @@ module.exports = function (input) {
                                     type: TYPES.DECLARATION,
                                     name: param.name,
                                     scope: getScope(path),
+                                    block: false
                                 }
                             )
                         ) || param);
