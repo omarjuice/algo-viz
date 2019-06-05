@@ -43,66 +43,14 @@ module.exports = {
         const { __: _inspector } = global[_name]
         const __ = (...args) => allow ? _inspector.call(global[_name], ...args) : args[0]
 
-        const __copyWithin = function (target, start, opt_end) {
-            // https://cljs.github.io/api/compiler-options/rewrite-polyfills
-            let len = this.length;
-            target = toInteger(target);
-            start = toInteger(start);
-            let end = opt_end === undefined ? len : toInteger(opt_end);
-            let to = target < 0 ? Math.max(len + target, 0) : Math.min(target, len);
-            let from = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
-            let final = end < 0 ? Math.max(len + end, 0) : Math.min(end, len);
-            if (to < from) {
-                while (from < final) {
-                    if (from in this) {
-                        __(this[to++] = this[from++], {
-                            type: TYPES.PROP_ASSIGNMENT,
-                            scope: null,
-                            object: this,
-                            access: [
-                                to
-                            ],
-                        });
-                    } else {
-                        __(delete this[to++], {
-                            type: TYPES.DELETE,
-                            scope: null,
-                            object: this,
-                            access: [
-                                to
-                            ],
-                        });
+        const __copyWithin = function (..._args) {
+            return __(copyWithin.call(this, ..._args), {
+                type: TYPES.ACTION,
+                method: 'copyWithin',
+                object: this,
+                arguments: [..._args]
+            })
 
-                        from++;
-                    }
-                }
-            } else {
-                final = Math.min(final, len + from - to);
-                to += final - from;
-                while (final > from) {
-                    if (--final in this) {
-                        __(this[--to] = this[final], {
-                            type: TYPES.PROP_ASSIGNMENT,
-                            scope: null,
-                            object: this,
-                            access: [
-                                to
-                            ],
-                        });
-
-                    } else {
-                        __(delete this[--to], {
-                            type: TYPES.DELETE,
-                            scope: null,
-                            object: this,
-                            access: [
-                                to
-                            ],
-                        });
-                    }
-                }
-            }
-            return this;
         };
         const __every = function (..._args) {
             if (_args[0]) {
@@ -110,10 +58,11 @@ module.exports = {
                 _args[0] = (el, i, ...args) => {
                     const result = cb.call(null, el, i, ...args)
                     __(el, {
-                        type: TYPES.ACCESSOR,
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
@@ -126,36 +75,24 @@ module.exports = {
                 _args[0] = (el, i, ...args) => {
                     const result = cb.call(null, el, i, ...args)
                     __(el, {
-                        type: TYPES.ACCESSOR,
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
             }
             return findIndex.call(this, ..._args)
         }
-        const __fill = function (value, opt_start, opt_end) {
-            // https://cljs.github.io/api/compiler-options/rewrite-polyfills
-            let length = this.length || 0;
-            if (opt_start < 0) {
-                opt_start = Math.max(0, length + (opt_start));
-            }
-            if (opt_end == null || opt_end > length) opt_end = length;
-            opt_end = Number(opt_end);
-            if (opt_end < 0) opt_end = Math.max(0, length + opt_end);
-            for (let i = Number(opt_start || 0); i < opt_end; i++) {
-                __(this[i] = value, {
-                    type: TYPES.PROP_ASSIGNMENT,
-                    scope: null,
-                    object: this,
-                    access: [
-                        i
-                    ],
-                });
-            }
-            return this;
+        const __fill = function (..._args) {
+            return __(fill.call(this, ..._args), {
+                type: TYPES.ACTION,
+                method: 'fill',
+                object: this,
+                arguments: [..._args]
+            })
         };
         const __find = function (..._args) {
             if (_args[0]) {
@@ -427,36 +364,3 @@ function toInteger(arg) {
     }
     return n | 0;
 }
-    /*
-Array.prototype.concat()
-Array​.prototype​.copy​Within()
-Array​.prototype​.entries()
-Array​.prototype​.every()
-Array​.prototype​.fill()
-Array​.prototype​.filter() X
-Array​.prototype​.find()
-Array​.prototype​.find​Index()
-Array​.prototype​.flat()
-Array​.prototype​.flatMap()
-Array​.prototype​.for​Each() X
-Array​.prototype​.includes()
-Array​.prototype​.indexOf()
-Array​.prototype​.join()
-Array​.prototype​.keys()
-Array​.prototype​.last​IndexOf()
-Array​.prototype​.map() X
-Array​.prototype​.pop()
-Array​.prototype​.push()
-Array​.prototype​.reduce()X
-Array​.prototype​.reduce​Right() X
-Array​.prototype​.reverse()
-Array​.prototype​.shift()
-Array​.prototype​.slice()
-Array​.prototype​.some()
-Array​.prototype​.sort()
-Array​.prototype​.splice()
-Array​.prototype​.toLocale​String()
-Array​.prototype​.toSource()
-Array​.prototype​.toString()
-Array​.prototype​.unshift()
-Array​.prototype​.values() */

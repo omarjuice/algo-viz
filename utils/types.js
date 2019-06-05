@@ -14,5 +14,8 @@ module.exports = {
     BLOCK: 'BLOCK',
     ACTION: 'ACTION',
     FUNC: 'FUNC',
-    PROGRAM: 'PROGRAM'
+    PROGRAM: 'PROGRAM',
+    ACTION: 'ACTION',
+    ITERATE: 'ITERATE',
+    METHOD: 'METHOD'
 }

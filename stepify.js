@@ -65,17 +65,22 @@ module.exports = function (input) {
                                 }
                             )
                         ) || param);
-
+                        const isClassMethod = t.isClassMethod(path.node)
                         path.node.id = path.node.id || t.identifier(createId(4, 1))
-                        const newNode = proxy(t.nullLiteral(), {
-                            type: TYPES.FUNC,
+                        const details = {
+                            type: isClassMethod ? TYPES.METHOD : TYPES.FUNC,
                             scope: getScope(path),
-                            name: path.node.id.name
-                        })
+                            name: path.node.id.name,
+                        }
+                        if (isClassMethod) {
+                            details.kind = path.node.kind
+                            details.object = t.thisExpression()
+                        }
+                        const newNode = proxy(t.nullLiteral(), details)
                         if (t.isBlockStatement(path.node.body)) {
                             const block = path.node.body
                             block.body = [newNode, ...params.filter(p => p), ...block.body]
-                            if (t.isClassMethod(path.node)) {
+                            if (isClassMethod) {
                                 block.body.unshift(proxy(t.nullLiteral(), {
                                     type: TYPES.BLOCK,
                                     scope: t.arrayExpression([t.numericLiteral(path.scope.parent.parent.uid), t.numericLiteral(path.scope.parent.uid)])
@@ -273,19 +278,31 @@ module.exports = function (input) {
                             const newNode = t.variableDeclaration('let', [t.variableDeclarator(t.identifier(iterationName), t.numericLiteral(-1))])
                             // const newNode = t.assignmentExpression('=', t.memberExpression(t.identifier(_name), t.identifier(iterationName)), t.numericLiteral(-1))
                             nearestSibling.node.body.splice(i, 0, newNode)
-                            const variables = (path.node.left.declarations || [{ id: path.node.left }]).map((declaration) => {
+                            const variables = [];
+                            const accessors = [];
+                            (path.node.left.declarations || [{ id: path.node.left }]).forEach(declaration => {
                                 const { id: identifier } = declaration
-                                return t.expressionStatement(proxy(
+                                variables.push(t.expressionStatement(proxy(
+                                    identifier,
+                                    {
+                                        type: TYPES.DECLARATION,
+                                        name: identifier.name,
+                                        scope: getScope(path),
+                                        block: path.node.left.kind !== 'var'
+                                    }
+                                )))
+                                accessors.push(t.expressionStatement(proxy(
                                     identifier,
                                     {
                                         type: TYPES.ACCESSOR,
                                         name: identifier.name,
                                         object: t.isAssignmentExpression(path.node.right) ? path.node.right.left : path.node.right,
-                                        access: t.arrayExpression([newNode.declarations[0].id]),
+                                        access: t.arrayExpression([t.updateExpression('++', newNode.declarations[0].id, true)]),
                                         scope: getScope(path)
-                                    }))
+                                    })))
                             })
-                            path.node.body.body = [t.expressionStatement(t.updateExpression('++', newNode.declarations[0].id)), ...variables, ...path.node.body.body]
+
+                            path.node.body.body = [...accessors, ...variables, ...path.node.body.body]
                         }
                     }
                 },

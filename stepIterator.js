@@ -92,7 +92,7 @@ module.exports = function (steps, {
             }
         }
         states.push(JSON.stringify(identifiers))
-        console.log(step.type, step.name, identifiers);
+        // console.log(step.type, step.name, identifiers);
         // console.log(callStack)
     }
     // fs.writeFileSync('states.json', states)
