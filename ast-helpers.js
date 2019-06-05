@@ -117,17 +117,15 @@ module.exports = function ({ t = types, input, code, Node }) {
     // primarily for nested computations, can be used for reassignments otherwise with directChild
     const reassignComputedValue = (path, node, key = 'property', directChild = false) => {
         if (t.isAssignmentExpression(node[key])) return true
-        if (!t.isIdentifier((node[key]))) {
-            if (!t.isLiteral(node[key])) {
-                // traverseExpressionHelper(path, node, key)
-                const nearestSibling = path.findParent((parent) => t.isBlockStatement(directChild ? parent : parent.parent) || t.isProgram(directChild ? parent : parent.parent))
-                let i = 0;
-                while (nearestSibling[directChild ? 'node' : 'parent'].body[i] !== (directChild ? node : nearestSibling.node)) i++
-                const { variable, assignment } = proxyAssignment(node[key], code, { scope: getScope(path) })
-                nearestSibling[directChild ? 'node' : 'parent'].body.splice(i, 0, variable)
-                node[key] = assignment
-                return true
-            }
+        if (!t.isIdentifier(node[key]) && !t.isLiteral(node[key])) {
+            // traverseExpressionHelper(path, node, key)
+            const nearestSibling = path.findParent((parent) => t.isBlockStatement(directChild ? parent : parent.parent) || t.isProgram(directChild ? parent : parent.parent))
+            let i = 0;
+            while (nearestSibling[directChild ? 'node' : 'parent'].body[i] !== (directChild ? node : nearestSibling.node)) i++
+            const { variable, assignment } = proxyAssignment(node[key], code, { scope: getScope(path) })
+            nearestSibling[directChild ? 'node' : 'parent'].body.splice(i, 0, variable)
+            node[key] = assignment
+            return true
         }
         return false
     }
@@ -190,7 +188,17 @@ module.exports = function ({ t = types, input, code, Node }) {
         }
         return false
     }
-    const getScope = path => path.scope ? t.arrayExpression([path.scope.parent ? t.numericLiteral(path.scope.parent.uid) : t.nullLiteral(), t.numericLiteral(path.scope.uid)]) : t.nullLiteral()
+    const getScope = path => {
+        if (path.scope) {
+            return t.arrayExpression(
+                [
+                    path.scope.parent ? t.numericLiteral(path.scope.parent.uid) : t.nullLiteral(),
+                    t.numericLiteral(path.scope.uid)
+                ]
+            )
+        }
+        return t.nullLiteral()
+    }
     return {
         createId,
         construct,

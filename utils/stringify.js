@@ -15,24 +15,32 @@ module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
             map.set(obj, newId)
 
             if (obj instanceof Map) {
-                // should map copies be ordered ?
-                const copy = {}
+                const copy = {
+                    keys: {},
+                    vals: []
+                }
                 for (const entry of obj.entries()) {
                     const [key, val] = entry
                     let newKey = key
                     if (key && typeof key === 'object' && !(key instanceof RegExp || key instanceof String)) {
                         newKey = stringify(key)
                     }
-                    copy[newKey] = stringify(val)
+                    let newVal = stringify(val)
+                    copy.keys[newKey] = copy.vals.length
+                    copy.vals.push([newKey, newVal])
                 }
                 objects[newId] = copy
             } else if (obj instanceof Set) {
-                const copy = {}
+                const copy = {
+                    keys: {},
+                    vals: []
+                }
                 for (let value of obj.values()) {
                     if (value && typeof value === 'object' && !(value instanceof RegExp || value instanceof String)) {
                         value = stringify(value)
                     }
-                    copy[value] = value
+                    copy.keys[value] = copy.vals.length
+                    copy.vals.push(value)
                 }
                 objects[newId] = copy
             } else {

@@ -18,21 +18,7 @@ module.exports = function (steps, {
             if (!(scope in scopeChain)) {
                 scopeChain[scope] = { parent, children: [] }
                 if (parent !== null) {
-                    // if(!(parent in scopeChain)){
-                    //     for(const s in scopeChain){
-                    //         for(const child of s.children){
-
-                    //         }
-                    //     }
-                    // }
-                    try {
-                        scopeChain[parent].children.push(scope)
-                    } catch (e) {
-                        console.log(scopeStack)
-                        console.log(parent, scope)
-                        console.log(scopeChain)
-                        throw (e)
-                    }
+                    scopeChain[parent].children.push(scope)
                 }
             }
             const s = scopeStack
@@ -109,6 +95,6 @@ module.exports = function (steps, {
         console.log(step.type, step.name, identifiers);
         // console.log(callStack)
     }
-    fs.writeFileSync('states.json', states)
+    // fs.writeFileSync('states.json', states)
     return { scopeChain, scopeStack, callStack, identifiers, funcScopes }
 }
