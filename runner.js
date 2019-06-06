@@ -11,7 +11,7 @@ const print = v => { return console.log(v), v };
 
 const func = `
 const arr = [1,2,3,4,5]
-arr.forEach(el => print(el))
+const arr2 = arr.find(el =>  el === 3)
   
 
     
@@ -37,10 +37,12 @@ class Runner {
         this.allow && this.allow(false)
         const objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.ACTION, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR, TYPES.ITERATE]
         if ([TYPES.CALL, TYPES.METHODCALL, TYPES.ACTION].includes(info.type)) {
-            const id = this.stringify(info.arguments)
-            info.arguments = this.objects[id]
-            delete this.objects[id]
-            delete this.types[id]
+            if (info.arguments) {
+                const id = this.stringify(info.arguments)
+                info.arguments = this.objects[id]
+                delete this.objects[id]
+                delete this.types[id]
+            }
         }
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(info.type)) {
             if (info.type === TYPES.RETURN) {

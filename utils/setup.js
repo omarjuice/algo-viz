@@ -42,7 +42,14 @@ module.exports = {
         let allow = true
         const { __: _inspector, map: objMap } = global[_name]
         const __ = (...args) => allow ? _inspector.call(global[_name], ...args) : args[0]
-
+        const __concat = function (..._args) {
+            return __(concat.call(this, ..._args), {
+                type: TYPES.ACTION,
+                method: 'concat',
+                object: this,
+                arguments: [..._args]
+            })
+        }
         const __copyWithin = function (..._args) {
             return __(copyWithin.call(this, ..._args), {
                 type: TYPES.ACTION,
@@ -56,8 +63,8 @@ module.exports = {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    const result = cb.call(null, el, i, ...args)
-                    __(el, {
+                    const result = cb.call(args[1] || null, el, i, ...args)
+                    __(null, {
                         type: TYPES.ITERATE,
                         scope: null,
                         object: this,
@@ -67,14 +74,15 @@ module.exports = {
                     return result
                 }
             }
+
             return every.call(this, ..._args)
         }
         const __findIndex = function (..._args) {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    const result = cb.call(null, el, i, ...args)
-                    __(el, {
+                    const result = cb.call(_args[1] || null, el, i, ...args)
+                    __(null, {
                         type: TYPES.ITERATE,
                         scope: null,
                         object: this,
@@ -84,6 +92,7 @@ module.exports = {
                     return result
                 }
             }
+
             return findIndex.call(this, ..._args)
         }
         const __fill = function (..._args) {
@@ -98,8 +107,8 @@ module.exports = {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    const result = cb.call(null, el, i, ...args)
-                    __(el, {
+                    const result = cb.call(_args[1] || null, el, i, ...args)
+                    __(null, {
                         type: TYPES.ITERATE,
                         scope: null,
                         object: this,
@@ -109,62 +118,86 @@ module.exports = {
                     return result
                 }
             }
+
             return find.call(this, ..._args)
         }
         const __forEach = function (..._args) {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    cb.call(null, el, i, ...args)
-                    __(el, {
+                    const result = cb.call(_args[1] || null, el, i, ...args)
+                    __(null, {
                         type: TYPES.ITERATE,
                         scope: null,
                         object: this,
                         access: [i],
-                        result: objMap.get('undefined')
+                        result
                     })
+                    return result
                 }
             }
+
             return forEach.call(this, ..._args)
         }
-        const __includes = function (searchElement, opt_fromIndex) {
-            //https://cljs.github.io/api/compiler-options/rewrite-polyfills
-            let array = this;
-            if (array instanceof String) {
-                array = String(array)
+        const __includes = function (valueToFind, fromIndex) {
+            // MDN
+            if (this == null) {
+                throw new TypeError('"this" is null or not defined');
             }
-            let len = array.length;
-            let i = opt_fromIndex || 0;
-            if (i < 0) {
-                i = Math.max(i + len, 0);
+
+            let o = Object(this);
+
+            let len = o.length >>> 0;
+
+            if (len === 0) {
+                return false;
             }
-            for (; i < len; i++) {
-                let element = __(array[i], {
-                    type: TYPES.ACCESSOR,
+
+            let n = fromIndex | 0;
+
+
+            let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+            let found = false
+
+            function sameValueZero(x, y) {
+                return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
+            }
+
+            while (k < len) {
+                if (sameValueZero(o[k], valueToFind)) {
+                    found = true;
+                }
+                __(null, {
+                    type: TYPES.ITERATE,
                     scope: null,
                     object: this,
-                    access: [i]
+                    access: [k],
+                    result: found
                 })
-                if (element === searchElement || Object.is(element, searchElement)) {
-                    return true;
-                }
+                if (found) break;
+                k++;
             }
-            return false;
+
+
+            return found;
+
         };
         const __filter = function (..._args) {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    const result = cb.call(null, el, i, ...args)
-                    __(el, {
-                        type: TYPES.ACCESSOR,
+                    const result = cb.call(_args[1] || null, el, i, ...args)
+                    __(null, {
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
             }
+
             return filter.call(this, ..._args)
         }
         const __indexOf = function (searchElement, fromIndex) {
@@ -183,24 +216,29 @@ module.exports = {
 
             let n = fromIndex | 0;
 
+
             if (n >= len) {
                 return -1;
             }
             k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-
+            let result = false
             while (k < len) {
 
-                if (k in o && __(o[k], {
-                    type: TYPES.ACCESSOR,
+                if (k in o && o[k] === searchElement) {
+                    result = true
+                }
+                __(null, {
+                    type: TYPES.ITERATE,
                     scope: null,
                     object: this,
-                    access: [k]
-                }) === searchElement) {
-                    return k;
-                }
+                    access: [k],
+                    result
+                })
+                if (result) break;
                 k++;
             }
-            return -1;
+
+            return k === len ? -1 : k;
         };
         const __lastIndexOf = function (searchElement /*, fromIndex*/) {
             //MDN
@@ -208,7 +246,7 @@ module.exports = {
                 throw new TypeError();
             }
 
-            var n, k,
+            let n, k,
                 t = Object(this),
                 len = t.length >>> 0;
             if (len === 0) {
@@ -225,102 +263,84 @@ module.exports = {
                     n = (n > 0 || -1) * Math.floor(Math.abs(n));
                 }
             }
-
+            let result = false
             for (k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n); k >= 0; k--) {
-                if (k in t && __(t[k], {
-                    type: TYPES.ACCESSOR,
+                if (k in t && t[k] === searchElement) {
+                    result = true
+                }
+                __(null, {
+                    type: TYPES.ITERATE,
                     scope: null,
                     object: this,
-                    access: [k]
-                }) === searchElement) {
-                    return k;
-                }
+                    access: [k],
+                    result
+                })
+                if (result) break
             }
             return -1;
         };
         const __reverse = function () {
-            for (let l = 0, r = this.length - 1; l < r; ++l, --r) {
-
-                [this[l], this[r]] = [this[r], this[l]]
-                __(this[l], {
-                    type: TYPES.ACCESSOR,
-                    scope: null,
-                    object: this,
-                    access: [l]
-                })
-                __(this[r], {
-                    type: TYPES.ACCESSOR,
-                    scope: null,
-                    object: this,
-                    access: [r]
-                })
-            }
-            return this
+            return __(reverse.call(this), {
+                type: TYPES.ACTION,
+                method: 'reverse',
+                object: this,
+                arguments: []
+            })
         }
         const __map = function (..._args) {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (el, i, ...args) => {
-                    const result = cb.call(null, el, i, ...args)
-                    __(el, {
-                        type: TYPES.ACCESSOR,
+                    const result = cb.call(_args[1] || null, el, i, ...args)
+                    __(null, {
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
             }
+
             return map.call(this, ..._args)
         }
         const __reduce = function (..._args) {
             if (_args[0]) {
                 const [cb] = _args
-                _args[0] = (a, el, i, arr) => {
-                    const result = cb.call(null, a, el, i, arr)
-                    __(el, {
-                        type: TYPES.ACCESSOR,
+                _args[0] = (el, i, ...args) => {
+                    const result = cb.call(_args[1] || null, el, i, ...args)
+                    __(null, {
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
             }
-            if (!(1 in _args) && 0 in this) {
-                __(this[0], {
-                    type: TYPES.ACCESSOR,
-                    scope: null,
-                    object: this,
-                    access: [0]
-                })
-            }
+
             return reduce.call(this, ..._args)
         }
         const __reduceRight = function (..._args) {
             if (_args[0]) {
                 const [cb] = _args
                 _args[0] = (a, el, i, arr) => {
-                    const result = cb.call(null, a, el, i, arr)
-                    __(el, {
-                        type: TYPES.ACCESSOR,
+                    const result = cb.call(_args[1] || null, a, el, i, arr)
+                    __(null, {
+                        type: TYPES.ITERATE,
                         scope: null,
                         object: this,
-                        access: [i]
+                        access: [i],
+                        result
                     })
                     return result
                 }
             }
-            if (!(1 in _args) && 0 in this) {
-                __(this[this.length - 1], {
-                    type: TYPES.ACCESSOR,
-                    scope: null,
-                    object: this,
-                    access: [this.length - 1]
-                })
-            }
             return reduceRight.call(this, ..._args)
         }
+        Array.prototype.concat = __concat
         Array.prototype.copyWithin = __copyWithin
         Array.prototype.every = __every
         Array.prototype.fill = __fill

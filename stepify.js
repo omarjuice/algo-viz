@@ -355,19 +355,19 @@ module.exports = function (input) {
                             details.type = TYPES.CALL
                         }
 
-                        details.arguments = []
-                        call.arguments.forEach((arg, i) => {
-                            if (t.isAssignmentExpression(arg)) {
-                                call.arguments[i] = assignmentProxy
-                                details.arguments.push(reducePropExpressions(assignmentProxy.arguments[0].left))
-                            } else if (t.isSpreadElement(arg)) {
-                                const object = reassignSpread(path, arg)
-                                details.arguments.push(t.spreadElement(object))
-                            } else {
-                                const reassigned = reassignComputedValue(path, call.arguments, i)
-                                details.arguments.push(reassigned ? call.arguments[i].left : arg)
-                            }
-                        })
+                        // details.arguments = []
+                        // call.arguments.forEach((arg, i) => {
+                        //     if (t.isAssignmentExpression(arg)) {
+                        //         call.arguments[i] = assignmentProxy
+                        //         details.arguments.push(reducePropExpressions(assignmentProxy.arguments[0].left))
+                        //     } else if (t.isSpreadElement(arg)) {
+                        //         const object = reassignSpread(path, arg)
+                        //         details.arguments.push(t.spreadElement(object))
+                        //     } else {
+                        //         const reassigned = reassignComputedValue(path, call.arguments, i)
+                        //         details.arguments.push(reassigned ? call.arguments[i].left : arg)
+                        //     }
+                        // })
                         path.replaceWith(proxy(call, details))
                     }
                 },
