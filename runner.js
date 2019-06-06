@@ -9,12 +9,12 @@ const randomString = require('./utils/randomString')
 const print = v => { return console.log(v), v };
 
 
-const func = `
-const arr = [1,2,3,4,5]
-const arr2 = arr.find(el =>  el === 3)
-  
 
-    
+const func = `
+function sort(arr){
+    print(arr)
+}
+sort([5,4,3,2,1])
 `
 class Runner {
     constructor(name) {
@@ -64,6 +64,7 @@ class Runner {
             info.value = this.stringify(val)
             this.steps.push(info)
         }
+        console.log(info)
         this.allow && this.allow(true)
         return val
     }
