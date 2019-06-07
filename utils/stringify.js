@@ -1,7 +1,10 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
-module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
-    return function stringify(obj) {
+const defineProperty = require('./defineProperty')
+const isArray = require('./isArray')
+module.exports = function ({ map = new Map(), objects = {}, types = {}, __ }) {
+    const defProp = defineProperty(__, stringify)
+    function stringify(obj) {
         if (obj && typeof obj === 'object') {
             if (isNative(obj)) return obj.constructor.name
             if (obj instanceof RegExp || obj instanceof String) return obj.toString()
@@ -43,10 +46,20 @@ module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
                     copy.vals.push(value)
                 }
                 objects[newId] = copy
+            } else if (isArray(obj)) {
+                const copy = {}
+                for (let i = 0; i < obj.length; i++) {
+                    copy[i] = stringify(obj[i])
+                    defProp(obj, i, obj[i])
+                }
+                copy.length = obj.length
+                copy.final = obj.length
+                objects[newId] = copy
             } else {
-                const copy = isArray(obj) ? [...obj] : { ...obj }
+                const copy = { ...obj }
                 for (const key in copy) {
                     copy[key] = stringify(obj[key])
+                    defProp(obj, key, obj[key])
                 }
                 objects[newId] = copy
             }
@@ -66,14 +79,8 @@ module.exports = function ({ map = new Map(), objects = {}, types = {} }) {
             return obj
         }
     }
+    return stringify
 }
 
-const isArray = (obj) => Array.isArray(obj) || ['Int8Array',
-    'Uint8Array',
-    'Int16Array',
-    'Uint16Array',
-    'Int32Array',
-    'Uint32Array',
-    'Float32Array',
-    'Float64Array'].includes(obj.constructor.name)
+
 

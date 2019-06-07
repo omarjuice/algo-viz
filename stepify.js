@@ -53,6 +53,7 @@ module.exports = function (input) {
                         if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
                             return path.stop()
                         }
+                        console.log(path.node)
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
                         if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
                         const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(

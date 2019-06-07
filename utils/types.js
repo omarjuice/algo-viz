@@ -8,14 +8,10 @@ module.exports = {
     CALL: 'CALL',
     DELETE: 'DELETE',
     SPREAD: 'SPREAD',
-    ARRAY: 'ARRAY',
-    OBJECT: 'OBJECT',
     RETURN: 'RETURN',
     BLOCK: 'BLOCK',
-    ACTION: 'ACTION',
     FUNC: 'FUNC',
     PROGRAM: 'PROGRAM',
-    ACTION: 'ACTION',
-    ITERATE: 'ITERATE',
-    METHOD: 'METHOD'
+    GET: 'GET',
+    SET: 'SET'
 }

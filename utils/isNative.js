@@ -43,7 +43,11 @@ const NATIVE_OBJECTS = [
     global,
     process
 ]
+const natives = new Set()
+for (const obj of NATIVE_OBJECTS) {
+    natives.add(obj)
+}
 
 module.exports = function isNative(object) {
-    return NATIVE_OBJECTS.includes(object)
+    return natives.has(object)
 }
