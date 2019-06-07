@@ -1,9 +1,7 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
-const defineProperty = require('./defineProperty')
 const isArray = require('./isArray')
-module.exports = function ({ map = new Map(), objects = {}, types = {}, __ }) {
-    const defProp = defineProperty(__, stringify)
+module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp }) {
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
             if (isNative(obj)) return obj.constructor.name
@@ -12,7 +10,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, __ }) {
                 return map.get(obj)
             }
             let newId = '___' + randomString(5)
-            while (map.has(newId)) {
+            while (newId in objects) {
                 newId = '___' + randomString(5)
             }
             map.set(obj, newId)
@@ -59,6 +57,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, __ }) {
                 const copy = { ...obj }
                 for (const key in copy) {
                     copy[key] = stringify(obj[key])
+
                     defProp(obj, key, obj[key])
                 }
                 objects[newId] = copy

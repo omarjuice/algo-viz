@@ -28,7 +28,7 @@ describe('stringify', () => {
         const map = new Map()
         const objects = {}
         const obj = new Circular
-        expect(() => stringifier({ obj, objects, map, __: val => val })(obj)).not.toThrow()
+        expect(() => stringifier({ obj, objects, map, defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }) })(obj)).not.toThrow()
 
     })
     test('Primitive values remain intact and refs are created for objects', () => {
@@ -36,7 +36,7 @@ describe('stringify', () => {
         const objects = {}
         const obj = new Circular
         const types = {}
-        const stringify = stringifier({ map, objects, types, __: val => val })
+        const stringify = stringifier({ map, objects, types, defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }) })
         stringify(obj)
         const copy = objects[map.get(obj)]
         for (let key in obj) {

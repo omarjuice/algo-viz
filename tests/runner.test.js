@@ -32,8 +32,12 @@ async function main(program) {
             this.map = new Map()
             this.objects = {}
             this.types = {}
-            this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this) })
-            this.defProp = defineProperty(this.__.bind(this), this.stringify)
+            this.signature = require('../utils/signature')
+            this.defProp = (obj, key, value) => {
+                Object.defineProperty(obj, key, { value }, this.signature)
+            }
+            this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp })
+            this.reset = defineProperty(this.__.bind(this), this.stringify, this.map)
             this.callStack = []
             this.allow = null
             this.name = name
@@ -62,7 +66,6 @@ async function main(program) {
                 if (info.type === TYPES.RETURN) {
                     this.callStack.pop()
                 } else {
-                    // info.object = this.stringify(info.object)
                     this.callStack.push(info)
                 }
             }
@@ -81,8 +84,16 @@ async function main(program) {
                     const method = info.access[info.access.length - 1]
                     if (obj[method] === mutative[method]) {
                         const prevLen = this.objects[id].final
+                        this.ignore = false
+                        if (obj.length !== prevLen) {
+                            this.__(obj.length, {
+                                type: TYPES.SET,
+                                scope: null,
+                                object: this.map.get(obj),
+                                access: ['length']
+                            })
+                        }
                         if (prevLen < obj.length) {
-                            this.ignore = true
                             for (let i = prevLen, val = obj[i]; i < obj.length; val = obj[++i]) {
                                 val = obj[i]
                                 this.defProp(obj, i, val)
@@ -90,13 +101,6 @@ async function main(program) {
                             }
 
                         }
-                        this.ignore = false
-                        this.__(obj.length, {
-                            type: TYPES.SET,
-                            scope: null,
-                            object: this.map.get(obj),
-                            access: ['length']
-                        })
                         this.objects[id].final = obj.length
                     }
                 }
@@ -141,7 +145,9 @@ async function main(program) {
                 if (objectTypes.includes(info.type)) {
                     info.object = this.stringify(info.object)
                 }
+                // console.log('BEFORE : ,', val)
                 info.value = this.stringify(val)
+                // console.log('AFTER: ', info.value)
                 if (![TYPES.ACCESSOR, TYPES.PROP_ASSIGNMENT].includes(info.type)) {
                     this.steps.push(info)
                 }

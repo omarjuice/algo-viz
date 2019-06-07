@@ -8,67 +8,14 @@ const randomString = require('./utils/randomString')
 const defineProperty = require('./utils/defineProperty')
 const isArray = require('./utils/isArray')
 const mutative = require('./utils/mutative')
+
 const print = v => { return console.log(v), v };
 
 
 
 const func = `
-class MinMaxStack {
-    constructor() {
-        this.mins = []
-        this.maxes = []
-        this.stack = []
-    }
-    peek() {
-        // Write your code here.
-        return this.stack[this.stack.length - 1]
-    }
-
-    pop() {
-        // Write your code here.
-        this.mins.pop()
-        this.maxes.pop()
-        return this.stack.pop()
-    }
-
-    push(number) {
-        // Write your code here.
-        this.stack.push(number)
-        if (this.getMax() === undefined || number > this.getMax()) {
-            this.maxes.push(number)
-        } else {
-            this.maxes.push(this.getMax())
-        }
-        if (this.getMin() === undefined || number < this.getMin()) {
-            this.mins.push(number)
-        } else {
-            this.mins.push(this.getMin())
-        }
-    }
-
-    getMin() {
-        // Write your code here.
-        return this.mins[this.mins.length - 1]
-    }
-
-    getMax() {
-        // Write your code here.
-        return this.maxes[this.maxes.length - 1]
-    }
-}
-const stack = new MinMaxStack()
-stack.push(2);
-stack.push(0);
-stack.push(5);
-stack.push(4);
-stack.push(4);
-stack.push(11);
-stack.push(-11);
-
-stack.push(6);
-
-[stack.pop(), stack.pop(), stack.pop()]
-
+const arr = [1,2,3]
+const arr2 = [...arr, 4,5,6]
 `
 class Runner {
     constructor(name) {
@@ -76,8 +23,12 @@ class Runner {
         this.map = new Map()
         this.objects = {}
         this.types = {}
-        this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this) })
-        this.defProp = defineProperty(this.__.bind(this), this.stringify)
+        this.signature = require('./utils/signature')
+        this.defProp = (obj, key, value) => {
+            Object.defineProperty(obj, key, { value }, this.signature)
+        }
+        this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp })
+        this.reset = defineProperty(this.__.bind(this), this.stringify, this.map)
         this.callStack = []
         this.allow = null
         this.name = name
@@ -106,7 +57,6 @@ class Runner {
             if (info.type === TYPES.RETURN) {
                 this.callStack.pop()
             } else {
-                // info.object = this.stringify(info.object)
                 this.callStack.push(info)
             }
         }
@@ -125,8 +75,16 @@ class Runner {
                 const method = info.access[info.access.length - 1]
                 if (obj[method] === mutative[method]) {
                     const prevLen = this.objects[id].final
+                    this.ignore = false
+                    if (obj.length !== prevLen) {
+                        this.__(obj.length, {
+                            type: TYPES.SET,
+                            scope: null,
+                            object: this.map.get(obj),
+                            access: ['length']
+                        })
+                    }
                     if (prevLen < obj.length) {
-                        this.ignore = true
                         for (let i = prevLen, val = obj[i]; i < obj.length; val = obj[++i]) {
                             val = obj[i]
                             this.defProp(obj, i, val)
@@ -134,13 +92,6 @@ class Runner {
                         }
 
                     }
-                    this.ignore = false
-                    this.__(obj.length, {
-                        type: TYPES.SET,
-                        scope: null,
-                        object: this.map.get(obj),
-                        access: ['length']
-                    })
                     this.objects[id].final = obj.length
                 }
             }
@@ -185,7 +136,9 @@ class Runner {
             if (objectTypes.includes(info.type)) {
                 info.object = this.stringify(info.object)
             }
+            // console.log('BEFORE : ,', val)
             info.value = this.stringify(val)
+            // console.log('AFTER: ', info.value)
             if (![TYPES.ACCESSOR, TYPES.PROP_ASSIGNMENT].includes(info.type)) {
                 this.steps.push(info)
             }
@@ -221,7 +174,9 @@ global[_name] = new Runner(_name)
 
 eval(code)
 // configEnv.reset()
+global[_name].reset()
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
+
 const { identifiers } = stepIterator(global[_name].steps, {})
 // console.log(identifiers);
 
