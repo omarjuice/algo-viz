@@ -189,6 +189,7 @@ module.exports = {
         push(number) {
             // Write your code here.
             this.stack.push(number)
+            var k = number
             if (this.getMax() === undefined || number > this.getMax()) {
                 this.maxes.push(number)
             } else {

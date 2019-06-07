@@ -53,7 +53,6 @@ module.exports = function (input) {
                         if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
                             return path.stop()
                         }
-                        console.log(path.node)
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
                         if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
                         const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
@@ -63,7 +62,7 @@ module.exports = function (input) {
                                     type: TYPES.DECLARATION,
                                     name: param.name,
                                     scope: getScope(path),
-                                    block: false
+                                    block: true
                                 }
                             )
                         ) || param);
@@ -234,16 +233,16 @@ module.exports = function (input) {
                             if (!t.isMemberExpression(path.parent)) {
                                 if (t.isCallExpression(path.parent)) return
                                 if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
-                                const details = {
-                                    type: TYPES.ACCESSOR,
-                                    scope: getScope(path)
-                                }
-                                const name = path.node.start && code.slice(path.node.start, path.node.end)
-                                if (name) details.name = name
-                                details.object = object
-                                details.objectName = object.name
-                                details.access = expression
-                                path.replaceWith(proxy(path.node, details))
+                                // const details = {
+                                //     type: TYPES.ACCESSOR,
+                                //     scope: getScope(path)
+                                // }
+                                // const name = path.node.start && code.slice(path.node.start, path.node.end)
+                                // if (name) details.name = name
+                                // details.object = object
+                                // details.objectName = object.name
+                                // details.access = expression
+                                // path.replaceWith(proxy(path.node, details))
                             }
                         } else {
                             path.stop()

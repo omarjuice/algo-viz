@@ -13,10 +13,61 @@ const print = v => { return console.log(v), v };
 
 
 const func = `
-    const obj = [1,2,3]
-    obj.splice(0, 2, 'x', 'x', 'x', 'x')
-    const obj2 = [...obj]
-    
+class MinMaxStack {
+    constructor() {
+        this.mins = []
+        this.maxes = []
+        this.stack = []
+    }
+    peek() {
+        // Write your code here.
+        return this.stack[this.stack.length - 1]
+    }
+
+    pop() {
+        // Write your code here.
+        this.mins.pop()
+        this.maxes.pop()
+        return this.stack.pop()
+    }
+
+    push(number) {
+        // Write your code here.
+        this.stack.push(number)
+        if (this.getMax() === undefined || number > this.getMax()) {
+            this.maxes.push(number)
+        } else {
+            this.maxes.push(this.getMax())
+        }
+        if (this.getMin() === undefined || number < this.getMin()) {
+            this.mins.push(number)
+        } else {
+            this.mins.push(this.getMin())
+        }
+    }
+
+    getMin() {
+        // Write your code here.
+        return this.mins[this.mins.length - 1]
+    }
+
+    getMax() {
+        // Write your code here.
+        return this.maxes[this.maxes.length - 1]
+    }
+}
+const stack = new MinMaxStack()
+stack.push(2);
+stack.push(0);
+stack.push(5);
+stack.push(4);
+stack.push(4);
+stack.push(11);
+stack.push(-11);
+
+stack.push(6);
+
+[stack.pop(), stack.pop(), stack.pop()]
 
 `
 class Runner {
@@ -40,8 +91,8 @@ class Runner {
         this.objects[nullLiteral] = 'null'
     }
     __(val, info) {
-        if (this.ignore) return
-        const objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.ACTION, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR, TYPES.ITERATE]
+        if (this.ignore) return val
+        const objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR, TYPES.SET, TYPES.GET, TYPES.METHOD]
         if ([TYPES.CALL, TYPES.METHODCALL, TYPES.ACTION].includes(info.type)) {
             if (info.arguments) {
                 const id = this.stringify(info.arguments)
@@ -55,59 +106,27 @@ class Runner {
             if (info.type === TYPES.RETURN) {
                 this.callStack.pop()
             } else {
-                info.object = this.stringify(info.object)
+                // info.object = this.stringify(info.object)
                 this.callStack.push(info)
             }
         }
         if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update
         }
-        if (info.type === TYPES.PROP_ASSIGNMENT) {
-            let obj = info.object
-            this.ignore = true
-            for (let i = 0; i < info.access.length - 1; i++) {
-                obj = obj[info.access[i]]
-            }
-            const id = this.map.get(obj)
-            const prop = info.access[info.access.length - 1]
-            const objIsArray = isArray(obj)
-            if (!(info.access[info.access.length - 1] in this.objects[id])) {
-                if (!objIsArray) {
-                    this.defProp(obj, prop, val)
-                } else {
-                    const length = this.objects[id].length;
-                    if (obj.length > length) {
-                        for (let i = length, el = obj[i]; i < obj.length; i++) {
-                            this.defProp(obj, i, el)
-                        }
-                        this.ignore = false
-                        this.__(obj.length, {
-                            type: TYPES.SET,
-                            scope: null,
-                            object: this.map.get(obj),
-                            access: ['length']
-                        })
-                    }
 
-                }
-                this.ignore = false
-                obj[prop] = val
-            }
-            this.ignore = false
-        }
         if (info.type === TYPES.METHODCALL) {
             let obj = info.object
             this.ignore = true
             for (let i = 0; i < info.access.length - 1; i++) {
                 obj = obj[info.access[i]]
             }
-            if (isArray(obj)) {
+            if (obj && isArray(obj)) {
                 const id = this.map.get(obj)
                 const method = info.access[info.access.length - 1]
                 if (obj[method] === mutative[method]) {
                     const prevLen = this.objects[id].final
                     if (prevLen < obj.length) {
-                        this.ignore = false
+                        this.ignore = true
                         for (let i = prevLen, val = obj[i]; i < obj.length; val = obj[++i]) {
                             val = obj[i]
                             this.defProp(obj, i, val)
@@ -125,10 +144,44 @@ class Runner {
                     this.objects[id].final = obj.length
                 }
             }
+            this.ignore = false
         }
         const currentFunc = this.callStack[this.callStack.length - 1]
         const isConstructor = currentFunc && currentFunc.type === TYPES.METHOD && currentFunc.kind === 'constructor'
         if (!(isConstructor && objectTypes.concat([TYPES.DECLARATION]).includes(info.type) && info.object === currentFunc.object)) {
+            if (info.type === TYPES.PROP_ASSIGNMENT) {
+                let obj = info.object
+                this.ignore = true
+                for (let i = 0; i < info.access.length - 1; i++) {
+                    obj = obj[info.access[i]]
+                }
+                const id = this.map.get(obj)
+                const prop = info.access[info.access.length - 1]
+                const objIsArray = isArray(obj)
+                if (!(info.access[info.access.length - 1] in this.objects[id])) {
+                    if (!objIsArray) {
+                        this.defProp(obj, prop, val)
+                    } else {
+                        const length = this.objects[id].length;
+                        if (obj.length > length) {
+                            for (let i = length, el = obj[i]; i < obj.length; i++) {
+                                this.defProp(obj, i, el)
+                            }
+                            this.ignore = false
+                            this.__(obj.length, {
+                                type: TYPES.SET,
+                                scope: null,
+                                object: this.map.get(obj),
+                                access: ['length']
+                            })
+                        }
+
+                    }
+                    this.ignore = false
+                    obj[prop] = val
+                }
+                this.ignore = false
+            }
             if (objectTypes.includes(info.type)) {
                 info.object = this.stringify(info.object)
             }
@@ -137,6 +190,7 @@ class Runner {
                 this.steps.push(info)
             }
         }
+        // console.log(info.type, info.name)
         return val
     }
 }
@@ -170,6 +224,7 @@ eval(code)
 console.log('NUMBER OF STEPS ', global[_name].steps.length);
 const { identifiers } = stepIterator(global[_name].steps, {})
 // console.log(identifiers);
+
 fs.writeFileSync('executed.json', JSON.stringify({
     steps: global[_name].steps,
     objects: global[_name].objects,

@@ -8,6 +8,7 @@ module.exports = {
     CALL: 'CALL',
     DELETE: 'DELETE',
     SPREAD: 'SPREAD',
+    METHOD: 'METHOD',
     RETURN: 'RETURN',
     BLOCK: 'BLOCK',
     FUNC: 'FUNC',

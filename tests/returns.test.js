@@ -49,7 +49,7 @@ async function testRunner(funcString) {
 }
 
 for (let func in funcs) {
-    test(func, async () => {
+    test('RETURNS ' + func, async () => {
         await testRunner(funcs[func])
     })
 }

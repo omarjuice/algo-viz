@@ -42,6 +42,7 @@ module.exports = function (steps, {
                 }
                 const ids = identifiers[scope][name]
                 ids[ids.length - 1] = step.value
+
             } else if (step.type === TYPES.ASSIGNMENT) {
                 let current = scope
                 let vals = null
@@ -55,9 +56,9 @@ module.exports = function (steps, {
                 }
             }
         }
-        if ([TYPES.FUNC, TYPES.RETURN].includes(step.type)) {
+        if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(step.type)) {
             const fScope = step.scope[1]
-            if (step.type === TYPES.FUNC) {
+            if (step.type !== TYPES.RETURN) {
                 callStack.push(step.name)
                 funcScopes[fScope] = step.name
                 const queue = [fScope]
