@@ -1,7 +1,9 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
 const isArray = require('./isArray')
-module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp }) {
+const reassignMutative = require('./reassignMutative')
+module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __ }) {
+    const { reassignArrayMethods, reassignMapMethods } = reassignMutative(objects, map, __, defProp, stringify)
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
             if (isNative(obj)) return obj.constructor.name
@@ -17,8 +19,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp 
 
             if (obj instanceof Map) {
                 const copy = {
-                    keys: {},
-                    vals: []
+
                 }
                 for (const entry of obj.entries()) {
                     const [key, val] = entry
@@ -27,9 +28,9 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp 
                         newKey = stringify(key)
                     }
                     let newVal = stringify(val)
-                    copy.keys[newKey] = copy.vals.length
-                    copy.vals.push([newKey, newVal])
+                    copy[newKey] = newVal
                 }
+                reassignMapMethods(obj)
                 objects[newId] = copy
             } else if (obj instanceof Set) {
                 const copy = {
@@ -52,6 +53,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp 
                 }
                 copy.length = obj.length
                 copy.final = obj.length
+                reassignArrayMethods(obj)
                 objects[newId] = copy
             } else {
                 const copy = { ...obj }
@@ -70,8 +72,18 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp 
                 return map.get('undefined')
             } else if (obj === null) {
                 return map.get('null')
+            } else if (Number.isNaN(obj)) {
+                return map.get('NaN')
             } else if (typeof obj === 'function') {
-                return obj.name && obj.name[0] !== '_' ? obj.name : 'function'
+                if (map.has(obj)) return map.get(obj)
+                const name = obj.name && obj.name[0] !== '_' ? obj.name : 'function'
+                let id;
+                while (!id || (id in objects)) {
+                    id = '__' + randomString(5)
+                }
+                objects[id] = `[Function: ${name}]`
+                map.set(obj, id)
+                return id
             } else if (typeof obj === 'symbol') {
                 return obj.toString()
             }

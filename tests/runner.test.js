@@ -1,7 +1,9 @@
 
 const stepIterator = require('../stepIterator')
-
+const babel = require('@babel/core')
+const fs = require('fs')
 const funcs = require('./funcs')
+const stepify = require('../stepify')
 class Circular {
     constructor() {
         this.value = this

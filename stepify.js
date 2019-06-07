@@ -132,7 +132,6 @@ module.exports = function (input) {
                                     }
                                 )
                                 declaration.init.visited = true
-                                // newNodes.unshift(proxy(identifier, { type: TYPES.DECLARATION, name: identifier.name, scope: getScope(path) }))
                             }
 
                         });
@@ -149,7 +148,6 @@ module.exports = function (input) {
                             const { object, expression } = computeAccessor(path, assignment.left)
                             details.type = TYPES.PROP_ASSIGNMENT;
                             details.object = object
-                            details.objectName = object.name
                             details.access = expression
                         }
                         path.replaceWith(proxy(assignment, details))
@@ -157,20 +155,13 @@ module.exports = function (input) {
                 },
                 UpdateExpression: {
                     exit(path) {
-
                         const name = path.node.argument.start && code.slice(path.node.argument.start, path.node.argument.end)
                         const details = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
                         if (name) {
                             details.name = name
                         }
                         if (t.isMemberExpression(path.node.argument)) {
-                            const { object, expression } = computeAccessor(path, path.node.argument)
-                            if (!object) return
-                            details.type = TYPES.PROP_ASSIGNMENT;
-                            details.object = object
-                            details.objectName = object.name
-                            details.access = expression
-                            if (object.name) details
+                            return
                         } else if (t.isIdentifier(path.node.argument)) {
                             if (isBarredObject(path.node.argument.name)) return
                         }
@@ -180,7 +171,6 @@ module.exports = function (input) {
                             details.update = path.node.operator === '++' ? 1 : -1
                         }
                         path.replaceWith(proxy(path.node, details))
-
                     }
 
                 },
@@ -221,32 +211,21 @@ module.exports = function (input) {
                     }
                 },
                 MemberExpression: {
-                    enter(path) {
-                        if (!isBarredObject(path.node.object.name)) {
-                            reassignComputedValue(path, path.node)
-                        }
-                    },
                     exit(path) {
                         if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
-                        const { object, expression } = computeAccessor(path, path.node)
-                        if (object) {
-                            if (!t.isMemberExpression(path.parent)) {
-                                if (t.isCallExpression(path.parent)) return
-                                if (t.isAssignmentExpression(path.parent) && path.parent.left === path.node || t.isUpdateExpression(path.parent)) return
-                                // const details = {
-                                //     type: TYPES.ACCESSOR,
-                                //     scope: getScope(path)
-                                // }
-                                // const name = path.node.start && code.slice(path.node.start, path.node.end)
-                                // if (name) details.name = name
-                                // details.object = object
-                                // details.objectName = object.name
-                                // details.access = expression
-                                // path.replaceWith(proxy(path.node, details))
+                        const { object } = computeAccessor(path, path.node)
+                        if (!object) return path.stop()
+                        if (!t.isMemberExpression(path.parent) && !t.isCallExpression(path.parent) && !t.isAssignmentExpression(path.parent)) {
+                            const name = code.slice(path.node.start, path.node.end)
+                            const details = {
+                                scope: getScope(path)
                             }
-                        } else {
-                            path.stop()
+                            details.type = TYPES.EXPRESSION
+                            if (path.node.start) details.name = name;
+                            const node = proxy(path.node, details)
+                            path.replaceWith(node)
                         }
+
                     }
                 },
                 ForStatement(path) {
@@ -259,7 +238,6 @@ module.exports = function (input) {
                                 name = path.node.init.left.name
                             }
                             if (!name || name[0] === '_') return
-                            // path.node.body.body.unshift(proxy(t.identifier(name), { type: TYPES.ASSIGNMENT, name, scope: getScope(path) }))
                         }
                         if (path.node.update && t.isUpdateExpression(path.node.update)) {
                             path.node.update.prefix = true
@@ -267,20 +245,9 @@ module.exports = function (input) {
                     }
                 },
                 ForOfStatement: {
-                    enter(path) {
-                        reassignComputedValue(path, path.node, 'right', true)
-                    },
                     exit(path) {
                         if (t.isBlockStatement(path.node.body)) {
-                            const iterationName = createId(5, 1)
-                            const nearestSibling = path.findParent((parent) => t.isBlockStatement(parent) || t.isProgram(parent))
-                            let i = 0;
-                            while (nearestSibling.node.body[i] !== path.node) i++
-                            const newNode = t.variableDeclaration('let', [t.variableDeclarator(t.identifier(iterationName), t.numericLiteral(-1))])
-                            // const newNode = t.assignmentExpression('=', t.memberExpression(t.identifier(_name), t.identifier(iterationName)), t.numericLiteral(-1))
-                            nearestSibling.node.body.splice(i, 0, newNode)
                             const variables = [];
-                            const accessors = [];
                             (path.node.left.declarations || [{ id: path.node.left }]).forEach(declaration => {
                                 const { id: identifier } = declaration
                                 variables.push(t.expressionStatement(proxy(
@@ -292,18 +259,13 @@ module.exports = function (input) {
                                         block: path.node.left.kind !== 'var'
                                     }
                                 )))
-                                accessors.push(t.expressionStatement(proxy(
-                                    identifier,
-                                    {
-                                        type: TYPES.ACCESSOR,
-                                        name: identifier.name,
-                                        object: t.isAssignmentExpression(path.node.right) ? path.node.right.left : path.node.right,
-                                        access: t.arrayExpression([t.updateExpression('++', newNode.declarations[0].id, true)]),
-                                        scope: getScope(path)
-                                    })))
                             })
 
-                            path.node.body.body = [...accessors, ...variables, ...path.node.body.body]
+                            path.node.body.body = [
+                                // ...accessors,
+                                ...variables,
+                                ...path.node.body.body
+                            ]
                         }
                     }
                 },
@@ -349,35 +311,14 @@ module.exports = function (input) {
                             details.type = TYPES.METHODCALL
                             const { object, expression } = computeAccessor(path, call.callee)
                             details.object = object
-                            details.objectName = object.name
                             details.access = expression
                         } else {
                             details.type = TYPES.CALL
                         }
-
-                        // details.arguments = []
-                        // call.arguments.forEach((arg, i) => {
-                        //     if (t.isAssignmentExpression(arg)) {
-                        //         call.arguments[i] = assignmentProxy
-                        //         details.arguments.push(reducePropExpressions(assignmentProxy.arguments[0].left))
-                        //     } else if (t.isSpreadElement(arg)) {
-                        //         const object = reassignSpread(path, arg)
-                        //         details.arguments.push(t.spreadElement(object))
-                        //     } else {
-                        //         const reassigned = reassignComputedValue(path, call.arguments, i)
-                        //         details.arguments.push(reassigned ? call.arguments[i].left : arg)
-                        //     }
-                        // })
                         path.replaceWith(proxy(call, details))
                     }
                 },
-                SpreadElement: {
-                    exit(path) {
-                        if (!t.isCallExpression(path.parent)) {
-                            reassignSpread(path, path.node)
-                        }
-                    }
-                },
+
                 ConditionalExpression: {
                     exit(path) {
                         const conditional = path.node
@@ -402,7 +343,6 @@ module.exports = function (input) {
                                 type: TYPES.DELETE,
                                 scope: getScope(path),
                                 object,
-                                objectName: object.name,
                                 access: expression,
                                 name: unary.start && code.slice(unary.start, unary.end)
                             }

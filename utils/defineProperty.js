@@ -7,9 +7,6 @@ module.exports = function (__, stringify, map) {
             if (map.has(o)) {
                 let { enumerable, configurable, writable, value, get, set } = attributes
                 let getFlag = true
-                if (p === 'l') {
-                    console.log(p, attributes)
-                }
                 if (enumerable || enumerable === undefined) {
 
                     if (typeof get === 'function') {

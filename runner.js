@@ -4,38 +4,55 @@ const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
 const defineProperty = require('./utils/defineProperty')
 const isArray = require('./utils/isArray')
-const mutative = require('./utils/mutative')
+const mutative = require('./utils/reassignMutative')
 
 
 class Runner {
     constructor(name) {
+        // The bucket for capturing steps to be used for visualization
         this.steps = []
+        // keeps references of objects and their generated id's
         this.map = new Map()
+        // the actual objects, with flattened references
         this.objects = {}
+        // the constructors of objects
         this.types = {}
+        // callStack for determining the type of function we are currently in
+        this.callStack = []
+        // a unique signature solely for preventing Object.defineProperty from throwing an error if it was called by the Runner or stringify()
         this.signature = require('./utils/signature')
+        // a wrapper for Object.defineProperty that gives it the signature
         this.defProp = (obj, key, value) => {
             Object.defineProperty(obj, key, { value }, this.signature)
         }
+        // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
         this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp })
+        // resets hijacked native methods
         this.reset = defineProperty(this.__.bind(this), this.stringify, this.map)
-        this.callStack = []
         this.name = name
+        // types that will have an object property
         this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR, TYPES.SET, TYPES.GET, TYPES.METHOD]
+        // a flag that will ignore info while set to true
         this.ignore = false
+
+        // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
         const undefLiteral = '_' + randomString(5)
         const nullLiteral = '_' + randomString(5)
+        const nanLiteral = '_' + randomString(5)
         this.map.set('undefined', undefLiteral)
         this.map.set('null', nullLiteral)
+        this.map.set('NaN', nanLiteral)
         this.objects[undefLiteral] = 'undefined'
         this.objects[nullLiteral] = 'null'
+        this.objects[nanLiteral] = 'NaN'
     }
 
 
     __(val, info) {
+        // main
         if (this.ignore) return val
 
-        if ([TYPES.CALL, TYPES.METHODCALL, TYPES.ACTION].includes(info.type)) {
+        if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
             this._c(val, info)
         }
 
@@ -49,6 +66,8 @@ class Runner {
         if (info.type === TYPES.METHODCALL) {
             this._m(val, info)
         }
+        // is the currently executing function a constructor ?
+        // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
         const currentFunc = this.callStack[this.callStack.length - 1]
         const isConstructor = currentFunc && currentFunc.type === TYPES.METHOD && currentFunc.kind === 'constructor'
         if (!(isConstructor && this.objectTypes.concat([TYPES.DECLARATION]).includes(info.type) && info.object === currentFunc.object)) {
@@ -60,12 +79,14 @@ class Runner {
             }
             info.value = this.stringify(val)
             if (![TYPES.ACCESSOR, TYPES.PROP_ASSIGNMENT].includes(info.type)) {
+                // we dont actually care about those types
                 this.steps.push(info)
             }
         }
         return val
     }
     _c(val, info) {
+        // for calls (the value of the call itself)
         if (info.arguments) {
             const id = this.stringify(info.arguments)
             info.arguments = this.objects[id]
@@ -74,6 +95,7 @@ class Runner {
         }
     }
     _f(val, info) {
+        // for function invocations and returns
         if (info.type === TYPES.RETURN) {
             this.callStack.pop()
         } else {
@@ -81,52 +103,57 @@ class Runner {
         }
     }
     _m(val, info) {
-        let obj = info.object
-        this.ignore = true
-        for (let i = 0; i < info.access.length - 1; i++) {
-            obj = obj[info.access[i]]
-        }
-        if (obj && isArray(obj)) {
-            const id = this.map.get(obj)
-            const method = info.access[info.access.length - 1]
-            if (obj[method] === mutative[method]) {
-                const prevLen = this.objects[id].final
-                this.ignore = false
-                if (obj.length !== prevLen) {
-                    this.__(obj.length, {
-                        type: TYPES.SET,
-                        scope: null,
-                        object: this.map.get(obj),
-                        access: ['length']
-                    })
-                }
-                if (prevLen < obj.length) {
-                    for (let i = prevLen, value = obj[i]; i < obj.length; value = obj[++i]) {
-                        value = obj[i]
-                        this.defProp(obj, i, value)
-                        obj[i] = value
-                    }
+        // for method calls
+        // traverse the accessor to get the actual object
+        // let obj = info.object
+        // this.ignore = true
+        // for (let i = 0; i < info.access.length - 1; i++) {
+        //     obj = obj[info.access[i]]
+        // }
+        // if (obj && isArray(obj)) {
+        //     const id = this.map.get(obj)
+        //     const method = info.access[info.access.length - 1]
+        //     if (obj[method] === mutative[method]) {
+        //         const prevLen = this.objects[id].final
+        //         this.ignore = false
+        //         if (obj.length !== prevLen) {
+        //             this.__(obj.length, {
+        //                 type: TYPES.SET,
+        //                 scope: null,
+        //                 object: this.map.get(obj),
+        //                 access: ['length']
+        //             })
+        //         }
+        //         if (prevLen < obj.length) {
+        //             for (let i = prevLen, value = obj[i]; i < obj.length; value = obj[++i]) {
+        //                 value = obj[i]
+        //                 this.defProp(obj, i, value)
+        //                 obj[i] = value
+        //             }
 
-                }
-                this.objects[id].final = obj.length
-            }
-        }
-        this.ignore = false
+        //         }
+        //         this.objects[id].final = obj.length
+        //     }
+        // }
+        // this.ignore = false
     }
     _p(val, info) {
         let obj = info.object
         this.ignore = true
+        //traverse accessors
         for (let i = 0; i < info.access.length - 1; i++) {
             obj = obj[info.access[i]]
         }
         const id = this.map.get(obj)
         const prop = info.access[info.access.length - 1]
         const objIsArray = isArray(obj)
-        if (!(info.access[info.access.length - 1] in this.objects[id])) {
+        if (!Object.getOwnPropertyDescriptor(obj, prop).get) {
             if (!objIsArray) {
                 this.defProp(obj, prop, val)
             } else {
-                const length = this.objects[id].length;
+                // because an arrays length can change if an assignment is given to an element beyond its length
+                // we must traverse the array to give getters and setters for all of the indices
+                const length = this.objects[id].final;
                 if (obj.length > length) {
                     for (let i = length, el = obj[i]; i < obj.length; i++) {
                         this.defProp(obj, i, el)

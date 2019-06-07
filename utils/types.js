@@ -7,12 +7,12 @@ module.exports = {
     METHODCALL: 'METHODCALL',
     CALL: 'CALL',
     DELETE: 'DELETE',
-    SPREAD: 'SPREAD',
     METHOD: 'METHOD',
     RETURN: 'RETURN',
     BLOCK: 'BLOCK',
     FUNC: 'FUNC',
     PROGRAM: 'PROGRAM',
     GET: 'GET',
-    SET: 'SET'
+    SET: 'SET',
+    CLEAR: 'CLEAR'
 }
