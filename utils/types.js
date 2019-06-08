@@ -14,5 +14,6 @@ module.exports = {
     PROGRAM: 'PROGRAM',
     GET: 'GET',
     SET: 'SET',
-    CLEAR: 'CLEAR'
+    CLEAR: 'CLEAR',
+    IN: 'IN'
 }

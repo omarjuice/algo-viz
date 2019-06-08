@@ -281,9 +281,9 @@ module.exports = function (input) {
                             return
                         }
                         if (expression.operator === 'in') {
-                            details.access = reassignComputedValue(path, expression, 'left') ? expression.left.left : expression.left
+                            details.access = t.arrayExpression([reassignComputedValue(path, expression, 'left') ? expression.left.left : expression.left])
                             details.object = reassignComputedValue(path, expression, 'right') ? expression.right.left : expression.right
-                            details.type = TYPES.ACCESSOR
+                            details.type = TYPES.IN
                         } else {
                             details.type = TYPES.EXPRESSION
                         }

@@ -4,7 +4,7 @@ const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
 const defineProperty = require('./utils/defineProperty')
 const isArray = require('./utils/isArray')
-
+const empty = require('./utils/empty')
 
 class Runner {
     constructor(name) {
@@ -27,10 +27,10 @@ class Runner {
         // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
         this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp })
         // resets hijacked native methods
-        this.reset = defineProperty(this.__.bind(this), this.stringify, this.map)
+        this.reset = defineProperty(this.__.bind(this), this.stringify, this.map, this.objects)
         this.name = name
         // types that will have an object property
-        this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.ACCESSOR, TYPES.SET, TYPES.GET, TYPES.METHOD]
+        this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
         // a flag that will ignore info while set to true
         this.ignore = false
 
@@ -38,12 +38,15 @@ class Runner {
         const undefLiteral = '_' + randomString(5)
         const nullLiteral = '_' + randomString(5)
         const nanLiteral = '_' + randomString(5)
+        const emptyLiteral = '_' + randomString(5)
         this.map.set('undefined', undefLiteral)
         this.map.set('null', nullLiteral)
         this.map.set('NaN', nanLiteral)
+        this.map.set(empty, emptyLiteral)
         this.objects[undefLiteral] = 'undefined'
         this.objects[nullLiteral] = 'null'
         this.objects[nanLiteral] = 'NaN'
+        this.objects[emptyLiteral] = '<empty>'
     }
 
 
@@ -51,7 +54,18 @@ class Runner {
         // main
         if (this.ignore) return val
 
-
+        if (info.type === TYPES.IN) {
+            if (val) {
+                this.ignore = true
+                val = info.object[info.access[0]] !== empty
+                this.ignore = false
+            }
+        }
+        if (info.type === TYPES.GET) {
+            if (val === empty) {
+                val = undefined
+            }
+        }
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(info.type)) {
             this._f(val, info)
         }
@@ -108,15 +122,17 @@ class Runner {
                 // we must traverse the array to give getters and setters for all of the indices
                 const length = this.objects[id].final;
                 if (obj.length > length) {
-                    for (let i = length, el = obj[i]; i < obj.length; i++) {
-                        this.defProp(obj, i, el)
-                    }
                     this.__(obj.length, {
                         type: TYPES.SET,
                         scope: null,
                         object: this.map.get(obj),
                         access: ['length']
                     })
+                    for (let i = length, el = obj[i]; i < obj.length; i++) {
+                        // we use a symbol to represent empty so that the `in` operator returns the proper value
+                        i in obj ? this.defProp(obj, i, el) : this.defProp(obj, i, empty)
+                    }
+
                 }
 
             }

@@ -2,6 +2,7 @@ const randomString = require('./randomString')
 const isNative = require('./isNative')
 const isArray = require('./isArray')
 const reassignMutative = require('./reassignMutative')
+const empty = require('./empty')
 module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __ }) {
     const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(objects, __, defProp, stringify)
     function stringify(obj) {
@@ -46,8 +47,13 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
             } else if (isArray(obj)) {
                 const copy = {}
                 for (let i = 0; i < obj.length; i++) {
-                    copy[i] = stringify(obj[i])
-                    defProp(obj, i, obj[i])
+                    let val = obj[i]
+                    // we use a symbol to represent empty so that the `in` operator returns the proper value
+                    if (!(i in obj)) {
+                        val = empty
+                    }
+                    copy[i] = stringify(val)
+                    defProp(obj, i, val)
                 }
                 copy.length = obj.length
                 copy.final = obj.length
@@ -74,6 +80,8 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 return map.get('null')
             } else if (Number.isNaN(obj)) {
                 return map.get('NaN')
+            } else if (obj === empty) {
+                return map.get(empty)
             } else if (typeof obj === 'function') {
                 if (map.has(obj)) return map.get(obj)
                 const native = isNative(obj)

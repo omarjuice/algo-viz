@@ -1,6 +1,7 @@
 const TYPES = require('./types')
 const signature = require('./signature')
-module.exports = function (__, stringify, map) {
+const empty = require('./empty')
+module.exports = function (__, stringify, map, objects) {
     const { defineProperty, defineProperties } = Object
     Object.defineProperty = function (o, p, attributes, sig) {
         try {
@@ -56,7 +57,7 @@ module.exports = function (__, stringify, map) {
                     delete attributes.value
                     delete attributes.enumerable
                     delete attributes.writable
-                    if (!(p in o)) {
+                    if (!(p in o) && map.get(o) in objects) {
                         __(value, {
                             type: TYPES.SET,
                             scope: null,
