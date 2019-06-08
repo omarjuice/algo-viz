@@ -44,7 +44,7 @@ async function main(program) {
     fs.writeFileSync('transpiled.js', code)
     const { _name } = input
 
-    global[_name] = new (require('../runner'))(_name)
+    global[_name] = new (require('../runner'))(_name, program)
 
     eval(code)
     const { steps, objects, types } = global[_name]

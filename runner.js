@@ -7,7 +7,8 @@ const isArray = require('./utils/isArray')
 const empty = require('./utils/empty')
 
 class Runner {
-    constructor(name) {
+    constructor(name, code) {
+        this.code = code
         // The bucket for capturing steps to be used for visualization
         this.steps = []
         // keeps references of objects and their generated id's
@@ -30,7 +31,7 @@ class Runner {
         this.reset = defineProperty(this.__.bind(this), this.stringify, this.map, this.objects)
         this.name = name
         // types that will have an object property
-        this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.SPREAD, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
+        this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
         // a flag that will ignore info while set to true
         this.ignore = false
 
@@ -61,6 +62,16 @@ class Runner {
                 this.ignore = false
             }
         }
+        if (info.type === TYPES.DELETE) {
+            let obj = info.object
+            for (let i = 0; i < info.access.length - 1; i++) {
+                obj = obj[info.access[i]]
+            }
+            let prop = info.access[info.access.length - 1]
+            if (isArray(obj)) {
+                this.defProp(obj, prop, empty)
+            }
+        }
         if (info.type === TYPES.GET) {
             if (val === empty) {
                 val = undefined
@@ -72,7 +83,6 @@ class Runner {
         if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update
         }
-
 
         // is the currently executing function a constructor ?
         // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
@@ -91,6 +101,7 @@ class Runner {
                 this.steps.push(info)
             }
         }
+        // if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
         return val
     }
 
@@ -107,6 +118,9 @@ class Runner {
         let obj = info.object
         this.ignore = true
         //traverse accessors
+
+        // redundant for current implementation, 
+        // but does not affect performance so we'll leave it for now incase accessor patterns change
         for (let i = 0; i < info.access.length - 1; i++) {
             obj = obj[info.access[i]]
         }

@@ -18,6 +18,9 @@ module.exports = function ({ t = types, input, code, Node }) {
     // Creates a wrapper around expressions to be used by the runner
     const proxy = (node, details) => {
         const _wrapper_id = t.identifier(_name)
+        if (node.start) {
+            details.name = t.arrayExpression([t.numericLiteral(node.start), t.numericLiteral(node.end)])
+        }
         return t.callExpression(
             t.memberExpression(_wrapper_id, t.identifier('__')),
             [node, construct(details) || t.nullLiteral()]
@@ -179,9 +182,9 @@ module.exports = function ({ t = types, input, code, Node }) {
             return true
         } else if (t.isConditionalExpression(path)) {
             return true
-        } else if (t.isUnaryExpression(path)) {
-            return true
         } else if (t.isObjectExpression(path) || t.isArrayExpression(path)) {
+            return true
+        } else if (t.isUnaryExpression(path)) {
             return true
         } else if (t.isAssignmentExpression(path)) {
             return true
