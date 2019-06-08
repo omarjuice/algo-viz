@@ -3,11 +3,11 @@ const isNative = require('./isNative')
 const isArray = require('./isArray')
 const reassignMutative = require('./reassignMutative')
 module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __ }) {
-    const { reassignArrayMethods, reassignMapMethods } = reassignMutative(objects, map, __, defProp, stringify)
+    const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(objects, __, defProp, stringify)
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
             if (isNative(obj)) return obj.constructor.name
-            if (obj instanceof RegExp || obj instanceof String) return obj.toString()
+            if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
             if (map.has(obj)) {
                 return map.get(obj)
             }
@@ -18,9 +18,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
             map.set(obj, newId)
 
             if (obj instanceof Map) {
-                const copy = {
-
-                }
+                const copy = {}
                 for (const entry of obj.entries()) {
                     const [key, val] = entry
                     let newKey = key
@@ -33,17 +31,14 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 reassignMapMethods(obj)
                 objects[newId] = copy
             } else if (obj instanceof Set) {
-                const copy = {
-                    keys: {},
-                    vals: []
-                }
+                const copy = {}
                 for (let value of obj.values()) {
                     if (value && typeof value === 'object' && !(value instanceof RegExp || value instanceof String)) {
                         value = stringify(value)
                     }
-                    copy.keys[value] = copy.vals.length
-                    copy.vals.push(value)
+                    copy[value] = value
                 }
+                reassignSetMethods(obj)
                 objects[newId] = copy
             } else if (isArray(obj)) {
                 const copy = {}
@@ -53,7 +48,9 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 }
                 copy.length = obj.length
                 copy.final = obj.length
-                reassignArrayMethods(obj)
+                if (Array.isArray(obj)) {
+                    reassignArrayMethods(obj)
+                }
                 objects[newId] = copy
             } else {
                 const copy = { ...obj }

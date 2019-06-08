@@ -2,7 +2,7 @@ const TYPES = require('./types')
 const { pop, push, unshift, shift, splice } = Array.prototype
 const arrayMethods = { pop, push, unshift, shift, splice }
 
-function reassignMutative(objects, map, __, defProp, stringify) {
+function reassignMutative(objects, __, defProp, stringify) {
     function arrayMutate(method) {
         return function (...args) {
             const result = method.call(this, ...args)
@@ -125,13 +125,93 @@ function reassignMutative(objects, map, __, defProp, stringify) {
             enumerable: false
         })
     }
+    function setMutate(obj = new Set()) {
+        const { has, add, clear, delete: setDelete, forEach } = obj
+        Object.defineProperty(obj, 'has', {
+            value: function (key) {
+                const result = has.call(this, key)
+                if (result) {
+                    return __(key, {
+                        type: TYPES.GET,
+                        scope: null,
+                        object: stringify(this),
+                        access: [stringify(key)]
+                    })
+                } else {
+                    return result
+                }
+            },
+            enumerable: false
+        })
+        Object.defineProperty(obj, 'add', {
+            value: function (val) {
+                const result = add.call(this, val)
+                __(val, {
+                    type: TYPES.SET,
+                    scope: null,
+                    object: stringify(this),
+                    access: [stringify(val)]
+                })
+                return result
+            },
+            enumerable: false
+        })
+        Object.defineProperty(obj, 'clear', {
+            value: function () {
+                clear.call(this)
+                __(undefined, {
+                    type: TYPES.CLEAR,
+                    scope: null,
+                    object: stringify(this),
+                })
+            },
+            enumerable: false
+        })
+        Object.defineProperty(obj, 'delete', {
+            value: function (key) {
+                const result = setDelete.call(this, key)
+                if (result) {
+                    __(result, {
+                        type: TYPES.DELETE,
+                        scope: null,
+                        object: stringify(this),
+                        access: [stringify(key)]
+                    })
+                }
+                return result
+            },
+            enumerable: false
+        })
+        Object.defineProperty(obj, 'forEach', {
+            value: function (...args) {
+                if (args[0]) {
+                    const [cb] = args
+                    args[0] = (key, val, ..._args) => {
+                        __(val, {
+                            type: TYPES.GET,
+                            scope: null,
+                            object: stringify(this),
+                            access: [stringify(key)]
+                        })
+                        return cb.call(args[1] || null, key, val, ..._args)
+                    }
+                }
+                return forEach.call(this, ...args)
+            },
+            enumerable: false
+        })
+    }
     return {
         reassignArrayMethods: function (arr) {
             for (const method in arrayMethods) {
-                Object.defineProperty(arr, method, { value: arrayMutate(arrayMethods[method]), enumerable: false })
+                Object.defineProperty(arr, method, {
+                    value: arrayMutate(arrayMethods[method]),
+                    enumerable: false
+                })
             }
         },
-        reassignMapMethods: obj => mapMutate(obj)
+        reassignMapMethods: obj => mapMutate(obj),
+        reassignSetMethods: obj => setMutate(obj)
     }
 
 }

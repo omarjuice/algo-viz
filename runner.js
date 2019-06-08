@@ -4,7 +4,6 @@ const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
 const defineProperty = require('./utils/defineProperty')
 const isArray = require('./utils/isArray')
-const mutative = require('./utils/reassignMutative')
 
 
 class Runner {
@@ -52,9 +51,6 @@ class Runner {
         // main
         if (this.ignore) return val
 
-        if ([TYPES.CALL, TYPES.METHODCALL].includes(info.type)) {
-            this._c(val, info)
-        }
 
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(info.type)) {
             this._f(val, info)
@@ -63,9 +59,7 @@ class Runner {
             info.value += info.update
         }
 
-        if (info.type === TYPES.METHODCALL) {
-            this._m(val, info)
-        }
+
         // is the currently executing function a constructor ?
         // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
         const currentFunc = this.callStack[this.callStack.length - 1]
@@ -85,15 +79,7 @@ class Runner {
         }
         return val
     }
-    _c(val, info) {
-        // for calls (the value of the call itself)
-        if (info.arguments) {
-            const id = this.stringify(info.arguments)
-            info.arguments = this.objects[id]
-            delete this.objects[id]
-            delete this.types[id]
-        }
-    }
+
     _f(val, info) {
         // for function invocations and returns
         if (info.type === TYPES.RETURN) {
@@ -102,41 +88,7 @@ class Runner {
             this.callStack.push(info)
         }
     }
-    _m(val, info) {
-        // for method calls
-        // traverse the accessor to get the actual object
-        // let obj = info.object
-        // this.ignore = true
-        // for (let i = 0; i < info.access.length - 1; i++) {
-        //     obj = obj[info.access[i]]
-        // }
-        // if (obj && isArray(obj)) {
-        //     const id = this.map.get(obj)
-        //     const method = info.access[info.access.length - 1]
-        //     if (obj[method] === mutative[method]) {
-        //         const prevLen = this.objects[id].final
-        //         this.ignore = false
-        //         if (obj.length !== prevLen) {
-        //             this.__(obj.length, {
-        //                 type: TYPES.SET,
-        //                 scope: null,
-        //                 object: this.map.get(obj),
-        //                 access: ['length']
-        //             })
-        //         }
-        //         if (prevLen < obj.length) {
-        //             for (let i = prevLen, value = obj[i]; i < obj.length; value = obj[++i]) {
-        //                 value = obj[i]
-        //                 this.defProp(obj, i, value)
-        //                 obj[i] = value
-        //             }
 
-        //         }
-        //         this.objects[id].final = obj.length
-        //     }
-        // }
-        // this.ignore = false
-    }
     _p(val, info) {
         let obj = info.object
         this.ignore = true
