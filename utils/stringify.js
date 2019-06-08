@@ -3,10 +3,13 @@ const isNative = require('./isNative')
 const isArray = require('./isArray')
 const reassignMutative = require('./reassignMutative')
 const empty = require('./empty')
-module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __ }) {
+// the values are specific to the Runner instance
+module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __, genId }) {
+    // these are functions that change instance methods on their respective object tyes
     const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(objects, __, defProp, stringify)
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
+            // we want to ignore native objects
             const native = isNative(obj)
             if (native) {
                 return native
@@ -15,13 +18,11 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
             if (map.has(obj)) {
                 return map.get(obj)
             }
-            let newId = '___' + randomString(5)
-            while (newId in objects) {
-                newId = '___' + randomString(5)
-            }
+            const newId = genId(5, 3)
             map.set(obj, newId)
 
             if (obj instanceof Map) {
+                // maps can have object keys, we need to stringify those too.
                 const copy = {}
                 for (const entry of obj.entries()) {
                     const [key, val] = entry
@@ -35,6 +36,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 reassignMapMethods(obj)
                 objects[newId] = copy
             } else if (obj instanceof Set) {
+                // same for sets
                 const copy = {}
                 for (let value of obj.values()) {
                     if (value && typeof value === 'object' && !(value instanceof RegExp || value instanceof String)) {
@@ -45,6 +47,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 reassignSetMethods(obj)
                 objects[newId] = copy
             } else if (isArray(obj)) {
+                // we store arrays as objects, they will be easier to modify when the visualizer consumes the data
                 const copy = {}
                 for (let i = 0; i < obj.length; i++) {
                     let val = obj[i]
@@ -73,6 +76,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
             types[newId] = obj.constructor.name
             return newId
         } else {
+            // these falsy primitives must be encoded because they all become `null` in JSON
             if (obj === undefined) {
                 return map.get('undefined')
             } else if (obj === null) {

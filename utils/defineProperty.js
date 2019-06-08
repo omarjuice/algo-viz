@@ -2,20 +2,19 @@ const TYPES = require('./types')
 const signature = require('./signature')
 const empty = require('./empty')
 module.exports = function (__, stringify, map, objects) {
+    // reassign all object mutative methods
     const { defineProperty, defineProperties } = Object
     Object.defineProperty = function (o, p, attributes, sig) {
+        //signature is a custom param that prevents errors from being thrown when this function is called by the Runner
         try {
-            if (map.has(o) && sig === signature) {
+            // do we need a signature here
+            if (map.has(o)) {
                 let { enumerable, configurable, writable, value, get, set } = attributes
-                // if (!get || !set) {
-                //     const des
-                //     const { get: originalGet, set: originalSet } = 
-                //     if (!get) get = originalGet
-                //     if (!set) set = originalSet
-                // }
                 let getFlag = true
+                // we may want to get the value but not show that we did, so we use this flag.
                 if (enumerable || enumerable === undefined) {
                     if (typeof get === 'function') {
+                        // we wrap the input get function
                         attributes.get = () => {
                             const result = get.bind(o)()
                             return getFlag ? __(result, {
@@ -27,6 +26,7 @@ module.exports = function (__, stringify, map, objects) {
                         }
 
                     } else {
+                        // else we use our own
                         attributes.get = () => {
                             return getFlag ? __(value, {
                                 type: TYPES.GET,
@@ -37,7 +37,7 @@ module.exports = function (__, stringify, map, objects) {
                         }
                     }
                     if ((writable || configurable) || (writable === undefined && configurable === undefined)) {
-
+                        //same as get
                         if (typeof set === 'function') {
                             attributes.set = (val) => {
                                 set.bind(o)(val)
@@ -51,6 +51,10 @@ module.exports = function (__, stringify, map, objects) {
                                 getFlag = true
                             }
                         } else {
+                            //important empty symbol for array accessing with the `in` operator or through
+                            // `for in` iteration or otherwise anything that acceses the array by keys and not by indices
+                            // does NOT work for spread operators and iterative array methods, the value actually becomes undefined
+                            // but it is there...
                             attributes.set = val => {
                                 if (value === empty) {
                                     Object.defineProperty(o, p, {
@@ -75,6 +79,7 @@ module.exports = function (__, stringify, map, objects) {
                     } else {
                         attributes.enumerable = true
                     }
+                    // if weve seen the object before we want to know what was set
                     if (!(p in o) && map.get(o) in objects) {
                         __(value, {
                             type: TYPES.SET,

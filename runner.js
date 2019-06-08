@@ -26,7 +26,12 @@ class Runner {
             Object.defineProperty(obj, key, { value }, this.signature)
         }
         // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
-        this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp })
+        const genId = (l = 3, num_ = 2) => {
+            let id;
+            while (!id || id in this.objects) id = '_'.repeat(num_) + randomString(l)
+            return id
+        }
+        this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp, genId })
         // resets hijacked native methods
         this.reset = defineProperty(this.__.bind(this), this.stringify, this.map, this.objects)
         this.name = name
@@ -35,18 +40,19 @@ class Runner {
         // a flag that will ignore info while set to true
         this.ignore = false
 
+
         // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
-        const undefLiteral = '_' + randomString(5)
-        const nullLiteral = '_' + randomString(5)
-        const nanLiteral = '_' + randomString(5)
-        const emptyLiteral = '_' + randomString(5)
+        const undefLiteral = genId(5, 1)
         this.map.set('undefined', undefLiteral)
-        this.map.set('null', nullLiteral)
-        this.map.set('NaN', nanLiteral)
-        this.map.set(empty, emptyLiteral)
         this.objects[undefLiteral] = 'undefined'
+        const nullLiteral = genId(5, 1)
+        this.map.set('null', nullLiteral)
         this.objects[nullLiteral] = 'null'
+        const nanLiteral = genId(5, 1)
+        this.map.set('NaN', nanLiteral)
         this.objects[nanLiteral] = 'NaN'
+        const emptyLiteral = genId(5, 1)
+        this.map.set(empty, emptyLiteral)
         this.objects[emptyLiteral] = '<empty>'
     }
 

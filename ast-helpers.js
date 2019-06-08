@@ -41,6 +41,7 @@ module.exports = function ({ t = types, input, code, Node }) {
         }
     }
     //iterates through the chain of access of an object to get the computed accessor
+    // not in use
     const computeAccessor = (path, memberExpression) => {
         let props = [memberExpression]
         let computed = [memberExpression.computed]
@@ -165,6 +166,8 @@ module.exports = function ({ t = types, input, code, Node }) {
         }
         return nodeCopy
     }
+
+    // unused right now
     const reassignSpread = (path, node) => {
         const reassigned = reassignComputedValue(path, node, 'argument')
         const object = reassigned ? node.argument.left : node.argument
@@ -175,6 +178,7 @@ module.exports = function ({ t = types, input, code, Node }) {
         })
         return object
     }
+
     const willTraverse = path => {
         if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
             return true

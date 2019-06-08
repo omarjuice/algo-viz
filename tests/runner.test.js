@@ -69,7 +69,7 @@ async function testRunner(func) {
     const identifiers = {}
     const funcScopes = {}
     const calls = {}
-    stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls })
+    stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls, code: func })
 
 
 }

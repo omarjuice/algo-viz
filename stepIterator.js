@@ -6,10 +6,12 @@ module.exports = function (steps, {
     scopeChain = {},
     identifiers = {},
     funcScopes = {},
-    calls = {}
+    calls = {},
+    code
 }) {
     const states = []
     for (const step of steps) {
+
         if (step.scope) {
             const [parent, scope] = step.scope
             if (!(scope in identifiers)) {
@@ -29,8 +31,8 @@ module.exports = function (steps, {
                 if (step.type !== TYPES.RETURN && s[s.length - 1] !== scope) s.push(scope)
             }
         }
-        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION].includes(step.type) && step.scope && step.name) {
-            let { name, scope: [_, scope], block } = step
+        if ([TYPES.ASSIGNMENT, TYPES.DECLARATION].includes(step.type) && step.scope && step.varName) {
+            let { varName: name, scope: [_, scope], block } = step
             if (step.type === TYPES.DECLARATION) {
                 if (!block) {
                     while (scope && !(scope in funcScopes)) {
@@ -59,8 +61,8 @@ module.exports = function (steps, {
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(step.type)) {
             const fScope = step.scope[1]
             if (step.type !== TYPES.RETURN) {
-                callStack.push(step.name)
-                funcScopes[fScope] = step.name
+                callStack.push(step.funcName)
+                funcScopes[fScope] = step.funcName
                 const queue = [fScope]
                 while (queue.length) {
                     const scope = queue.shift()
@@ -93,7 +95,7 @@ module.exports = function (steps, {
             }
         }
         states.push(JSON.stringify(identifiers))
-        // console.log(step.type, step.name, identifiers);
+        console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
         // console.log(callStack)
     }
     // fs.writeFileSync('states.json', states)

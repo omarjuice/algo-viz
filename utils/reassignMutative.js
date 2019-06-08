@@ -3,7 +3,9 @@ const { pop, push, unshift, shift, splice } = Array.prototype
 const arrayMethods = { pop, push, unshift, shift, splice }
 
 function reassignMutative(objects, __, defProp, stringify) {
+
     function arrayMutate(method) {
+        // specifically methods that change the arrays length
         return function (...args) {
             const result = method.call(this, ...args)
             const id = stringify(this)
