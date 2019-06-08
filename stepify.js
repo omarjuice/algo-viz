@@ -215,7 +215,7 @@ module.exports = function (input) {
                         if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
                         const { object } = computeAccessor(path, path.node)
                         if (!object) return path.stop()
-                        if (!t.isMemberExpression(path.parent) && !t.isCallExpression(path.parent) && !t.isAssignmentExpression(path.parent)) {
+                        if (!t.isExpression(path.parent)) {
                             const name = code.slice(path.node.start, path.node.end)
                             const details = {
                                 scope: getScope(path)
@@ -244,7 +244,7 @@ module.exports = function (input) {
                         }
                     }
                 },
-                ForOfStatement: {
+                "ForOfStatement|ForInStatement": {
                     exit(path) {
                         if (t.isBlockStatement(path.node.body)) {
                             const variables = [];

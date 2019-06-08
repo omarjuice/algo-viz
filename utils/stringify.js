@@ -62,10 +62,9 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 }
                 objects[newId] = copy
             } else {
-                const copy = { ...obj }
-                for (const key in copy) {
+                const copy = {}
+                for (const key in obj) {
                     copy[key] = stringify(obj[key])
-
                     defProp(obj, key, obj[key])
                 }
                 objects[newId] = copy
