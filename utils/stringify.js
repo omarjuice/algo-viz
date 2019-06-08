@@ -6,7 +6,10 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
     const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(objects, __, defProp, stringify)
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
-            if (isNative(obj)) return obj.constructor.name
+            const native = isNative(obj)
+            if (native) {
+                return native
+            }
             if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
             if (map.has(obj)) {
                 return map.get(obj)
@@ -73,6 +76,8 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 return map.get('NaN')
             } else if (typeof obj === 'function') {
                 if (map.has(obj)) return map.get(obj)
+                const native = isNative(obj)
+                if (native) return native
                 const name = obj.name && obj.name[0] !== '_' ? obj.name : 'function'
                 let id;
                 while (!id || (id in objects)) {

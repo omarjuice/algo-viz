@@ -99,6 +99,7 @@ class Runner {
         const id = this.map.get(obj)
         const prop = info.access[info.access.length - 1]
         const objIsArray = isArray(obj)
+        this.ignore = false
         if (!Object.getOwnPropertyDescriptor(obj, prop).get) {
             if (!objIsArray) {
                 this.defProp(obj, prop, val)
@@ -110,7 +111,6 @@ class Runner {
                     for (let i = length, el = obj[i]; i < obj.length; i++) {
                         this.defProp(obj, i, el)
                     }
-                    this.ignore = false
                     this.__(obj.length, {
                         type: TYPES.SET,
                         scope: null,
@@ -120,10 +120,8 @@ class Runner {
                 }
 
             }
-            this.ignore = false
             obj[prop] = val
         }
-        this.ignore = false
     }
 }
 

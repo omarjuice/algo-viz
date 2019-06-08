@@ -3,10 +3,10 @@ const stringifier = require('../utils/stringify')
 
 describe('isNative', () => {
     test('Should detect native objects', () => {
-        expect(isNative(Object)).toBe(true)
+        expect(isNative(Object)).toBe('Object')
     })
     test('Should not flag instances', () => {
-        expect(isNative(new Object)).toBe(false)
+        expect(isNative(new Object)).toBe(undefined)
     })
 })
 
