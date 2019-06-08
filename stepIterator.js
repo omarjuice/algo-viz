@@ -95,7 +95,7 @@ module.exports = function (steps, {
             }
         }
         states.push(JSON.stringify(identifiers))
-        console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
+        // console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
         // console.log(callStack)
     }
     // fs.writeFileSync('states.json', states)

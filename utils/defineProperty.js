@@ -49,6 +49,7 @@ module.exports = function (__, stringify, map, objects) {
                                     access: [p],
                                 })
                                 getFlag = true
+                                return val
                             }
                         } else {
                             //important empty symbol for array accessing with the `in` operator or through
@@ -60,6 +61,7 @@ module.exports = function (__, stringify, map, objects) {
                                     Object.defineProperty(o, p, {
                                         value: val
                                     }, signature)
+                                    return val
                                 }
                                 return __(value = val, {
                                     type: TYPES.SET,
@@ -81,6 +83,7 @@ module.exports = function (__, stringify, map, objects) {
                     }
                     // if weve seen the object before we want to know what was set
                     if (!(p in o) && map.get(o) in objects) {
+                        console.log(p, value)
                         __(value, {
                             type: TYPES.SET,
                             scope: null,

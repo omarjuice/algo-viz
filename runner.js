@@ -1,4 +1,3 @@
-
 const stringify = require('./utils/stringify')
 const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
@@ -154,6 +153,7 @@ class Runner {
                     }
 
                 }
+                this.objects[id].final = obj.length
 
             }
             obj[prop] = val

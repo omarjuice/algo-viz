@@ -46,20 +46,25 @@ async function main(program) {
 
     global[_name] = new (require('../runner'))(_name, program)
 
-    eval(code)
+    const transpiledResult = eval(code)
+    const normalResult = eval(program)
     const { steps, objects, types } = global[_name]
     fs.writeFileSync('executed.json', JSON.stringify({
         steps,
         objects,
-        types
+        types,
+
     }))
     delete global[_name]
-    return { steps, objects, types }
+    return {
+        steps, objects, types, normalResult,
+        transpiledResult
+    }
 }
 
 async function testRunner(func) {
 
-    const { steps, objects, types } = await main(func)
+    const { steps, objects, types, normalResult, transpiledResult } = await main(func)
     expect(Array.isArray(steps) && steps.length > 0).toBe(true)
     expect(typeof objects).toBe('object')
     expect(typeof types).toBe('object')
@@ -70,6 +75,7 @@ async function testRunner(func) {
     const funcScopes = {}
     const calls = {}
     stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls, code: func })
+    expect(transpiledResult).toEqual(normalResult)
 
 
 }
