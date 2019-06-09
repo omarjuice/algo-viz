@@ -126,7 +126,7 @@ module.exports = function (__, stringify, map, objects) {
             }
             return object
         } else {
-            return assign.call(null, o, ...sources)
+            return assign.call(null, object, ...sources)
         }
     }
     return () => {

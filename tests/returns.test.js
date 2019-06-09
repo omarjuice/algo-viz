@@ -1,7 +1,7 @@
 const stepify = require('../stepify')
 const babel = require('@babel/core')
 const funcs = require('./funcs')
-
+const expect = require('expect')
 
 
 
@@ -42,8 +42,11 @@ async function testRunner(funcString) {
     global[_name] = undefined
 }
 
-for (let func in funcs) {
-    test('RETURNS ' + func, async () => {
-        await testRunner(funcs[func])
-    })
-}
+describe('RETURNS', () => {
+    for (let func in funcs) {
+        it(func, async () => {
+            await testRunner(funcs[func])
+        })
+    }
+
+})

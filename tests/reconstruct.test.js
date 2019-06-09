@@ -3,6 +3,7 @@ const stepIterator = require('../stepIterator')
 const babel = require('@babel/core')
 const fs = require('fs')
 const stepify = require('../stepify')
+const expect = require('expect')
 
 const print = (val) => {
     // console.log(val)
@@ -65,19 +66,21 @@ async function main(program) {
 async function testRunner(func) {
 
     const { steps, objects, types, normalResult } = await main(func)
-    console.log(normalResult)
+    // console.log(normalResult)
     // expect(transpiledResult).toEqual(normalResult)
 
 
 }
 
-test('case #1', async () => {
-    const func = `
-        function init(obj){
-            obj.hello = 1;
-            return obj
-        }
-        init({})
-    `
-    await testRunner(func)
+describe('RECONSTRUCT', () => {
+    it('case #1', async () => {
+        const func = `
+            function init(obj){
+                obj.hello = 1;
+                return obj
+            }
+            init({})
+        `
+        await testRunner(func)
+    })
 })

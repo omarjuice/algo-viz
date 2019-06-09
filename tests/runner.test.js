@@ -4,7 +4,7 @@ const babel = require('@babel/core')
 const fs = require('fs')
 const funcs = require('./funcs')
 const stepify = require('../stepify')
-
+const expect = require('expect')
 const print = (val) => {
     // console.log(val)
     return val
@@ -68,8 +68,10 @@ async function testRunner(func) {
 
 
 }
-for (let func in funcs) {
-    test('RUNNER ' + func, async () => {
-        await testRunner(funcs[func])
-    })
-}
+describe('RUNNER', () => {
+    for (let func in funcs) {
+        it(func, async () => {
+            await testRunner(funcs[func])
+        })
+    }
+})
