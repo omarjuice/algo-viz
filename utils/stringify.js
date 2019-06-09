@@ -1,12 +1,11 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
 const isArray = require('./isArray')
-const reassignMutative = require('./reassignMutative')
 const empty = require('./empty')
 // the values are specific to the Runner instance
-module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __, genId }) {
+module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __, genId, reassignMutative }) {
     // these are functions that change instance methods on their respective object tyes
-    const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(objects, __, defProp, stringify)
+    const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(stringify)
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
             // we want to ignore native objects

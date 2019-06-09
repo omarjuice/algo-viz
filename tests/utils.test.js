@@ -2,6 +2,9 @@ const isNative = require('../utils/isNative')
 const stringifier = require('../utils/stringify')
 const randomString = require('../utils/randomString')
 const genId = () => '___' + randomString(5)
+const reassignMutative = () => ({
+    reassignArrayMethods: () => { }, reassignMapMethods: () => { }, reassignSetMethods: () => { }
+})
 describe('isNative', () => {
     test('Should detect native objects', () => {
         expect(isNative(Object)).toBe('Object')
@@ -32,6 +35,8 @@ describe('stringify', () => {
         expect(() => stringifier({
             obj, objects, map, genId,
             defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }),
+            reassignMutative
+
         })(obj)).not.toThrow()
 
 
@@ -44,7 +49,8 @@ describe('stringify', () => {
         const stringify = stringifier({
             map, objects, types,
             defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }),
-            genId
+            genId,
+            reassignMutative
         })
         stringify(obj)
         const copy = objects[map.get(obj)]

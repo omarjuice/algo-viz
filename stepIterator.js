@@ -24,12 +24,13 @@ module.exports = function (steps, {
                 }
             }
             const s = scopeStack
-            if (s[s.length - 1] !== scope) {
+            if (s[s.length - 1] !== scope && scope !== 'e') {
                 while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
                     s.pop()
                 }
                 if (step.type !== TYPES.RETURN && s[s.length - 1] !== scope) s.push(scope)
             }
+
         }
         if ([TYPES.ASSIGNMENT, TYPES.DECLARATION].includes(step.type) && step.scope && step.varName) {
             let { varName: name, scope: [_, scope], block } = step
@@ -93,9 +94,11 @@ module.exports = function (steps, {
                     }
                 }
             }
+
+
         }
         states.push(JSON.stringify(identifiers))
-        // console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
+        console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
         // console.log(callStack)
     }
     // fs.writeFileSync('states.json', states)

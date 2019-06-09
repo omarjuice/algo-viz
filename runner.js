@@ -4,6 +4,7 @@ const randomString = require('./utils/randomString')
 const defineProperty = require('./utils/defineProperty')
 const isArray = require('./utils/isArray')
 const empty = require('./utils/empty')
+const reassignMutative = require('./utils/reassignMutative')
 
 class Runner {
     constructor(name, code) {
@@ -30,7 +31,28 @@ class Runner {
             while (!id || id in this.objects) id = '_'.repeat(num_) + randomString(l)
             return id
         }
-        this.stringify = stringify({ map: this.map, objects: this.objects, types: this.types, __: this.__.bind(this), defProp: this.defProp, genId })
+        this.stringify = stringify({
+            map: this.map,
+            objects: this.objects,
+            types: this.types,
+            __: this.__.bind(this),
+            defProp: this.defProp,
+            genId,
+            reassignMutative: (stringify) => reassignMutative(
+                this.objects,
+                this.__.bind(this),
+                this.defProp,
+                stringify,
+                bool => {
+                    this.ignore = bool
+                },
+                bool => {
+                    console.log('ALLOW EMPTY ', bool)
+                    this.allowEmpty = bool
+                }
+            )
+
+        })
         // resets hijacked native methods
         this.reset = defineProperty(this.__.bind(this), this.stringify, this.map, this.objects)
         this.name = name
@@ -38,6 +60,7 @@ class Runner {
         this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
         // a flag that will ignore info while set to true
         this.ignore = false
+        this.allowEmpty = false
 
 
         // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
@@ -78,7 +101,8 @@ class Runner {
             }
         }
         if (info.type === TYPES.GET) {
-            if (val === empty) {
+
+            if (val === empty && !this.allowEmpty) {
                 val = undefined
             }
         }
@@ -106,7 +130,7 @@ class Runner {
                 this.steps.push(info)
             }
         }
-        if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
+        // if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
         return val
     }
 
