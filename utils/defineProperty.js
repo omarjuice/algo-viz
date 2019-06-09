@@ -3,7 +3,7 @@ const signature = require('./signature')
 const empty = require('./empty')
 module.exports = function (__, stringify, map, objects) {
     // reassign all object mutative methods
-    const { defineProperty, defineProperties } = Object
+    const { defineProperty, defineProperties, assign } = Object
     Object.defineProperty = function (o, p, attributes, sig) {
         //signature is a custom param that prevents errors from being thrown when this function is called by the Runner
         try {
@@ -54,12 +54,13 @@ module.exports = function (__, stringify, map, objects) {
                             // does NOT work for spread operators and iterative array methods, the value actually becomes undefined
                             // but it is there...
                             attributes.set = val => {
-                                if (value === empty) {
+                                if (value === empty || (value !== empty && val === empty)) {
                                     Object.defineProperty(o, p, {
                                         value: val
                                     }, signature)
                                     return
                                 }
+
                                 return __(value = val, {
                                     type: TYPES.SET,
                                     object: stringify(o),
@@ -111,8 +112,21 @@ module.exports = function (__, stringify, map, objects) {
             return defineProperties.call(null, o, props)
         }
     }
+    Object.assign = function (object, ...sources) {
+        while (sources.length) {
+            const current = sources.shift()
+            if (!current || typeof current !== 'object') continue;
+            for (const key in current) {
+                Object.defineProperty(object, key, {
+                    value: current[key]
+                })
+            }
+        }
+        return object
+    }
     return () => {
         Object.defineProperty = defineProperty;
+        Object.assign = assign
         Object.defineProperties = defineProperties
     }
 }

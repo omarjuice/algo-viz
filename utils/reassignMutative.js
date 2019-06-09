@@ -23,7 +23,6 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         for (let i = 0; i < this.length; i++) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
@@ -35,7 +34,6 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         for (let i = 0; i < this.length; i++) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
@@ -48,7 +46,6 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         for (let i = 0; i < this.length; i++) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
@@ -118,7 +115,6 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         for (let i = 0; i < this.length; i++) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
@@ -133,7 +129,6 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         for (let i = 0; i < this.length; i++) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
@@ -159,20 +154,17 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
             acc = this[i++]
         }
 
-        let accumulator = acc
         for (i; i < this.length; i++) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
             const val = this[i]
-
-            accumulator = cb.call(null, accumulator, val, i, this)
+            acc = cb.call(null, acc, val, i, this)
         }
         ignore(false)
-        return accumulator
+        return acc
     }
     const _reduceRight = function (cb, acc) {
         let i = this.length - 1;
@@ -191,7 +183,6 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         for (i; i > -1; i--) {
             ignore(true)
             if (this[i] === empty) {
-                console.log(empty)
                 continue;
             }
             ignore(false)
