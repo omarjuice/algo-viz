@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "testm": "mocha **/*.test.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +19,8 @@
     "@babel/traverse": "^7.4.3",
     "@babel/types": "^7.4.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "mocha": "^6.1.4"
   },
   "devDependencies": {
     "jest": "^24.7.1"

@@ -43,13 +43,10 @@ class Runner {
                 this.__.bind(this),
                 this.defProp,
                 stringify,
-                bool => {
-                    this.ignore = bool
-                },
-                bool => {
-                    console.log('ALLOW EMPTY ', bool)
-                    this.allowEmpty = bool
-                }
+                bool => this.ignore = bool
+                ,
+                bool => this.allowEmpty = bool
+
             )
 
         })

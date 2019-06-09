@@ -113,16 +113,21 @@ module.exports = function (__, stringify, map, objects) {
         }
     }
     Object.assign = function (object, ...sources) {
-        while (sources.length) {
-            const current = sources.shift()
-            if (!current || typeof current !== 'object') continue;
-            for (const key in current) {
-                Object.defineProperty(object, key, {
-                    value: current[key]
-                })
+        if (map.has(object)) {
+            while (sources.length) {
+                const current = sources.shift()
+                if (current && typeof current === 'object') {
+                    for (const key in current) {
+                        Object.defineProperty(object, key, {
+                            value: current[key]
+                        })
+                    }
+                }
             }
+            return object
+        } else {
+            return assign.call(null, o, ...sources)
         }
-        return object
     }
     return () => {
         Object.defineProperty = defineProperty;

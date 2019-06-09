@@ -24,7 +24,7 @@ module.exports = function (steps, {
                 }
             }
             const s = scopeStack
-            if (s[s.length - 1] !== scope && scope !== 'e') {
+            if (s[s.length - 1] !== scope) {
                 while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
                     s.pop()
                 }
@@ -97,8 +97,8 @@ module.exports = function (steps, {
 
 
         }
-        states.push(JSON.stringify(identifiers))
-        console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
+        // states.push(JSON.stringify(identifiers))
+        // console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
         // console.log(callStack)
     }
     // fs.writeFileSync('states.json', states)
