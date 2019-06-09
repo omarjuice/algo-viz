@@ -13,7 +13,6 @@ function reassignMutative(objects, __, defProp, stringify) {
             if (this.length !== prevLen) {
                 __(this.length, {
                     type: TYPES.SET,
-                    scope: null,
                     object: stringify(this),
                     access: ['length']
                 })
@@ -42,7 +41,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                     const val = get.call(this, key)
                     return ignore ? val : __(val, {
                         type: TYPES.GET,
-                        scope: null,
+
                         object: stringify(this),
                         access: [stringify(key)]
                     })
@@ -58,7 +57,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                 if (!ignore) {
                     return __(result, {
                         type: TYPES.GET,
-                        scope: null,
+
                         object: stringify(this),
                         access: [stringify(key)]
                     })
@@ -73,7 +72,6 @@ function reassignMutative(objects, __, defProp, stringify) {
                 const result = set.call(this, key, value)
                 __(value, {
                     type: TYPES.SET,
-                    scope: null,
                     object: stringify(this),
                     access: [stringify(key)]
                 })
@@ -87,7 +85,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                 if (result) {
                     __(result, {
                         type: TYPES.DELETE,
-                        scope: null,
+
                         object: stringify(this),
                         access: [stringify(key)]
                     })
@@ -101,7 +99,6 @@ function reassignMutative(objects, __, defProp, stringify) {
                 clear.call(this)
                 __(undefined, {
                     type: TYPES.CLEAR,
-                    scope: null,
                     object: stringify(this),
                 })
             },
@@ -115,7 +112,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                     args[0] = (key, val, ..._args) => {
                         __(val, {
                             type: TYPES.GET,
-                            scope: null,
+    
                             object: stringify(this),
                             access: [stringify(key)]
                         })
@@ -135,7 +132,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                 if (result) {
                     return __(key, {
                         type: TYPES.GET,
-                        scope: null,
+
                         object: stringify(this),
                         access: [stringify(key)]
                     })
@@ -150,7 +147,6 @@ function reassignMutative(objects, __, defProp, stringify) {
                 const result = add.call(this, val)
                 __(val, {
                     type: TYPES.SET,
-                    scope: null,
                     object: stringify(this),
                     access: [stringify(val)]
                 })
@@ -163,7 +159,6 @@ function reassignMutative(objects, __, defProp, stringify) {
                 clear.call(this)
                 __(undefined, {
                     type: TYPES.CLEAR,
-                    scope: null,
                     object: stringify(this),
                 })
             },
@@ -175,7 +170,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                 if (result) {
                     __(result, {
                         type: TYPES.DELETE,
-                        scope: null,
+
                         object: stringify(this),
                         access: [stringify(key)]
                     })
@@ -191,7 +186,7 @@ function reassignMutative(objects, __, defProp, stringify) {
                     args[0] = (key, val, ..._args) => {
                         __(val, {
                             type: TYPES.GET,
-                            scope: null,
+    
                             object: stringify(this),
                             access: [stringify(key)]
                         })

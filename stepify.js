@@ -310,18 +310,18 @@ module.exports = function (input) {
                         if (t.isIdentifier(call.callee) && call.callee.name[0] === '_') {
                             return
                         }
-                        const details = { scope: getScope(path) }
+                        const details = { scope: getScope(path), type: TYPES.CALL }
 
-                        if (t.isMemberExpression(call.callee)) {
-                            details.type = TYPES.METHODCALL
-                            const objectReassigned = reassignComputedValue(path, call.callee, 'object')
-                            const propReassigned = reassignComputedValue(path, call.callee, 'property')
+                        // if (t.isMemberExpression(call.callee)) {
+                        //     details.type = TYPES.METHODCALL
+                        //     const objectReassigned = reassignComputedValue(path, call.callee, 'object')
+                        //     const propReassigned = reassignComputedValue(path, call.callee, 'property')
 
-                            details.object = objectReassigned ? call.callee.object.left : call.callee.object
-                            details.access = t.arrayExpression([propReassigned ? call.callee.property.left : call.callee.computed ? call.callee.property : t.stringLiteral(call.callee.property.name)])
-                        } else {
-                            details.type = TYPES.CALL
-                        }
+                        //     details.object = objectReassigned ? call.callee.object.left : call.callee.object
+                        //     details.access = t.arrayExpression([propReassigned ? call.callee.property.left : call.callee.computed ? call.callee.property : t.stringLiteral(call.callee.property.name)])
+                        // } else {
+                        //     details.type = TYPES.CALL
+                        // }
                         path.replaceWith(proxy(call, details))
                     }
                 },

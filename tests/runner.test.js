@@ -4,18 +4,7 @@ const babel = require('@babel/core')
 const fs = require('fs')
 const funcs = require('./funcs')
 const stepify = require('../stepify')
-class Circular {
-    constructor() {
-        this.value = this
-        this.array = [this]
-        this.object = { value: this }
-        this.object.obj = this.object
-        this.val = 0
-        this.notCircular = { hello: true }
-        this.arr = [1, 2, 3, this.notCircular]
-        this.arrContainer = [this.arr]
-    }
-}
+
 const print = (val) => {
     // console.log(val)
     return val

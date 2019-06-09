@@ -19,7 +19,6 @@ module.exports = function (__, stringify, map, objects) {
                             const result = get.bind(o)()
                             return getFlag ? __(result, {
                                 type: TYPES.GET,
-                                scope: null,
                                 object: stringify(o),
                                 access: [p],
                             }) : result
@@ -30,7 +29,6 @@ module.exports = function (__, stringify, map, objects) {
                         attributes.get = () => {
                             return getFlag ? __(value, {
                                 type: TYPES.GET,
-                                scope: null,
                                 object: stringify(o),
                                 access: [p],
                             }) : value
@@ -44,7 +42,6 @@ module.exports = function (__, stringify, map, objects) {
                                 getFlag = false
                                 __(attributes.get(), {
                                     type: TYPES.SET,
-                                    scope: null,
                                     object: stringify(o),
                                     access: [p],
                                 })
@@ -61,11 +58,10 @@ module.exports = function (__, stringify, map, objects) {
                                     Object.defineProperty(o, p, {
                                         value: val
                                     }, signature)
-                                    return val
+                                    return
                                 }
                                 return __(value = val, {
                                     type: TYPES.SET,
-                                    scope: null,
                                     object: stringify(o),
                                     access: [p],
                                 })
@@ -86,7 +82,6 @@ module.exports = function (__, stringify, map, objects) {
                         console.log(p, value)
                         __(value, {
                             type: TYPES.SET,
-                            scope: null,
                             object: stringify(o),
                             access: [p],
                         })
@@ -107,10 +102,14 @@ module.exports = function (__, stringify, map, objects) {
 
     }
     Object.defineProperties = function (o, props) {
-        for (let key in props) {
-            Object.defineProperty(o, key, props[key])
+        if (map.has(o)) {
+            for (let key in props) {
+                Object.defineProperty(o, key, props[key])
+            }
+            return o
+        } else {
+            return defineProperties.call(null, o, props)
         }
-        return o
     }
     return () => {
         Object.defineProperty = defineProperty;

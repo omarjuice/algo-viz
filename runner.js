@@ -106,7 +106,7 @@ class Runner {
                 this.steps.push(info)
             }
         }
-        // if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
+        if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
         return val
     }
 
@@ -143,7 +143,6 @@ class Runner {
                 if (obj.length > length) {
                     this.__(obj.length, {
                         type: TYPES.SET,
-                        scope: null,
                         object: this.map.get(obj),
                         access: ['length']
                     })
