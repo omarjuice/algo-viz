@@ -80,7 +80,8 @@ module.exports = function ({ t = types, input, code, Node }) {
         }
         return {
             object: object instanceof Node ? object : t.isAssignmentExpression(object) ? object.left : object.name ? object.name : t.thisExpression(),
-            expression: t.arrayExpression(expression)
+            expression: t.arrayExpression(expression),
+            props: expression
         }
     }
     const _keys = ['_exec', 'access']
@@ -121,6 +122,7 @@ module.exports = function ({ t = types, input, code, Node }) {
     // primarily for nested computations, can be used for reassignments otherwise with directChild
     const reassignComputedValue = (path, node, key = 'property', directChild = false) => {
         if (t.isAssignmentExpression(node[key])) return true
+        if (t.isThisExpression(node[key])) return false
         if (!t.isIdentifier(node[key]) && !t.isLiteral(node[key])) {
             // traverseExpressionHelper(path, node, key)
             const nearestSibling = path.findParent((parent) => t.isBlockStatement(directChild ? parent : parent.parent) || t.isProgram(directChild ? parent : parent.parent))

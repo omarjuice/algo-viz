@@ -72,12 +72,48 @@ module.exports = function (input) {
                         ) || param);
 
                         const isClassMethod = t.isClassMethod(path.node)
-                        path.node.id = path.node.id || t.identifier(createId(4, 1))
+                        // console.log(path.parent)
+                        let funcName;
+                        if (path.node.id) {
+                            funcName = path.node.id.name
+                        } else if (t.isVariableDeclarator(path.parent)) {
+                            funcName = path.parent.id.name
+                        } else if (t.isObjectProperty(path.parent) && !path.parent.computed) {
+                            funcName = 'method:' + path.parent.key.name
+                        } else if (t.isCallExpression(path.parent)) {
+                            if (t.isMemberExpression(path.parent.callee)) {
+                                const { object, props } = computeAccessor(path, path.parent.callee)
+                                if (!isBarredObject(object.name)) {
+                                    funcName = t.binaryExpression('+', t.stringLiteral(object.name), t.stringLiteral('.'))
+                                    for (const p of props) {
+                                        // funcName += '.' + (t.isIdentifier(p) ? p.name : p.value)
+                                        funcName = t.binaryExpression('+', t.binaryExpression('+', funcName, p), t.stringLiteral('.'))
+                                    }
+                                    const idx = path.parent.arguments.indexOf(path.node)
+                                    funcName = t.binaryExpression('+', funcName, t.stringLiteral(`(callback-${idx})`))
+                                }
+
+                            } else if (t.isIdentifier(path.parent.callee)) {
+                                const idx = path.parent.arguments.indexOf(path.node)
+                                funcName = path.parent.callee.name + '(callback-' + idx + ')'
+                            }
+                        } else if (t.isClassMethod(path.node)) {
+                            const parent = path.findParent(p => t.isClassDeclaration(p))
+                            if (t.isIdentifier(parent.node.id)) {
+                                if (t.isIdentifier(path.node.key)) {
+                                    funcName = parent.node.id.name + '.' + path.node.key.name
+                                }
+                            }
+                        }
+                        if (!funcName) funcName = createId(4, 1)
+
+                        path.node.funcName = funcName
+
                         // this if for the callstack management
                         const details = {
                             type: isClassMethod ? TYPES.METHOD : TYPES.FUNC,
                             scope: getScope(path),
-                            funcName: path.node.id.name,
+                            funcName,
                         }
                         // we need to know class methods because of their weird scoping
                         if (isClassMethod) {
@@ -121,7 +157,7 @@ module.exports = function (input) {
                         path.node.argument = proxy(path.node.argument, {
                             type: TYPES.RETURN,
                             scope: getScope(parent),
-                            funcName: parent.node.id.name
+                            funcName: parent.node.funcName
                         })
                     }
                 },
