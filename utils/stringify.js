@@ -3,7 +3,7 @@ const isNative = require('./isNative')
 const isArray = require('./isArray')
 const empty = require('./empty')
 // the values are specific to the Runner instance
-module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __, genId, reassignMutative }) {
+module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, __, genId, constructors, reassignMutative }) {
     // these are functions that change instance methods on their respective object tyes
     const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative(stringify)
     function stringify(obj) {
@@ -17,7 +17,14 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
             if (map.has(obj)) {
                 return map.get(obj)
             }
-            const newId = genId(5, 3)
+            let newId = genId(5, 3)
+
+            if (constructors.has(obj)) {
+                const [flag, id] = constructors.get(obj)
+                if (!flag) return id
+                newId = id
+
+            }
             map.set(obj, newId)
 
             if (obj instanceof Map) {

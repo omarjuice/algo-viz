@@ -16,6 +16,8 @@ class Runner {
         // the actual objects, with flattened references
         this.objects = {}
         // the constructors of objects
+        this.constructors = new Map()
+        this.primitives = {}
         this.types = {}
         // callStack for determining the type of function we are currently in
         this.callStack = []
@@ -26,7 +28,7 @@ class Runner {
             Object.defineProperty(obj, key, { value }, this.signature)
         }
         // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
-        const genId = (l = 3, num_ = 2) => {
+        this.genId = (l = 3, num_ = 2) => {
             let id;
             while (!id || id in this.objects) id = '_'.repeat(num_) + randomString(l)
             return id
@@ -37,7 +39,8 @@ class Runner {
             types: this.types,
             __: this.__.bind(this),
             defProp: this.defProp,
-            genId,
+            genId: this.genId,
+            constructors: this.constructors,
             reassignMutative: (stringify) => reassignMutative(
                 this.objects,
                 this.__.bind(this),
@@ -46,7 +49,6 @@ class Runner {
                 bool => this.ignore = bool
                 ,
                 bool => this.allowEmpty = bool
-
             )
 
         })
@@ -61,18 +63,18 @@ class Runner {
 
 
         // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
-        const undefLiteral = genId(5, 1)
+        const undefLiteral = this.genId(5, 1)
         this.map.set('undefined', undefLiteral)
-        this.objects[undefLiteral] = 'undefined'
-        const nullLiteral = genId(5, 1)
+        this.primitives[undefLiteral] = 'undefined'
+        const nullLiteral = this.genId(5, 1)
         this.map.set('null', nullLiteral)
-        this.objects[nullLiteral] = 'null'
-        const nanLiteral = genId(5, 1)
+        this.primitives[nullLiteral] = 'null'
+        const nanLiteral = this.genId(5, 1)
         this.map.set('NaN', nanLiteral)
-        this.objects[nanLiteral] = 'NaN'
-        const emptyLiteral = genId(5, 1)
+        this.primitives[nanLiteral] = 'NaN'
+        const emptyLiteral = this.genId(5, 1)
         this.map.set(empty, emptyLiteral)
-        this.objects[emptyLiteral] = '<empty>'
+        this.primitives[emptyLiteral] = '<empty>'
     }
 
 
@@ -112,21 +114,22 @@ class Runner {
 
         // is the currently executing function a constructor ?
         // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
-        const currentFunc = this.callStack[this.callStack.length - 1]
-        const isConstructor = currentFunc && currentFunc.type === TYPES.METHOD && currentFunc.kind === 'constructor'
-        if (!(isConstructor && this.objectTypes.concat([TYPES.DECLARATION]).includes(info.type) && info.object === currentFunc.object)) {
-            if (info.type === TYPES.PROP_ASSIGNMENT) {
-                this._p(val, info)
-            }
-            if (this.objectTypes.includes(info.type)) {
-                info.object = this.stringify(info.object)
-            }
-            info.value = this.stringify(val)
-            if (![TYPES.ACCESSOR, TYPES.PROP_ASSIGNMENT].includes(info.type)) {
-                // we dont actually care about those types
-                this.steps.push(info)
-            }
+
+        // const currentFunc = this.callStack[this.callStack.length - 1]
+        // const isConstructor = currentFunc && currentFunc.type === TYPES.METHOD && currentFunc.kind === 'constructor'
+
+        if (info.type === TYPES.PROP_ASSIGNMENT) {
+            this._p(val, info)
         }
+        if ([TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.IN].includes(info.type)) {
+            info.object = this.stringify(info.object)
+        }
+        info.value = this.stringify(val)
+        if (![TYPES.ACCESSOR, TYPES.PROP_ASSIGNMENT].includes(info.type)) {
+            // we dont actually care about those types
+            this.steps.push(info)
+        }
+
         // if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
         return val
     }
@@ -134,8 +137,20 @@ class Runner {
     _f(val, info) {
         // for function invocations and returns
         if (info.type === TYPES.RETURN) {
-            this.callStack.pop()
+            const call = this.callStack.pop()
+            if (call.type === TYPES.METHOD) {
+                if (call.kind === 'constructor') {
+                    const [, id] = this.constructors.get(call.object)
+                    this.constructors.set(call.object, [true, id])
+                    delete call.object
+                }
+            }
         } else {
+            if (info.type === TYPES.METHOD) {
+                if (info.kind === 'constructor') {
+                    this.constructors.set(info.object, [false, this.genId(5, 3)])
+                }
+            }
             this.callStack.push(info)
         }
     }
