@@ -15,13 +15,8 @@ module.exports = {
         if (arr.length < 2) {
             return arr
         }
-       const newArr = split(arr)
-       const firstHalf = newArr[0]
-       const secondHalf = newArr[1]
-       const sorted1 = mergeSort(firstHalf)
-       const sorted2 = mergeSort(secondHalf)
-        const sorted = merge(sorted1, sorted2)
-        return sorted
+       const [firstHalf, secondHalf] = split(arr)
+       return merge(mergeSort(firstHalf), mergeSort(secondHalf))
     }
     function split(arr) {
         const splitIdx = Math.floor(arr.length / 2)

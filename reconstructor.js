@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const TYPES = require('./utils/types')
-module.exports = function ({ types, steps, objects }) {
+module.exports = function ({ types, steps, objects, code }) {
     const finalObjs = _.cloneDeep(objects)
     const seen = new Set()
 
@@ -71,6 +71,11 @@ module.exports = function ({ types, steps, objects }) {
         if (step.type === TYPES.GET) {
             // console.log('GET', finalObjs[step.object][step.access[0]], step.value);
         }
+        // if (step.access) {
+        //     console.log(step.type, step.access[0], step.value, finalObjs[step.object]);
+        // } else {
+        //     console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), step.value)
+        // }
     }
     return finalObjs
 }

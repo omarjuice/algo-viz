@@ -1,27 +1,11 @@
 
-const stepIterator = require('../stepIterator')
 const babel = require('@babel/core')
 const fs = require('fs')
 const stepify = require('../stepify')
 const expect = require('expect')
 const reconstructor = require('../reconstructor')
+const funcs = require('./funcs')
 
-const print = (val) => {
-    console.log(val)
-    return val
-}
-class Circular {
-    constructor() {
-        this.value = this
-        this.array = [this]
-        this.object = { value: this }
-        this.object.obj = this.object
-        this.val = 0
-        this.notCircular = { hello: true }
-        this.arr = [1, 2, 3, this.notCircular]
-        this.arrContainer = [this.arr]
-    }
-}
 async function main(program) {
 
     const input = { _name: null, references: {} }
@@ -58,12 +42,12 @@ async function main(program) {
     delete global[_name]
     return {
         steps, objects, types, normalResult,
-        transpiledResult, map
+        transpiledResult, map, code: program
     }
 }
 
 async function testRunner(func) {
-    const { steps, objects, types, normalResult, map, transpiledResult } = await main(func)
+    const { steps, objects, types, normalResult, map, transpiledResult, code } = await main(func)
     expect(normalResult).toBeTruthy()
     expect(typeof normalResult).toBe('object')
     expect(transpiledResult).toBeTruthy()
@@ -75,14 +59,14 @@ async function testRunner(func) {
 
     expect(key).toBeTruthy()
 
-    const { [key]: reconstructed } = reconstructor({ types, steps, objects })
+    const { [key]: reconstructed } = reconstructor({ types, steps, objects, code })
     expect(typeof reconstructed).toBe('object')
     expect(reconstructed).toBeTruthy()
     expect(reconstructed).toEqual(normalResult)
     expect(reconstructed).not.toBe(normalResult)
     expect(reconstructed).not.toBe(transpiledResult)
-    // console.log(reconstructed)
-    // console.log(normalResult)
+    // console.log(JSON.stringify(reconstructed, null, 2))
+    // console.log(JSON.stringify(normalResult, null, 2))
 
 
 }
@@ -171,7 +155,7 @@ describe('RECONSTRUCT', () => {
             `
             await testRunner(func)
         })
-        it.only('case #7: array length changing', async () => {
+        it('case #7: array length changing', async () => {
             const func = `
             function init(obj){
                 obj[10] = 100
@@ -179,6 +163,10 @@ describe('RECONSTRUCT', () => {
             }
             init([5,4,3,2,1])
             `
+            await testRunner(func)
+        })
+        it('case #8: actual function: mergeSort', async () => {
+            const func = funcs.mergeSort
             await testRunner(func)
         })
     })
@@ -193,7 +181,7 @@ describe('RECONSTRUCT', () => {
             `
             await testRunner(func)
         })
-        it('case #1: deletion', async () => {
+        it('case #2: deletion', async () => {
             const func = `
                 function init(obj){
                     obj.hello = null;
@@ -201,6 +189,52 @@ describe('RECONSTRUCT', () => {
                     return obj
                 }
                 init({prop: null})
+            `
+            await testRunner(func)
+        })
+        it('case #3: Object.assign', async () => {
+            const func = `
+            const other1 = { prop1: 1 }
+            const other2 = { prop2: 2 }
+            const other3 = { prop0: 3 } 
+            function init(obj){
+                Object.assign(obj, other1, other2, other3)
+                return obj
+            }
+            init({prop0: 0})
+        `
+            await testRunner(func)
+        })
+        it('case #4: function BST', async () => {
+            const func = `
+            class BST {
+                constructor(value) {
+                  this.value = value;
+                  this.left = null;
+                  this.right = null;
+                }
+              
+                insert(value) {
+                  if (value < this.value) {
+                    if (this.left === null) {
+                      this.left = new BST(value);
+                    } else {
+                      this.left.insert(value);
+                    }
+                  } else {
+                    if (this.right === null) {
+                      this.right = new BST(value);
+                    } else {
+                      this.right.insert(value);
+                    }
+                  }
+                  return this;
+                }
+              }
+
+            new BST(100).insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
+                .insert(1).insert(1).insert(3).insert(1).insert(1).insert(502).insert(55000)
+                .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203);
             `
             await testRunner(func)
         })

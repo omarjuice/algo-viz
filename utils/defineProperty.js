@@ -121,9 +121,18 @@ module.exports = function (__, stringify, map, objects) {
                 const current = sources.shift()
                 if (current && typeof current === 'object') {
                     for (const key in current) {
+                        const hasKeyAlready = key in object;
+                        const value = current[key]
                         Object.defineProperty(object, key, {
-                            value: current[key]
+                            value
                         })
+                        if (hasKeyAlready) {
+                            __(value, {
+                                type: TYPES.SET,
+                                object: stringify(object),
+                                access: [key],
+                            })
+                        }
                     }
                 }
             }
