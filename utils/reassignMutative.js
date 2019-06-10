@@ -444,11 +444,13 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
     }
     return {
         reassignArrayMethods: function (arr) {
-            for (const method in arrayMethods) {
-                Object.defineProperty(arr, method, {
-                    value: arrayMutate(arrayMethods[method]),
-                    ..._definePropertyParams
-                })
+            if (Array.isArray(arr)) {
+                for (const method in arrayMethods) {
+                    Object.defineProperty(arr, method, {
+                        value: arrayMutate(arrayMethods[method]),
+                        ..._definePropertyParams
+                    })
+                }
             }
             arrayIterate(arr)
 

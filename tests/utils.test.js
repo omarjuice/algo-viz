@@ -1,6 +1,7 @@
 const isNative = require('../utils/isNative')
 const stringifier = require('../utils/stringify')
 const randomString = require('../utils/randomString')
+const isArray = require('../utils/isArray')
 const expect = require('expect')
 const genId = () => '___' + randomString(5)
 const reassignMutative = () => ({
@@ -37,7 +38,8 @@ describe('UTILS', () => {
             expect(() => stringifier({
                 obj, objects, map, genId,
                 defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }),
-                reassignMutative
+                reassignMutative,
+                constructors: new Map()
 
             })(obj)).not.toThrow()
 
@@ -52,7 +54,8 @@ describe('UTILS', () => {
                 map, objects, types,
                 defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }),
                 genId,
-                reassignMutative
+                reassignMutative,
+                constructors: new Map()
             })
             stringify(obj)
             const copy = objects[map.get(obj)]
@@ -65,5 +68,34 @@ describe('UTILS', () => {
                 }
             }
         })
+    })
+    describe('isArray', () => {
+        it('Should return true for regular array', () => {
+            expect(isArray(new Array(10))).toBe(true)
+            expect(isArray([])).toBe(true)
+        })
+        it('Should return true for typed Arrays', () => {
+            expect(isArray(new Int32Array(10))).toBe(true)
+            expect(isArray(new Int16Array(10))).toBe(true)
+            expect(isArray(new Int8Array(10))).toBe(true)
+            expect(isArray(new Uint32Array(10))).toBe(true)
+            expect(isArray(new Uint16Array(10))).toBe(true)
+            expect(isArray(new Uint8Array(10))).toBe(true)
+            expect(isArray(new Uint8ClampedArray(10))).toBe(true)
+            expect(isArray(new Float32Array(10))).toBe(true)
+            expect(isArray(new BigInt64Array(10))).toBe(true)
+            expect(isArray(new BigUint64Array(10))).toBe(true)
+            expect(isArray(new Float64Array(10))).toBe(true)
+        })
+        it('returns false for array like objects and other objects', () => {
+            function func() {
+                expect(isArray(arguments)).toBe(false)
+            }
+            func()
+
+            expect(isArray({})).toBe(false)
+            expect(isArray('Int8Array')).toBe(false)
+        })
+
     })
 })

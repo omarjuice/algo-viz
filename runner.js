@@ -37,7 +37,6 @@ class Runner {
             map: this.map,
             objects: this.objects,
             types: this.types,
-            __: this.__.bind(this),
             defProp: this.defProp,
             genId: this.genId,
             constructors: this.constructors,
