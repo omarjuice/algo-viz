@@ -55,12 +55,16 @@ module.exports = function (__, stringify, map, objects) {
                             // but it is there...
                             attributes.set = val => {
                                 if (value === empty || (value !== empty && val === empty)) {
+                                    __(val, {
+                                        type: TYPES.SET,
+                                        object: stringify(o),
+                                        access: [p],
+                                    })
                                     Object.defineProperty(o, p, {
                                         value: val
                                     }, signature)
                                     return
                                 }
-
                                 return __(value = val, {
                                     type: TYPES.SET,
                                     object: stringify(o),
@@ -80,7 +84,6 @@ module.exports = function (__, stringify, map, objects) {
                     }
                     // if weve seen the object before we want to know what was set
                     if (!(p in o) && map.get(o) in objects) {
-                        console.log(p, value)
                         __(value, {
                             type: TYPES.SET,
                             object: stringify(o),

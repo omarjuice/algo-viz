@@ -9,14 +9,15 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
     function stringify(obj) {
         if (obj && typeof obj === 'object') {
             // we want to ignore native objects
+            if (map.has(obj)) {
+                return map.get(obj)
+            }
             const native = isNative(obj)
             if (native) {
                 return native
             }
             if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
-            if (map.has(obj)) {
-                return map.get(obj)
-            }
+
             let newId = genId(5, 3)
 
             if (constructors.has(obj)) {

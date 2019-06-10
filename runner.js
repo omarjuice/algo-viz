@@ -17,7 +17,6 @@ class Runner {
         this.objects = {}
         // the constructors of objects
         this.constructors = new Map()
-        this.primitives = {}
         this.types = {}
         // callStack for determining the type of function we are currently in
         this.callStack = []
@@ -64,16 +63,16 @@ class Runner {
         // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
         const undefLiteral = this.genId(5, 1)
         this.map.set('undefined', undefLiteral)
-        this.primitives[undefLiteral] = 'undefined'
+        this.types[undefLiteral] = 'undefined'
         const nullLiteral = this.genId(5, 1)
         this.map.set('null', nullLiteral)
-        this.primitives[nullLiteral] = 'null'
+        this.types[nullLiteral] = 'null'
         const nanLiteral = this.genId(5, 1)
         this.map.set('NaN', nanLiteral)
-        this.primitives[nanLiteral] = 'NaN'
+        this.types[nanLiteral] = 'NaN'
         const emptyLiteral = this.genId(5, 1)
         this.map.set(empty, emptyLiteral)
-        this.primitives[emptyLiteral] = '<empty>'
+        this.types[emptyLiteral] = '<empty>'
     }
 
 
@@ -124,8 +123,9 @@ class Runner {
             info.object = this.stringify(info.object)
         }
         info.value = this.stringify(val)
-        if (![TYPES.ACCESSOR, TYPES.PROP_ASSIGNMENT].includes(info.type)) {
+        if (![TYPES.PROP_ASSIGNMENT].includes(info.type)) {
             // we dont actually care about those types
+
             this.steps.push(info)
         }
 

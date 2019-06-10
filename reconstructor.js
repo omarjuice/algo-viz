@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const TYPES = require('./utils/types')
-module.exports = function ({ types, steps, objects, primitives }) {
+module.exports = function ({ types, steps, objects }) {
     const finalObjs = _.cloneDeep(objects)
     const seen = new Set()
 
@@ -8,7 +8,6 @@ module.exports = function ({ types, steps, objects, primitives }) {
         if (seen.has(object)) return object
         seen.add(object)
         for (const key in object) {
-            const original = object[key]
             object[key] = getValue(object[key])
             if (object[key] && typeof object[key] === "object") {
                 reconstruct(object[key], seen)
@@ -27,11 +26,11 @@ module.exports = function ({ types, steps, objects, primitives }) {
             if (_counter === 0) {
                 return value
             } else if (_counter === 1) {
-                const strVal = primitives[value]
+                const strVal = types[value]
                 if (strVal === 'undefined') return undefined
                 if (strVal === 'null') return null
                 if (strVal === 'NaN') return NaN
-                if (strVal === '<empty>') return '<empty>'
+                if (strVal === '<empty>') return undefined
             } else if (_counter === 2) {
                 return finalObjs[value]
             } else if (_counter === 3) {
@@ -41,6 +40,8 @@ module.exports = function ({ types, steps, objects, primitives }) {
                     obj = Array.from(obj)
                 }
                 return obj
+            } else {
+                return value
             }
         } else {
             return value
@@ -48,16 +49,19 @@ module.exports = function ({ types, steps, objects, primitives }) {
     }
 
     for (const key in finalObjs) {
-        reconstruct(finalObjs[key])
+        const val = getValue(key)
+        finalObjs[key] = reconstruct(val)
     }
     for (const step of steps) {
         if (step.type === TYPES.SET) {
             const { object, access, value } = step
-            finalObjs[object][access[0]] = reconstruct(value)
+            finalObjs[object][access[0]] = getValue(value)
         }
         if (step.type === TYPES.DELETE) {
             const { object, access, value } = step
             if (value) {
+                const original = finalObjs[object][access[0]]
+                step.original = original
                 delete finalObjs[object][access[0]]
             }
         }
@@ -65,13 +69,9 @@ module.exports = function ({ types, steps, objects, primitives }) {
             finalObjs[object] = {}
         }
         if (step.type === TYPES.GET) {
-            console.log('GET', finalObjs[step.object][step.access[0]], step.value);
+            // console.log('GET', finalObjs[step.object][step.access[0]], step.value);
         }
     }
-    for (let key in finalObjs) {
-        if (types[key] === 'Circular') {
-            console.log(finalObjs[key]);
-        }
-    }
+    return finalObjs
 }
 
