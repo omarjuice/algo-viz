@@ -84,7 +84,6 @@ module.exports = function ({ t = types, input, code, Node }) {
             props: expression
         }
     }
-    const _keys = ['_exec', 'access']
     // creates a node for the details object
     const construct = (obj) => {
         // obj._exec = t.memberExpression(t.identifier(_name), t.identifier('execute'))
@@ -95,7 +94,7 @@ module.exports = function ({ t = types, input, code, Node }) {
             let value;
             if (key === 'object') {
                 value = typeof val === 'string' ? t.identifier(val) : val
-            } else if (_keys.includes(key)) {
+            } else if (key === 'access') {
                 value = val
             } else if (val instanceof Node) {
                 value = val
