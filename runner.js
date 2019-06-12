@@ -31,26 +31,16 @@ class Runner {
             while (!id || id in this.objects) id = '_'.repeat(num_) + randomString(l)
             return id
         }
-        this.stringify = stringify({
-            map: this.map,
-            objects: this.objects,
-            types: this.types,
-            defProp: this.defProp,
-            genId: this.genId,
-            constructors: this.constructors,
-            reassignMutative: (stringify) => reassignMutative(
-                this.objects,
-                this.__.bind(this),
-                this.defProp,
-                stringify,
-                bool => this.ignore = bool
-                ,
-                bool => this.allowEmpty = bool
-            )
+        const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative.call(this)
+        this.reassignArrayMethods = reassignArrayMethods;
+        this.reassignMapMethods = reassignMapMethods;
+        this.reassignSetMethods = reassignSetMethods
 
-        })
+        this.stringify = stringify.bind(this)
+        // this.reassignMutative = reassignMutative
+
         // resets hijacked native methods
-        this.reset = defineProperty(this.__.bind(this), this.stringify, this.map, this.objects)
+        this.reset = defineProperty.call(this)
         this.name = name
         // types that will have an object property
         this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]

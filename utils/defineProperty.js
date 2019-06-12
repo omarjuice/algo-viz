@@ -1,14 +1,15 @@
 const TYPES = require('./types')
 const signature = require('./signature')
 const empty = require('./empty')
-module.exports = function (__, stringify, map, objects) {
+module.exports = function () {
     // reassign all object mutative methods
+    const runner = this;
     const { defineProperty, defineProperties, assign } = Object
     Object.defineProperty = function (o, p, attributes, sig) {
         //signature is a custom param that prevents errors from being thrown when this function is called by the Runner
         try {
             // do we need a signature here
-            if (map.has(o)) {
+            if (runner.map.has(o)) {
                 let { enumerable, configurable, writable, value, get, set } = attributes
                 let getFlag = true
                 // we may want to get the value but not show that we did, so we use this flag.
@@ -17,9 +18,9 @@ module.exports = function (__, stringify, map, objects) {
                         // we wrap the input get function
                         attributes.get = () => {
                             const result = get.bind(o)()
-                            return getFlag ? __(result, {
+                            return getFlag ? runner.__(result, {
                                 type: TYPES.GET,
-                                object: stringify(o),
+                                object: runner.stringify(o),
                                 access: [p],
                             }) : result
                         }
@@ -27,9 +28,9 @@ module.exports = function (__, stringify, map, objects) {
                     } else {
                         // else we use our own
                         attributes.get = () => {
-                            return getFlag ? __(value, {
+                            return getFlag ? runner.__(value, {
                                 type: TYPES.GET,
-                                object: stringify(o),
+                                object: runner.stringify(o),
                                 access: [p],
                             }) : value
                         }
@@ -40,9 +41,9 @@ module.exports = function (__, stringify, map, objects) {
                             attributes.set = (val) => {
                                 set.bind(o)(val)
                                 getFlag = false
-                                __(attributes.get(), {
+                                runner.__(attributes.get(), {
                                     type: TYPES.SET,
-                                    object: stringify(o),
+                                    object: runner.stringify(o),
                                     access: [p],
                                 })
                                 getFlag = true
@@ -55,9 +56,9 @@ module.exports = function (__, stringify, map, objects) {
                             // but it is there...
                             attributes.set = val => {
                                 if (value === empty || (value !== empty && val === empty)) {
-                                    __(val, {
+                                    runner.__(val, {
                                         type: TYPES.SET,
-                                        object: stringify(o),
+                                        object: runner.stringify(o),
                                         access: [p],
                                     })
                                     Object.defineProperty(o, p, {
@@ -65,9 +66,9 @@ module.exports = function (__, stringify, map, objects) {
                                     }, signature)
                                     return
                                 }
-                                return __(value = val, {
+                                return runner.__(value = val, {
                                     type: TYPES.SET,
-                                    object: stringify(o),
+                                    object: runner.stringify(o),
                                     access: [p],
                                 })
                             }
@@ -83,10 +84,10 @@ module.exports = function (__, stringify, map, objects) {
                         attributes.enumerable = true
                     }
                     // if weve seen the object before we want to know what was set
-                    if (!(p in o) && map.get(o) in objects) {
-                        __(value, {
+                    if (!(p in o) && runner.map.get(o) in runner.objects) {
+                        runner.__(value, {
                             type: TYPES.SET,
-                            object: stringify(o),
+                            object: runner.stringify(o),
                             access: [p],
                         })
                     }
@@ -106,7 +107,7 @@ module.exports = function (__, stringify, map, objects) {
 
     }
     Object.defineProperties = function (o, props) {
-        if (map.has(o)) {
+        if (runner.map.has(o)) {
             for (let key in props) {
                 Object.defineProperty(o, key, props[key])
             }
@@ -116,7 +117,7 @@ module.exports = function (__, stringify, map, objects) {
         }
     }
     Object.assign = function (object, ...sources) {
-        if (map.has(object)) {
+        if (runner.map.has(object)) {
             for (const current of sources) {
                 if (current && typeof current === 'object') {
                     for (const key in current) {
@@ -126,9 +127,9 @@ module.exports = function (__, stringify, map, objects) {
                             value
                         })
                         if (hasKeyAlready) {
-                            __(value, {
+                            runner.__(value, {
                                 type: TYPES.SET,
-                                object: stringify(object),
+                                object: runner.stringify(object),
                                 access: [key],
                             })
                         }

@@ -3,55 +3,56 @@ const empty = require('./empty')
 const { pop, push, unshift, shift, splice, copyWithin, concat, slice, } = Array.prototype
 const arrayMethods = { pop, push, unshift, shift, splice, copyWithin }
 
-function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
+function reassignMutative() {
+    const runner = this;
     const _concat = function (...args) {
-        allowEmpty(true)
-        const result = __(concat.call(this, ...args), {
+        runner.allowEmpty = true
+        const result = runner.__(concat.call(this, ...args), {
             type: TYPES.EXPRESSION,
             scope: null
         })
-        allowEmpty(false)
+        runner.allowEmpty = false
         return result
     };
     const _slice = function (...args) {
-        allowEmpty(true)
+        runner.allowEmpty = true
         const result = slice.call(this, ...args)
-        allowEmpty(false)
+        runner.allowEmpty = false
         return result
     }
     const _forEach = function (cb, _this) {
         for (let i = 0; i < this.length; i++) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             cb.call(_this || null, this[i], i, this)
         }
-        ignore(false)
+        runner.ignore = false
     }
     const _every = function (cb, _this) {
         for (let i = 0; i < this.length; i++) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             if (!cb.call(_this || null, this[i], i, this)) return false
         }
-        ignore(false)
+        runner.ignore = false
         return true
     }
     const _some = function (cb, _this) {
         for (let i = 0; i < this.length; i++) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             if (cb.call(_this || null, this[i], i, this)) return true
         }
-        ignore(false)
+        runner.ignore = false
         return false
     }
     const _indexOf = function (searchElement, fromIndex) {
@@ -67,16 +68,16 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         }
         k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
         while (k < len) {
-            ignore(true)
+            runner.ignore = true
             if (k in this && this[k] !== empty) {
-                ignore(false)
+                runner.ignore = false
                 if (this[k] === searchElement) {
                     return k
                 }
             }
             k++;
         }
-        ignore(false)
+        runner.ignore = false
         return -1;
     }
     const _lastIndexOf = function (searchElement /*, fromIndex*/) {
@@ -99,109 +100,109 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         }
 
         for (k = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n); k >= 0; k--) {
-            ignore(true)
+            runner.ignore = true
             if (k in this && this[k] !== empty) {
-                ignore(false)
+                runner.ignore = false
                 if (this[k] === searchElement) {
                     return k
                 }
             }
         }
-        ignore(false)
+        runner.ignore = false
         return -1;
     }
     const _map = function (cb, _this) {
         const mappedArray = []
         for (let i = 0; i < this.length; i++) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             mappedArray.push(cb.call(_this || null, this[i], i, this))
         }
-        ignore(false)
+        runner.ignore = false
         return mappedArray
     }
     const _filter = function (cb, _this) {
 
         const filteredArray = []
         for (let i = 0; i < this.length; i++) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             const val = this[i]
             if (cb.call(_this || null, val, i, this)) {
                 filteredArray.push(val)
             }
         }
-        ignore(false)
+        runner.ignore = false
         return filteredArray
     }
     const _reduce = function (cb, acc) {
         let i = 0;
         if (acc === undefined) {
-            ignore(true)
+            runner.ignore = true
             while (i < this.length && this[i] === empty) {
                 i++
             }
             if (i === this.length) {
                 throw new TypeError('Reduce of empty array with no initial value')
             }
-            ignore(false)
+            runner.ignore = false
             acc = this[i++]
         }
 
         for (i; i < this.length; i++) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             const val = this[i]
             acc = cb.call(null, acc, val, i, this)
         }
-        ignore(false)
+        runner.ignore = false
         return acc
     }
     const _reduceRight = function (cb, acc) {
         let i = this.length - 1;
         if (acc === undefined) {
-            ignore(true)
+            runner.ignore = true
             while (i > -1 && this[i] === empty) {
                 i--
             }
             if (i === -1) {
                 throw new TypeError('Reduce of empty array with no initial value')
             }
-            ignore(false)
+            runner.ignore = false
             acc = this[i--]
         }
 
         for (i; i > -1; i--) {
-            ignore(true)
+            runner.ignore = true
             if (this[i] === empty) {
                 continue;
             }
-            ignore(false)
+            runner.ignore = false
             const val = this[i]
 
             acc = cb.call(null, acc, val, i, this)
         }
-        ignore(false)
+        runner.ignore = false
         return acc
     }
     function arrayMutate(method) {
         // specifically methods that change the arrays length
         return function (...args) {
-            allowEmpty(true)
+            runner.allowEmpty = true
             const result = method.call(this, ...args)
-            const id = stringify(this)
-            const prevLen = objects[id].final
+            const id = runner.stringify(this)
+            const prevLen = runner.objects[id].final
             if (this.length !== prevLen) {
-                __(this.length, {
+                runner.__(this.length, {
                     type: TYPES.SET,
                     object: id,
                     access: ['length']
@@ -209,14 +210,14 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
             }
             if (prevLen < this.length) {
                 for (let i = prevLen, value = this[i]; i < this.length; value = this[++i]) {
-                    defProp(this, i, value)
+                    runner.defProp(this, i, value)
                     this[i] = value
                 }
 
             }
 
-            objects[id].final = this.length
-            allowEmpty(false)
+            runner.objects[id].final = this.length
+            runner.allowEmpty = false
             return result
         }
     }
@@ -283,11 +284,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
                 ignore = false
                 if (result) {
                     const val = get.call(this, key)
-                    return ignore ? val : __(val, {
+                    return ignore ? val : runner.__(val, {
                         type: TYPES.GET,
 
-                        object: stringify(this),
-                        access: [stringify(key)]
+                        object: runner.stringify(this),
+                        access: [runner.stringify(key)]
                     })
                 } else {
                     return undefined
@@ -299,11 +300,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
             value: function (key) {
                 const result = has.call(this, key)
                 if (!ignore) {
-                    return __(result, {
+                    return runner.__(result, {
                         type: TYPES.GET,
 
-                        object: stringify(this),
-                        access: [stringify(key)]
+                        object: runner.stringify(this),
+                        access: [runner.stringify(key)]
                     })
                 } else {
                     return result
@@ -314,10 +315,10 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         Object.defineProperty(obj, 'set', {
             value: function (key, value) {
                 const result = set.call(this, key, value)
-                __(value, {
+                runner.__(value, {
                     type: TYPES.SET,
-                    object: stringify(this),
-                    access: [stringify(key)]
+                    object: runner.stringify(this),
+                    access: [runner.stringify(key)]
                 })
                 return result
             },
@@ -327,11 +328,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
             value: function (key) {
                 const result = mapDelete.call(this, key)
                 if (result) {
-                    __(result, {
+                    runner.__(result, {
                         type: TYPES.DELETE,
 
-                        object: stringify(this),
-                        access: [stringify(key)]
+                        object: runner.stringify(this),
+                        access: [runner.stringify(key)]
                     })
                 }
                 return result
@@ -341,9 +342,9 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         Object.defineProperty(obj, 'clear', {
             value: function () {
                 clear.call(this)
-                __(undefined, {
+                runner.__(undefined, {
                     type: TYPES.CLEAR,
-                    object: stringify(this),
+                    object: runner.stringify(this),
                 })
             },
             ..._definePropertyParams
@@ -354,11 +355,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
                 if (args[0]) {
                     const [cb] = args
                     args[0] = (key, val, ..._args) => {
-                        __(val, {
+                        runner.__(val, {
                             type: TYPES.GET,
 
-                            object: stringify(this),
-                            access: [stringify(key)]
+                            object: runner.stringify(this),
+                            access: [runner.stringify(key)]
                         })
                         return cb.call(args[1] || null, key, val, ..._args)
                     }
@@ -374,11 +375,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
             value: function (key) {
                 const result = has.call(this, key)
                 if (result) {
-                    return __(key, {
+                    return runner.__(key, {
                         type: TYPES.GET,
 
-                        object: stringify(this),
-                        access: [stringify(key)]
+                        object: runner.stringify(this),
+                        access: [runner.stringify(key)]
                     })
                 } else {
                     return result
@@ -389,10 +390,10 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         Object.defineProperty(obj, 'add', {
             value: function (val) {
                 const result = add.call(this, val)
-                __(val, {
+                runner.__(val, {
                     type: TYPES.SET,
-                    object: stringify(this),
-                    access: [stringify(val)]
+                    object: runner.stringify(this),
+                    access: [runner.stringify(val)]
                 })
                 return result
             },
@@ -401,9 +402,9 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
         Object.defineProperty(obj, 'clear', {
             value: function () {
                 clear.call(this)
-                __(undefined, {
+                runner.__(undefined, {
                     type: TYPES.CLEAR,
-                    object: stringify(this),
+                    object: runner.stringify(this),
                 })
             },
             ..._definePropertyParams
@@ -412,11 +413,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
             value: function (key) {
                 const result = setDelete.call(this, key)
                 if (result) {
-                    __(result, {
+                    runner.__(result, {
                         type: TYPES.DELETE,
 
-                        object: stringify(this),
-                        access: [stringify(key)]
+                        object: runner.stringify(this),
+                        access: [runner.stringify(key)]
                     })
                 }
                 return result
@@ -428,11 +429,11 @@ function reassignMutative(objects, __, defProp, stringify, ignore, allowEmpty) {
                 if (args[0]) {
                     const [cb] = args
                     args[0] = (key, val, ..._args) => {
-                        __(val, {
+                        runner.__(val, {
                             type: TYPES.GET,
 
-                            object: stringify(this),
-                            access: [stringify(key)]
+                            object: runner.stringify(this),
+                            access: [runner.stringify(key)]
                         })
                         return cb.call(args[1] || null, key, val, ..._args)
                     }

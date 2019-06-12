@@ -1,12 +1,7 @@
-const isNative = require('../utils/isNative')
-const stringifier = require('../utils/stringify')
-const randomString = require('../utils/randomString')
-const checkTypedArray = require('../utils/checkTypedArray')
 const expect = require('expect')
-const genId = () => '___' + randomString(5)
-const reassignMutative = () => ({
-    reassignArrayMethods: () => { }, reassignMapMethods: () => { }, reassignSetMethods: () => { }
-})
+const isNative = require('../utils/isNative')
+const checkTypedArray = require('../utils/checkTypedArray')
+const Runner = require('../runner')
 describe('UTILS', () => {
     describe('isNative', () => {
         it('Should detect native objects', () => {
@@ -32,33 +27,16 @@ describe('UTILS', () => {
         }
 
         it('does not throw errors', () => {
-            const map = new Map()
-            const objects = {}
-            const obj = new Circular
-            expect(() => stringifier({
-                obj, objects, map, genId,
-                defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }),
-                reassignMutative,
-                constructors: new Map()
-
-            })(obj)).not.toThrow()
+            const runner = new Runner('_name')
+            expect(() => runner.stringify(new Circular)).not.toThrow()
 
 
         })
         it('Primitive values remain intact, refs are created for objects', () => {
-            const map = new Map()
-            const objects = {}
+            const runner = new Runner('_name')
             const obj = new Circular
-            const types = {}
-            const stringify = stringifier({
-                map, objects, types,
-                defProp: (obj, key, val) => Object.defineProperty(obj, key, { val }),
-                genId,
-                reassignMutative,
-                constructors: new Map()
-            })
-            stringify(obj)
-            const copy = objects[map.get(obj)]
+            runner.stringify(obj)
+            const copy = runner.objects[runner.map.get(obj)]
             for (let key in obj) {
                 if (typeof obj[key] === 'object') {
                     expect(typeof copy[key]).toBe('string')
