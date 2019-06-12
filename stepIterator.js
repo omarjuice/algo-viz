@@ -10,6 +10,7 @@ module.exports = function (steps, {
     code
 }) {
     const states = []
+    let callStackLen = 0
     for (const step of steps) {
 
         if (step.scope) {
@@ -99,7 +100,10 @@ module.exports = function (steps, {
         }
         // states.push(JSON.stringify(identifiers))
         // console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), identifiers);
-        // console.log(callStack)
+        // if (callStack.length !== callStackLen) {
+        //     console.log(JSON.stringify(callStack))
+        //     callStackLen = callStack.length
+        // }
     }
     // fs.writeFileSync('states.json', states)
     return { scopeChain, scopeStack, callStack, identifiers, funcScopes }

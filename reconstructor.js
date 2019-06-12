@@ -1,5 +1,23 @@
 const _ = require('lodash')
 const TYPES = require('./utils/types')
+const arraySet = new Set()
+for (const arr of [
+    'Array',
+    'Int8Array',
+    'Uint8Array',
+    'Uint16Array',
+    'Uint32Array',
+    'Int8Array',
+    'Int16Array',
+    'Int32Array',
+    'Float32Array',
+    'Float64Array',
+    'Uint8ClampedArray',
+    'BigInt64Array',
+    'BigUint64Array'
+]) {
+    arraySet.add(arr)
+}
 module.exports = function ({ types, steps, objects, code }) {
     const finalObjs = _.cloneDeep(objects)
     const seen = new Set()
@@ -8,9 +26,10 @@ module.exports = function ({ types, steps, objects, code }) {
         if (seen.has(object)) return object
         seen.add(object)
         for (const key in object) {
-            object[key] = getValue(object[key])
-            if (object[key] && typeof object[key] === "object") {
-                reconstruct(object[key], seen)
+            const val = object[key]
+            object[key] = getValue(val)
+            if (val && typeof val === "object") {
+                reconstruct(val, seen)
             }
         }
         return object
@@ -55,17 +74,22 @@ module.exports = function ({ types, steps, objects, code }) {
     for (const step of steps) {
         if (step.type === TYPES.SET) {
             const { object, access, value } = step
+            if (access[0] in finalObjs[object]) {
+                step.prev = finalObjs[object][access[0]]
+            }
             finalObjs[object][access[0]] = getValue(value)
         }
         if (step.type === TYPES.DELETE) {
             const { object, access, value } = step
             if (value) {
                 const original = finalObjs[object][access[0]]
-                step.original = original
+                step.prev = original
                 delete finalObjs[object][access[0]]
             }
         }
         if (step.type === TYPES.CLEAR) {
+            const { object } = step
+            step.prev = finalObjs[object]
             finalObjs[object] = {}
         }
         if (step.type === TYPES.GET) {
@@ -77,6 +101,34 @@ module.exports = function ({ types, steps, objects, code }) {
         //     console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), step.value)
         // }
     }
-    return finalObjs
+    return {
+        objects: finalObjs,
+        reverse: function () {
+            for (let i = steps.length - 1, step = steps[i]; i > -1; step = steps[--i]) {
+                if (step.type === TYPES.SET) {
+                    const { object, access } = step
+                    if ('prev' in step) {
+                        finalObjs[object][access[0]] = getValue(step.prev)
+                    } else {
+                        delete finalObjs[object][access[0]]
+                    }
+                }
+                if (step.type === TYPES.DELETE) {
+                    const { object, access, value } = step
+                    if (value) {
+                        finalObjs[object][access[0]] = step.prev
+                    }
+                }
+                if (step.type === TYPES.CLEAR) {
+                    const { object } = step
+                    finalObjs[object] = step.prev
+                }
+                if (step.type === TYPES.GET) {
+                    const { object, access, value } = step
+                    finalObjs[object][access[0]] = getValue(value)
+                }
+            }
+        }
+    }
 }
 

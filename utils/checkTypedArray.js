@@ -14,4 +14,8 @@ for (const arr of ['Int8Array',
 ]) {
     arraySet.add(arr)
 }
-module.exports = (obj) => Array.isArray(obj) || arraySet.has(obj.constructor.name)
+module.exports = (obj) => {
+    if (arraySet.has(obj.constructor.name)) {
+        throw new Error('Typed Arrays are not supported')
+    }
+}

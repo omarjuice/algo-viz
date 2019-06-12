@@ -1,78 +1,70 @@
 
 const babel = require('@babel/core')
-const fs = require('fs')
+const _ = require('lodash')
 const stepify = require('../stepify')
 const expect = require('expect')
 const reconstructor = require('../reconstructor')
 const funcs = require('./funcs')
 
-async function main(program) {
 
-    const input = { _name: null, references: {} }
-    const { code } = await babel.transformAsync(program, {
-        plugins: [
-            ['@babel/plugin-transform-destructuring', { loose: true }],
-            ['@babel/plugin-transform-parameters', { loose: true }],
-            'babel-plugin-transform-remove-console',
-            [stepify(input), {
-                disallow: {
-                    async: true,
-                    generator: true
-                },
-            }]
-        ],
-        parserOpts: {
-            strictMode: true
-        }
-    })
-    fs.writeFileSync('transpiled.js', code)
-    const { _name } = input
-
-    global[_name] = new (require('../runner'))(_name, program)
-
-    const transpiledResult = eval(code)
-    const normalResult = eval(program)
-    const { steps, objects, types, map } = global[_name]
-    fs.writeFileSync('executed.json', JSON.stringify({
-        steps,
-        objects,
-        types,
-
-    }))
-    delete global[_name]
-    return {
-        steps, objects, types, normalResult,
-        transpiledResult, map, code: program
-    }
-}
-
-async function testRunner(func) {
-    const { steps, objects, types, normalResult, map, transpiledResult, code } = await main(func)
-    expect(normalResult).toBeTruthy()
-    expect(typeof normalResult).toBe('object')
-    expect(transpiledResult).toBeTruthy()
-    expect(typeof transpiledResult).toBe('object')
-    expect(normalResult).toEqual(transpiledResult)
-
-
-    const key = map.get(transpiledResult)
-
-    expect(key).toBeTruthy()
-
-    const { [key]: reconstructed } = reconstructor({ types, steps, objects, code })
-    expect(typeof reconstructed).toBe('object')
-    expect(reconstructed).toBeTruthy()
-    expect(reconstructed).toEqual(normalResult)
-    expect(reconstructed).not.toBe(normalResult)
-    expect(reconstructed).not.toBe(transpiledResult)
-    // console.log(JSON.stringify(reconstructed, null, 2))
-    // console.log(JSON.stringify(normalResult, null, 2))
-
-
-}
 
 describe('RECONSTRUCT', () => {
+    async function main(program) {
 
+        const input = { _name: null, references: {} }
+        const { code } = await babel.transformAsync(program, {
+            plugins: [
+                ['@babel/plugin-transform-destructuring', { loose: true }],
+                ['@babel/plugin-transform-parameters', { loose: true }],
+                'babel-plugin-transform-remove-console',
+                [stepify(input), {
+                    disallow: {
+                        async: true,
+                        generator: true
+                    },
+                }]
+            ],
+            parserOpts: {
+                strictMode: true
+            }
+        })
+        const { _name } = input
+
+        global[_name] = new (require('../runner'))(_name, program)
+
+        const transpiledResult = eval(code)
+        const normalResult = eval(program)
+        const { steps, objects, types, map } = global[_name]
+        delete global[_name]
+        return {
+            steps, objects, types, normalResult,
+            transpiledResult, map, code: program
+        }
+    }
+
+    async function testRunner(func) {
+        const { steps, objects, types, normalResult, map, transpiledResult, code } = await main(func)
+        expect(normalResult).toBeTruthy()
+        expect(typeof normalResult).toBe('object')
+        expect(transpiledResult).toBeTruthy()
+        expect(typeof transpiledResult).toBe('object')
+        expect(normalResult).toEqual(transpiledResult)
+
+
+        const key = map.get(transpiledResult)
+
+        expect(key).toBeTruthy()
+
+        const { objects: { [key]: reconstructed } } = reconstructor({ types, steps, objects, code })
+        expect(typeof reconstructed).toBe('object')
+        expect(reconstructed).toBeTruthy()
+        expect(reconstructed).toEqual(normalResult)
+        expect(reconstructed).not.toBe(normalResult)
+        expect(reconstructed).not.toBe(transpiledResult)
+        // console.log(JSON.stringify(reconstructed, null, 2))
+        // console.log(JSON.stringify(normalResult, null, 2))
+
+    }
     describe('ARRAYS', () => {
         it('case #1: array val assignment', async () => {
             const func = `
@@ -165,7 +157,7 @@ describe('RECONSTRUCT', () => {
             `
             await testRunner(func)
         })
-        it('case #8: actual function: mergeSort', async () => {
+        it('case #8: function mergeSort', async () => {
             const func = funcs.mergeSort
             await testRunner(func)
         })
@@ -206,37 +198,117 @@ describe('RECONSTRUCT', () => {
             await testRunner(func)
         })
         it('case #4: function BST', async () => {
-            const func = `
-            class BST {
-                constructor(value) {
-                  this.value = value;
-                  this.left = null;
-                  this.right = null;
-                }
-              
-                insert(value) {
-                  if (value < this.value) {
-                    if (this.left === null) {
-                      this.left = new BST(value);
-                    } else {
-                      this.left.insert(value);
-                    }
-                  } else {
-                    if (this.right === null) {
-                      this.right = new BST(value);
-                    } else {
-                      this.right.insert(value);
-                    }
-                  }
-                  return this;
-                }
-              }
-
-            new BST(100).insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
-                .insert(1).insert(1).insert(3).insert(1).insert(1).insert(502).insert(55000)
-                .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203);
-            `
+            const func = funcs.BST
             await testRunner(func)
+        })
+    })
+})
+describe('DECONSTRUCT(reverse)', () => {
+    async function main(program, copies) {
+
+        const input = { _name: null, references: {} }
+        const { code } = await babel.transformAsync(program, {
+            plugins: [
+                ['@babel/plugin-transform-destructuring', { loose: true }],
+                ['@babel/plugin-transform-parameters', { loose: true }],
+                'babel-plugin-transform-remove-console',
+                [stepify(input), {
+                    disallow: {
+                        async: true,
+                        generator: true
+                    },
+                }]
+            ],
+            parserOpts: {
+                strictMode: true
+            }
+        })
+        const { _name } = input
+
+        global[_name] = new (require('../runner'))(_name, program)
+        let object = copies.transpiled
+        const transpiledResult = eval(code)
+        object = copies.normal
+        const normalResult = eval(program)
+        const { steps, objects, types, map } = global[_name]
+
+        delete global[_name]
+        return {
+            steps, objects, types, normalResult,
+            transpiledResult, map, code: program
+        }
+    }
+
+    async function testRunner(func, copies, original) {
+        const { steps, objects, types, map, transpiledResult, code } = await main(func, copies)
+        expect(copies.normal).toEqual(copies.transpiled)
+        expect(original).not.toEqual(copies.normal)
+        const key = map.get(transpiledResult)
+
+
+        const { objects: { [key]: reconstructed }, reverse } = reconstructor({ types, steps, objects, code })
+        // console.log(reconstructed);
+        reverse()
+        // console.log(reconstructed);
+        expect(reconstructed).toEqual(original)
+
+    }
+    describe('ARRAYS', () => {
+        const getCopies = obj => ({
+            normal: _.cloneDeep(obj),
+            transpiled: _.cloneDeep(obj)
+        })
+        it('case #1: array val assignment', async () => {
+            const original = new Array(3)
+            const copies = getCopies(original)
+            const func = `
+            function init(array){
+                array[1] = 1;
+                return array
+                
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #2: array sorting', async () => {
+            const original = [5, 4, 3, 2, 1]
+            const copies = getCopies(original)
+            const func = `
+            function init(obj){
+                obj.sort()
+                return obj
+                
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #3: array splicing', async () => {
+            const original = [5, 4, 3, 2, 1]
+            const copies = getCopies(original)
+            const func = `
+            function init(obj){
+                obj.splice(1,2)
+                return obj
+                
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #4: array copyWithin', async () => {
+            const original = [5, 4, 3, 2, 1]
+            const copies = getCopies(original)
+            const func = `
+            function init(obj){
+                obj.copyWithin(-2)
+                return obj
+                
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
         })
     })
 })

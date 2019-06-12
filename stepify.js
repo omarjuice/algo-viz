@@ -270,7 +270,7 @@ module.exports = function (input) {
                         if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
                         // const { object } = computeAccessor(path, path.node)
                         if (isBarredObject(path.node.object.name)) return path.stop()
-                        if (!t.isExpression(path.parent)) {
+                        if (!t.isExpression(path.parent) && !t.isVariableDeclarator(path.parent)) {
                             // we need the scope of each statement
                             if (!path.node.start) return;
                             const details = {

@@ -2,7 +2,6 @@ const stringify = require('./utils/stringify')
 const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
 const defineProperty = require('./utils/defineProperty')
-const isArray = require('./utils/isArray')
 const empty = require('./utils/empty')
 const reassignMutative = require('./utils/reassignMutative')
 
@@ -93,7 +92,7 @@ class Runner {
                 obj = obj[info.access[i]]
             }
             let prop = info.access[info.access.length - 1]
-            if (isArray(obj)) {
+            if (Array.isArray(obj)) {
                 this.defProp(obj, prop, empty)
             }
         }
@@ -166,7 +165,7 @@ class Runner {
         }
         const id = this.map.get(obj)
         const prop = info.access[info.access.length - 1]
-        const objIsArray = isArray(obj)
+        const objIsArray = Array.isArray(obj)
         this.ignore = false
         if (!Object.getOwnPropertyDescriptor(obj, prop).get) {
             if (!objIsArray) {

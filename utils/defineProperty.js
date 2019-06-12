@@ -117,8 +117,7 @@ module.exports = function (__, stringify, map, objects) {
     }
     Object.assign = function (object, ...sources) {
         if (map.has(object)) {
-            while (sources.length) {
-                const current = sources.shift()
+            for (const current of sources) {
                 if (current && typeof current === 'object') {
                     for (const key in current) {
                         const hasKeyAlready = key in object;

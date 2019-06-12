@@ -30,7 +30,6 @@ async function main(program) {
             strictMode: true
         }
     })
-    fs.writeFileSync('transpiled.js', code)
     const { _name } = input
 
     global[_name] = new (require('../runner'))(_name, program)
@@ -38,12 +37,7 @@ async function main(program) {
     const transpiledResult = eval(code)
     const normalResult = eval(program)
     const { steps, objects, types } = global[_name]
-    fs.writeFileSync('executed.json', JSON.stringify({
-        steps,
-        objects,
-        types,
 
-    }))
     delete global[_name]
     return {
         steps, objects, types, normalResult,

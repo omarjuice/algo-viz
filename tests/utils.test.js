@@ -1,7 +1,7 @@
 const isNative = require('../utils/isNative')
 const stringifier = require('../utils/stringify')
 const randomString = require('../utils/randomString')
-const isArray = require('../utils/isArray')
+const checkTypedArray = require('../utils/checkTypedArray')
 const expect = require('expect')
 const genId = () => '___' + randomString(5)
 const reassignMutative = () => ({
@@ -69,32 +69,31 @@ describe('UTILS', () => {
             }
         })
     })
-    describe('isArray', () => {
-        it('Should return true for regular array', () => {
-            expect(isArray(new Array(10))).toBe(true)
-            expect(isArray([])).toBe(true)
+    describe('checkTypedArray', () => {
+        it('Should not throw for regular array', () => {
+            expect(() => checkTypedArray(new Array(10))).not.toThrow()
         })
-        it('Should return true for typed Arrays', () => {
-            expect(isArray(new Int32Array(10))).toBe(true)
-            expect(isArray(new Int16Array(10))).toBe(true)
-            expect(isArray(new Int8Array(10))).toBe(true)
-            expect(isArray(new Uint32Array(10))).toBe(true)
-            expect(isArray(new Uint16Array(10))).toBe(true)
-            expect(isArray(new Uint8Array(10))).toBe(true)
-            expect(isArray(new Uint8ClampedArray(10))).toBe(true)
-            expect(isArray(new Float32Array(10))).toBe(true)
-            expect(isArray(new BigInt64Array(10))).toBe(true)
-            expect(isArray(new BigUint64Array(10))).toBe(true)
-            expect(isArray(new Float64Array(10))).toBe(true)
+        it('Should throw for typed arrays', () => {
+            expect(() => checkTypedArray(new Int32Array(10))).toThrow()
+            expect(() => checkTypedArray(new Int16Array(10))).toThrow()
+            expect(() => checkTypedArray(new Int8Array(10))).toThrow()
+            expect(() => checkTypedArray(new Uint32Array(10))).toThrow()
+            expect(() => checkTypedArray(new Uint16Array(10))).toThrow()
+            expect(() => checkTypedArray(new Uint8Array(10))).toThrow()
+            expect(() => checkTypedArray(new Uint8ClampedArray(10))).toThrow()
+            expect(() => checkTypedArray(new Float32Array(10))).toThrow()
+            expect(() => checkTypedArray(new BigInt64Array(10))).toThrow()
+            expect(() => checkTypedArray(new BigUint64Array(10))).toThrow()
+            expect(() => checkTypedArray(new Float64Array(10))).toThrow()
         })
-        it('returns false for array like objects and other objects', () => {
+        it('does not throw for array like objects and other things', () => {
             function func() {
-                expect(isArray(arguments)).toBe(false)
+                expect(() => checkTypedArray(arguments)).not.toThrow()
             }
             func()
 
-            expect(isArray({})).toBe(false)
-            expect(isArray('Int8Array')).toBe(false)
+            expect(() => checkTypedArray({})).not.toThrow()
+            expect(() => checkTypedArray('Int8Array')).not.toThrow()
         })
 
     })

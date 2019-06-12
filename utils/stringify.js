@@ -1,6 +1,6 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
-const isArray = require('./isArray')
+const checkTypedArray = require('./checkTypedArray')
 const empty = require('./empty')
 // the values are specific to the Runner instance
 module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp, genId, constructors, reassignMutative }) {
@@ -12,6 +12,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
             if (map.has(obj)) {
                 return map.get(obj)
             }
+            checkTypedArray(obj)
             const native = isNative(obj)
             if (native) {
                 return native
@@ -53,7 +54,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 }
                 reassignSetMethods(obj)
                 objects[newId] = copy
-            } else if (isArray(obj)) {
+            } else if (Array.isArray(obj)) {
                 // we store arrays as objects, they will be easier to modify when the visualizer consumes the data
                 const copy = {}
                 for (let i = 0; i < obj.length; i++) {
@@ -67,9 +68,7 @@ module.exports = function ({ map = new Map(), objects = {}, types = {}, defProp,
                 }
                 copy.length = obj.length
                 copy.final = obj.length
-                if (Array.isArray(obj)) {
-                    reassignArrayMethods(obj)
-                }
+                reassignArrayMethods(obj)
                 objects[newId] = copy
             } else {
                 const copy = {}
