@@ -7,7 +7,7 @@ const reconstructor = require('../reconstructor')
 const funcs = require('./funcs')
 
 
-
+const print = v => (console.log(v), v)
 describe('RECONSTRUCT', () => {
     async function main(program) {
 
@@ -242,22 +242,22 @@ describe('DECONSTRUCT(reverse)', () => {
     async function testRunner(func, copies, original) {
         const { steps, objects, types, map, transpiledResult, code } = await main(func, copies)
         expect(copies.normal).toEqual(copies.transpiled)
+
         expect(original).not.toEqual(copies.normal)
         const key = map.get(transpiledResult)
 
 
         const { objects: { [key]: reconstructed }, reverse } = reconstructor({ types, steps, objects, code })
-        // console.log(reconstructed);
         reverse()
-        // console.log(reconstructed);
         expect(reconstructed).toEqual(original)
 
     }
+    const getCopies = obj => ({
+        normal: _.cloneDeep(obj),
+        transpiled: _.cloneDeep(obj)
+    })
     describe('ARRAYS', () => {
-        const getCopies = obj => ({
-            normal: _.cloneDeep(obj),
-            transpiled: _.cloneDeep(obj)
-        })
+
         it('case #1: array val assignment', async () => {
             const original = new Array(3)
             const copies = getCopies(original)
@@ -308,6 +308,92 @@ describe('DECONSTRUCT(reverse)', () => {
             }
             init(object)
             `
+            await testRunner(func, copies, original)
+        })
+        it('case #5: other array mutations', async () => {
+            const original = [5, 4, 3, 2, 1]
+            const copies = getCopies(original)
+            const func = `
+            function init(obj){
+                obj.push(0, -1, -2, -3)
+                obj.shift()
+                obj.unshift(6,7)
+                obj.pop()
+                obj.pop()
+                obj.sort()
+                obj.pop()
+                return obj            
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #6: array deletes', async () => {
+            const original = [5, 4, 3, 2, 1]
+            const copies = getCopies(original)
+            const func = `
+            function init(obj){
+                delete obj[4]
+                return obj          
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #7: array length changing', async () => {
+            const original = [5, 4, 3, 2, 1]
+            const copies = getCopies(original)
+            const func = `
+            function init(obj){
+
+                obj[10] = 100
+                return obj.sort((a,b)=>a-b)
+            }
+            init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+
+    })
+    describe('OBJECTS', () => {
+        it('case #1: normal prop assignment', async () => {
+            const original = {}
+            const copies = getCopies(original)
+            const func = `
+                function init(obj){
+                    obj.hello = 1;
+                    return obj
+                }
+                init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #2: deletion', async () => {
+            const original = { prop: null }
+            const copies = getCopies(original)
+            const func = `
+                function init(obj){
+                    obj.hello = null;
+                    delete obj.prop
+                    return obj
+                }
+                init(object)
+            `
+            await testRunner(func, copies, original)
+        })
+        it('case #3: Object.assign', async () => {
+            const original = { prop0: 0 }
+            const copies = getCopies(original)
+            const func = `
+            const other1 = { prop1: 1 }
+            const other2 = { prop2: 2 }
+            const other3 = { prop0: 3 } 
+            function init(obj){
+                Object.assign(obj, other1, other2, other3)
+                return obj
+            }
+            init(object)
+        `
             await testRunner(func, copies, original)
         })
     })

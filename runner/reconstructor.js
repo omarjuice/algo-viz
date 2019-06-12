@@ -1,23 +1,6 @@
 const _ = require('lodash')
 const TYPES = require('./utils/types')
-const arraySet = new Set()
-for (const arr of [
-    'Array',
-    'Int8Array',
-    'Uint8Array',
-    'Uint16Array',
-    'Uint32Array',
-    'Int8Array',
-    'Int16Array',
-    'Int32Array',
-    'Float32Array',
-    'Float64Array',
-    'Uint8ClampedArray',
-    'BigInt64Array',
-    'BigUint64Array'
-]) {
-    arraySet.add(arr)
-}
+
 module.exports = function ({ types, steps, objects, code }) {
     const finalObjs = _.cloneDeep(objects)
     const seen = new Set()
@@ -127,6 +110,7 @@ module.exports = function ({ types, steps, objects, code }) {
                     const { object, access, value } = step
                     finalObjs[object][access[0]] = getValue(value)
                 }
+                // console.log(JSON.stringify(finalObjs));
             }
         }
     }
