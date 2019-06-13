@@ -1,7 +1,14 @@
-body, html, #root{
+body, html, #root, .app{
     height: 100%;
     width: 100%;
-    background-color: #0b1423
+    /* background-color: #0b1423 */
+}
+
+
+.user-code{
+    font-family: 'Source Code Pro', monospace;
+    color: whitesmoke;
+    
 }
 .highlight{
     color: lightgreen;
@@ -13,8 +20,4 @@ body, html, #root{
     height: 10px; */
     padding-left:10px;
     padding-right:10px; 
-}
-.user-code{
-    font-family: 'Source Code Pro', monospace;
-    color: whitesmoke
 }

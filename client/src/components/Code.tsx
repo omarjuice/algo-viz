@@ -6,19 +6,20 @@ const Code: React.FC = observer(() => {
     let counter: number = 0
     let flag = false
     const tab = (key: number) => <span key={key} className="tab"></span>
-    return (<div className="user-code">{
+    return (<div className="user-code is-size-7">{
         store.code.tokenMap.map((token, i) => {
+            if (token.char === ' ') return token.char;
             if (token.char === '{') {
                 counter++
             } else if (token.char === '}') {
-                --counter
+                counter--
             }
             if (token.char === '\n') {
                 flag = true
                 return <br key={i} />
             } else {
                 let tabs = []
-                if (flag && token.char !== ' ') {
+                if (flag) {
                     for (let i = 0; i < counter; i++) {
                         tabs.push(tab(i))
                     }

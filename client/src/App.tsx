@@ -1,16 +1,23 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import store from './store/index';
 import Code from './components/Code'
-
+import './App.sass'
+import StepView from './components/StepView';
+import Controller from './components/Controller';
 @observer
 class App extends React.Component {
   render() {
 
     return (
-      <div>
-        <Code />
-        <button onClick={() => store.iterator.next()} >Next</button>
+      <div className="app has-background-info columns">
+        <div className="column is-one-third">
+          <Code />
+          <Controller />
+        </div>
+
+        <div className="column is-one-third">
+          <StepView />
+        </div>
       </div>
     );
   }

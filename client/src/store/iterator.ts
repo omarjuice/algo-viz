@@ -6,14 +6,74 @@ class IteratorStore {
     @observable index: number = -1
     @observable step: any
     @observable name: void | TYPES.name
+    @observable iterating: boolean = false
+    @observable direction: boolean = true
+    @observable speed: number = 1
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
     }
     @action next() {
-        this.step = this.root.viz.steps[++this.index]
+        if (!this.iterating) return false;
+        let nextIdx = this.direction ? ++this.index : --this.index
+        if (nextIdx < 0) {
+            nextIdx = 0
+            this.iterating = false
+        } else if (nextIdx >= this.root.viz.steps.length) {
+            nextIdx = this.root.viz.steps.length - 1
+            this.iterating = false
+        }
+        this.step = this.root.viz.steps[nextIdx]
         this.name = this.step.name
         this.root.code.update()
+        return true
     }
+    @action begin() {
+        if (this.step) {
+            const { type } = this.step
+            let nextTime = 0
+            if (type === 'EXPRESSION' || type === 'DECLARATION' || type === 'ASSIGNMENT') {
+                nextTime = 750
+            } else {
+                nextTime = 100
+            }
+            setTimeout(() => {
+                const cont = this.next()
+                if (cont) {
+                    this.begin()
+                }
+            }, nextTime / this.speed)
+        } else {
+            this.next()
+            this.begin()
+        }
+    }
+    @action play() {
+        this.iterating = true
+        if (this.index < 0) {
+            this.index = 0
+            this.direction = true
+        } else if (this.index > 0) {
+            this.index = this.root.viz.steps.length - 1
+            this.direction = false
+        }
+        this.begin()
+    }
+    @action pause() {
+        this.iterating = false
+    }
+    @action faster() {
+        this.speed *= 2
+        if (this.speed > 16) {
+            this.speed = 16
+        }
+    }
+    @action slower() {
+        this.speed /= 2
+        if (this.speed < .25) {
+            this.speed = .25
+        }
+    }
+
 }
 export default IteratorStore

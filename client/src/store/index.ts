@@ -9,7 +9,6 @@ export class RootStore {
         this.viz = new VizStore(this)
         this.iterator = new IteratorStore(this)
         this.code = new CodeStore(this)
-        this.iterator.next()
     }
 }
 
