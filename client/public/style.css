@@ -1,0 +1,13 @@
+.highlight{
+    color: lightgreen;
+    font-weight: 800
+}
+.tab{
+    /* width: 40px;
+    height: 10px; */
+    padding-left:10px;
+    padding-right:10px; 
+}
+.user-code{
+    font-family: 'Source Code Pro', monospace;
+}
