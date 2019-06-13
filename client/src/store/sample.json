@@ -1,0 +1,8945 @@
+{
+    "steps": [
+        {
+            "type": "PROGRAM",
+            "scope": [
+                null,
+                0
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                733,
+                755
+            ],
+            "value": "___z6fbj"
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                0,
+                1
+            ],
+            "funcName": "threeNumberSum",
+            "value": "_y1h8j"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "array",
+            "scope": [
+                0,
+                1
+            ],
+            "block": true,
+            "name": [
+                29,
+                34
+            ],
+            "value": "___z6fbj"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "targetSum",
+            "scope": [
+                0,
+                1
+            ],
+            "block": true,
+            "name": [
+                36,
+                45
+            ],
+            "value": 10
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                0
+            ],
+            "value": 1
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                0
+            ],
+            "value": 1
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                0
+            ],
+            "value": 1
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2,
+            "prev": 2
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3,
+            "prev": 3
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4,
+            "prev": 4
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5,
+            "prev": 5
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6,
+            "prev": 6
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7,
+            "prev": 7
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8,
+            "prev": 8
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9,
+            "prev": 9
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "FUNC",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                1,
+                3
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                86,
+                91
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                1,
+                3
+            ],
+            "funcName": "array.sort.(callback-0)",
+            "value": false
+        },
+        {
+            "type": "SET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10,
+            "prev": 10
+        },
+        {
+            "scope": [
+                0,
+                1
+            ],
+            "type": "CALL",
+            "name": [
+                65,
+                92
+            ],
+            "value": "___z6fbj"
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                0,
+                1
+            ],
+            "varName": "array",
+            "name": [
+                57,
+                92
+            ],
+            "value": "___z6fbj"
+        },
+        {
+            "scope": [
+                0,
+                1
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                118,
+                120
+            ],
+            "value": "___xb922"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "triplets",
+            "scope": [
+                0,
+                1
+            ],
+            "block": true,
+            "value": "___xb922"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "i",
+            "scope": [
+                1,
+                2
+            ],
+            "block": true,
+            "name": [
+                142,
+                143
+            ],
+            "value": 0
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                0
+            ],
+            "value": 1
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 1
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___l66l0"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___l66l0"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -1
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                -1
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 0
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 0
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                0
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 1
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                1
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 2
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                2
+            ],
+            "value": 7
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 3
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                3
+            ],
+            "value": 6
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 4
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 4
+        },
+        {
+            "type": "GET",
+            "object": "___l66l0",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "number"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                7
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___l66l0",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                455,
+                477
+            ],
+            "value": "___f27mi"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "triplet",
+            "scope": [
+                6,
+                7
+            ],
+            "block": true,
+            "value": "___f27mi"
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                "length"
+            ],
+            "value": 1,
+            "prev": 0
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                0
+            ],
+            "value": "___f27mi"
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "CALL",
+            "name": [
+                498,
+                520
+            ],
+            "value": 1
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 5
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                5
+            ],
+            "value": 4
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 2
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 3
+        },
+        {
+            "type": "GET",
+            "object": "___l66l0",
+            "access": [
+                3
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "number"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                7
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___l66l0",
+            "access": [
+                3
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                455,
+                477
+            ],
+            "value": "___bm80h"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "triplet",
+            "scope": [
+                6,
+                7
+            ],
+            "block": true,
+            "value": "___bm80h"
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                "length"
+            ],
+            "value": 2,
+            "prev": 1
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                1
+            ],
+            "value": "___bm80h"
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "CALL",
+            "name": [
+                498,
+                520
+            ],
+            "value": 2
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 6
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                6
+            ],
+            "value": 3
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 1
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 2
+        },
+        {
+            "type": "GET",
+            "object": "___l66l0",
+            "access": [
+                2
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "number"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                7
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___l66l0",
+            "access": [
+                2
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                455,
+                477
+            ],
+            "value": "___zchaa"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "triplet",
+            "scope": [
+                6,
+                7
+            ],
+            "block": true,
+            "value": "___zchaa"
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                "length"
+            ],
+            "value": 3,
+            "prev": 2
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                2
+            ],
+            "value": "___zchaa"
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "CALL",
+            "name": [
+                498,
+                520
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 7
+        },
+        {
+            "type": "SET",
+            "object": "___l66l0",
+            "access": [
+                7
+            ],
+            "value": 2
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 0
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 1
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                1
+            ],
+            "value": 2
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 2
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 8
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___k9j6h"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___k9j6h"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -2
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                -2
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -1
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                -1
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 0
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 0
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                0
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 1
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                1
+            ],
+            "value": 7
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 2
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                2
+            ],
+            "value": 6
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 3
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                3
+            ],
+            "value": 5
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 4
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                4
+            ],
+            "value": 4
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 2
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 3
+        },
+        {
+            "type": "GET",
+            "object": "___k9j6h",
+            "access": [
+                3
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "number"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                7
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___k9j6h",
+            "access": [
+                3
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                455,
+                477
+            ],
+            "value": "___mommf"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "triplet",
+            "scope": [
+                6,
+                7
+            ],
+            "block": true,
+            "value": "___mommf"
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                "length"
+            ],
+            "value": 4,
+            "prev": 3
+        },
+        {
+            "type": "SET",
+            "object": "___xb922",
+            "access": [
+                3
+            ],
+            "value": "___mommf"
+        },
+        {
+            "scope": [
+                6,
+                7
+            ],
+            "type": "CALL",
+            "name": [
+                498,
+                520
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 5
+        },
+        {
+            "type": "SET",
+            "object": "___k9j6h",
+            "access": [
+                5
+            ],
+            "value": 3
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 1
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 2
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                2
+            ],
+            "value": 3
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 7
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___fo8eb"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___fo8eb"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -3
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                -3
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -2
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                -2
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -1
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                -1
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 0
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 0
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                0
+            ],
+            "value": 7
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 1
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                1
+            ],
+            "value": 6
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 2
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                2
+            ],
+            "value": 5
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 3
+        },
+        {
+            "type": "SET",
+            "object": "___fo8eb",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 2
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                3
+            ],
+            "value": 4
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 6
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___u1ofm"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___u1ofm"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -4
+        },
+        {
+            "type": "SET",
+            "object": "___u1ofm",
+            "access": [
+                -4
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -3
+        },
+        {
+            "type": "SET",
+            "object": "___u1ofm",
+            "access": [
+                -3
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -2
+        },
+        {
+            "type": "SET",
+            "object": "___u1ofm",
+            "access": [
+                -2
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -1
+        },
+        {
+            "type": "SET",
+            "object": "___u1ofm",
+            "access": [
+                -1
+            ],
+            "value": 7
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 0
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 0
+        },
+        {
+            "type": "SET",
+            "object": "___u1ofm",
+            "access": [
+                0
+            ],
+            "value": 6
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": 1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": 1
+        },
+        {
+            "type": "SET",
+            "object": "___u1ofm",
+            "access": [
+                1
+            ],
+            "value": 5
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 3
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                4
+            ],
+            "value": 5
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 5
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 5
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___i2h43"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___i2h43"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -5
+        },
+        {
+            "type": "SET",
+            "object": "___i2h43",
+            "access": [
+                -5
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -4
+        },
+        {
+            "type": "SET",
+            "object": "___i2h43",
+            "access": [
+                -4
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -3
+        },
+        {
+            "type": "SET",
+            "object": "___i2h43",
+            "access": [
+                -3
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -2
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -2
+        },
+        {
+            "type": "SET",
+            "object": "___i2h43",
+            "access": [
+                -2
+            ],
+            "value": 7
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -1
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -1
+        },
+        {
+            "type": "SET",
+            "object": "___i2h43",
+            "access": [
+                -1
+            ],
+            "value": 6
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 4
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                5
+            ],
+            "value": 6
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 4
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 4
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___g7nlb"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___g7nlb"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -6
+        },
+        {
+            "type": "SET",
+            "object": "___g7nlb",
+            "access": [
+                -6
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -5
+        },
+        {
+            "type": "SET",
+            "object": "___g7nlb",
+            "access": [
+                -5
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -4
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -4
+        },
+        {
+            "type": "SET",
+            "object": "___g7nlb",
+            "access": [
+                -4
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -3
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -3
+        },
+        {
+            "type": "SET",
+            "object": "___g7nlb",
+            "access": [
+                -3
+            ],
+            "value": 7
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 5
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                6
+            ],
+            "value": 7
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 3
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 3
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___sfnf2"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___sfnf2"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -7
+        },
+        {
+            "type": "SET",
+            "object": "___sfnf2",
+            "access": [
+                -7
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -6
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -6
+        },
+        {
+            "type": "SET",
+            "object": "___sfnf2",
+            "access": [
+                -6
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -5
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -5
+        },
+        {
+            "type": "SET",
+            "object": "___sfnf2",
+            "access": [
+                -5
+            ],
+            "value": 8
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 6
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                7
+            ],
+            "value": 8
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 2
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 2
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___ta02l"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___ta02l"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -8
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -8
+        },
+        {
+            "type": "SET",
+            "object": "___ta02l",
+            "access": [
+                -8
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -7
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -7
+        },
+        {
+            "type": "SET",
+            "object": "___ta02l",
+            "access": [
+                -7
+            ],
+            "value": 9
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 7
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                2,
+                4
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                8
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num1",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "name": [
+                197,
+                205
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                229,
+                245
+            ],
+            "value": 1
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "diff",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": 1
+        },
+        {
+            "scope": [
+                2,
+                4
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                271,
+                273
+            ],
+            "value": "___mdbmk"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hash",
+            "scope": [
+                2,
+                4
+            ],
+            "block": true,
+            "value": "___mdbmk"
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                299,
+                315
+            ],
+            "value": 9
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "j",
+            "scope": [
+                4,
+                5
+            ],
+            "block": true,
+            "value": 9
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                5,
+                6
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "type": "GET",
+            "object": "___z6fbj",
+            "access": [
+                9
+            ],
+            "value": 10
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "num",
+            "scope": [
+                5,
+                6
+            ],
+            "block": true,
+            "name": [
+                357,
+                365
+            ],
+            "value": 10
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                386,
+                402
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                386,
+                415
+            ],
+            "value": false
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                571,
+                581
+            ],
+            "value": -9
+        },
+        {
+            "type": "EXPRESSION",
+            "scope": [
+                5,
+                6
+            ],
+            "name": [
+                559,
+                582
+            ],
+            "value": "undefined"
+        },
+        {
+            "scope": [
+                5,
+                6
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                559,
+                595
+            ],
+            "value": true
+        },
+        {
+            "type": "BLOCK",
+            "scope": [
+                6,
+                8
+            ],
+            "value": "_y1h8j"
+        },
+        {
+            "scope": [
+                6,
+                8
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                624,
+                634
+            ],
+            "value": -9
+        },
+        {
+            "type": "SET",
+            "object": "___mdbmk",
+            "access": [
+                -9
+            ],
+            "value": 10
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                4,
+                5
+            ],
+            "update": -1,
+            "name": [
+                324,
+                327
+            ],
+            "value": 8
+        },
+        {
+            "scope": [
+                4,
+                5
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                317,
+                322
+            ],
+            "value": false
+        },
+        {
+            "type": "ASSIGNMENT",
+            "scope": [
+                1,
+                2
+            ],
+            "update": 1,
+            "name": [
+                167,
+                170
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                149,
+                165
+            ],
+            "value": 9
+        },
+        {
+            "scope": [
+                1,
+                2
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                145,
+                165
+            ],
+            "value": false
+        },
+        {
+            "type": "RETURN",
+            "scope": [
+                0,
+                1
+            ],
+            "funcName": "threeNumberSum",
+            "name": [
+                699,
+                707
+            ],
+            "value": "___xb922"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                718,
+                760
+            ],
+            "value": "___xb922"
+        }
+    ],
+    "objects": {
+        "___z6fbj": {
+            "0": 1,
+            "1": 2,
+            "2": 3,
+            "3": 4,
+            "4": 5,
+            "5": 6,
+            "6": 7,
+            "7": 8,
+            "8": 9,
+            "9": 10,
+            "length": 10,
+            "final": 10
+        },
+        "___xb922": {
+            "length": 0,
+            "final": 4
+        },
+        "___l66l0": {},
+        "___f27mi": {
+            "0": 1,
+            "1": 4,
+            "2": 5,
+            "length": 3,
+            "final": 3
+        },
+        "___bm80h": {
+            "0": 1,
+            "1": 3,
+            "2": 6,
+            "length": 3,
+            "final": 3
+        },
+        "___zchaa": {
+            "0": 1,
+            "1": 2,
+            "2": 7,
+            "length": 3,
+            "final": 3
+        },
+        "___k9j6h": {},
+        "___mommf": {
+            "0": 2,
+            "1": 3,
+            "2": 5,
+            "length": 3,
+            "final": 3
+        },
+        "___fo8eb": {},
+        "___u1ofm": {},
+        "___i2h43": {},
+        "___g7nlb": {},
+        "___sfnf2": {},
+        "___ta02l": {},
+        "___mdbmk": {}
+    },
+    "types": {
+        "_di0eo": "undefined",
+        "_y1h8j": "null",
+        "_l0om0": "NaN",
+        "_c2fp0": "<empty>",
+        "___z6fbj": "Array",
+        "___xb922": "Array",
+        "___l66l0": "Object",
+        "___f27mi": "Array",
+        "___bm80h": "Array",
+        "___zchaa": "Array",
+        "___k9j6h": "Object",
+        "___mommf": "Array",
+        "___fo8eb": "Object",
+        "___u1ofm": "Object",
+        "___i2h43": "Object",
+        "___g7nlb": "Object",
+        "___sfnf2": "Object",
+        "___ta02l": "Object",
+        "___mdbmk": "Object"
+    },
+    "code": "\n    function threeNumberSum(array, targetSum) {\n        array = array.sort((a, b) => a > b)\n        const triplets = []\n        for (let i = 0; i < array.length - 1; i++) {\n            let num1 = array[i]\n            let diff = targetSum - num1\n            const hash = {}\n            for (let j = array.length - 1; j > i; j--) {\n                let num = array[j]\n                if (typeof hash[num] === 'number') {\n                    const triplet = [num1, num, hash[num]]\n                    triplets.push(triplet)\n                }\n                if (typeof hash[diff - num] !== 'number') {\n                    hash[diff - num] = num\n                }\n            }\n        }\n        return triplets\n    }\n    threeNumberSum([1,2,3,4,5,6,7,8,9,10], 10)\n    \n    "
+}
