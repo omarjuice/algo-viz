@@ -4,6 +4,7 @@ import Code from './components/Code'
 import './App.sass'
 import StepView from './components/StepView';
 import Controller from './components/Controller';
+import Identifiers from './components/Identifiers';
 @observer
 class App extends React.Component {
   render() {
@@ -17,6 +18,9 @@ class App extends React.Component {
 
         <div className="column is-one-third">
           <StepView />
+        </div>
+        <div className="column is-one-third">
+          <Identifiers />
         </div>
       </div>
     );

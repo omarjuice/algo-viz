@@ -38,6 +38,7 @@ interface CALL extends StepType {
 interface DECLARATION extends StepVarType {
     type: 'DECLARATION'
     varName: string
+    block: boolean
 }
 interface ASSIGNMENT extends StepVarType {
     type: 'ASSIGNMENT'
@@ -72,7 +73,7 @@ interface IN extends StepObjectType {
     type: 'IN'
 }
 
-type Step =
+type Step = (
     PROGRAM |
     BLOCK |
     EXPRESSION |
@@ -87,3 +88,12 @@ type Step =
     DELETE |
     CLEAR |
     IN
+);
+
+type ScopeChainEl = {
+    parent: null | number
+    children: (number)[]
+}
+type ScopeIdentifiers = {
+    [key: string]: any[]
+}

@@ -26,6 +26,7 @@ class IteratorStore {
         this.step = this.root.viz.steps[nextIdx]
         this.name = this.step.name
         this.root.code.update()
+        this.root.state.next(this.step)
         return true
     }
     @action begin() {
@@ -53,7 +54,7 @@ class IteratorStore {
         if (this.index < 0) {
             this.index = 0
             this.direction = true
-        } else if (this.index > 0) {
+        } else if (this.index > this.root.viz.steps.length - 1) {
             this.index = this.root.viz.steps.length - 1
             this.direction = false
         }

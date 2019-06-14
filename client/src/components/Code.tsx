@@ -8,7 +8,6 @@ const Code: React.FC = observer(() => {
     const tab = (key: number) => <span key={key} className="tab"></span>
     return (<div className="user-code is-size-7">{
         store.code.tokenMap.map((token, i) => {
-            if (token.char === ' ') return token.char;
             if (token.char === '{') {
                 counter++
             } else if (token.char === '}') {
@@ -19,7 +18,7 @@ const Code: React.FC = observer(() => {
                 return <br key={i} />
             } else {
                 let tabs = []
-                if (flag) {
+                if (flag && token.char !== ' ') {
                     for (let i = 0; i < counter; i++) {
                         tabs.push(tab(i))
                     }
