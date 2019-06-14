@@ -15,13 +15,13 @@ class App extends React.Component {
           <Code />
           <Controller />
         </div>
-
-        <div className="column is-one-third">
-          <StepView />
-        </div>
         <div className="column is-one-third">
           <Identifiers />
         </div>
+        <div className="column is-one-third">
+          <StepView />
+        </div>
+
       </div>
     );
   }

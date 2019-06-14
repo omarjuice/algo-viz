@@ -83,7 +83,6 @@ module.exports = {
     getNthFib(10)
     `,
     threeNumberSum: `function threeNumberSum(array, targetSum) {
-        // Write your code here.
         array = array.sort((a, b) => a > b)
         const triplets = []
         for (let i = 0; i < array.length - 1; i++) {

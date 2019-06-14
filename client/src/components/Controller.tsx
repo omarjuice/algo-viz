@@ -13,12 +13,12 @@ const Controller: React.FC = observer(() => {
             >
                 {iterating ? 'Pause' : 'Play'}
             </button>
-            {/* <button
+            <button
                 className="button"
                 onClick={() => iterator.direction = !iterator.direction}
             >
                 {iterator.direction ? 'Back' : 'Forward'}
-            </button> */}
+            </button>
             <button
                 className="button"
                 onClick={() => iterator.faster()}

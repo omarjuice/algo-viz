@@ -9,6 +9,8 @@ class IteratorStore {
     @observable iterating: boolean = false
     @observable direction: boolean = true
     @observable speed: number = 1
+    maxSpeed: number = 64
+    minSpeed: number = 1 / 4
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -26,7 +28,7 @@ class IteratorStore {
         this.step = this.root.viz.steps[nextIdx]
         this.name = this.step.name
         this.root.code.update()
-        this.root.state.next(this.step)
+        this.root.state[this.direction ? 'next' : 'prev'](this.step)
         return true
     }
     @action begin() {
@@ -65,14 +67,14 @@ class IteratorStore {
     }
     @action faster() {
         this.speed *= 2
-        if (this.speed > 16) {
-            this.speed = 16
+        if (this.speed > this.maxSpeed) {
+            this.speed = this.maxSpeed
         }
     }
     @action slower() {
         this.speed /= 2
-        if (this.speed < .25) {
-            this.speed = .25
+        if (this.speed < this.minSpeed) {
+            this.speed = this.minSpeed
         }
     }
 

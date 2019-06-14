@@ -17,7 +17,7 @@ const Code: React.FC = observer(() => {
                 flag = true
                 return <br key={i} />
             } else {
-                let tabs = []
+                const tabs = []
                 if (flag && token.char !== ' ') {
                     for (let i = 0; i < counter; i++) {
                         tabs.push(tab(i))

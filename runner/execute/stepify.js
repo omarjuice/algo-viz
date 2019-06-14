@@ -138,6 +138,7 @@ module.exports = function (input) {
                             path.node.body = t.blockStatement([
                                 t.expressionStatement(
                                     newNode),
+                                ...params.filter(p => p),
                                 t.returnStatement(path.node.body)
                             ])
                         }
@@ -221,6 +222,7 @@ module.exports = function (input) {
                         } else {
                             details.update = path.node.operator === '++' ? 1 : -1
                         }
+                        details.varName = path.node.argument.name
                         path.replaceWith(proxy(path.node, details))
                     }
 

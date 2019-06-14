@@ -28,7 +28,9 @@ describe('SERVER', () => {
             `})
             .expect(200)
             .expect(({ body }) => {
-                console.log(body)
+                expect(Array.isArray(body.steps)).toBe(true)
+                expect(typeof body.objects).toBe('object')
+                expect(typeof body.types).toBe('object')
             })
             .end(done)
     })

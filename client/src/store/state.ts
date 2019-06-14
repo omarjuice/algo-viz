@@ -30,6 +30,7 @@ class StateStore {
             }
             const s = this.scopeStack
             if (s[s.length - 1] !== scope) {
+                if (!step.prevScopeStack) step.prevScopeStack = [...s];
                 while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
                     s.pop()
                 }
@@ -49,11 +50,9 @@ class StateStore {
                     if (!this.identifiers[scope][name]) {
                         this.identifiers[scope][name] = [undefined]
                     }
-                    const ids = this.identifiers[scope][name]
-                    ids[ids.length - 1] = step.value
-                    if (name === 'j') {
-                        console.log(step.value);
-                    }
+                    const vals = this.identifiers[scope][name]
+                    step.prev = vals[vals.length - 1]
+                    vals[vals.length - 1] = step.value
                 }
             } else if (step.type === 'ASSIGNMENT') {
                 let current: number | null = scope
@@ -64,6 +63,7 @@ class StateStore {
                     if (current === null) break;
                 }
                 if (vals) {
+                    step.prev = vals[vals.length - 1]
                     vals[vals.length - 1] = step.value
                 }
             }
@@ -89,8 +89,89 @@ class StateStore {
                 }
             } else {
                 this.callStack.pop()
+                const prevVals: { [key: string]: any } = {}
                 const queue: number[] = [fScope]
                 while (queue.length > 0) {
+                    const scope = queue.shift()
+                    if (typeof scope === 'number') {
+                        if (!prevVals[scope]) prevVals[scope] = {};
+                        const ids = this.identifiers[scope]
+                        for (const id in ids) {
+                            prevVals[scope][id] = ids[id].pop()
+                            if (!ids[id].length) {
+                                ids[id].push(undefined)
+                            }
+                        }
+                        const { children } = this.scopeChain[scope]
+                        for (const child of children) {
+                            queue.push(child)
+                        }
+                    }
+
+                }
+                step.prevVals = prevVals;
+            }
+        }
+    }
+    @action prev(step: TYPES.Step) {
+        if (step.scope) {
+            this.scopeStack = step.prevScopeStack || this.scopeStack;
+        }
+        if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
+            let { varName: name, block } = step
+            let scope: null | number = step.scope[1]
+            if (step.type === 'DECLARATION') {
+                if (!block) {
+                    while (scope && !(scope in this.funcScopes)) {
+                        scope = this.scopeChain[scope].parent
+                    }
+                }
+                if (scope !== null) {
+                    const vals = this.identifiers[scope][name]
+                    vals[vals.length - 1] = step.prev
+                }
+            } else if (step.type === 'ASSIGNMENT') {
+                let current: number | null = scope
+                let vals = null
+                while (!vals) {
+                    vals = this.identifiers[current][name]
+                    current = this.scopeChain[current].parent
+                    if (current === null) break;
+                }
+                if (vals) {
+                    vals[vals.length - 1] = step.prev
+                }
+            }
+        }
+        if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
+            const fScope = step.scope[1]
+            if (step.type === 'RETURN') { // and this
+                this.callStack.push(step.funcName)
+                this.funcScopes[fScope] = step.funcName
+                const queue = [fScope]
+                while (queue.length) {
+                    const scope = queue.shift()
+                    if (typeof scope === 'number') {
+                        const ids = this.identifiers[scope]
+                        for (const id in ids) {
+                            const idens = ids[id]
+                            if (idens.length === 1 && idens[idens.length - 1] === undefined) {
+                                idens[idens.length - 1] = (step.prevVals[scope][id])
+                            } else {
+                                ids[id].push(step.prevVals[scope][id])
+                            }
+                        }
+                        const { children } = this.scopeChain[scope]
+                        for (const child of children) {
+                            queue.push(child)
+                        }
+                    }
+
+                }
+            } else {
+                this.callStack.pop()
+                const queue = [fScope]
+                while (queue.length) {
                     const scope = queue.shift()
                     if (scope) {
                         const ids = this.identifiers[scope]
@@ -105,7 +186,6 @@ class StateStore {
                             queue.push(child)
                         }
                     }
-
                 }
             }
         }
