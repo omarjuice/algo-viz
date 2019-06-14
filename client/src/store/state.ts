@@ -145,7 +145,7 @@ class StateStore {
         }
         if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
             const fScope = step.scope[1]
-            if (step.type === 'RETURN') { // and this
+            if (step.type === 'RETURN') {
                 this.callStack.push(step.funcName)
                 this.funcScopes[fScope] = step.funcName
                 const queue = [fScope]

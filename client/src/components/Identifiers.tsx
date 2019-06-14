@@ -6,7 +6,7 @@ import { getVal } from '../utils';
 const Identifiers: React.FC = observer(() => {
     const identifiers = store.state.activeIds
     return (
-        <div className="box">
+        <div className="box has-background-info">
             {identifiers.map((id, i) => {
                 return <p key={i}>
                     <span>{id.name}</span>

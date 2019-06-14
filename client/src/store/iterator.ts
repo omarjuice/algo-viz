@@ -35,7 +35,7 @@ class IteratorStore {
         if (this.step) {
             const { type } = this.step
             let nextTime = 0
-            if (type === 'EXPRESSION' || type === 'DECLARATION' || type === 'ASSIGNMENT') {
+            if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
                 nextTime = 750
             } else {
                 nextTime = 100
