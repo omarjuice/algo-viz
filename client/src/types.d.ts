@@ -1,99 +1,103 @@
-import { type } from "os";
+declare namespace Viz {
+    type scope = null | [null | number, number]
+    type name = [number, number]
+
+    declare namespace Step {
+        interface I {
+            name?: name
+            scope?: scope
+            value?: any
+            [key: string]: any
+        }
+        interface ObjectType extends I {
+            object: string
+            access: Array<number | string>
+        }
+        interface FuncType extends I {
+            funcName: string
+        }
+        interface VarType extends I {
+            varName: string
+        }
+
+        interface PROGRAM extends I {
+            type: 'PROGRAM'
+        }
+        interface BLOCK extends I {
+            type: 'BLOCK'
+        }
+        interface EXPRESSION extends I {
+            type: 'EXPRESSION'
+        }
+        interface CALL extends I {
+            type: 'CALL'
+        }
+        interface DECLARATION extends VarType {
+            type: 'DECLARATION'
+            block: boolean
+        }
+        interface ASSIGNMENT extends VarType {
+            type: 'ASSIGNMENT'
+            update?: number,
+        }
+
+
+        interface FUNC extends FuncType {
+            type: 'FUNC'
+        }
+        interface METHOD extends FuncType {
+            type: 'METHOD'
+            kind: string,
+            object: string
+        }
+        interface RETURN extends FuncType {
+            type: 'RETURN'
+        }
+
+        interface GET extends ObjectType {
+            type: 'GET'
+        }
+        interface SET extends ObjectType {
+            type: 'SET'
+        }
+        interface DELETE extends ObjectType {
+            type: 'DELETE'
+        }
+        interface CLEAR extends ObjectType {
+            type: 'CLEAR'
+        }
+        interface IN extends ObjectType {
+            type: 'IN'
+        }
+        type Any = (PROGRAM |
+            BLOCK |
+            EXPRESSION |
+            CALL |
+            DECLARATION |
+            ASSIGNMENT |
+            FUNC |
+            METHOD |
+            RETURN |
+            GET |
+            SET |
+            DELETE |
+            CLEAR |
+            IN)
+    }
 
 
 
-type scope = null | [null | number, number]
-type name = [number, number]
-
-interface StepType {
-    name?: name
-    scope?: scope
-    value?: any
-    [key: string]: any
-}
-interface StepObjectType extends StepType {
-    object: string
-    access: Array<number | string>
-}
-interface StepFuncType extends StepType {
-    funcName: string
-}
-interface StepVarType extends StepType {
-    varName: string
-}
-
-
-interface PROGRAM extends StepType {
-    type: 'PROGRAM'
-}
-interface BLOCK extends StepType {
-    type: 'BLOCK'
-}
-interface EXPRESSION extends StepType {
-    type: 'EXPRESSION'
-}
-interface CALL extends StepType {
-    type: 'CALL'
-}
-interface DECLARATION extends StepVarType {
-    type: 'DECLARATION'
-    varName: string
-    block: boolean
-}
-interface ASSIGNMENT extends StepVarType {
-    type: 'ASSIGNMENT'
-    update?: number
-}
-
-
-interface FUNC extends StepFuncType {
-    type: 'FUNC'
-}
-interface METHOD extends StepFuncType {
-    type: 'METHOD'
-    kind: string
-}
-interface RETURN extends StepFuncType {
-    type: 'RETURN'
-}
-
-interface GET extends StepObjectType {
-    type: 'GET'
-}
-interface SET extends StepObjectType {
-    type: 'SET'
-}
-interface DELETE extends StepObjectType {
-    type: 'DELETE'
-}
-interface CLEAR extends StepObjectType {
-    type: 'CLEAR'
-}
-interface IN extends StepObjectType {
-    type: 'IN'
-}
-
-type Step = (
-    PROGRAM |
-    BLOCK |
-    EXPRESSION |
-    CALL |
-    DECLARATION |
-    ASSIGNMENT |
-    FUNC |
-    METHOD |
-    RETURN |
-    GET |
-    SET |
-    DELETE |
-    CLEAR |
-    IN
-);
-
-type ScopeChainEl = {
-    parent: null | number
-    children: (number)[]
-}
-type ScopeIdentifiers = {
-    [key: string]: any[]
+    type ScopeChainEl = {
+        parent: null | number
+        children: (number)[]
+    }
+    type ScopeIdentifiers = {
+        [key: string]: any[]
+    }
+    type Data = {
+        steps: Step.Any[],
+        objects: { [key: string]: any },
+        types: { [key: string]: any },
+        code: string
+    }
 }

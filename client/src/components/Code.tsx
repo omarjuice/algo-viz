@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 const quotes = new Set()
 quotes.add('"').add("'").add("`")
 
-const Code: React.FC = observer(() => {
+const Code: React.FC = observer(({ children }) => {
     let counter: number = 0
     let quoteStack: string[] = [];
     let flag = false
@@ -45,6 +45,8 @@ const Code: React.FC = observer(() => {
                 </span>
             }
         })
-    }</div>)
+    }
+        {children}
+    </div>)
 })
 export default Code

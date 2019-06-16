@@ -1,11 +1,11 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
-import * as TYPES from '../types'
+
 
 class IteratorStore {
     @observable index: number = -1
     @observable step: any
-    @observable name: void | TYPES.name
+    @observable name: void | Viz.name
     @observable iterating: boolean = false
     @observable direction: boolean = true
     @observable speed: number = 1
@@ -31,7 +31,7 @@ class IteratorStore {
         this.root.state[this.direction ? 'next' : 'prev'](this.step)
         return true
     }
-    @action begin() {
+    @action private begin() {
         if (this.step) {
             const { type } = this.step
             let nextTime = 0
@@ -53,8 +53,8 @@ class IteratorStore {
     }
     @action play() {
         this.iterating = true
-        if (this.index < 0) {
-            this.index = 0
+        if (this.index < -1) {
+            this.index = -1
             this.direction = true
         } else if (this.index > this.root.viz.steps.length - 1) {
             this.index = this.root.viz.steps.length - 1

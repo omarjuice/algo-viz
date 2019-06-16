@@ -171,14 +171,20 @@ module.exports = function (input) {
                                 if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
                                     if (init.callee.object.name !== _name) return
                                 }
-                                if (!declaration.init.visited) declaration.init = proxy(
-                                    init, {
+                                if (!declaration.init.visited) {
+                                    const details = {
                                         type: TYPES.DECLARATION,
                                         varName: identifier.name,
                                         scope: getScope(path),
-                                        block: path.node.kind !== 'var'
+                                        block: path.node.kind !== 'var',
                                     }
-                                )
+                                    if (path.node.start) {
+                                        details.name = t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
+                                    }
+                                    declaration.init = proxy(
+                                        init, details
+                                    )
+                                }
                                 declaration.init.visited = true
                             }
 
@@ -349,7 +355,6 @@ module.exports = function (input) {
                             return
                         }
                         const details = { scope: getScope(path), type: TYPES.CALL }
-
                         // if (t.isMemberExpression(call.callee)) {
                         //     details.type = TYPES.METHODCALL
                         //     const objectReassigned = reassignComputedValue(path, call.callee, 'object')

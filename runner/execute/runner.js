@@ -130,8 +130,8 @@ class Runner {
                 if (call.kind === 'constructor') {
                     const [, id] = this.constructors.get(call.object)
                     this.constructors.set(call.object, [true, id])
-                    delete call.object
                 }
+                call.object = this.stringify(call.object)
             }
         } else {
             if (info.type === TYPES.METHOD) {

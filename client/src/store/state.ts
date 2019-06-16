@@ -1,6 +1,5 @@
 import { observable, action, computed } from "mobx";
 import { RootStore } from ".";
-import * as TYPES from '../types'
 
 
 
@@ -8,15 +7,15 @@ import * as TYPES from '../types'
 class StateStore {
     @observable scopeStack: (null | number)[] = []
     @observable callStack: string[] = []
-    @observable scopeChain: { [key: string]: TYPES.ScopeChainEl } = {}
-    @observable identifiers: { [key: string]: TYPES.ScopeIdentifiers } = {}
-    @observable funcScopes: { [keu: string]: string } = {}
+    @observable scopeChain: { [key: string]: Viz.ScopeChainEl } = {}
+    @observable identifiers: { [key: string]: Viz.ScopeIdentifiers } = {}
+    @observable funcScopes: { [key: string]: string } = {}
     @observable root: RootStore
     constructor(store: RootStore) {
         this.root = store
     }
 
-    @action next(step: TYPES.Step) {
+    @action next(step: Viz.Step.Any) {
         if (step.scope) {
             const [parent, scope] = step.scope;
             if (!(scope in this.identifiers)) {
@@ -24,7 +23,8 @@ class StateStore {
             }
             if (!(scope in this.scopeChain)) {
                 this.scopeChain[scope] = { parent, children: [] }
-                if (parent !== null) {
+                if (typeof parent === 'number') {
+                    console.log(parent, scope)
                     this.scopeChain[parent].children.push(scope)
                 }
             }
@@ -113,7 +113,7 @@ class StateStore {
             }
         }
     }
-    @action prev(step: TYPES.Step) {
+    @action prev(step: Viz.Step.Any) {
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }
