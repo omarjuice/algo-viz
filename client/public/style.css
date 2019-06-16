@@ -16,8 +16,10 @@ body, html, #root, .app{
     box-shadow: 0px 1px 0px  gray
 }
 .tab{
-    /* width: 40px;
-    height: 10px; */
+
     padding-left:10px;
     padding-right:10px; 
+}
+.textarea{
+    font-size: .75rem !important
 }

@@ -31,6 +31,10 @@ const Controller: React.FC = observer(() => {
             >
                 Slower
             </button>
+            <button
+                onClick={() => iterator.overloaded ? iterator.overload(false) : iterator.overload(true)}>
+                {iterator.overloaded ? 'STOP OVERLOAD' : 'DANGER OVERLOAD'}
+            </button>
         </div>
     )
 })

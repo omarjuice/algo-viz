@@ -10,22 +10,22 @@ import LeftPanel from './components/LeftPanel';
 @observer
 class App extends React.Component {
   render() {
-
+    const rightColWidth = store.editing ? "column is-2" : "column is-one-fifth"
     return (
       <div className="app has-background-info columns">
         {store.api.ok && <>
-          <div className="column is-one-third">
+          <div className={store.editing ? "column is-half" : "column is-one-third"}>
             <LeftPanel />
           </div>
           {store.ready && (
             <>
-              <div className="column is-one-fifth">
+              <div className={rightColWidth}>
                 <Identifiers />
               </div>
-              <div className="column is-one-fifth">
+              <div className={rightColWidth}>
                 <StepView />
               </div>
-              <div className="column is-one-fifth">
+              <div className={rightColWidth}>
                 <CallStack />
               </div>
             </>

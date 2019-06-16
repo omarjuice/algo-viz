@@ -9,6 +9,9 @@ class IteratorStore {
     @observable iterating: boolean = false
     @observable direction: boolean = true
     @observable speed: number = 1
+    @observable overloaded: boolean = false
+    baseTime: number = 100
+    timer: any = null
     maxSpeed: number = 64
     minSpeed: number = 1 / 4
     root: RootStore
@@ -32,15 +35,18 @@ class IteratorStore {
         return true
     }
     @action private begin() {
+        if (this.root.editing) {
+            this.iterating = false;
+            if (this.timer) clearTimeout(this.timer)
+            return
+        }
         if (this.step) {
             const { type } = this.step
-            let nextTime = 0
+            let nextTime = this.baseTime
             if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
-                nextTime = 750
-            } else {
-                nextTime = 100
+                nextTime *= 7.5
             }
-            setTimeout(() => {
+            this.timer = setTimeout(() => {
                 const cont = this.next()
                 if (cont) {
                     this.begin()
@@ -77,6 +83,14 @@ class IteratorStore {
             this.speed = this.minSpeed
         }
     }
-
+    @action overload(bool: boolean) {
+        if (bool) {
+            this.baseTime = 0;
+            this.overloaded = true
+        } else {
+            this.baseTime = 100
+            this.overloaded = false
+        }
+    }
 }
 export default IteratorStore

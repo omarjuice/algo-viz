@@ -9,7 +9,7 @@ const StepView: React.FC = observer(() => {
 
     return (
         step && <div>
-            <span >{index}:</span>
+            <span >{index}/{store.viz.steps.length}:</span>
             <span>{step.type}</span>
             <br />
             <span>{getVal(step.value)}</span>
