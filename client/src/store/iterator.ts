@@ -1,6 +1,11 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
 
+type handler = {
+    value: number
+    allow: boolean
+
+}
 
 class IteratorStore {
     @observable index: number = -1
@@ -9,7 +14,8 @@ class IteratorStore {
     @observable iterating: boolean = false
     @observable direction: boolean = true
     @observable speed: number = 1
-    @observable overloaded: boolean = false
+    @observable handling: boolean = false
+    @observable handler: handler = { value: 0, allow: true }
     timer: any = null
     maxSpeed: number = 64
     minSpeed: number = 1 / 4
@@ -54,11 +60,7 @@ class IteratorStore {
                     this.begin()
                 }
             }
-            if (this.overloaded) {
-                this.timer = setImmediate(exec)
-            } else {
-                this.timer = setTimeout(exec, nextTime / this.speed)
-            }
+            this.timer = setTimeout(exec, nextTime / this.speed)
         } else {
             this.next()
             this.begin()
@@ -90,14 +92,45 @@ class IteratorStore {
             this.speed = this.minSpeed
         }
     }
-    @action overload(bool: boolean) {
-        if (bool) {
-            this.overloaded = true
-            this.root.allowRender = false
-        } else {
-            this.overloaded = false
-            this.root.allowRender = true
+    // @action overload(bool: boolean) {
+    //     if (bool) {
+    //         this.overloaded = true
+    //         this.root.allowRender = false
+    //     } else {
+    //         this.overloaded = false
+    //         this.root.allowRender = true
+    //     }
+    // }
+    @action beforeChange() {
+        if (this.handler.allow) {
+            this.handling = true
+            this.pause()
+            this.handler.value = this.index
         }
+
+    }
+    @action change(val: number) {
+        this.handler.value = val
+    }
+    @action afterChange() {
+        this.handling = false
+        this.handler.allow = false
+        const dir = this.direction
+        if (this.handler.value > this.index) {
+            this.direction = true
+        } else {
+            this.direction = false
+        }
+        this.iterating = true
+        this.root.allowRender = false
+        while (this.index !== this.handler.value) {
+            this.next()
+        }
+        this.root.allowRender = true
+        this.iterating = false
+        this.direction = dir
+        this.play()
+        this.handler.allow = true
     }
 }
 export default IteratorStore

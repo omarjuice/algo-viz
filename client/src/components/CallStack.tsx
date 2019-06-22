@@ -8,9 +8,9 @@ const CallStack: React.FC = observer(() => {
         <div className="box has-background-info">
             <ul className="list">
                 {
-                    store.state.callStack.reduceRight((list, funcName) => {
+                    store.state.callStack.reduceRight((list, funcName, i) => {
                         list.push(
-                            <li className="list-item">{funcName}</li>
+                            <li key={i} className="list-item">{funcName}</li>
                         )
                         return list
                     }, [] as Array<JSX.Element>)
