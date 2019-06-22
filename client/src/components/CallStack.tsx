@@ -3,6 +3,7 @@ import store from '../store'
 import { observer } from 'mobx-react';
 
 const CallStack: React.FC = observer(() => {
+    if (!store.allowRender) return null
     return (
         <div className="box has-background-info">
             <ul className="list">

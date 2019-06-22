@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { observable } from 'mobx';
+import { observable, action } from 'mobx';
 import { RootStore } from '.';
 
 if (process.env.NODE_ENV === 'development') {
@@ -31,7 +31,7 @@ class ApiStore {
                 this.error = e
             })
     }
-    async runCode(code: string, ) {
+    @action async runCode(code: string, ) {
         try {
             code = '\n' + code + '\n'
             this.loading = true

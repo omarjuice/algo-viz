@@ -10,7 +10,6 @@ class IteratorStore {
     @observable direction: boolean = true
     @observable speed: number = 1
     @observable overloaded: boolean = false
-    baseTime: number = 100
     timer: any = null
     maxSpeed: number = 64
     minSpeed: number = 1 / 4
@@ -37,21 +36,29 @@ class IteratorStore {
     @action private begin() {
         if (this.root.editing) {
             this.iterating = false;
-            if (this.timer) clearTimeout(this.timer)
+            if (this.timer) {
+                clearTimeout(this.timer)
+                clearImmediate(this.timer)
+            }
             return
         }
         if (this.step) {
             const { type } = this.step
-            let nextTime = this.baseTime
+            let nextTime = 100
             if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
                 nextTime *= 7.5
             }
-            this.timer = setTimeout(() => {
+            const exec = () => {
                 const cont = this.next()
                 if (cont) {
                     this.begin()
                 }
-            }, nextTime / this.speed)
+            }
+            if (this.overloaded) {
+                this.timer = setImmediate(exec)
+            } else {
+                this.timer = setTimeout(exec, nextTime / this.speed)
+            }
         } else {
             this.next()
             this.begin()
@@ -59,7 +66,7 @@ class IteratorStore {
     }
     @action play() {
         this.iterating = true
-        if (this.index < -1) {
+        if (this.index < 0) {
             this.index = -1
             this.direction = true
         } else if (this.index > this.root.viz.steps.length - 1) {
@@ -85,11 +92,11 @@ class IteratorStore {
     }
     @action overload(bool: boolean) {
         if (bool) {
-            this.baseTime = 0;
             this.overloaded = true
+            this.root.allowRender = false
         } else {
-            this.baseTime = 100
             this.overloaded = false
+            this.root.allowRender = true
         }
     }
 }

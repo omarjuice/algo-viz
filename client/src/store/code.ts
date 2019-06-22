@@ -44,7 +44,6 @@ class CodeStore {
             this.start = undefined
             this.end = undefined
         }
-        // console.log(this)
     }
 }
 

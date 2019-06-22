@@ -12,6 +12,8 @@ export class RootStore {
     @observable api: ApiStore
     @observable ready: boolean = false
     @observable editing: boolean = false
+    @observable allowRender: boolean = true
+
     constructor() {
         const data = window.localStorage.getItem('data')
         this.api = new ApiStore(this)
