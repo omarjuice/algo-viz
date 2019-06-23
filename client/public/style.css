@@ -8,7 +8,7 @@ body, html, #root, .app{
 .user-code{
     font-family: 'Source Code Pro', monospace;
     color: whitesmoke;
-    height: 60vh;
+    height: 50vh;
     overflow: scroll;
 }
 .highlight{

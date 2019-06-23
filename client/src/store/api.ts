@@ -31,7 +31,7 @@ class ApiStore {
                 this.error = e
             })
     }
-    @action async runCode(code: string, ) {
+    @action async runCode(code: string) {
         try {
             code = '\n' + code + '\n'
             this.loading = true

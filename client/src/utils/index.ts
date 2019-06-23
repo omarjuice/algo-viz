@@ -1,7 +1,8 @@
 import store from '../store'
 export const getVal = (value: any) => {
     if (typeof value === 'boolean') {
-        return value.toString()
+        if (value) return 'true'
+        else return 'false'
     } else if (value === null) {
         return 'null'
     } else if (typeof value === 'string') {

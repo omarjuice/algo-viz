@@ -42,7 +42,7 @@ class IteratorStore {
         return true
     }
     @action private begin() {
-        if (this.root.editing) {
+        if (this.root.editor.active) {
             this.iterating = false;
             if (this.timer) {
                 clearTimeout(this.timer)

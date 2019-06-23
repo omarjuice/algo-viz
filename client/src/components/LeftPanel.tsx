@@ -3,32 +3,24 @@ import store from '../store'
 import { observer } from 'mobx-react';
 import Input from './Input';
 import Code from './Code';
-import Controller from './Controller';
+import IteratorContol from './IteratorControl';
 
 const LeftPanel: React.FC = observer(() => {
-    const InputToggle: React.FC = () => (
-        <button onClick={() => {
-            store.editing = !store.editing
-            store.api.error = null
-        }} className="button is-small">
-            {store.editing ? 'close' : 'code'}
-        </button>
-    )
+
     return (
         <div>
-            {store.editing ?
+            {store.editor.active ?
                 <>
                     <Input />
-                    <InputToggle />
                 </>
                 :
-                store.ready ? (
+                store.ready && (
                     <>
                         <Code />
-                        <Controller />
-                        <InputToggle />
+                        <IteratorContol />
+
                     </>
-                ) : <InputToggle />
+                )
             }
         </div>
     );

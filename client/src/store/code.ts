@@ -26,6 +26,7 @@ class CodeStore {
     root: RootStore
     @observable start: void | number
     @observable end: void | number
+    @observable expression: string
     constructor(store: RootStore) {
         this.root = store
         this.setCode(store.viz.code)
@@ -46,6 +47,7 @@ class CodeStore {
                     first.scrollIntoView()
                 }
             }
+            this.expression = this.root.viz.code.slice(start, end)
         } else {
             this.start = undefined
             this.end = undefined

@@ -4,14 +4,10 @@ import { observer } from 'mobx-react';
 import { getVal } from '../utils'
 
 const StepView: React.FC = observer(() => {
-    // if (!store.allowRender) return null
+    if (!store.allowRender) return null
 
     const { step, index } = store.iterator
-    if (!store.allowRender) return (
-        <div>
-            <span >{index}/{store.viz.steps.length}:</span>
-        </div>
-    )
+
     return (
         step && <div>
             <span >{index}/{store.viz.steps.length}:</span>

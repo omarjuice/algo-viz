@@ -10,6 +10,7 @@ class StateStore {
     @observable scopeChain: { [key: string]: Viz.ScopeChainEl } = {}
     @observable identifiers: { [key: string]: Viz.ScopeIdentifiers } = {}
     @observable funcScopes: { [key: string]: string } = {}
+
     @observable root: RootStore
     constructor(store: RootStore) {
         this.root = store

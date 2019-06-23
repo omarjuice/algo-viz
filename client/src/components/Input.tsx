@@ -1,32 +1,33 @@
 import React, { Component } from 'react';
 import store from '../store'
 import { observer } from 'mobx-react';
-
+import MonacoEditor from 'react-monaco-editor'
+import * as monaco from 'monaco-editor';
+import pastels from '../utils/pastels.json'
+let Pastels = pastels as any
+monaco.editor.defineTheme('pastels', Pastels)
 @observer
 class Input extends Component {
-    state = {
-        error: false,
-        code: store.viz.code.trim()
+
+    componentDidMount() {
+        const code = document.querySelector('.react-monaco-editor-container') as HTMLElement
+        if (code) {
+            monaco.editor.colorizeElement(code, { theme: 'vs-dark' })
+        }
     }
-    handSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        store.api.runCode(this.state.code)
-    }
-    handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        this.setState({ code: e.target.value })
-    }
+
     render() {
         return (
-            <form className="form"
-                onSubmit={this.handSubmit}>
-                <textarea className="textarea"
-                    cols={75}
-                    rows={30}
-                    onChange={this.handleChange}
-                    value={this.state.code}>
-                </textarea>
-                <button className={`button is-primary ${store.api.loading && 'is-loading'}`} disabled={store.api.loading}>Run</button>
-            </form>
+            <MonacoEditor
+                width="50vw"
+                height="600"
+                language="javascript"
+                theme="vs-dark"
+                value={store.editor.code}
+                options={{ theme: 'pastels' }}
+                onChange={(code) => store.editor.code = code}
+            />
+
         );
     }
 }
