@@ -1,8 +1,35 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import store from '../store/index';
-import Slider from 'rc-slider';
+import Slider, { Handle } from 'rc-slider';
+import Tooltip from 'rc-tooltip'
 import 'rc-slider/assets/index.css'
+
+
+
+
+
+const handle = (props: any) => {
+    const { value, dragging, index, ...restProps } = props;
+    return (
+        <Tooltip
+            prefixCls="rc-slider-tooltip"
+            overlay={value}
+            visible={dragging}
+            placement="top"
+            key={index}
+        >
+            <Handle value={value} {...restProps} style={{
+                borderColor: 'blue',
+                height: 14,
+                width: 14,
+                marginLeft: -5,
+                marginTop: -2,
+                backgroundColor: 'black'
+            }} />
+        </Tooltip>
+    );
+};
 const Controller: React.FC = observer(() => {
     const { iterator } = store
     const iterating = iterator.iterating
@@ -14,12 +41,6 @@ const Controller: React.FC = observer(() => {
                     onClick={() => iterating ? iterator.pause() : iterator.play()}
                 >
                     {iterating ? 'Pause' : 'Play'}
-                </button>
-                <button
-                    className="button"
-                    onClick={() => iterator.direction = !iterator.direction}
-                >
-                    {iterator.direction ? 'Back' : 'Forward'}
                 </button>
                 <button
                     className="button"
@@ -44,14 +65,7 @@ const Controller: React.FC = observer(() => {
                 onChange={(e) => store.iterator.change(e)}
                 onAfterChange={() => { store.iterator.afterChange() }}
                 trackStyle={{ backgroundColor: '#A663CC', height: 10 }}
-                handleStyle={{
-                    borderColor: 'blue',
-                    height: 14,
-                    width: 14,
-                    marginLeft: -5,
-                    marginTop: -2,
-                    backgroundColor: 'black',
-                }}
+                handle={handle}
                 railStyle={{ backgroundColor: '#C2BBF0', height: 10 }}
             />
             <br />

@@ -40,7 +40,7 @@ const Code: React.FC = observer(() => {
                 }
                 return <span key={i}>
                     {tabs}
-                    <span className={store.allowRender && token.highlight ? 'highlight' : ''}>
+                    <span className={`${store.allowRender && token.highlight ? 'highlight' : ''} token-${token.index}`}>
                         {token.char}
                     </span>
                 </span>

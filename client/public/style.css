@@ -24,3 +24,12 @@ body, html, #root, .app{
 .textarea{
     font-size: .75rem !important
 }
+.call-stack{
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+}
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}

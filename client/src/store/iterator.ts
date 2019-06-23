@@ -9,7 +9,7 @@ type handler = {
 
 class IteratorStore {
     @observable index: number = -1
-    @observable step: any
+    @observable step: Viz.Step.Any
     @observable name: void | Viz.name
     @observable iterating: boolean = false
     @observable direction: boolean = true
@@ -29,7 +29,9 @@ class IteratorStore {
         if (nextIdx < 0) {
             nextIdx = 0
             this.iterating = false
+            clearTimeout(this.timer)
         } else if (nextIdx >= this.root.viz.steps.length) {
+            clearTimeout(this.timer)
             nextIdx = this.root.viz.steps.length - 1
             this.iterating = false
         }
@@ -44,7 +46,6 @@ class IteratorStore {
             this.iterating = false;
             if (this.timer) {
                 clearTimeout(this.timer)
-                clearImmediate(this.timer)
             }
             return
         }
@@ -68,12 +69,8 @@ class IteratorStore {
     }
     @action play() {
         this.iterating = true
-        if (this.index < 0) {
+        if (this.index < 0 || this.index >= this.root.viz.steps.length) {
             this.index = -1
-            this.direction = true
-        } else if (this.index > this.root.viz.steps.length - 1) {
-            this.index = this.root.viz.steps.length - 1
-            this.direction = false
         }
         this.begin()
     }
@@ -92,17 +89,10 @@ class IteratorStore {
             this.speed = this.minSpeed
         }
     }
-    // @action overload(bool: boolean) {
-    //     if (bool) {
-    //         this.overloaded = true
-    //         this.root.allowRender = false
-    //     } else {
-    //         this.overloaded = false
-    //         this.root.allowRender = true
-    //     }
-    // }
+
     @action beforeChange() {
         if (this.handler.allow) {
+            clearTimeout(this.timer)
             this.handling = true
             this.pause()
             this.handler.value = this.index
@@ -110,27 +100,40 @@ class IteratorStore {
 
     }
     @action change(val: number) {
-        this.handler.value = val
+        if (this.handler.allow && this.handling) {
+            this.handler.value = val
+        }
     }
     @action afterChange() {
-        this.handling = false
-        this.handler.allow = false
-        const dir = this.direction
-        if (this.handler.value > this.index) {
+        if (this.handler.allow && this.handling) {
+            this.handling = false
+            this.handler.allow = false
+            if (this.handler.value > this.index) {
+                this.direction = true
+            } else {
+                this.index++
+                this.direction = false
+            }
+            this.root.allowRender = false
+            while (this.index !== this.handler.value) {
+                this.iterating = true
+                this.next()
+            }
+            let type = null
+            try {
+                type = this.root.viz.steps[this.index].type
+            } catch (e) { }
+            if (!this.direction && (type === 'FUNC' || type === 'METHOD' || type === 'RETURN')) {
+                this.next()
+            }
+            this.root.allowRender = true
+            this.iterating = false
             this.direction = true
-        } else {
-            this.direction = false
+            setTimeout(() => {
+                this.handler.allow = true
+            }, 500)
+            this.play()
         }
-        this.iterating = true
-        this.root.allowRender = false
-        while (this.index !== this.handler.value) {
-            this.next()
-        }
-        this.root.allowRender = true
-        this.iterating = false
-        this.direction = dir
-        this.play()
-        this.handler.allow = true
     }
 }
 export default IteratorStore

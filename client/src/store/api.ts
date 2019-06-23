@@ -12,7 +12,7 @@ class ApiStore {
     @observable data: Viz.Data
     @observable ok: boolean = false
     @observable loading: boolean = false
-    @observable error: null | Error = null
+    @observable error: null | string = null
     @observable root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -40,8 +40,16 @@ class ApiStore {
             const data: Viz.Data = res.data
             this.root.initialize(data)
             window.localStorage.setItem('data', JSON.stringify(data))
+            this.error = null
+            this.ok = true
         } catch (e) {
-            console.log(e)
+            if (e.response) {
+                this.error = e.response.data.toString()
+                console.log(this.error)
+            } else {
+                this.error = e.message
+            }
+            this.loading = false
         }
     }
 }

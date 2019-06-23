@@ -4,17 +4,22 @@ import { observer } from 'mobx-react';
 
 const CallStack: React.FC = observer(() => {
     if (!store.allowRender) return null
+    const stack = []
+    const limit = Math.max(store.state.callStack.length - 10, 0)
+    for (let i = store.state.callStack.length - 1; i >= limit; --i) {
+        stack.push(
+            <li key={i} className="list-item has-text-centered">{store.state.callStack[i]} {i}</li>
+        )
+
+    }
+
+    if (store.state.callStack.length - 11 > 0)
+        stack.push(<li key={'Yo'} className="list-item has-text-centered">{store.state.callStack.length - 11} more</li>)
+
     return (
-        <div className="box has-background-info">
+        <div className="call-stack">
             <ul className="list">
-                {
-                    store.state.callStack.reduceRight((list, funcName, i) => {
-                        list.push(
-                            <li key={i} className="list-item">{funcName}</li>
-                        )
-                        return list
-                    }, [] as Array<JSX.Element>)
-                }
+                {stack}
             </ul>
         </div>
     )

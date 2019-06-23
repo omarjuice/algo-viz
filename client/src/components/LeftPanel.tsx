@@ -7,7 +7,10 @@ import Controller from './Controller';
 
 const LeftPanel: React.FC = observer(() => {
     const InputToggle: React.FC = () => (
-        <button onClick={() => store.editing = !store.editing} className="button is-small">
+        <button onClick={() => {
+            store.editing = !store.editing
+            store.api.error = null
+        }} className="button is-small">
             {store.editing ? 'close' : 'code'}
         </button>
     )

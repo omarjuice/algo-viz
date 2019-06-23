@@ -16,6 +16,8 @@ class StateStore {
     }
 
     @action next(step: Viz.Step.Any) {
+        // console.log(step.type, this.root.iterator.direction);
+
         if (step.scope) {
             const [parent, scope] = step.scope;
             if (!(scope in this.identifiers)) {
@@ -24,7 +26,6 @@ class StateStore {
             if (!(scope in this.scopeChain)) {
                 this.scopeChain[scope] = { parent, children: [] }
                 if (typeof parent === 'number') {
-                    console.log(parent, scope)
                     this.scopeChain[parent].children.push(scope)
                 }
             }
@@ -114,6 +115,7 @@ class StateStore {
         }
     }
     @action prev(step: Viz.Step.Any) {
+        // console.log(step.type, this.root.iterator.direction);
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }

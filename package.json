@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/omarjuice/algo-viz#readme",
   "dependencies": {
-    "@types/rc-slider": "^8.6.4",
+    "ansi-to-html": "^0.6.11",
     "concurrently": "^4.1.0"
   }
 }

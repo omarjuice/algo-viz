@@ -40,6 +40,12 @@ class CodeStore {
             const [start, end] = name;
             this.start = start
             this.end = end
+            if (this.root.allowRender) {
+                const first = document.querySelector('.token-' + this.start)
+                if (first) {
+                    first.scrollIntoView()
+                }
+            }
         } else {
             this.start = undefined
             this.end = undefined
