@@ -7,7 +7,7 @@ import CallStack from './components/CallStack';
 import store from './store';
 import LeftPanel from './components/LeftPanel';
 import Convert from 'ansi-to-html';
-const convert = new Convert()
+const convert = new Convert({ newline: true })
 @observer
 class App extends React.Component {
   render() {
