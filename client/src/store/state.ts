@@ -119,7 +119,6 @@ class StateStore {
         }
     }
     @action prev(step: Viz.Step.Any) {
-
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }

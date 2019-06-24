@@ -4,6 +4,7 @@ import { RootStore } from ".";
 type handler = {
     value: number
     allow: boolean
+    changing: boolean
 
 }
 
@@ -15,7 +16,7 @@ class IteratorStore {
     @observable direction: boolean = true
     @observable speed: number = 1
     @observable handling: boolean = false
-    @observable handler: handler = { value: 0, allow: true }
+    @observable handler: handler = { value: 0, allow: true, changing: false }
     timer: any = null
     maxSpeed: number = 64
     minSpeed: number = 1 / 4
@@ -30,7 +31,7 @@ class IteratorStore {
             nextIdx = 0
             this.iterating = false
             clearTimeout(this.timer)
-        } else if (nextIdx >= this.root.viz.steps.length) {
+        } else if (nextIdx >= this.root.viz.steps.length - 1) {
             clearTimeout(this.timer)
             nextIdx = this.root.viz.steps.length - 1
             this.iterating = false
@@ -69,10 +70,10 @@ class IteratorStore {
     }
     @action play() {
         this.iterating = true
-        if (this.index >= this.root.viz.steps.length) {
+        if (this.index >= this.root.viz.steps.length - 1) {
             clearTimeout(this.timer)
             this.handler.allow = true
-            this.handler.value = - 1
+            this.handler.value = 0
             this.handling = true
             return this.afterChange()
         }
@@ -95,16 +96,19 @@ class IteratorStore {
     }
 
     @action beforeChange() {
-        if (this.handler.allow) {
+        if (this.handler.allow && !this.handler.changing) {
             clearTimeout(this.timer)
             this.handling = true
             this.pause()
             this.handler.value = this.index
+            console.log('BEFORE')
         }
 
     }
     @action change(val: number) {
         if (this.handler.allow && this.handling) {
+            console.log('CHANGE', val)
+            this.handler.changing = true
             this.handler.value = val
         }
     }
@@ -119,22 +123,25 @@ class IteratorStore {
                 this.direction = false
             }
             this.root.allowRender = false
+            console.log(this.index, 'START')
             while (this.index !== this.handler.value) {
+                console.log(this.index, this.direction)
                 this.iterating = true
                 this.next()
             }
-            let type = null
-            try {
-                type = this.root.viz.steps[this.index].type
-            } catch (e) { }
-            if (!this.direction && (type === 'FUNC' || type === 'METHOD' || type === 'RETURN')) {
+
+            const dir = this.direction
+            this.direction = true
+            if (!dir) {
+                this.index--
                 this.next()
             }
             this.root.allowRender = true
             this.iterating = false
-            this.direction = true
+            this.handler.changing = false
             setTimeout(() => {
                 this.handler.allow = true
+
             }, 500)
             this.play()
         }

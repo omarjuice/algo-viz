@@ -13,7 +13,7 @@ const convert = new Convert({ newline: true })
 class App extends React.Component {
   render() {
     return (<>
-      <div className="app has-background-info ">
+      <div className="app ">
         <Navbar />
         <div className="columns is-paddingless">
 

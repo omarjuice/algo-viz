@@ -35,8 +35,8 @@ const IteratorContol: React.FC = observer(() => {
     return (
         <div className="iterator-control">
             <Slider
-                min={-1}
-                max={store.viz.steps.length}
+                min={0}
+                max={store.viz.steps.length - 1}
                 defaultValue={-1}
                 value={iterator.handling ? iterator.handler.value : iterator.index}
                 onBeforeChange={() => { iterator.beforeChange() }}
