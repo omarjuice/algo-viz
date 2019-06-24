@@ -33,7 +33,7 @@ const handle = (props: any) => {
 const IteratorContol: React.FC = observer(() => {
     const { iterator } = store
     return (
-        <div className="container">
+        <div className="iterator-control">
             <Slider
                 min={-1}
                 max={store.viz.steps.length}

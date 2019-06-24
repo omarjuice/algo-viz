@@ -12,8 +12,19 @@ const StepView: React.FC = observer(() => {
         step && <div>
             <span >{index}/{store.viz.steps.length}:</span>
             <span>{step.type}</span>
-            <br />
-            <span>{getVal(step.value)}</span>
+            <div >
+                {store.code.start ? (
+                    <>
+                        <span className={`has-text-success`} style={{ fontSize: Math.min(900 / store.code.expression.length, 16) }}>
+                            {store.code.expression}
+                        </span>
+                        {' '}={' '}
+                        <span className="has-text-primary is-size-5">
+                            {getVal(store.iterator.step.value)}
+                        </span>
+                    </>
+                ) : null}
+            </div>
         </div>
     )
 })

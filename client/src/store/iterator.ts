@@ -69,8 +69,12 @@ class IteratorStore {
     }
     @action play() {
         this.iterating = true
-        if (this.index < 0 || this.index >= this.root.viz.steps.length) {
-            this.index = -1
+        if (this.index >= this.root.viz.steps.length) {
+            clearTimeout(this.timer)
+            this.handler.allow = true
+            this.handler.value = - 1
+            this.handling = true
+            return this.afterChange()
         }
         this.begin()
     }

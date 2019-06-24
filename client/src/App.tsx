@@ -12,7 +12,6 @@ const convert = new Convert({ newline: true })
 @observer
 class App extends React.Component {
   render() {
-    const rightColWidth = store.editor.active ? "column is-2" : "column is-one-fifth"
     return (<>
       <div className="app has-background-info ">
         <Navbar />
@@ -28,10 +27,10 @@ class App extends React.Component {
             </div>
             {store.ready && !store.api.error && (
               <>
-                <div className={rightColWidth}>
+                <div className="column is-6">
                   <StepView />
                 </div>
-                <div className={rightColWidth}>
+                <div className="column is-2">
                   <CallStack />
                 </div>
               </>

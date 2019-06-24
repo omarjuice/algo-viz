@@ -2,7 +2,10 @@ import { observable, action, computed } from "mobx";
 import { RootStore } from ".";
 
 
-
+type activeIds = {
+    name: string
+    value: any
+}
 
 class StateStore {
     @observable scopeStack: (null | number)[] = []
@@ -116,7 +119,7 @@ class StateStore {
         }
     }
     @action prev(step: Viz.Step.Any) {
-        // console.log(step.type, this.root.iterator.direction);
+
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }
@@ -195,16 +198,19 @@ class StateStore {
     }
     @computed get activeIds() {
         const s = this.scopeStack;
-        const identifiers = []
+        const identifiers: activeIds[][] = [[]]
         for (const scope of s) {
             if (scope === null) continue;
             const ids = this.identifiers[scope]
             for (const id in ids) {
                 const values = ids[id]
-                identifiers.push({
+                identifiers[identifiers.length - 1].push({
                     name: id,
                     value: values[values.length - 1]
                 })
+                if (identifiers[identifiers.length - 1].length > 4) {
+                    identifiers.push([])
+                }
             }
         }
         return identifiers

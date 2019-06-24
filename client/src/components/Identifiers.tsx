@@ -6,30 +6,23 @@ import { getVal } from '../utils';
 const Identifiers: React.FC = observer(() => {
     const identifiers = store.state.activeIds
     if (!store.allowRender) return null
+
+    const colSize = Math.floor(12 / identifiers.length)
+    let fontSize = Math.floor(Math.min(5 + identifiers.length / 2, 7))
     return (
-        <div className="columns">
-            <div className="column">
-                <div className="container has-text-white">
-                    {identifiers.map((id, i) => {
-                        return <p key={i}>
-                            <span>{id.name}</span>
-                            <span>{' '}={' '}</span>
-                            <span>{getVal(id.value)}</span>
-                        </p>
-                    })}
-                </div>
-            </div>
-            <div className="column">
-                {store.code.start ? (
-                    <>
-                        <div className="has-text-success is-size-7">
-                            {store.code.expression}
-                        </div>
-                        <div className="has-text-primary is-size-5">
-                            {getVal(store.iterator.step.value)}
-                        </div>
-                    </>
-                ) : null}
+        <div className="values-container">
+            <div className="columns has-text-white identifiers">
+                {identifiers.map((ids, i) => {
+                    return <div key={i} className={`column is-${colSize} is-size-${fontSize}`}>{
+                        ids.map((id, i) => (
+                            <p key={i}>
+                                <span>{id.name}</span>
+                                <span>{' '}={' '}</span>
+                                <span>{getVal(id.value)}</span>
+                            </p>
+                        ))
+                    }</div>
+                })}
             </div>
         </div>
     )
