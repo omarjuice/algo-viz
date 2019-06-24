@@ -5,11 +5,13 @@ import IteratorStore from './iterator';
 import StateStore from './state';
 import ApiStore from './api';
 import Editor from './editor';
+import Structures from './structures';
 export class RootStore {
     @observable viz: VizStore
     @observable code: CodeStore
     @observable iterator: IteratorStore
     @observable state: StateStore
+    @observable structs: Structures
     @observable api: ApiStore
     @observable editor: Editor
     @observable ready: boolean = false
@@ -28,8 +30,9 @@ export class RootStore {
         this.code = new CodeStore(this)
         this.state = new StateStore(this)
         this.editor = new Editor(this, this.viz.code.trim())
+        this.structs = new Structures(this)
         this.ready = true
-        this.iterator.play()
+        // this.iterator.play()
     }
 }
 

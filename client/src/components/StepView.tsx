@@ -9,7 +9,7 @@ const StepView: React.FC = observer(() => {
     const { step, index } = store.iterator
 
     return (
-        step && <div>
+        step && <div className="step-view">
             <span >{index}/{store.viz.steps.length - 1}:</span>
             <span>{step.type}</span>
             <div >

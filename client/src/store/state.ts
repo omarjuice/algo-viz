@@ -195,18 +195,25 @@ class StateStore {
             }
         }
     }
-    @computed get activeIds() {
+    @computed get activeIds(): activeIds[][] {
         const s = this.scopeStack;
         const identifiers: activeIds[][] = [[]]
+        const activeObjs: string[] = []
         for (const scope of s) {
             if (scope === null) continue;
             const ids = this.identifiers[scope]
             for (const id in ids) {
                 const values = ids[id]
-                identifiers[identifiers.length - 1].push({
+                const info = {
                     name: id,
                     value: values[values.length - 1]
-                })
+                }
+                identifiers[identifiers.length - 1].push(
+                    info
+                )
+                if (info.value in this.root.structs.objects) {
+                    activeObjs.push(info.value)
+                }
                 if (identifiers[identifiers.length - 1].length > 4) {
                     identifiers.push([])
                 }

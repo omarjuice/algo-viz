@@ -8,6 +8,7 @@ import store from './store';
 import LeftPanel from './components/LeftPanel';
 import Convert from 'ansi-to-html';
 import Navbar from './components/Navbar';
+import Structs from './components/Structs';
 const convert = new Convert({ newline: true })
 @observer
 class App extends React.Component {
@@ -29,6 +30,7 @@ class App extends React.Component {
               <>
                 <div className="column is-6">
                   <StepView />
+                  <Structs />
                 </div>
                 <div className="column is-2">
                   <CallStack />

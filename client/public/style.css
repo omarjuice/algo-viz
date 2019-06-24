@@ -43,3 +43,18 @@ body, html, #root, .app{
 .values-container{
     height: 37.5vh
 }
+.step-view{
+    height: 10%
+}
+.array-struct{
+    display: flex;
+    flex-direction: row;
+    margin: 5px auto;
+    max-width: 60vw;
+    overflow: scroll;
+ 
+}
+.array-val{
+    border: 1px solid white;
+    padding: 10px;
+}
