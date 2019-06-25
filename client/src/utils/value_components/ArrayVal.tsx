@@ -1,26 +1,24 @@
 import React from 'react';
 import { getVal } from '..';
 import { observer } from 'mobx-react';
-import store from '../../store';
 
 
 type Props = {
-    array: { [key: string]: any }
+    array: Viz.Structure
     index: number,
     objectId: string
 }
 
 const ArrayVal: React.FC<Props> = observer(({ array, index, objectId }) => {
-    const val = array[index]
-    const { highlight } = store.structs
-    const { flash } = store.structs
-
+    const info = array[index]
+    if (!(index in array)) return null;
     return (
         <div className={`
         array-val 
-        ${highlight && highlight.object === objectId && highlight.prop === index && 'highlight'}
-        ${flash && flash.object === objectId && flash.prop === index && 'flash'}
-        `}>{getVal(val)}</div>
+        ${info.highlight && 'highlight'}
+        ${info.flash && 'flash'}
+        ${objectId}
+        `}>{getVal(info.value)}</div>
     );
 })
 

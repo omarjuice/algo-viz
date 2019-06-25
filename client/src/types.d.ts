@@ -1,9 +1,14 @@
 declare namespace Viz {
     type scope = null | [null | number, number]
     type name = [number, number]
+    type StructProp = {
+        highlight: boolean,
+        flash: boolean
+        value: any
+    }
 
     type Structure = {
-        [prop: string]: any
+        [prop: string]: StructProp
 
     }
 

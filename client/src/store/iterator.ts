@@ -130,7 +130,6 @@ class IteratorStore {
             this.root.allowRender = false
             console.log(this.index, 'START')
             while (this.index !== this.handler.value) {
-                console.log(this.index, this.direction)
                 this.iterating = true
                 this.next()
             }
@@ -149,8 +148,7 @@ class IteratorStore {
 
             }, 500)
             //remove highlights and flashes
-            this.root.structs.highlight = null
-            this.root.structs.flash = null
+            this.root.structs.reset()
             this.play()
         }
     }

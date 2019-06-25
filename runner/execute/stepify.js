@@ -69,7 +69,7 @@ module.exports = function (input) {
                                     block: true
                                 }
                             )
-                        ) || param);
+                        ) || null);
 
                         const isClassMethod = t.isClassMethod(path.node)
                         // console.log(path.parent)

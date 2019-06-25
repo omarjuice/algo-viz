@@ -1,5 +1,4 @@
 import React from 'react';
-import { getVal } from '..';
 import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
 
@@ -10,7 +9,7 @@ type Props = {
 
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId }) => {
     const arr: React.ReactElement[] = [];
-    for (let i = 0; i < structure['length']; i++) {
+    for (let i = 0; i < structure['length'].value; i++) {
         arr.push(
             <ArrayVal key={i} index={i} objectId={objectId} array={structure} />
         )

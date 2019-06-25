@@ -56,11 +56,16 @@ body, html, #root, .app{
 }
 .array-val{
     border: 1px solid white;
-    padding: 10px;
+
+    padding: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center
 }
 .array-val.highlight{
-    border: 1px solid pink;
-    filter: invert(100);
+    border: 5px solid pink;
+    
     animation: highlight .3s
 }
 .array-val.flash{
