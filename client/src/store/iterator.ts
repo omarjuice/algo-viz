@@ -40,6 +40,8 @@ class IteratorStore {
         this.name = this.step.name
         this.root.code.update()
         this.root.state[this.direction ? 'next' : 'prev'](this.step)
+        this.root.structs[this.direction ? 'next' : 'prev'](this.step)
+
         return true
     }
     @action private begin() {
@@ -55,6 +57,9 @@ class IteratorStore {
             let nextTime = 100
             if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
                 nextTime *= 7.5
+            }
+            if (['GET', 'SET'].includes(type)) {
+                nextTime *= 5
             }
             const exec = () => {
                 const cont = this.next()
@@ -143,6 +148,9 @@ class IteratorStore {
                 this.handler.allow = true
 
             }, 500)
+            //remove highlights and flashes
+            this.root.structs.highlight = null
+            this.root.structs.flash = null
             this.play()
         }
     }

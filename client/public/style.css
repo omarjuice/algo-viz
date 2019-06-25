@@ -58,3 +58,34 @@ body, html, #root, .app{
     border: 1px solid white;
     padding: 10px;
 }
+.array-val.highlight{
+    border: 1px solid pink;
+    filter: invert(100);
+    animation: highlight .3s
+}
+.array-val.flash{
+    animation: flash .3s
+}
+
+@keyframes flash{
+    0%{
+        background: #0b1423
+    }
+    50%{
+        background: whitesmoke
+    }
+    100%{
+        background: #0b1423
+    }
+}
+@keyframes highlight{
+    0%{
+        transform: scale(1)
+    }
+    50%{
+        transform: scale(1.25)
+    }
+    100%{
+        transform: scale(1)
+    }
+}

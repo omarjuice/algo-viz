@@ -1,16 +1,18 @@
 import React from 'react';
 import { getVal } from '..';
+import ArrayVal from './ArrayVal';
+import { observer } from 'mobx-react';
 
 type Props = {
-    structure: Viz.Structure
+    structure: Viz.Structure,
+    objectId: string
 }
 
-const ArrayStruct: React.FC<Props> = ({ structure }) => {
+const ArrayStruct: React.FC<Props> = observer(({ structure, objectId }) => {
     const arr: React.ReactElement[] = [];
-    for (let i = 0; i < structure['length'].value; i++) {
-        const info = structure[i]
+    for (let i = 0; i < structure['length']; i++) {
         arr.push(
-            <div className="array-val" key={i}>{getVal(info.value)}</div>
+            <ArrayVal key={i} index={i} objectId={objectId} array={structure} />
         )
     }
     return (
@@ -18,6 +20,6 @@ const ArrayStruct: React.FC<Props> = ({ structure }) => {
             {arr}
         </div>
     );
-}
+})
 
 export default ArrayStruct;
