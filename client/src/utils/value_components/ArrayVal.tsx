@@ -13,7 +13,7 @@ type ArrayValProps = {
 type DisplayProps = {
     color: string
     size: number
-    anim: 'pop' | 'bounce' | ''
+    anim: string
 }
 
 const ValDisplay: React.FC<DisplayProps> = ({ color, size, children, anim }) => {
@@ -52,8 +52,8 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId }) 
         ${info.set && 'set'}
         ${objectId}
         `}>
-                <Tooltip overlay={() => <div>{getVal(info.value)}</div >} placement={((info.get || hovered) && 'top') || 'bottom'} trigger={['hover']} visible={info.get || info.set || hovered} defaultVisible={false} >
-                    <ValDisplay anim={(info.set && 'bounce') || (info.get && 'pop') || ''} color={'white'} size={1} />
+                <Tooltip overlay={() => <div>{getVal(info.value)}</div >} placement={(info.set && 'bottom') || ((info.get || hovered) && 'top') || 'top'} trigger={['hover']} visible={info.get || info.set || hovered} defaultVisible={false} >
+                    <ValDisplay anim={`${info.set && 'bounce'} ${info.get && 'pop'}`} color={'white'} size={1} />
                 </Tooltip>
                 {<span className="array-index" style={{ fontSize: 10 }}>{index}</span>}
             </div >

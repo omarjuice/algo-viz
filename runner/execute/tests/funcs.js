@@ -121,7 +121,7 @@ module.exports = {
     `,
     bubbleSort: `function bubbleSort(array) {
         let swapped = false
-        for (let i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length-1; i++) {
             if (array[i] > array[i + 1]) {
                 swap(i, i + 1, array)
                 swapped = true

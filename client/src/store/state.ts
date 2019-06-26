@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, toJS } from "mobx";
 import { RootStore } from ".";
 
 
@@ -36,10 +36,19 @@ class StateStore {
             const s = this.scopeStack
             if (s[s.length - 1] !== scope) {
                 if (!step.prevScopeStack) step.prevScopeStack = [...s];
-                while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
-                    s.pop()
+                // while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
+                //     s.pop()
+                // }
+                const newStack = [scope, parent]
+                let par = parent
+                while (par) {
+                    par = this.scopeChain[par].parent
+                    newStack.push(par)
                 }
-                if (step.type !== 'RETURN' && s[s.length - 1] !== scope) s.push(scope)
+                newStack.reverse()
+                this.scopeStack = newStack
+
+                // if (step.type !== 'RETURN' && s[s.length - 1] !== scope) s.push(scope)
             }
         }
         if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
@@ -117,6 +126,7 @@ class StateStore {
                 step.prevVals = prevVals;
             }
         }
+        // console.log(step.type, toJS(this.scopeStack))
     }
     @action prev(step: Viz.Step.Any) {
         if (step.scope) {
@@ -196,6 +206,7 @@ class StateStore {
         }
     }
     @computed get activeIds(): activeIds[][] {
+        console.log('aCTIVE IDS');
         const s = this.scopeStack;
         const identifiers: activeIds[][] = [[]]
         const activeObjs: string[] = []
