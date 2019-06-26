@@ -1,15 +1,15 @@
 import { observable, action, computed } from "mobx";
 import { RootStore } from ".";
 
-type highlight = {
+type get = {
     object: string
     prop: string | number
 }
 
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
-    @observable highlights: { [id: string]: Viz.StructProp } = {}
-    @observable flashes: { [id: string]: Viz.StructProp } = {}
+    @observable gets: { [id: string]: Viz.StructProp } = {}
+    @observable sets: { [id: string]: Viz.StructProp } = {}
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -20,25 +20,35 @@ class Structures {
             for (const key in obj) {
                 const val = obj[key]
                 cloned[key] = {
-                    highlight: false,
-                    flash: false,
+                    get: false,
+                    set: false,
                     value: val
                 }
             }
             this.objects[id] = cloned
         }
     }
-    @computed get active(): string[] {
+    @computed get active(): Set<string> {
         const activeIds = this.root.state.activeIds
-        const ids = []
+        const ids: Set<string> = new Set()
         for (let box of activeIds) {
             for (let id of box) {
                 const { value } = id
                 if (value in this.objects) {
-                    ids.push(id.value)
+                    ids.add(id.value)
                 }
             }
         }
+        const step = this.root.iterator.step
+        if (step && typeof step.value == 'string') {
+            if (step.value in this.objects) {
+                ids.add(step.value)
+            }
+            if (step.type === 'GET' || step.type === 'SET' || step.type === 'CLEAR' || step.type === 'DELETE' || step.type === 'METHODCALL') {
+                if (step.object in this.objects) ids.add(step.object)
+            }
+        }
+
         return ids
     }
     @action next(step: Viz.Step.Any) {
@@ -47,16 +57,24 @@ class Structures {
             if (access[0] in this.objects[object]) {
                 step.prev = this.objects[object][access[0]].value
             }
-            if (this.flashes[object]) {
-                this.flashes[object].flash = false
+            if (this.sets[object]) {
+                this.sets[object].set = false
+                this.sets[object].get = false
             }
-            this.flashes[object] = this.objects[object][access[0]] = {
-                highlight: false,
-                flash: true,
-                value
+            if (!(access[0] in this.objects[object])) {
+                this.objects[object][access[0]] = {
+                    get: false,
+                    set: true,
+                    value
+                }
+                this.sets[object] = this.objects[object][access[0]]
+            } else {
+                this.objects[object][access[0]].set = true
+                this.objects[object][access[0]].value = value
+                this.sets[object] = this.objects[object][access[0]]
             }
 
-            const element = document.querySelector(`.flash.${object}`)
+            const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
         }
         if (step.type === 'DELETE') {
@@ -74,12 +92,12 @@ class Structures {
         }
         if (step.type === 'GET') {
             const { object, access } = step
-            if (this.highlights[object]) {
-                this.highlights[object].highlight = false
+            if (this.gets[object]) {
+                this.gets[object].get = false
             }
-            this.objects[object][access[0]].highlight = true
-            this.highlights[object] = this.objects[object][access[0]]
-            const element = document.querySelector(`.highlight.${object}`)
+            this.objects[object][access[0]].get = true
+            this.gets[object] = this.objects[object][access[0]]
+            const element = document.querySelector(`.get.${object}`)
             if (element) element.scrollIntoView()
         }
 
@@ -89,8 +107,8 @@ class Structures {
             const { object, access } = step
             if ('prev' in step) {
                 this.objects[object][access[0]] = {
-                    highlight: false,
-                    flash: false,
+                    get: false,
+                    set: false,
                     value: step.prev
                 }
             } else {
@@ -101,8 +119,8 @@ class Structures {
             const { object, access, value } = step
             if (value) {
                 this.objects[object][access[0]] = {
-                    highlight: false,
-                    flash: true,
+                    get: false,
+                    set: true,
                     value: step.prev
                 }
             }
@@ -114,22 +132,22 @@ class Structures {
         if (step.type === 'GET') {
             const { object, access, value } = step;
             this.objects[object][access[0]] = {
-                highlight: false,
-                flash: false,
+                get: false,
+                set: false,
                 value
             }
         }
 
     }
     @action reset() {
-        for (let key in this.highlights) {
-            this.highlights[key].highlight = false
+        for (let key in this.gets) {
+            this.gets[key].get = false
         }
-        for (let key in this.flashes) {
-            this.flashes[key].flash = false
+        for (let key in this.sets) {
+            this.sets[key].set = false
         }
-        this.highlights = {}
-        this.flashes = {}
+        this.gets = {}
+        this.sets = {}
     }
 }
 

@@ -2,8 +2,8 @@ declare namespace Viz {
     type scope = null | [null | number, number]
     type name = [number, number]
     type StructProp = {
-        highlight: boolean,
-        flash: boolean
+        get: boolean,
+        set: boolean
         value: any
     }
 
@@ -43,6 +43,10 @@ declare namespace Viz {
         interface CALL extends I {
             type: 'CALL'
         }
+        interface METHODCALL extends ObjectType {
+            type: 'METHODCALL'
+        }
+
         interface DECLARATION extends VarType {
             type: 'DECLARATION'
             block: boolean
@@ -84,6 +88,7 @@ declare namespace Viz {
             BLOCK |
             EXPRESSION |
             CALL |
+            METHODCALL |
             DECLARATION |
             ASSIGNMENT |
             FUNC |
@@ -114,17 +119,11 @@ declare namespace Viz {
 }
 declare module 'ansi-to-html' {
     interface ConverterOptions {
-        /** The default foreground color used when reset color codes are encountered. */
         fg?: string
-        /** The default background color used when reset color codes are encountered. */
         bg?: string
-        /** Convert newline characters to `<br/>`. */
         newline?: boolean
-        /** Generate HTML/XML entities. */
         escapeXML?: boolean
-        /** Save style state across invocations of `toHtml()`. */
         stream?: boolean
-        /** Can override specific colors or the entire ANSI palette. */
         colors?: string[] | { [code: number]: string }
     }
 

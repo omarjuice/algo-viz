@@ -44,51 +44,75 @@ body, html, #root, .app{
     height: 37.5vh
 }
 .step-view{
-    height: 10%
+    height: 10%;
+    margin-bottom: 10%;
 }
 .array-struct{
-    display: flex;
-    flex-direction: row;
-    margin: 5px auto;
+    
+    margin: 5px;
+    padding: 5px;
     max-width: 60vw;
-    overflow: scroll;
- 
+    background-image: linear-gradient(whitesmoke, whitesmoke),
+    linear-gradient(whitesmoke, whitesmoke),
+    linear-gradient(whitesmoke, whitesmoke),
+    linear-gradient(whitesmoke, whitesmoke);
+    background-repeat: no-repeat;
+    background-size: 4px 20px, 20px 4px, 4px 20px, 20px 4px;
+    background-position: left top, left top, right bottom, right bottom;
+    display: inline-flex;
+    align-items: center;
+
 }
+
 .array-val{
-    border: 1px solid white;
 
     padding: 5px;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center
+    align-items: center;
+    margin: 2px;
 }
-.array-val.highlight{
-    border: 5px solid pink;
+svg.pop{
     
-    animation: highlight .3s
+    animation: pop .3s
 }
-.array-val.flash{
-    animation: flash .3s
+svg.bounce{
+    animation: bounce .3s
+}
+.array-index{
+    position: relative;
+    margin-top: -30%;
+    margin-left: -100%;
+    padding: 0;
+    margin-bottom: -30%;
+    color: grey;
+
 }
 
-@keyframes flash{
+@keyframes bounce{
     0%{
-        background: #0b1423
+        transform: translateY(-30px)
     }
+
     50%{
-        background: whitesmoke
+        transform: translateY(0)
     }
+    75%{
+        transform: translateY(-10px)
+    }
+
     100%{
-        background: #0b1423
+        transform: translateY(0)
     }
 }
-@keyframes highlight{
+@keyframes pop{
     0%{
         transform: scale(1)
     }
     50%{
-        transform: scale(1.25)
+        transform: scale(1.5)
     }
     100%{
         transform: scale(1)
