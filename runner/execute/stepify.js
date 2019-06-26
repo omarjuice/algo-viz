@@ -395,6 +395,7 @@ module.exports = function (input) {
                 UnaryExpression: {
                     exit(path) {
                         const unary = path.node
+                        if (unary.operator === '-' && unary.prefix) return
                         // we have to know when something was deleted
                         if (unary.operator === 'delete' && t.isMemberExpression(unary.argument)) {
                             // const { object, expression } = computeAccessor(path, unary.argument)

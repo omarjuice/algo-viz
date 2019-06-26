@@ -74,13 +74,7 @@ body, html, #root, .app{
     align-items: center;
     margin: 2px;
 }
-svg.pop{
-    
-    animation: pop .3s
-}
-svg.bounce{
-    animation: bounce .3s
-}
+
 .array-index{
     position: relative;
     margin-top: -30%;
@@ -91,30 +85,3 @@ svg.bounce{
 
 }
 
-@keyframes bounce{
-    0%{
-        transform: translateY(-30px)
-    }
-
-    50%{
-        transform: translateY(0)
-    }
-    75%{
-        transform: translateY(-10px)
-    }
-
-    100%{
-        transform: translateY(0)
-    }
-}
-@keyframes pop{
-    0%{
-        transform: scale(1)
-    }
-    50%{
-        transform: scale(1.5)
-    }
-    100%{
-        transform: scale(1)
-    }
-}

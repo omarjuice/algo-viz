@@ -17,6 +17,7 @@ class IteratorStore {
     @observable speed: number = 1
     @observable handling: boolean = false
     @observable handler: handler = { value: 0, allow: true, changing: false }
+    baseTime: number = 100
     timer: any = null
     maxSpeed: number = 64
     minSpeed: number = 1 / 4
@@ -29,12 +30,12 @@ class IteratorStore {
         let nextIdx = this.direction ? ++this.index : --this.index
         if (nextIdx < 0) {
             nextIdx = 0
-            this.iterating = false
+            this.pause()
             clearTimeout(this.timer)
         } else if (nextIdx >= this.root.viz.steps.length - 1) {
             clearTimeout(this.timer)
             nextIdx = this.root.viz.steps.length - 1
-            this.iterating = false
+            this.pause()
         }
         this.step = this.root.viz.steps[nextIdx]
         this.name = this.step.name
@@ -54,7 +55,7 @@ class IteratorStore {
         }
         if (this.step) {
             const { type } = this.step
-            let nextTime = 100
+            let nextTime = this.baseTime
             if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
                 nextTime *= 7.5
             }
@@ -86,6 +87,7 @@ class IteratorStore {
     }
     @action pause() {
         this.iterating = false
+        this.root.structs.reset()
     }
     @action faster() {
         this.speed *= 2
@@ -128,7 +130,6 @@ class IteratorStore {
                 this.direction = false
             }
             this.root.allowRender = false
-            console.log(this.index, 'START')
             while (this.index !== this.handler.value) {
                 this.iterating = true
                 this.next()

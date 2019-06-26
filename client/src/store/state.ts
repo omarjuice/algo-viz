@@ -206,7 +206,6 @@ class StateStore {
         }
     }
     @computed get activeIds(): activeIds[][] {
-        console.log('aCTIVE IDS');
         const s = this.scopeStack;
         const identifiers: activeIds[][] = [[]]
         const activeObjs: string[] = []

@@ -51,6 +51,9 @@ class Structures {
 
         return ids
     }
+    @computed get updateSpeed() {
+        return 5 * this.root.iterator.baseTime / this.root.iterator.speed
+    }
     @action next(step: Viz.Step.Any) {
         if (step.type === 'SET') {
             const { object, access, value } = step
@@ -58,11 +61,12 @@ class Structures {
                 step.prev = this.objects[object][access[0]].value
             }
             if (this.sets[object]) {
+
                 const prop = this.sets[object]
                 setTimeout(() => {
                     prop.set = false
                     prop.get = false
-                }, 300)
+                }, this.updateSpeed)
             }
             if (!(access[0] in this.objects[object])) {
                 this.objects[object][access[0]] = {
@@ -100,7 +104,7 @@ class Structures {
                 setTimeout(() => {
                     prop.set = false
                     prop.get = false
-                }, 300)
+                }, this.updateSpeed)
             }
             this.objects[object][access[0]].get = true
             this.gets[object] = this.objects[object][access[0]]
