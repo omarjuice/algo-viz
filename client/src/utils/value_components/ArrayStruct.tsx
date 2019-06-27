@@ -4,10 +4,12 @@ import { observer } from 'mobx-react';
 
 type Props = {
     structure: Viz.Structure,
-    objectId: string
+    objectId: string,
+    size: number,
+    elemSize: number
 }
 
-const ArrayStruct: React.FC<Props> = observer(({ structure, objectId }) => {
+const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, size, elemSize }) => {
     const arr: React.ReactElement[] = [];
     for (let i = 0; i < structure['length'].value; i++) {
         arr.push(

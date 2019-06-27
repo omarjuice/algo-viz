@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, action } from 'mobx';
 import VizStore from './viz';
 import CodeStore from './code'
 import IteratorStore from './iterator';
@@ -16,13 +16,17 @@ export class RootStore {
     @observable editor: Editor
     @observable ready: boolean = false
     @observable allowRender: boolean = true
-
+    @observable windowWidth: number = window.innerWidth
     constructor() {
         const data = window.localStorage.getItem('data')
         this.api = new ApiStore(this)
         if (data) {
             this.initialize(JSON.parse(data))
         }
+        window.onresize = () => {
+            this.onWindowResize(window.innerWidth)
+        }
+
     }
     initialize(data: Viz.Data) {
         this.viz = new VizStore(this, data)
@@ -33,6 +37,10 @@ export class RootStore {
         this.structs = new Structures(this)
         this.ready = true
         // this.iterator.play()
+    }
+    @action onWindowResize(val: number) {
+        console.log(val);
+        this.windowWidth = val
     }
 }
 

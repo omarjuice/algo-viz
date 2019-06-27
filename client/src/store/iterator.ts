@@ -108,18 +108,16 @@ class IteratorStore {
             this.handling = true
             this.pause()
             this.handler.value = this.index
-            console.log('BEFORE')
         }
 
     }
     @action change(val: number) {
         if (this.handler.allow && this.handling) {
-            console.log('CHANGE', val)
             this.handler.changing = true
             this.handler.value = val
         }
     }
-    @action afterChange() {
+    @action async afterChange() {
         if (this.handler.allow && this.handling) {
             this.handling = false
             this.handler.allow = false
@@ -149,7 +147,7 @@ class IteratorStore {
 
             }, 500)
             //remove highlights and flashes
-            this.root.structs.reset()
+            await this.root.structs.reset()
             this.play()
         }
     }

@@ -13,7 +13,7 @@ const Structs: React.FC = observer(() => {
     ids.forEach(id => {
         if (store.viz.types[id] === 'Array') {
             structures.push(
-                <ArrayStruct key={id} structure={store.structs.objects[id]} objectId={id} />
+                <ArrayStruct size={1} elemSize={1} key={id} structure={store.structs.objects[id]} objectId={id} />
             )
         }
     })

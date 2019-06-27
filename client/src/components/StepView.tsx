@@ -23,7 +23,7 @@ const StepView: React.FC = observer(() => {
                             {getVal(store.iterator.step.value)}
                         </span>
                     </>
-                ) : null}
+                ) : (store.iterator.step.access && <span>{store.iterator.step.access[0]}</span>)}
             </div>
         </div>
     )

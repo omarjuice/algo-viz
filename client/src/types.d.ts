@@ -2,8 +2,8 @@ declare namespace Viz {
     type scope = null | [null | number, number]
     type name = [number, number]
     type StructProp = {
-        get: boolean,
-        set: boolean
+        get: boolean | Promise,
+        set: boolean | Promise
         value: any
     }
 

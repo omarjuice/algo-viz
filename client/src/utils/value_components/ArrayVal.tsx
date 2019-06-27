@@ -10,34 +10,41 @@ type ArrayValProps = {
     index: number,
     objectId: string
 }
-type anim = [boolean, boolean]
+type anim = [boolean | Promise<void>, boolean | Promise<void>]
 
 type DisplayProps = {
     color: string
     size: number
     anim: anim
+    objectId: string
 }
 
-const ValDisplay: React.FC<DisplayProps> = ({ color, size, children, anim }) => {
+const ValDisplay: React.FC<DisplayProps> = ({ color, size, children, anim, objectId }) => {
     const base = 30
     const ref = useRef(null)
     useEffect(() => {
         if (ref.current) {
-            if (anim[0]) {
-                anime({
+            if (anim[0] && !(anim[0] as any instanceof Promise)) {
+                const animation = anime({
                     targets: ref.current,
                     scale: [1, 1.5, 1],
                     duration: store.structs.updateSpeed,
                     easing: 'easeInCubic'
-                })
+                }).finished
+                if (store.structs.gets[objectId]) {
+                    store.structs.gets[objectId].get = animation
+                }
             }
-            if (anim[1]) {
-                anime({
+            if (anim[1] && !(anim[1] as any instanceof Promise)) {
+                const animation = anime({
                     targets: ref.current,
                     translateY: [0, -50, 0],
                     duration: store.structs.updateSpeed,
                     easing: 'easeInCubic'
-                })
+                }).finished
+                if (store.structs.sets[objectId]) {
+                    store.structs.sets[objectId].set = animation
+                }
             }
         }
     })
@@ -65,19 +72,18 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId }) 
     if (!(index in array)) return null;
     const info = array[index]
     const anim: anim = [info.get, info.set]
-
     return (
         <div
             onMouseEnter={() => toggle(true)}
             onMouseLeave={() => toggle(false)}
             className={`
         array-val 
-        ${info.get && 'get'}
-        ${info.set && 'set'}
+        ${!!info.get && 'get'}
+        ${!!info.set && 'set'}
         ${objectId}
         `}>
-            <Tooltip overlay={() => <div>{getVal(info.value)}</div >} placement={(info.set && 'bottom') || ((info.get || hovered) && 'top') || 'top'} trigger={['hover']} visible={info.get || info.set || hovered} defaultVisible={false} >
-                <ValDisplay anim={anim} color={'white'} size={1} />
+            <Tooltip overlay={() => <div>{getVal(info.value)}</div >} placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'} trigger={['hover']} visible={!!info.get || !!info.set || hovered} defaultVisible={false} >
+                <ValDisplay objectId={objectId} anim={anim} color={'white'} size={1} />
             </Tooltip>
             {<span className="array-index" style={{ fontSize: 10 }}>{index}</span>}
         </div >

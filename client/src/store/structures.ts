@@ -52,9 +52,10 @@ class Structures {
         return ids
     }
     @computed get updateSpeed() {
-        return 5 * this.root.iterator.baseTime / this.root.iterator.speed
+        return 4.5 * this.root.iterator.baseTime / this.root.iterator.speed
     }
     @action next(step: Viz.Step.Any) {
+        const { allowRender } = this.root
         if (step.type === 'SET') {
             const { object, access, value } = step
             if (access[0] in this.objects[object]) {
@@ -63,12 +64,10 @@ class Structures {
             if (this.sets[object]) {
 
                 const prop = this.sets[object]
-                setTimeout(() => {
-                    prop.set = false
-                    prop.get = false
-                }, this.updateSpeed)
+                this.switchOff(prop, 'get', object)
+                this.switchOff(prop, 'set', object)
             }
-            if (!(access[0] in this.objects[object])) {
+            if (!(access[0] in this.objects[object]) && allowRender) {
                 this.objects[object][access[0]] = {
                     get: false,
                     set: true,
@@ -76,9 +75,15 @@ class Structures {
                 }
                 this.sets[object] = this.objects[object][access[0]]
             } else {
-                this.objects[object][access[0]].set = true
-                this.objects[object][access[0]].value = value
+                if (allowRender) {
+                    if (this.sets[object] === this.objects[object][access[0]]) {
+                        this.sets[object].set = false
+                    }
+                    this.objects[object][access[0]].set = true
+                    this.switchOff(this.objects[object][access[0]], 'get', object)
+                }
                 this.sets[object] = this.objects[object][access[0]]
+                this.objects[object][access[0]].value = value
             }
 
             const element = document.querySelector(`.set.${object}`)
@@ -89,7 +94,10 @@ class Structures {
             if (value) {
                 const original = this.objects[object][access[0]].value
                 step.prev = original
-                delete this.objects[object][access[0]]
+
+                if (this.root.viz.types[object] !== 'Array') {
+                    delete this.objects[object][access[0]]
+                }
             }
         }
         if (step.type === 'CLEAR') {
@@ -101,12 +109,18 @@ class Structures {
             const { object, access } = step
             if (this.gets[object]) {
                 const prop = this.gets[object]
-                setTimeout(() => {
-                    prop.set = false
-                    prop.get = false
-                }, this.updateSpeed)
+                this.switchOff(prop, 'get', object)
+                this.switchOff(prop, 'set', object)
             }
-            this.objects[object][access[0]].get = true
+            if (allowRender) {
+                if (allowRender) {
+                    if (this.gets[object] === this.objects[object][access[0]]) {
+                        this.gets[object].get = false
+                    }
+                    this.objects[object][access[0]].get = true
+                    this.switchOff(this.objects[object][access[0]], 'set', object)
+                }
+            }
             this.gets[object] = this.objects[object][access[0]]
             const element = document.querySelector(`.get.${object}`)
             if (element) element.scrollIntoView()
@@ -150,15 +164,36 @@ class Structures {
         }
 
     }
-    @action reset() {
+    @action async reset() {
+        const promises = []
         for (let key in this.gets) {
-            this.gets[key].get = false
+            promises.push(
+                this.switchOff(this.gets[key], 'get', key),
+                this.switchOff(this.gets[key], 'set', key)
+            )
         }
         for (let key in this.sets) {
-            this.sets[key].set = false
+            promises.push(
+                this.switchOff(this.sets[key], 'get', key),
+                this.switchOff(this.sets[key], 'set', key)
+            )
         }
+        await Promise.all(promises)
         this.gets = {}
         this.sets = {}
+    }
+    @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
+        if (prop[key] instanceof Promise) {
+            await prop[key].then(() => {
+                const ref: 'gets' | 'sets' = (key + 's') as 'gets' | 'sets'
+                if (this[ref][object] === prop) {
+                    return
+                };
+                prop[key] = false
+            })
+        } else {
+            prop[key] = false
+        }
     }
 }
 
