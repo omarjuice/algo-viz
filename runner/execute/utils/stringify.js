@@ -87,6 +87,8 @@ module.exports = function (obj) {
             return this.map.get('null')
         } else if (Number.isNaN(obj)) {
             return this.map.get('NaN')
+        } else if (obj === Infinity) {
+            return this.map.get('Infinity')
         } else if (obj === empty) {
             return this.map.get(empty)
         } else if (typeof obj === 'function') {

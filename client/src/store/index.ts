@@ -6,7 +6,9 @@ import StateStore from './state';
 import ApiStore from './api';
 import Editor from './editor';
 import Structures from './structures';
+import GlobalValues from './globals';
 export class RootStore {
+    @observable globals = new GlobalValues()
     @observable viz: VizStore
     @observable code: CodeStore
     @observable iterator: IteratorStore

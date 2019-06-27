@@ -1,4 +1,5 @@
 import React from 'react';
+import store from '../../store';
 
 type Props = {
     value: string
@@ -6,7 +7,7 @@ type Props = {
 
 export const StringVal: React.FC<Props> = ({ value }) => {
     return (
-        <span className="has-text-warning">"<span>{value}</span>"</span>
+        <span style={{ color: store.globals.colors.string }}>"<span>{value}</span>"</span>
     )
 }
 

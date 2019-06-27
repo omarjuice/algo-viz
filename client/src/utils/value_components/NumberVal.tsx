@@ -1,4 +1,5 @@
 import React from 'react';
+import store from '../../store';
 
 type Props = {
     value: number
@@ -6,7 +7,7 @@ type Props = {
 
 export const NumberVal: React.FC<Props> = ({ value }) => {
     return (
-        <span className="has-text-primary"><span>{value}</span></span>
+        <span style={{ color: store.globals.colors.number }}><span>{value}</span></span>
     )
 }
 

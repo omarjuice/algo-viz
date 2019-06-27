@@ -1,5 +1,5 @@
 import React from 'react';
-import { BooleanVal, StringVal, NumberVal, FalsyVal } from './value_components'
+import { BooleanVal, StringVal, NumberVal, SpecialVal } from './value_components'
 import store from '../store';
 
 export const getVal = (value: any) => {
@@ -10,7 +10,7 @@ export const getVal = (value: any) => {
         let count = 0;
         while (value[count] === '_') count++
         if (count === 1 && type) {
-            return <FalsyVal value={type as 'undefined' | 'null' | '<empty>' | 'NaN'} />
+            return <SpecialVal value={type as 'undefined' | 'null' | '<empty>' | 'NaN' | 'Infinity'} />
         }
         if (count === 2 && type) {
             return '[Function]'

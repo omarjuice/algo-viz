@@ -62,6 +62,9 @@ class Runner {
         const emptyLiteral = this.genId(5, 1)
         this.map.set(empty, emptyLiteral)
         this.types[emptyLiteral] = '<empty>'
+        const infinity = this.genId(5, 1)
+        this.map.set('Infinity', infinity)
+        this.types[infinity] = 'Infinity'
     }
 
 
