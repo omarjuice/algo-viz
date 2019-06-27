@@ -8,10 +8,12 @@ import anime from 'animejs'
 import ArrayStruct from './ArrayStruct';
 type ArrayValProps = {
     array: Viz.Structure
-    index: number,
-    objectId: string,
-    size: number,
+    index: number
+    objectId: string
+    size: number
     ratio: number
+    setDisplay: (display: 'row' | 'column') => void
+    display: 'row' | 'column'
 }
 type anim = [boolean | Promise<void>, boolean | Promise<void>]
 
@@ -95,14 +97,21 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     return <ValDisplay {...displayProps} />
 }
 
-const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio }) => {
+const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio, setDisplay, display }) => {
     const [hovered, toggle] = useState(false)
     if (!(index in array)) return null;
     const info = array[index]
     if (typeof info.value === 'string') {
         const type = store.viz.types[info.value]
         if (type === 'Array') {
-            return <ArrayStruct objectId={info.value} structure={store.structs.objects[info.value]} ratio={.9 * ratio} />
+            if (display === 'row') {
+                setDisplay('column')
+            }
+            return (
+                <div className="array-line">
+                    <ArrayStruct objectId={info.value} structure={store.structs.objects[info.value]} ratio={.75 * ratio} />
+                </div>
+            )
         }
     }
     const anim: anim = [info.get, info.set]

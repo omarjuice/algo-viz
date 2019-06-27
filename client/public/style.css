@@ -68,7 +68,9 @@ body, html, #root, .app{
     vertical-align: center
     /* margin: auto */
 }
-
+.array-struct > .array-line{
+    display: flex
+}
 .array-val{
     display: flex;
     flex-direction: column;
@@ -89,5 +91,8 @@ body, html, #root, .app{
     margin-bottom: -30%;
     color: grey;
 
+}
+.array-line{
+    display: block
 }
 

@@ -57,10 +57,11 @@ class IteratorStore {
             const { type } = this.step
             let nextTime = this.baseTime
             if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
-                nextTime *= 7.5
-            }
-            if (['GET', 'SET'].includes(type)) {
-                nextTime *= 5
+                nextTime *= 0
+            } else if (['GET', 'SET'].includes(type)) {
+                nextTime *= 3
+            } else {
+                nextTime *= 0
             }
             const exec = () => {
                 const cont = this.next()

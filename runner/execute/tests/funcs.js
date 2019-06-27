@@ -273,5 +273,38 @@ module.exports = {
 
     new BST(100).insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
         .insert(1).insert(1).insert(3).insert(1).insert(1).insert(502).insert(55000)
-        .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203);`
+        .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203);`,
+    riverSizes: `function riverSizes(matrix) {
+
+        const rivers = []
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix[i].length; j++) {
+                let riverlen = getContinuation(matrix, i, j)
+                if (riverlen) {
+                    rivers.push(riverlen)
+                }
+            }
+        }
+        return rivers
+    }
+    function getContinuation(matrix, i, j) {
+        if (matrix[i] && matrix[i][j]) {
+            let riverlen = 1
+            matrix[i][j] = null
+            riverlen += getContinuation(matrix, i + 1, j)
+            riverlen += getContinuation(matrix, i, j + 1)
+            riverlen += getContinuation(matrix, i - 1, j)
+            riverlen += getContinuation(matrix, i, j - 1)
+            return riverlen
+        }
+        return 0
+    }
+    const matrix = [
+        [1, null, null, 1, null, 1, null, null, 1, 1, 1, null],
+        [1, null, 1, null, null, 1, 1, 1, 1, null, 1, null],
+        [null, null, 1, null, 1, 1, null, 1, null, 1, 1, 1],
+        [1, null, 1, null, 1, 1, null, null, null, 1, null, null],
+        [1, null, 1, 1, null, null, null, 1, 1, 1, null, 1],
+      ]
+    riverSizes(matrix)`
 }
