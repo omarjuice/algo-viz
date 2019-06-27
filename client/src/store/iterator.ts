@@ -85,9 +85,9 @@ class IteratorStore {
         }
         this.begin()
     }
-    @action pause() {
+    @action async pause() {
         this.iterating = false
-        this.root.structs.reset()
+        await this.root.structs.reset()
     }
     @action faster() {
         this.speed *= 2

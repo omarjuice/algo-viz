@@ -5,11 +5,13 @@ import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
 import anime from 'animejs'
+import ArrayStruct from './ArrayStruct';
 type ArrayValProps = {
     array: Viz.Structure
     index: number,
     objectId: string,
-    size: number
+    size: number,
+    ratio: number
 }
 type anim = [boolean | Promise<void>, boolean | Promise<void>]
 
@@ -71,6 +73,8 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
         if (value in store.viz.types) {
             if (store.viz.types[value] === '<empty>') {
                 displayProps.color = store.globals.background
+            } else if (store.viz.types[value] === 'Array') {
+                return <ArrayStruct objectId={value} structure={store.structs.objects[value]} ratio={.9} />
             } else {
                 displayProps.color = colors.special
             }
@@ -91,11 +95,18 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     return <ValDisplay {...displayProps} />
 }
 
-const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size }) => {
+const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
     if (!(index in array)) return null;
     const info = array[index]
+    if (typeof info.value === 'string') {
+        const type = store.viz.types[info.value]
+        if (type === 'Array') {
+            return <ArrayStruct objectId={info.value} structure={store.structs.objects[info.value]} ratio={.9 * ratio} />
+        }
+    }
     const anim: anim = [info.get, info.set]
+
     return (
         <div
             onMouseEnter={() => {

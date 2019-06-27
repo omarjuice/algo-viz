@@ -10,6 +10,7 @@ class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
+    @observable children: Set<string> = new Set()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -34,18 +35,18 @@ class Structures {
         for (let box of activeIds) {
             for (let id of box) {
                 const { value } = id
-                if (value in this.objects) {
+                if (value in this.objects && !this.children.has(value)) {
                     ids.add(id.value)
                 }
             }
         }
         const step = this.root.iterator.step
         if (step && typeof step.value == 'string') {
-            if (step.value in this.objects) {
+            if (step.value in this.objects && !this.children.has(step.value)) {
                 ids.add(step.value)
             }
             if (step.type === 'GET' || step.type === 'SET' || step.type === 'CLEAR' || step.type === 'DELETE' || step.type === 'METHODCALL') {
-                if (step.object in this.objects) ids.add(step.object)
+                if (step.object in this.objects && !this.children.has(step.object)) ids.add(step.object)
             }
         }
 
@@ -179,15 +180,15 @@ class Structures {
             )
         }
         await Promise.all(promises)
-        this.gets = {}
-        this.sets = {}
+        // this.gets = {}
+        // this.sets = {}
     }
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
         if (prop[key] instanceof Promise) {
             await prop[key].then(() => {
                 const ref: 'gets' | 'sets' = (key + 's') as 'gets' | 'sets'
                 if (this[ref][object] === prop) {
-                    return
+                    if (this.root.iterator.iterating) return
                 };
                 prop[key] = false
             })
