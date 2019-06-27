@@ -1,19 +1,25 @@
 import React from 'react';
 import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
+import store from '../../store';
 
 type Props = {
     structure: Viz.Structure,
     objectId: string,
-    size: number,
+    ratio: number,
     elemSize: number
 }
 
-const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, size, elemSize }) => {
+const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio }) => {
     const arr: React.ReactElement[] = [];
-    for (let i = 0; i < structure['length'].value; i++) {
+    const maxWidth = store.windowWidth * .6
+
+    const len = structure['length'].value
+
+
+    for (let i = 0; i < len; i++) {
         arr.push(
-            <ArrayVal key={i} index={i} objectId={objectId} array={structure} />
+            <ArrayVal size={Math.min(maxWidth / (structure['length'].value * 2), 30) * ratio} key={i} index={i} objectId={objectId} array={structure} />
         )
     }
     return (

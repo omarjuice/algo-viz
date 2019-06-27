@@ -46,12 +46,15 @@ body, html, #root, .app{
 .step-view{
     height: 10%;
     margin-bottom: 10%;
+    position: relative;
+    z-index: 0;
 }
 .array-struct{
     
     margin: 5px;
     padding: 5px;
     max-width: 60vw;
+    overflow: scroll;
     background-image: linear-gradient(whitesmoke, whitesmoke),
     linear-gradient(whitesmoke, whitesmoke),
     linear-gradient(whitesmoke, whitesmoke),
@@ -61,18 +64,21 @@ body, html, #root, .app{
     background-position: left top, left top, right bottom, right bottom;
     display: inline-flex;
     align-items: center;
+    position: relative;
+    z-index: 2
 
 }
 
 .array-val{
-
-    padding: 5px;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 2px;
+
+}
+.array-val svg{
+    position: relative;
+    z-index: 2
 }
 
 .array-index{

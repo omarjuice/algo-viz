@@ -8,7 +8,8 @@ import anime from 'animejs'
 type ArrayValProps = {
     array: Viz.Structure
     index: number,
-    objectId: string
+    objectId: string,
+    size: number
 }
 type anim = [boolean | Promise<void>, boolean | Promise<void>]
 
@@ -21,7 +22,6 @@ type DisplayProps = {
 }
 
 const ValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, textDisplay }) => {
-    const base = 30
     const ref = useRef(null)
     useEffect(() => {
         if (ref.current) {
@@ -39,8 +39,9 @@ const ValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, textD
             if (anim[1] && !(anim[1] as any instanceof Promise)) {
                 const animation = anime({
                     targets: ref.current,
-                    translateY: [0, -50, 0],
+                    translateY: [-1 * size, size / 2, 0],
                     duration: store.structs.updateSpeed,
+                    elasticity: 500,
                     easing: 'easeInCubic'
                 }).finished
                 if (store.structs.sets[objectId]) {
@@ -49,7 +50,7 @@ const ValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, textD
             }
         }
     })
-    return <svg ref={ref} height={base * size} width={base * size} viewBox="0 0 100 100" >
+    return <svg ref={ref} height={size} width={size} viewBox="0 0 100 100" >
         <circle cx="50" cy="50" r="50" fill={color} stroke={color} />
         <text x={50} y={50}
             fill={store.globals.background} fontSize={50} fontWeight={'bold'}
@@ -90,33 +91,48 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     return <ValDisplay {...displayProps} />
 }
 
-const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId }) => {
+const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size }) => {
     const [hovered, toggle] = useState(false)
     if (!(index in array)) return null;
     const info = array[index]
     const anim: anim = [info.get, info.set]
     return (
         <div
-            onMouseEnter={() => toggle(true)}
-            onMouseLeave={() => toggle(false)}
+            onMouseEnter={() => {
+                toggle(true)
+                store.structs.switchOff(info, 'get', objectId)
+                store.structs.switchOff(info, 'set', objectId)
+
+            }}
+            onMouseLeave={() => {
+                toggle(false)
+
+            }}
             className={`
         array-val 
         ${!!info.get && 'get'}
         ${!!info.set && 'set'}
         ${objectId}
-        `}>
+        `}
+            style={{
+                margin: '1px',
+                padding: '1px',
+                marginTop: '15px'
+            }}
+        >
             <Tooltip overlay={() => <div>{getVal(info.value)}</div >}
+                arrowContent={array['length'].value <= 20 ? undefined : <span className="has-text-white">{index}</span>}
                 placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'}
                 trigger={['hover']} visible={!!info.get || !!info.set || hovered} defaultVisible={false} >
                 {getArrayVal(info.value, {
                     objectId,
                     color: store.globals.colors.other,
-                    size: 1,
+                    size,
                     anim,
                     textDisplay: "",
                 })}
             </Tooltip>
-            {<span className="array-index" style={{ fontSize: 10 }}>{index}</span>}
+            {array['length'].value < 21 && <span className="array-index" style={{ fontSize: 10 }}>{index}</span>}
         </div >
     );
 
