@@ -21,10 +21,12 @@ export class RootStore {
     @observable windowWidth: number = window.innerWidth
     constructor() {
         const data = window.localStorage.getItem('data')
+
         this.api = new ApiStore(this)
         if (data) {
             this.initialize(JSON.parse(data))
         }
+        this.editor = new Editor(this, this.viz ? this.viz.code.trim() : '')
         window.onresize = () => {
             this.onWindowResize(window.innerWidth)
         }
@@ -35,7 +37,6 @@ export class RootStore {
         this.iterator = new IteratorStore(this)
         this.code = new CodeStore(this)
         this.state = new StateStore(this)
-        this.editor = new Editor(this, this.viz.code.trim())
         this.structs = new Structures(this)
         this.ready = true
         // this.iterator.play()

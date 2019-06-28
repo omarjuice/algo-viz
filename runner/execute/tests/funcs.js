@@ -274,9 +274,8 @@ module.exports = {
     new BST(100).insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
         .insert(1).insert(1).insert(3).insert(1).insert(1).insert(502).insert(55000)
         .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203);`,
-    riverSizes: `function riverSizes(matrix) {
+    riverSizes: `function riverSizes(matrix, rivers = []) {
 
-        const rivers = []
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 let riverlen = getContinuation(matrix, i, j)
@@ -306,5 +305,6 @@ module.exports = {
         [1, null, 1, null, 1, 1, null, null, null, 1, null, null],
         [1, null, 1, 1, null, null, null, 1, 1, 1, null, 1],
       ]
-    riverSizes(matrix)`
+    const rivers = [];
+    riverSizes(matrix, rivers)`
 }

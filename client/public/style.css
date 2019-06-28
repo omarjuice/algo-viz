@@ -53,7 +53,6 @@ body, html, #root, .app{
     
 
     max-width: 100%;
-    overflow: scroll;
     background-image: linear-gradient(whitesmoke, whitesmoke),
     linear-gradient(whitesmoke, whitesmoke),
     linear-gradient(whitesmoke, whitesmoke),
@@ -62,25 +61,28 @@ body, html, #root, .app{
     background-size: 4px 20px, 20px 4px, 4px 20px, 20px 4px;
     background-position: left top, left top, right bottom, right bottom;
     display: inline-flex;
-
+     
     align-items: center;
     position: relative;
-    vertical-align: center
-    /* margin: auto */
+    z-index: 0;
 }
 .array-struct > .array-line{
     display: flex
 }
+
+
 .array-val{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: visible;
+    z-index: 1;
 
 }
 .array-val svg{
     position: relative;
-    z-index: 2
+    z-index: 5
 }
 
 .array-index{
