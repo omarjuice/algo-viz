@@ -17,6 +17,7 @@ module.exports = function ({ t = types, input, code, Node }) {
 
     // Creates a wrapper around expressions to be used by the runner
     const proxy = (node, details) => {
+        if (!node) return node
         const _wrapper_id = t.identifier(_name)
         if (!details.name && node.start) {
             details.name = t.arrayExpression([t.numericLiteral(node.start), t.numericLiteral(node.end)])

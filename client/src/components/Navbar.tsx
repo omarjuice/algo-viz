@@ -34,14 +34,6 @@ const Navbar: React.FC = observer(() => {
                                     Slower
                              </button>
                             </div>
-                            <div className="navbar-item">
-                                <button onClick={() => {
-                                    store.editor.active = !store.editor.active
-                                    store.api.error = null
-                                }} className="button is-small">
-                                    {store.editor.active ? 'close' : 'code'}
-                                </button>
-                            </div>
                         </>
                     )}
                     {store.editor.active && (

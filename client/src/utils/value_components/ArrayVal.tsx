@@ -23,7 +23,6 @@ type DisplayProps = {
     anim: anim
     objectId: string
     textDisplay: string
-    ignore: boolean
 }
 
 const ValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, textDisplay }) => {
@@ -68,33 +67,32 @@ const ValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, textD
 
 const getArrayVal = (value: any, displayProps: DisplayProps) => {
     const { globals: { colors } } = store
-    if (!displayProps.ignore) {
-        if (typeof value === 'boolean') {
-            displayProps.color = colors.boolean
-            displayProps.textDisplay = value ? 'T' : 'F'
-            return <ValDisplay {...displayProps} />
-        } else if (typeof value === 'string') {
-            if (value in store.viz.types) {
-                if (store.viz.types[value] === '<empty>') {
-                    displayProps.color = store.globals.background
-                } else {
-                    displayProps.color = colors.special
-                }
-
+    if (typeof value === 'boolean') {
+        displayProps.color = colors.boolean
+        displayProps.textDisplay = value ? 'T' : 'F'
+        return <ValDisplay {...displayProps} />
+    } else if (typeof value === 'string') {
+        if (value in store.viz.types) {
+            if (store.viz.types[value] === '<empty>') {
+                displayProps.color = store.globals.background
             } else {
-                displayProps.color = colors.string
-                if (value.length < 4) displayProps.textDisplay = value
+                displayProps.color = colors.special
             }
-            return <ValDisplay {...displayProps} />
-        } else if (typeof value === 'number') {
-            displayProps.color = colors.number
-            const strVal = String(value)
-            let len = strVal.length
-            if (strVal[0] === '-')--len
-            if (len < 3) displayProps.textDisplay = strVal
-            return <ValDisplay {...displayProps} />
+
+        } else {
+            displayProps.color = colors.string
+            if (value.length < 4) displayProps.textDisplay = value
         }
+        return <ValDisplay {...displayProps} />
+    } else if (typeof value === 'number') {
+        displayProps.color = colors.number
+        const strVal = String(value)
+        let len = strVal.length
+        if (strVal[0] === '-')--len
+        if (len < 3) displayProps.textDisplay = strVal
+        return <ValDisplay {...displayProps} />
     }
+
     return <ValDisplay {...displayProps} />
 }
 
@@ -103,6 +101,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     if (!(index in array)) return null;
     const info = array[index]
     let value = info.value
+    const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
     const anim: anim = [info.get, info.set]
     const displayProps: DisplayProps = {
         objectId,
@@ -110,30 +109,36 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
         size,
         anim,
         textDisplay: "",
-        ignore: false
     }
-    if (typeof info.value === 'string') {
-        const type = store.viz.types[info.value]
+    if (typeof value === 'string') {
+        const type = store.viz.types[value]
         if (type === 'Array') {
-            let flag = false
-            // if (store.structs.children.has(objectId)) {
+            if (display === 'row') {
+                setDisplay('column')
+            }
 
-
-            //     displayProps.color = 'black'
-            //     displayProps.ignore = true
-            // }
-            if (!flag) return (
-                <div className="array-line">
-                    <ArrayStruct parent={objectId} objectId={info.value} structure={store.structs.objects[info.value]} ratio={(display === 'row' ? .9 : .75) * ratio} />
+            if (store.structs.children.has(value)) {
+                const parent = store.structs.children.get(value)
+                if (parent) {
+                    if ((parent[0] === objectId && parent[1] !== index) || parent[0] !== objectId) {
+                        return <div>REF</div>
+                    }
+                }
+            }
+            return (
+                <div className={`array-line ${className}`}>
+                    <ArrayStruct parent={[objectId, index]} objectId={value} structure={store.structs.objects[value]} ratio={(display === 'row' ? .9 : .75) * ratio} />
                 </div>
             )
 
         }
     }
-
-    if (display === 'column') {
-        setDisplay('row')
+    const style: React.CSSProperties = {
+        margin: `4px ${size / 5}px`,
+        height: `${Math.max(size * 1.5, 15)}px`,
     }
+
+
     return (
         <div
             onMouseEnter={() => {
@@ -143,26 +148,22 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
             }}
             onMouseLeave={() => {
                 toggle(false)
-
             }}
             className={`
             array-val 
-            ${!!info.get && 'get'}
-            ${!!info.set && 'set'}
-            ${objectId}
-            `}
-            style={{
-                margin: '4px 2px',
-                height: `${size * 1.5}px`,
-            }}
+            ${className}
+                `}
+            style={style}
         >
-            <Tooltip overlay={() => <div className="has-text-weight-bold">{getVal(info.value)}</div >}
-                arrowContent={array['length'].value <= 20 ? undefined : <span className="has-text-white">{index}</span>}
+            <Tooltip overlay={() => (
+                <div className="has-text-weight-bold">
+                    <span style={{ fontSize: 9 }}> {index}:{' '}</span>
+                    {getVal(value)}
+                </div >)}
                 placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'}
                 trigger={['hover']} visible={!!info.get || !!info.set || hovered} defaultVisible={false} >
-                {getArrayVal(info.value, displayProps)}
+                {getArrayVal(value, displayProps)}
             </Tooltip>
-            {array['length'].value < 21 && <span className="array-index" style={{ fontSize: 10 }}>{index}</span>}
         </div >
     );
 

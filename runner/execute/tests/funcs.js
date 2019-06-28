@@ -11,31 +11,61 @@ module.exports = {
     }
     twoNumberSum([1,2,3,4,5], 5)
     `,
-    mergeSort: `function mergeSort(arr) {
-        if (arr.length < 2) {
-            return arr
+    mergeSort: `function split(wholeArray){
+        const result = [];
+        const midPoint = Math.floor(wholeArray.length / 2);
+        if (wholeArray.length === 0){
+            return undefined;
         }
-       const [firstHalf, secondHalf] = split(arr)
-       return merge(mergeSort(firstHalf), mergeSort(secondHalf))
+        else if (wholeArray.length === 1){
+            return wholeArray;
+        }
+        else {
+            result.push(wholeArray.slice(0,midPoint))
+            result.push(wholeArray.slice(midPoint))
+        }
+        return result;
     }
-    function split(arr) {
-        const splitIdx = Math.floor(arr.length / 2)
-        const firstHalf = arr.slice(0, splitIdx)
-        const secondHalf = arr.slice(splitIdx, arr.length)
-        return [firstHalf, secondHalf]
-    }
-    function merge(arr1, arr2) {
-        let i = 0
-        while (arr2.length>0) {
-            const num = arr2.shift()
-            while (num > arr1[i] && i < arr1.length) {
-                i++
+    
+    function merge(arr1, arr2){
+        const result = [];
+        let leftPointer = 0;
+        let rightPointer = 0;
+        while (leftPointer < arr1.length && rightPointer < arr2.length){
+            if (arr1[leftPointer] < arr2[rightPointer]){
+                result.push(arr1[leftPointer])
+                leftPointer++;
             }
-            arr1.splice(i, 0, num)
+            else {
+                result.push(arr2[rightPointer])
+                rightPointer++;
+            }
         }
-        return arr1
+        if (leftPointer === arr1.length){
+            for (let i = rightPointer; i<arr2.length; i++){
+                result.push(arr2[i])
+            }
+        }
+        else {
+            for (let i = leftPointer; i<arr1.length; i++){
+                result.push(arr1[i])
+            }
+        }
+        return result;
     }
-    mergeSort([5,4,3,2,1])
+    
+    function mergeSort(wholeArray) {
+        if (wholeArray.length === 0 || wholeArray.length === 1) {
+            return wholeArray;
+        }
+        else {
+            return merge(
+                mergeSort(split(wholeArray)[0]),
+                mergeSort(split(wholeArray)[1])
+            )
+        }
+    }
+    mergeSort([10,9,8,7,6,5,4,3,2,1])
     `,
     binarySearch: `function binarySearch(array, target) {
         let left = 0;
@@ -306,5 +336,38 @@ module.exports = {
         [1, null, 1, 1, null, null, null, 1, 1, 1, null, 1],
       ]
     const rivers = [];
-    riverSizes(matrix, rivers)`
+    riverSizes(matrix, rivers)`,
+    inPlaceMergeSort: `
+    function merge(arr, start, mid, end) {
+        let start2 = mid + 1
+        if (arr[mid] <= arr[start2]) return
+        while (start <= mid && start2 <= end) {
+            if (arr[start] <= arr[start2]) {
+                start++
+            } else {
+                let value = arr[start2]
+                let index = start2
+                while (index !== start) {
+                    arr[index] = arr[index - 1]
+                    index--
+                }
+                arr[start] = value
+                start++
+                mid++
+                start2++
+            }
+        }
+    }
+    function mergeSort(arr, l, r) {
+        if (l < r) {
+            let m = Math.floor((l + r) / 2)
+            mergeSort(arr, l, m)
+            mergeSort(arr, m + 1, r)
+            merge(arr, l, m, r)
+        }
+        return arr
+    }
+    const array = [20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]
+    mergeSort(array, 0, array.length - 1)
+    `
 }

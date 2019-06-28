@@ -42,6 +42,7 @@ class ApiStore {
             window.localStorage.setItem('data', JSON.stringify(data))
             this.error = null
             this.ok = true
+            this.root.editor.active = false
         } catch (e) {
             if (e.response) {
                 this.error = e.response.data.toString()

@@ -9,18 +9,23 @@ const Structs: React.FC = observer(() => {
 
     const ids = store.structs.active
     const structures: ReactNode[] = []
-
-    ids.forEach(id => {
+    const count = [0]
+    ids.forEach((id) => {
         if (store.viz.types[id] === 'Array') {
-            structures.push(
-                <ArrayStruct parent={null} ratio={1} key={id} structure={store.structs.objects[id]} objectId={id} />
+            count[0]++
+            const element = (
+                <div key={id} className={`column is-full`}>
+                    <ArrayStruct parent={null} ratio={1} structure={store.structs.objects[id]} objectId={id} />
+                </div>
             )
+            structures.push(element)
+
         }
     })
 
 
     return (
-        <div>
+        <div className="structs columns is-multiline">
             {structures}
         </div>
     );

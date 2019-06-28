@@ -10,7 +10,7 @@ class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
-    @observable children: Map<string, null | string> = new Map()
+    @observable children: Map<string, null | [string, string | number]> = new Map()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -40,16 +40,16 @@ class Structures {
                 }
             }
         }
-        const step = this.root.iterator.step
-        if (step && typeof step.value == 'string') {
-            if (step.value in this.objects && !this.children.get(step.value)) {
-                ids.add(step.value)
-            }
-            if (step.type === 'GET' || step.type === 'SET' || step.type === 'CLEAR' || step.type === 'DELETE' || step.type === 'METHODCALL') {
-                if (step.object in this.objects && !this.children.get(step.object)) ids.add(step.object)
-            }
-        }
-
+        // const step = this.root.iterator.step
+        // if (step && typeof step.value == 'string') {
+        //     if (step.value in this.objects && !this.children.get(step.value)) {
+        //         ids.add(step.value)
+        //     }
+        //     if (step.type === 'GET' || step.type === 'SET' || step.type === 'CLEAR' || step.type === 'DELETE' || step.type === 'METHODCALL') {
+        //         if (step.object in this.objects && !this.children.get(step.object)) ids.add(step.object)
+        //     }
+        // }
+        // console.log(ids.entries())
         return ids
     }
     @computed get updateSpeed() {
@@ -86,7 +86,15 @@ class Structures {
                 this.sets[object] = this.objects[object][access[0]]
                 this.objects[object][access[0]].value = value
             }
-
+            // if (value in this.objects) {
+            //     if (!this.children.has(value)){
+            //         this.children.set(value, [object, access[0]])
+            //     }   
+            //     if(step.prev && step.prev in this.objects){
+            //         const parentInfo = this.children.get(step.prev)
+            //         if(parentInfo)
+            //     }
+            // }
             const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
         }
@@ -195,6 +203,9 @@ class Structures {
         } else {
             prop[key] = false
         }
+    }
+    @action newChildren() {
+        this.children = new Map()
     }
 }
 

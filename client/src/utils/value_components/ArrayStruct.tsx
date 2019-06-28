@@ -7,18 +7,23 @@ type Props = {
     structure: Viz.Structure,
     objectId: string,
     ratio: number,
-    parent: null | string
+    parent: null | [string, string | number]
 }
 
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, parent }) => {
     const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .6
     const len = structure['length'].value
-    const [display, setDisplay] = useState('column')
-    const valSize = Math.max(Math.min(maxWidth / (structure['length'].value * 2), 30) * ratio, 3)
+    const [display, setDisplay] = useState('row')
+    const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     useEffect(() => {
         if (!store.structs.children.has(objectId)) {
             store.structs.children.set(objectId, parent)
+        } else {
+            const par = store.structs.children.get(objectId)
+            if (parent && !par) {
+                store.structs.children.set(objectId, parent)
+            }
         }
     })
     for (let i = 0; i < len; i++) {
@@ -28,17 +33,18 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, par
                 key={i} index={i} objectId={objectId} array={structure} />
         )
     }
-    const size = Math.max(Math.floor(ratio * 5), 1)
+    const size = Math.max(Math.floor(ratio * 5), 3)
     const styles: React.CSSProperties = {
         margin: `${size}px`,
         padding: `${size}px`,
         flexDirection: display as 'row' | 'column',
     }
-    if (ratio < 1) {
-        // styles.top = `${Math.round(15 * ratio)}px`
-    }
+
     if (display === 'row') {
-        styles.height = valSize * 1.5
+        styles.height = valSize * 1.5 + 5
+    } else {
+        styles.maxHeight = '100%'
+        styles.overflowY = 'scroll'
     }
     return (
         <div className="array-struct" style={styles}>
