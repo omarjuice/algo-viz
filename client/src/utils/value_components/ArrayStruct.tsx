@@ -7,25 +7,16 @@ type Props = {
     structure: Viz.Structure,
     objectId: string,
     ratio: number,
-    parent: null | [string, string | number]
+    pointer: Viz.pointer | null
 }
 
-const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, parent }) => {
+const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointer }) => {
     const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .6
     const len = structure['length'].value
     const [display, setDisplay] = useState('row')
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
-    useEffect(() => {
-        if (!store.structs.children.has(objectId)) {
-            store.structs.children.set(objectId, parent)
-        } else {
-            const par = store.structs.children.get(objectId)
-            if (parent && !par) {
-                store.structs.children.set(objectId, parent)
-            }
-        }
-    })
+
     for (let i = 0; i < len; i++) {
         arr.push(
             <ArrayVal setDisplay={setDisplay} display={display as 'row' | 'column'}

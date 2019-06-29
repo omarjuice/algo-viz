@@ -1,16 +1,12 @@
 import { observable, action, computed } from "mobx";
 import { RootStore } from ".";
 
-type get = {
-    object: string
-    prop: string | number
-}
 
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
-    @observable children: Map<string, null | [string, string | number]> = new Map()
+    @observable pointers: Map<string, Viz.pointer[]> = new Map()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -27,6 +23,7 @@ class Structures {
                 }
             }
             this.objects[id] = cloned
+            this.pointers.set(id, [])
         }
     }
     @computed get active(): Set<string> {
@@ -35,8 +32,9 @@ class Structures {
         for (let box of activeIds) {
             for (let id of box) {
                 const { value } = id
-                if (value in this.objects && !this.children.get(value)) {
-                    ids.add(id.value)
+                if (value in this.objects) {
+                    const pointers = this.pointers.get(value)
+                    if (!pointers || !pointers.length) ids.add(id.value)
                 }
             }
         }
@@ -61,14 +59,20 @@ class Structures {
             const { object, access, value } = step
             if (access[0] in this.objects[object]) {
                 step.prev = this.objects[object][access[0]].value
+                if (step.prev in this.objects) {
+                    const pointers = this.pointers.get(step.prev)
+                    if (pointers) {
+                        const newPointers = pointers.filter(p => p.parent === object && p.ref === access[0])
+                        this.pointers.set(step.prev, newPointers)
+                    }
+                }
             }
             if (this.sets[object]) {
-
                 const prop = this.sets[object]
                 this.switchOff(prop, 'get', object)
                 this.switchOff(prop, 'set', object)
             }
-            if (!(access[0] in this.objects[object]) && allowRender) {
+            if (!(access[0] in this.objects[object])) {
                 this.objects[object][access[0]] = {
                     get: false,
                     set: true,
@@ -86,15 +90,15 @@ class Structures {
                 this.sets[object] = this.objects[object][access[0]]
                 this.objects[object][access[0]].value = value
             }
-            // if (value in this.objects) {
-            //     if (!this.children.has(value)){
-            //         this.children.set(value, [object, access[0]])
-            //     }   
-            //     if(step.prev && step.prev in this.objects){
-            //         const parentInfo = this.children.get(step.prev)
-            //         if(parentInfo)
-            //     }
-            // }
+            if (value in this.objects) {
+                const pointers = this.pointers.get(value)
+                if (pointers) {
+                    pointers.push({
+                        parent: object,
+                        ref: access[0]
+                    })
+                }
+            }
             const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
         }
@@ -205,7 +209,7 @@ class Structures {
         }
     }
     @action newChildren() {
-        this.children = new Map()
+        this.pointers = new Map()
     }
 }
 

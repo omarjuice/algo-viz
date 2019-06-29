@@ -15,7 +15,7 @@ const Structs: React.FC = observer(() => {
             count[0]++
             const element = (
                 <div key={id} className={`column is-full`}>
-                    <ArrayStruct parent={null} ratio={1} structure={store.structs.objects[id]} objectId={id} />
+                    <ArrayStruct pointer={null} ratio={1} structure={store.structs.objects[id]} objectId={id} />
                 </div>
             )
             structures.push(element)
