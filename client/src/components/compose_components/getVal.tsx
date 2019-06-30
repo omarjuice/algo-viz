@@ -1,6 +1,6 @@
 import React from 'react';
 import { BooleanVal, StringVal, NumberVal, SpecialVal } from './value_components'
-import store from '../store';
+import store from '../../store';
 
 export const getVal = (value: any) => {
     if (typeof value === 'boolean') {

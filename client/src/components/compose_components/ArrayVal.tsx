@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getVal } from '..';
+import { getVal } from './getVal';
 import { observer } from 'mobx-react';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
@@ -123,6 +123,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
                     }
                 }
             }
+            if (store.structs.bindings.has(value)) flag = true
             if (flag) {
                 return <div>REF</div>
             } else {

@@ -16,6 +16,7 @@ class Structures {
         const objs = store.viz.objects
         for (const id in objs) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            if (!this.children[id]) this.children[id] = new Set()
             this.children[id] = new Set()
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
@@ -90,6 +91,7 @@ class Structures {
     }
     @action addPointers(id: string, parent: string, key: string | number) {
         if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+        if (!this.children[id]) this.children[id] = new Set()
         const parents = this.pointers.get(id)
         if (parents) {
             let refs = parents.get(parent)
@@ -271,6 +273,7 @@ class Structures {
         this.children = {}
         for (const id in this.objects) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            if (!this.children[id]) this.children[id] = new Set()
             const type = this.root.viz.types[id]
             const obj = this.objects[id]
             if (type === 'Array') {

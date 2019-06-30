@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { observer } from 'mobx-react';
 import store from '../store';
-import ArrayStruct from '../utils/value_components/ArrayStruct';
+import ArrayStruct from './compose_components/ArrayStruct';
 
 
 

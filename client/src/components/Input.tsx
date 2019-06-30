@@ -3,7 +3,7 @@ import store from '../store'
 import { observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor'
 import * as monaco from 'monaco-editor';
-import pastels from '../utils/pastels.json'
+import pastels from '../pastels.json'
 let Pastels = pastels as any
 monaco.editor.defineTheme('pastels', Pastels)
 @observer
