@@ -268,6 +268,7 @@ class Structures {
             )
         }
         this.pointers = new Map()
+        this.children = {}
         for (const id in this.objects) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
             const type = this.root.viz.types[id]
