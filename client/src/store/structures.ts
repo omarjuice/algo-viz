@@ -9,6 +9,7 @@ class Structures {
     @observable pointers: Map<string, Viz.pointers> = new Map()
     @observable bindings: Set<string> = new Set()
     @observable children: { [key: string]: Map<string, [number]> } = {}
+    @observable activePointers: { [id: string]: boolean } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
     constructor(store: RootStore) {
@@ -52,6 +53,7 @@ class Structures {
             }
 
             this.objects[id] = cloned
+            this.activePointers[id] = false
         }
     }
     @action setBindings() {
@@ -89,22 +91,28 @@ class Structures {
         this.bindings = ids
     }
     @action addPointers(id: string, parent: string, key: string | number) {
-        if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-        if (!this.children[id]) this.children[id] = new Map()
-        const parents = this.pointers.get(id)
-        if (parents) {
-            let refs = parents.get(parent)
-            if (refs) {
-                refs.push(key)
-            } else {
-                parents.set(parent, [key])
+        if (id !== parent) {
+            if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            if (!this.children[id]) this.children[id] = new Map()
+            const parents = this.pointers.get(id)
+            if (parents) {
+                let refs = parents.get(parent)
+                if (refs) {
+                    refs.push(key)
+                } else {
+                    parents.set(parent, [key])
+                }
+            }
+            const firstParent = parents.entries().next().value
+            if (firstParent[0] === parent) {
+                if (!this.children[parent].has(id)) {
+                    this.children[parent].set(id, [1])
+                } else {
+                    this.children[parent].get(id)[0]++
+                }
             }
         }
-        if (!this.children[parent].has(id)) {
-            this.children[parent].set(id, [1])
-        } else {
-            this.children[parent].get(id)[0]++
-        }
+
     }
     @action removePointers(id: string, parent: string, ref: string | number) {
         const parents = this.pointers.get(id)
@@ -119,6 +127,15 @@ class Structures {
                 if (!refs.length) {
                     parents.delete(parent)
                     this.children[parent].delete(id)
+                    const firstParent = parents.entries().next().value
+                    if (firstParent) {
+                        const parentId = firstParent[0]
+                        if (!this.children[parentId].has(id)) {
+                            this.children[parentId].set(id, [1])
+                        } else {
+                            this.children[parentId].get(id)[0]++
+                        }
+                    }
                 } else {
                     this.children[parent].get(id)[0]--
                 }
@@ -174,11 +191,6 @@ class Structures {
                         const info = obj[i]
                         const { value } = info
                         if (typeof value === 'string' && value in this.objects) {
-                            if (!this.children[object].has(value)) {
-                                this.children[object].set(value, [1])
-                            } else {
-                                this.children[object].get(value)[0]++
-                            }
                             const parents = this.pointers.get(value)
                             const parent = parents.get(object)
                             if (parent) {
@@ -188,6 +200,17 @@ class Structures {
                                 }
                                 parent.push(i)
                             }
+                            const firstParent = parents.entries().next().value
+                            if (firstParent) {
+                                const parentId = firstParent[0]
+                                if (!this.children[parentId].has(value)) {
+                                    this.children[parentId].set(value, [1])
+                                } else {
+                                    this.children[parentId].get(value)[0]++
+                                }
+                            }
+
+
                         }
                     }
                 }
@@ -312,6 +335,7 @@ class Structures {
                     }
                 }
             }
+            this.activePointers[id] = false
         }
         await Promise.all(promises)
 

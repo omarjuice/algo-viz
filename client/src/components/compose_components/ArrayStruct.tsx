@@ -37,7 +37,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio }) =
         styles.overflowY = 'scroll'
     }
     return (
-        <div className="array-struct" style={styles}>
+        <div className={`array-struct ${store.structs.activePointers[objectId] && 'pointed'}`} style={styles}>
             {arr}
         </div>
     );

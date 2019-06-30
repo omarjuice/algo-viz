@@ -72,6 +72,11 @@ body, html, #root, .app{
     z-index: 0;
     /* overflow-y: scroll; */
     /* overflow-x: auto; */
+   
+}
+.array-struct.pointed{
+    box-shadow:
+    0 0 5px 2.5px #fff;
 }
 .array-struct > .array-line{
     display: flex;

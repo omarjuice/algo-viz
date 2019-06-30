@@ -6,6 +6,7 @@ import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
 import anime from 'animejs'
 import ArrayStruct from './ArrayStruct';
+import Pointer from './Pointer';
 type ArrayValProps = {
     array: Viz.Structure
     index: number
@@ -72,6 +73,9 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
         return <ValDisplay {...displayProps} />
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
+            if (value in store.viz.objects) {
+                return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
+            }
             if (store.viz.types[value] === '<empty>') {
                 displayProps.color = store.globals.background
             } else {
@@ -124,26 +128,19 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
                 }
             }
             if (store.structs.bindings.has(value)) flag = true
-            if (flag) {
-                return <div>REF</div>
-            } else {
-
+            if (!flag) {
                 return (
                     <div className={`array-line ${className}`}>
                         <ArrayStruct objectId={value} structure={store.structs.objects[value]} ratio={(.9) * ratio} />
                     </div>
                 )
             }
-
-
-
         }
     }
     const style: React.CSSProperties = {
         margin: `4px ${size / 5}px`,
         height: `${Math.max(size * 1.5)}px`,
     }
-
 
     return (
         <div
@@ -164,7 +161,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {index}:{' '}</span>
-                    {getVal(value)}
+                    {getVal(value, true)}
                 </div >)}
                 placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'}
                 trigger={['hover']} visible={!!info.get || !!info.set || hovered} defaultVisible={false} >
