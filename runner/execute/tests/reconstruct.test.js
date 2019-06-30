@@ -3,7 +3,7 @@ const _ = require('lodash')
 const stepify = require('../stepify')
 const expect = require('expect')
 const reconstructor = require('../reconstructor')
-const funcs = JSON.parse(require('fs').readFileSync(__dirname + '/funcs.json', { encoding: 'utf8' }))
+const funcs = require('./funcs')
 
 
 const print = v => (console.log(v), v)

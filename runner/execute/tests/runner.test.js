@@ -1,7 +1,7 @@
 
 const stepIterator = require('../stepIterator')
 const babel = require('@babel/core')
-const funcs = JSON.parse(require('fs').readFileSync(__dirname + '/funcs.json', { encoding: 'utf8' }))
+const funcs = require('./funcs')
 const stepify = require('../stepify')
 const expect = require('expect')
 const print = (val) => {

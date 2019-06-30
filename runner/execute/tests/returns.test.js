@@ -1,6 +1,6 @@
 const stepify = require('../stepify')
 const babel = require('@babel/core')
-const funcs = JSON.parse(require('fs').readFileSync(__dirname + '/funcs.json', { encoding: 'utf8' }))
+const funcs = require('./funcs')
 const expect = require('expect')
 
 
