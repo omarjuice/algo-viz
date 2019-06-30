@@ -7,7 +7,7 @@ import ArrayStruct from '../utils/value_components/ArrayStruct';
 
 const Structs: React.FC = observer(() => {
 
-    const ids = store.structs.active
+    const ids = store.structs.bindings
     const structures: ReactNode[] = []
     const count = [0]
     ids.forEach((id) => {
@@ -15,7 +15,7 @@ const Structs: React.FC = observer(() => {
             count[0]++
             const element = (
                 <div key={id} className={`column is-full`}>
-                    <ArrayStruct pointer={null} ratio={1} structure={store.structs.objects[id]} objectId={id} />
+                    <ArrayStruct ratio={1} structure={store.structs.objects[id]} objectId={id} />
                 </div>
             )
             structures.push(element)

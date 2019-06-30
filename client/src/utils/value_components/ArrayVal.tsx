@@ -12,7 +12,6 @@ type ArrayValProps = {
     objectId: string
     size: number
     ratio: number
-    setDisplay: (display: 'row' | 'column') => void
     display: 'row' | 'column'
 }
 type anim = [boolean | Promise<void>, boolean | Promise<void>]
@@ -96,7 +95,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     return <ValDisplay {...displayProps} />
 }
 
-const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio, setDisplay, display }) => {
+const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
     if (!(index in array)) return null;
     const info = array[index]
@@ -113,34 +112,27 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     if (typeof value === 'string') {
         const type = store.viz.types[value]
         if (type === 'Array') {
-
-            const pointers = store.structs.pointers.get(value)
-            if (pointers) {
-                if (!pointers.length) {
-                    pointers.push({
-                        parent: objectId,
-                        ref: index
-                    })
-                } else {
-                    if (pointers[0].parent !== objectId || (pointers[0].parent === objectId && pointers[0].ref !== index)) {
-                        if (!pointers.find(p => p.parent === objectId && p.ref === index)) {
-                            pointers.push({
-                                parent: objectId,
-                                ref: index
-                            })
-                        }
-                        return <div>REF</div>
+            const parents = store.structs.pointers.get(value)
+            let flag = false
+            if (parents) {
+                const firstParent = parents.entries().next().value
+                if (firstParent) {
+                    const [parentId, [key]] = firstParent
+                    if (parentId !== objectId || (parentId === objectId && key !== index)) {
+                        flag = true
                     }
                 }
             }
-            if (display === 'row') {
-                setDisplay('column')
+            if (flag) {
+                return <div>REF</div>
+            } else {
+
+                return (
+                    <div className={`array-line ${className}`}>
+                        <ArrayStruct objectId={value} structure={store.structs.objects[value]} ratio={(.9) * ratio} />
+                    </div>
+                )
             }
-            return (
-                <div className={`array-line ${className}`}>
-                    <ArrayStruct pointer={{ parent: objectId, ref: index }} objectId={value} structure={store.structs.objects[value]} ratio={(display === 'row' ? .9 : .75) * ratio} />
-                </div>
-            )
 
 
 
@@ -148,7 +140,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     }
     const style: React.CSSProperties = {
         margin: `4px ${size / 5}px`,
-        height: `${Math.max(size * 1.5, 15)}px`,
+        height: `${Math.max(size * 1.5)}px`,
     }
 
 

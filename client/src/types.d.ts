@@ -1,10 +1,7 @@
 declare namespace Viz {
     type scope = null | [null | number, number]
     type name = [number, number]
-    type pointer = {
-        parent: string
-        ref: string | number
-    }
+    type pointers = Map<string, (string | number)[]>
     type StructProp = {
         get: boolean | Promise,
         set: boolean | Promise

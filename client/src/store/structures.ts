@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, toJS } from "mobx";
 import { RootStore } from ".";
 
 
@@ -6,49 +6,117 @@ class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
-    @observable pointers: Map<string, Viz.pointer[]> = new Map()
+    @observable pointers: Map<string, Viz.pointers> = new Map()
+    @observable bindings: Set<string> = new Set()
+    @observable children: { [key: string]: Set<string> } = {}
+    // @observable children: Map<string, string> = new Map()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
         const objs = store.viz.objects
         for (const id in objs) {
+            if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            this.children[id] = new Set()
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
-            for (const key in obj) {
-                const val = obj[key]
-                cloned[key] = {
+            const type = this.root.viz.types[id]
+            if (type === 'Array') {
+                for (let i = 0; i < obj['length']; i++) {
+                    const val = obj[i]
+                    cloned[i] = {
+                        get: false,
+                        set: false,
+                        value: val
+                    }
+                    if (val in objs) {
+                        this.addPointers(val, id, i)
+                    }
+                }
+                cloned['length'] = {
                     get: false,
                     set: false,
-                    value: val
+                    value: obj['length']
+                }
+            } else {
+                for (const key in obj) {
+                    const val = obj[key]
+                    cloned[key] = {
+                        get: false,
+                        set: false,
+                        value: val
+                    }
+                    if (val in objs) {
+                        this.addPointers(val, id, key)
+                    }
                 }
             }
+
             this.objects[id] = cloned
-            this.pointers.set(id, [])
         }
     }
-    @computed get active(): Set<string> {
+    @action setBindings() {
         const activeIds = this.root.state.activeIds
         const ids: Set<string> = new Set()
-        for (let box of activeIds) {
-            for (let id of box) {
+        for (const box of activeIds) {
+            for (const id of box) {
                 const { value } = id
                 if (value in this.objects) {
-                    const pointers = this.pointers.get(value)
-                    if (!pointers || !pointers.length) ids.add(id.value)
+                    ids.add(value)
                 }
             }
         }
-        // const step = this.root.iterator.step
-        // if (step && typeof step.value == 'string') {
-        //     if (step.value in this.objects && !this.children.get(step.value)) {
-        //         ids.add(step.value)
-        //     }
-        //     if (step.type === 'GET' || step.type === 'SET' || step.type === 'CLEAR' || step.type === 'DELETE' || step.type === 'METHODCALL') {
-        //         if (step.object in this.objects && !this.children.get(step.object)) ids.add(step.object)
-        //     }
-        // }
-        // console.log(ids.entries())
-        return ids
+        const adds: string[] = []
+        const deletes: string[] = []
+        ids.forEach(id => {
+            const parents = this.pointers.get(id)
+            if (parents) {
+                const firstParent = parents.entries().next().value
+                if (firstParent) {
+                    if (ids.has(firstParent[0])) {
+                        adds.push(firstParent[0])
+                        deletes.push(id)
+                    }
+                }
+            }
+        })
+        for (const id of deletes) {
+            ids.delete(id)
+        }
+        for (const id of adds) {
+            ids.add(id)
+        }
+
+        this.bindings = ids
+    }
+    @action addPointers(id: string, parent: string, key: string | number) {
+        if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+        const parents = this.pointers.get(id)
+        if (parents) {
+            let refs = parents.get(parent)
+            if (refs) {
+                refs.push(key)
+            } else {
+                parents.set(parent, [key])
+            }
+        }
+        this.children[parent].add(id)
+    }
+    @action removePointers(id: string, parent: string, ref: string | number) {
+        const parents = this.pointers.get(id)
+        if (parents) {
+            const refs = parents.get(parent)
+            if (refs) {
+                for (let i = 0; i < refs.length; i++) {
+                    if (refs[i] === ref) {
+                        refs.splice(i, 1)
+                    }
+                }
+                if (!refs.length) {
+                    parents.delete(parent)
+                    this.children[parent].delete(id)
+                }
+            }
+        }
     }
     @computed get updateSpeed() {
         return 4.5 * this.root.iterator.baseTime / this.root.iterator.speed
@@ -60,12 +128,11 @@ class Structures {
             if (access[0] in this.objects[object]) {
                 step.prev = this.objects[object][access[0]].value
                 if (step.prev in this.objects) {
-                    const pointers = this.pointers.get(step.prev)
-                    if (pointers) {
-                        const newPointers = pointers.filter(p => p.parent === object && p.ref === access[0])
-                        this.pointers.set(step.prev, newPointers)
-                    }
+                    this.removePointers(step.prev, object, access[0])
                 }
+                // if(access[0] === 'length' &&  this.root.viz.types[object] === 'Array'){
+
+                // }
             }
             if (this.sets[object]) {
                 const prop = this.sets[object]
@@ -91,13 +158,18 @@ class Structures {
                 this.objects[object][access[0]].value = value
             }
             if (value in this.objects) {
-                const pointers = this.pointers.get(value)
-                if (pointers) {
-                    pointers.push({
-                        parent: object,
-                        ref: access[0]
-                    })
+                const parents = this.pointers.get(value)
+                if (parents) {
+                    const refs = parents.get(object)
+                    if (refs) {
+                        refs.push(access[0])
+                    } else {
+                        parents.set(object, [access[0]])
+                    }
+                } else {
+                    this.pointers.set(value, new Map([[object, [access[0]]]]))
                 }
+                this.children[object].add(value)
             }
             const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
@@ -110,6 +182,9 @@ class Structures {
 
                 if (this.root.viz.types[object] !== 'Array') {
                     delete this.objects[object][access[0]]
+                }
+                if (step.prev in this.objects) {
+                    this.removePointers(step.prev, object, access[0])
                 }
             }
         }
@@ -138,7 +213,7 @@ class Structures {
             const element = document.querySelector(`.get.${object}`)
             if (element) element.scrollIntoView()
         }
-
+        if (allowRender) this.setBindings()
     }
     @action prev(step: Viz.Step.Any) {
         if (step.type === 'SET') {
@@ -149,6 +224,7 @@ class Structures {
                     set: false,
                     value: step.prev
                 }
+
             } else {
                 delete this.objects[object][access[0]]
             }
@@ -179,17 +255,40 @@ class Structures {
     }
     @action async reset() {
         const promises = []
-        for (let key in this.gets) {
+        for (const key in this.gets) {
             promises.push(
                 this.switchOff(this.gets[key], 'get', key),
                 this.switchOff(this.gets[key], 'set', key)
             )
         }
-        for (let key in this.sets) {
+        for (const key in this.sets) {
             promises.push(
                 this.switchOff(this.sets[key], 'get', key),
                 this.switchOff(this.sets[key], 'set', key)
             )
+        }
+        this.pointers = new Map()
+        for (const id in this.objects) {
+            if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            const type = this.root.viz.types[id]
+            const obj = this.objects[id]
+            if (type === 'Array') {
+                for (let i = 0; i < obj['length'].value; i++) {
+                    if (i in obj) {
+                        const val = obj[i].value
+                        if (val in this.objects) {
+                            this.addPointers(val, id, i)
+                        }
+                    }
+                }
+            } else {
+                for (const key in obj) {
+                    const val = obj[key].value
+                    if (val in this.objects) {
+                        this.addPointers(val, id, key)
+                    }
+                }
+            }
         }
         await Promise.all(promises)
         // this.gets = {}
@@ -208,9 +307,7 @@ class Structures {
             prop[key] = false
         }
     }
-    @action newChildren() {
-        this.pointers = new Map()
-    }
+
 }
 
 

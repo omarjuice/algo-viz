@@ -19,7 +19,8 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "strictNullChecks": false
   },
   "include": [
     "src"
