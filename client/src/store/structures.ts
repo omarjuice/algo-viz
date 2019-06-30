@@ -8,7 +8,7 @@ class Structures {
     @observable sets: { [id: string]: Viz.StructProp } = {}
     @observable pointers: Map<string, Viz.pointers> = new Map()
     @observable bindings: Set<string> = new Set()
-    @observable children: { [key: string]: Set<string> } = {}
+    @observable children: { [key: string]: Map<string, [number]> } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
     constructor(store: RootStore) {
@@ -16,8 +16,7 @@ class Structures {
         const objs = store.viz.objects
         for (const id in objs) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-            if (!this.children[id]) this.children[id] = new Set()
-            this.children[id] = new Set()
+            if (!this.children[id]) this.children[id] = new Map()
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
             const type = this.root.viz.types[id]
@@ -91,7 +90,7 @@ class Structures {
     }
     @action addPointers(id: string, parent: string, key: string | number) {
         if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-        if (!this.children[id]) this.children[id] = new Set()
+        if (!this.children[id]) this.children[id] = new Map()
         const parents = this.pointers.get(id)
         if (parents) {
             let refs = parents.get(parent)
@@ -101,7 +100,11 @@ class Structures {
                 parents.set(parent, [key])
             }
         }
-        this.children[parent].add(id)
+        if (!this.children[parent].has(id)) {
+            this.children[parent].set(id, [1])
+        } else {
+            this.children[parent].get(id)[0]++
+        }
     }
     @action removePointers(id: string, parent: string, ref: string | number) {
         const parents = this.pointers.get(id)
@@ -116,6 +119,8 @@ class Structures {
                 if (!refs.length) {
                     parents.delete(parent)
                     this.children[parent].delete(id)
+                } else {
+                    this.children[parent].get(id)[0]--
                 }
             }
         }
@@ -132,9 +137,7 @@ class Structures {
                 if (step.prev in this.objects) {
                     this.removePointers(step.prev, object, access[0])
                 }
-                // if(access[0] === 'length' &&  this.root.viz.types[object] === 'Array'){
 
-                // }
             }
             if (this.sets[object]) {
                 const prop = this.sets[object]
@@ -160,18 +163,34 @@ class Structures {
                 this.objects[object][access[0]].value = value
             }
             if (value in this.objects) {
-                const parents = this.pointers.get(value)
-                if (parents) {
-                    const refs = parents.get(object)
-                    if (refs) {
-                        refs.push(access[0])
-                    } else {
-                        parents.set(object, [access[0]])
+                this.addPointers(value, object, access[0])
+            }
+            if (allowRender && access[0] === 'length' && this.root.viz.types[object] === 'Array' && step.prev !== value) {
+                this.children[object].clear()
+                const obj = this.objects[object]
+                const moddedRefs: Set<Array<string | number>> = new Set()
+                for (let i = 0; i < value; i++) {
+                    if (i in obj) {
+                        const info = obj[i]
+                        const { value } = info
+                        if (typeof value === 'string' && value in this.objects) {
+                            if (!this.children[object].has(value)) {
+                                this.children[object].set(value, [1])
+                            } else {
+                                this.children[object].get(value)[0]++
+                            }
+                            const parents = this.pointers.get(value)
+                            const parent = parents.get(object)
+                            if (parent) {
+                                if (!moddedRefs.has(parent)) {
+                                    parent.splice(0, parent.length)
+                                    moddedRefs.add(parent)
+                                }
+                                parent.push(i)
+                            }
+                        }
                     }
-                } else {
-                    this.pointers.set(value, new Map([[object, [access[0]]]]))
                 }
-                this.children[object].add(value)
             }
             const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
@@ -273,7 +292,7 @@ class Structures {
         this.children = {}
         for (const id in this.objects) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-            if (!this.children[id]) this.children[id] = new Set()
+            if (!this.children[id]) this.children[id] = new Map()
             const type = this.root.viz.types[id]
             const obj = this.objects[id]
             if (type === 'Array') {
@@ -295,8 +314,7 @@ class Structures {
             }
         }
         await Promise.all(promises)
-        // this.gets = {}
-        // this.sets = {}
+
     }
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
         if (prop[key] instanceof Promise) {
