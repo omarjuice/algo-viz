@@ -12,7 +12,7 @@ declare namespace Viz {
         [prop: string]: StructProp
 
     }
-
+    type anim = [boolean | Promise<void>, boolean | Promise<void>]
 
     declare namespace Step {
         interface I {

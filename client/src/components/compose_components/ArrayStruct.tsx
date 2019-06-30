@@ -7,9 +7,10 @@ type Props = {
     structure: Viz.Structure,
     objectId: string,
     ratio: number,
+    pointed: boolean
 }
 
-const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio }) => {
+const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
     const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .6
     const len = structure['length'].value
@@ -37,7 +38,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio }) =
         styles.overflowY = 'scroll'
     }
     return (
-        <div className={`array-struct ${store.structs.activePointers[objectId] && 'pointed'}`} style={styles}>
+        <div className={`array-struct ${(pointed || store.structs.activePointers[objectId]) && 'pointed'}`} style={styles}>
             {arr}
         </div>
     );
