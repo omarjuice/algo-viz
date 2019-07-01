@@ -78,6 +78,7 @@ class Runner {
                 val = info.object[info.access[0]] !== empty
                 this.ignore = false
             }
+            info.type === TYPES.EXPRESSION
         }
         if (info.type === TYPES.DELETE) {
             let obj = info.object

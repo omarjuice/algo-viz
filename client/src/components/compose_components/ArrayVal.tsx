@@ -28,7 +28,7 @@ type DisplayProps = {
 
 
 const getArrayVal = (value: any, displayProps: DisplayProps) => {
-    const { globals: { colors } } = store
+    const { settings: { colors } } = store
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
         displayProps.textDisplay = value ? 'T' : 'F'
@@ -39,7 +39,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
                 return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
             }
             if (store.viz.types[value] === '<empty>') {
-                displayProps.color = store.globals.background
+                displayProps.color = store.settings.background
             } else {
                 displayProps.color = colors.special
             }
@@ -70,7 +70,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     const anim: Viz.anim = [info.get, info.set]
     const displayProps: DisplayProps = {
         objectId,
-        color: store.globals.colors.other,
+        color: store.settings.colors.other,
         size,
         anim,
         textDisplay: "",

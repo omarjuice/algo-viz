@@ -9,11 +9,14 @@ import LeftPanel from './components/LeftPanel';
 import Convert from 'ansi-to-html';
 import Navbar from './components/Navbar';
 import Structs from './components/Structs';
+import Settings from './components/Settings';
 const convert = new Convert({ newline: true })
+
 @observer
 class App extends React.Component {
   render() {
     return (<>
+      <Settings />
       <div className="app ">
         <Navbar />
         <div className="columns is-paddingless">

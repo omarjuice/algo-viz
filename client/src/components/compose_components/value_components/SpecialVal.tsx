@@ -7,7 +7,7 @@ type Props = {
 
 export const SpecialVal: React.FC<Props> = ({ value }) => {
     return (
-        <span style={{ color: store.globals.colors.special }}><span>{value}</span></span>
+        <span style={{ color: store.settings.colors.special }}><span>{value}</span></span>
     )
 }
 

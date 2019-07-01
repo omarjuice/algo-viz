@@ -54,15 +54,9 @@ class IteratorStore {
             return
         }
         if (this.step) {
-            const { type } = this.step
+            const nextType = (this.root.viz.steps[this.index + 1] || { type: 'EXPRESSION' }).type
             let nextTime = this.baseTime
-            if (['EXPRESSION', 'CALL', 'DECLARATION', 'ASSIGNMENT', 'RETURN'].includes(type)) {
-                nextTime *= 0
-            } else if (['GET', 'SET'].includes(type)) {
-                nextTime *= 3
-            } else {
-                nextTime *= 0
-            }
+            nextTime *= this.root.settings.speeds[nextType] || 0
             const exec = () => {
                 const cont = this.next()
                 if (cont) {

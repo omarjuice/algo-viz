@@ -19,7 +19,7 @@ const ArrayValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, 
                 const animation = anime({
                     targets: ref.current,
                     scale: [1, 1.75, 1],
-                    duration: store.structs.updateSpeed,
+                    duration: store.iterator.baseTime * store.settings.speeds['GET'],
                     easing: 'easeInCubic'
                 }).finished
                 if (store.structs.gets[objectId]) {
@@ -30,7 +30,7 @@ const ArrayValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, 
                 const animation = anime({
                     targets: ref.current,
                     translateY: [-1 * size, size / 2, 0],
-                    duration: store.structs.updateSpeed,
+                    duration: store.iterator.baseTime * store.settings.speeds['SET'],
                     elasticity: 500,
                     easing: 'easeInCubic'
                 }).finished
@@ -43,7 +43,7 @@ const ArrayValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, 
     return <svg ref={ref} height={size} width={size} viewBox="0 0 100 100" >
         <circle cx="50" cy="50" r="50" fill={color} stroke={color} />
         <text x={50} y={50}
-            fill={store.globals.background} fontSize={50} fontWeight={'bold'}
+            fill={store.settings.background} fontSize={50} fontWeight={'bold'}
             dominantBaseline="middle" textAnchor="middle" >
             {textDisplay}
         </text>

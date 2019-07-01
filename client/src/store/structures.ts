@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action } from "mobx";
 import { RootStore } from ".";
 
 
@@ -91,6 +91,9 @@ class Structures {
         this.bindings = ids
     }
     @action addPointers(id: string, parent: string, key: string | number) {
+        const childType = this.root.viz.types[id]
+        const parentType = this.root.viz.types[parent]
+        if (parentType === 'Array' && childType !== 'Array') return
         if (id !== parent) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
             if (!this.children[id]) this.children[id] = new Map()
@@ -142,9 +145,7 @@ class Structures {
             }
         }
     }
-    @computed get updateSpeed() {
-        return 4.5 * this.root.iterator.baseTime / this.root.iterator.speed
-    }
+
     @action next(step: Viz.Step.Any) {
         const { allowRender } = this.root
         if (step.type === 'SET') {
