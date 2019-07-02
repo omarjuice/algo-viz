@@ -12,7 +12,7 @@ type DisplayProps = {
     textDisplay: string
 }
 
-const ArrayValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay }) => {
+const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay }) => {
     const ref = useRef(null)
     useEffect(() => {
         if (ref.current) {
@@ -53,4 +53,4 @@ const ArrayValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, o
     </svg>
 })
 
-export default ArrayValDisplay
+export default ValDisplay
