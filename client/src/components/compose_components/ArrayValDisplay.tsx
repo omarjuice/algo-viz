@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import store from '../../store';
 import anime from 'animejs'
+import { observer } from 'mobx-react';
 
 
 type DisplayProps = {
@@ -11,15 +12,16 @@ type DisplayProps = {
     textDisplay: string
 }
 
-const ArrayValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, textDisplay }) => {
+const ArrayValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay }) => {
     const ref = useRef(null)
     useEffect(() => {
         if (ref.current) {
             if (anim[0] && !(anim[0] as any instanceof Promise)) {
                 const animation = anime({
                     targets: ref.current,
+                    translateY: [0],
                     scale: [1, 1.75, 1],
-                    duration: store.iterator.baseTime * store.settings.speeds['GET'],
+                    duration: store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed,
                     easing: 'easeInCubic'
                 }).finished
                 if (store.structs.gets[objectId]) {
@@ -30,7 +32,8 @@ const ArrayValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, 
                 const animation = anime({
                     targets: ref.current,
                     translateY: [-1 * size, size / 2, 0],
-                    duration: store.iterator.baseTime * store.settings.speeds['SET'],
+                    scale: [1],
+                    duration: store.iterator.baseTime * store.settings.speeds['SET'] / store.iterator.speed,
                     elasticity: 500,
                     easing: 'easeInCubic'
                 }).finished
@@ -48,6 +51,6 @@ const ArrayValDisplay: React.FC<DisplayProps> = ({ color, size, anim, objectId, 
             {textDisplay}
         </text>
     </svg>
-}
+})
 
 export default ArrayValDisplay
