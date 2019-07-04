@@ -8,7 +8,8 @@ class Structures {
     @observable sets: { [id: string]: Viz.StructProp } = {}
     @observable pointers: Map<string, Viz.pointers> = new Map()
     @observable bindings: Set<string> = new Set()
-    @observable children: { [key: string]: Map<string, [number]> } = {}
+    @observable children: { [key: string]: Set<string> } = {}
+    @observable parents: { [key: string]: Set<string> } = {}
     @observable activePointers: { [id: string]: boolean } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
@@ -17,7 +18,8 @@ class Structures {
         const objs = store.viz.objects
         for (const id in objs) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-            if (!this.children[id]) this.children[id] = new Map()
+            if (!this.children[id]) this.children[id] = new Set()
+            if (!this.parents[id]) this.parents[id] = new Set()
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
             const type = this.root.viz.types[id]
@@ -67,36 +69,27 @@ class Structures {
                 }
             }
         }
-        const adds: string[] = []
         const deletes: string[] = []
         ids.forEach(id => {
-            const parents = this.pointers.get(id)
-            if (parents) {
-                const firstParent = parents.entries().next().value
-                if (firstParent) {
-                    if (ids.has(firstParent[0])) {
-                        adds.push(firstParent[0])
-                        deletes.push(id)
-                    }
-                }
+            const parents = this.parents[id]
+            if (parents.size) {
+                parents.forEach(parentId => {
+                    ids.add(parentId)
+                })
+                deletes.push(id)
             }
         })
-        for (const id of deletes) {
+        deletes.forEach(id => {
             ids.delete(id)
-        }
-        for (const id of adds) {
-            ids.add(id)
-        }
+        })
 
         this.bindings = ids
     }
     @action addPointers(id: string, parent: string, key: string | number) {
-        const childType = this.root.viz.types[id]
-        const parentType = this.root.viz.types[parent]
-        if (parentType === 'Array' && childType !== 'Array') return
         if (id !== parent) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-            if (!this.children[id]) this.children[id] = new Map()
+            if (!this.children[id]) this.children[id] = new Set()
+            if (!this.parents[id]) this.parents[id] = new Set()
             const parents = this.pointers.get(id)
             if (parents) {
                 let refs = parents.get(parent)
@@ -106,12 +99,36 @@ class Structures {
                     parents.set(parent, [key])
                 }
             }
-            const firstParent = parents.entries().next().value
-            if (firstParent[0] === parent) {
-                if (!this.children[parent].has(id)) {
-                    this.children[parent].set(id, [1])
+            const currentParents = this.parents[id]
+            const affinity = this.getAffinity(parent, id)
+            if (affinity > 0) {
+                if (affinity === 4) {
+                    const deletes: string[] = []
+                    currentParents.forEach(objectId => {
+                        if (this.getAffinity(objectId, id) < 4) {
+                            deletes.push(objectId)
+                        }
+                    })
+                    deletes.forEach(objectId => {
+                        currentParents.delete(objectId)
+                        this.children[objectId].delete(id)
+                    })
+                    currentParents.add(parent)
+                    this.children[parent].add(id)
                 } else {
-                    this.children[parent].get(id)[0]++
+                    if (!currentParents.size) {
+                        currentParents.add(parent)
+                        this.children[parent].add(id)
+                    } else {
+                        const entries = currentParents.entries()
+                        const first = entries.next().value
+                        if (affinity > this.getAffinity(first[0], id)) {
+                            currentParents.delete(first[0])
+                            currentParents.add(parent)
+                            this.children[first[0]].delete(id)
+                            this.children[parent].add(id)
+                        }
+                    }
                 }
             }
         }
@@ -130,17 +147,22 @@ class Structures {
                 if (!refs.length) {
                     parents.delete(parent)
                     this.children[parent].delete(id)
-                    const firstParent = parents.entries().next().value
-                    if (firstParent) {
-                        const parentId = firstParent[0]
-                        if (!this.children[parentId].has(id)) {
-                            this.children[parentId].set(id, [1])
-                        } else {
-                            this.children[parentId].get(id)[0]++
+                    this.parents[id].delete(parent)
+                    if (!this.parents[id].size) {
+                        let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
+                        parents.forEach((_, objectId) => {
+                            const affinity = this.getAffinity(objectId, id)
+                            if (affinity > bestParent.affinity) {
+                                bestParent = {
+                                    objectId, affinity
+                                }
+                            }
+                        })
+                        if (bestParent.affinity > 0) {
+                            this.parents[id].add(bestParent.objectId)
+                            this.children[bestParent.objectId].add(id)
                         }
                     }
-                } else {
-                    this.children[parent].get(id)[0]--
                 }
             }
         }
@@ -199,19 +221,17 @@ class Structures {
                                     parent.splice(0, parent.length)
                                     moddedRefs.add(parent)
                                 }
-                                parent.push(i)
+                                this.addPointers(value, object, i)
                             }
-                            const firstParent = parents.entries().next().value
-                            if (firstParent) {
-                                const parentId = firstParent[0]
-                                if (!this.children[parentId].has(value)) {
-                                    this.children[parentId].set(value, [1])
-                                } else {
-                                    this.children[parentId].get(value)[0]++
-                                }
-                            }
-
-
+                        }
+                    }
+                }
+                for (let i = value; i < step.prev; i++) {
+                    if (i in obj) {
+                        const info = obj[i]
+                        const { value } = info
+                        if (typeof value === 'string' && value in this.objects) {
+                            this.removePointers(value, object, i)
                         }
                     }
                 }
@@ -314,9 +334,11 @@ class Structures {
         }
         this.pointers = new Map()
         this.children = {}
+        this.parents = {}
         for (const id in this.objects) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-            if (!this.children[id]) this.children[id] = new Map()
+            if (!this.children[id]) this.children[id] = new Set()
+            if (!this.parents[id]) this.parents[id] = new Set()
             const type = this.root.viz.types[id]
             const obj = this.objects[id]
             if (type === 'Array') {
@@ -353,6 +375,39 @@ class Structures {
         } else {
             prop[key] = false
         }
+    }
+    getAffinity(parent: string, child: string): number {
+        const hashTypes = ['Object', 'Map', 'Set']
+        const parentType = this.root.viz.types[parent]
+        const childType = this.root.viz.types[child]
+        if (parentType === childType) {
+            if (parentType === 'Array') {
+                return 3
+            }
+            if (hashTypes.includes(parentType)) {
+                return 0
+            }
+            return 4
+        }
+        if (childType === 'Array') {
+            if (hashTypes.includes(parentType)) {
+                return 1
+            }
+            return 2
+        }
+        if (hashTypes.includes(childType)) {
+            if (!hashTypes.includes(parentType) && parentType !== 'Array') {
+                return 2
+            }
+            return 0
+        }
+        if (parentType === 'Array') {
+            return 0
+        }
+        if (!hashTypes.includes(parentType) && !hashTypes.includes(childType)) {
+            return 3
+        }
+        return 0
     }
 
 }

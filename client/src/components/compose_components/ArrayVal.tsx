@@ -75,29 +75,31 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
         anim,
         textDisplay: "",
     }
-    if (typeof value === 'string') {
-        const type = store.viz.types[value]
-        if (type === 'Array') {
-            const parents = store.structs.pointers.get(value)
-            let flag = false
-            if (parents) {
-                const firstParent = parents.entries().next().value
-                if (firstParent) {
-                    const [parentId, [key]] = firstParent
-                    if (parentId !== objectId || (parentId === objectId && key !== index)) {
+    if (typeof value === 'string' && value in store.viz.objects) {
+        const parents = store.structs.parents[value]
+        let flag = false
+        if (parents) {
+            if (!parents.has(objectId)) flag = true
+            else {
+                const pointers = store.structs.pointers.get(value)
+                if (pointers) {
+                    const refs = pointers.get(objectId)
+                    if (refs[0] !== index) {
                         flag = true
                     }
                 }
             }
-            if (store.structs.bindings.has(value)) flag = true
-            if (!flag) {
-                return (
-                    <div className={`array-line ${className}`}>
-                        <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.9) * ratio} />
-                    </div>
-                )
-            }
         }
+        if (store.structs.bindings.has(value)) flag = true
+        if (!flag) {
+            return (
+                <div className={`array-line ${className}`}>
+                    <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.9) * ratio} />
+                </div>
+            )
+
+        }
+
     }
     const style: React.CSSProperties = {
         margin: `4px ${size / 5}px`,

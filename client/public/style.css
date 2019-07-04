@@ -108,7 +108,7 @@ body, html, #root, .app{
 .array-line{
     display: block
 }
-.object-struct{
+.hash-struct{
     display: inline-flex;
     flex-direction: column;
     justify-content: center;

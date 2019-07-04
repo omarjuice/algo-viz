@@ -32,7 +32,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         styles.boxShadow = `0 0 5px 2.5px ${color}`
     }
     return (
-        <div style={styles} className={`object-struct`}>
+        <div style={styles} className={`hash-struct`}>
             <div className="is-size-1" style={{ transform: 'rotate(90deg)', color }}>{'{'}</div>
             {obj}
             <div className="is-size-1" style={{ transform: 'rotate(90deg)', color }}>{'}'}</div>

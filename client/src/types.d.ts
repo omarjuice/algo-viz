@@ -16,33 +16,33 @@ declare namespace Viz {
     type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'METHODCALL' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 
     declare namespace Step {
-        interface I {
+        interface Generic {
             name?: name
             scope?: scope
             value?: any
             [key: string]: any
         }
-        interface ObjectType extends I {
+        interface ObjectType extends Generic {
             object: string
             access: Array<number | string>
         }
-        interface FuncType extends I {
+        interface FuncType extends Generic {
             funcName: string
         }
-        interface VarType extends I {
+        interface VarType extends Generic {
             varName: string
         }
 
-        interface PROGRAM extends I {
+        interface PROGRAM extends Generic {
             type: 'PROGRAM'
         }
-        interface BLOCK extends I {
+        interface BLOCK extends Generic {
             type: 'BLOCK'
         }
-        interface EXPRESSION extends I {
+        interface EXPRESSION extends Generic {
             type: 'EXPRESSION'
         }
-        interface CALL extends I {
+        interface CALL extends Generic {
             type: 'CALL'
         }
         interface METHODCALL extends ObjectType {

@@ -28,6 +28,18 @@ type DisplayProps = {
 
 const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     key = String(key)
+    const Prop: React.FC = ({ children }) => (
+        <div className="columns is-paddingless">
+            <div className="column is-half">
+                <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
+                    {key.slice(0, 5) + (key.length > 5 ? '...' : '')}
+                </p>
+            </div>
+            <div className="column is-half">
+                {children}
+            </div>
+        </div>
+    )
     const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
@@ -35,7 +47,11 @@ const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
             if (value in store.viz.objects) {
-                return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
+                return (
+                    <Prop>
+                        <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
+                    </Prop>
+                )
             }
             if (store.viz.types[value] === '<empty>') {
                 displayProps.color = store.settings.background
@@ -54,16 +70,11 @@ const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
         if (strVal[0] === '-')--len
         if (len < 3) displayProps.textDisplay = strVal
     }
-    return <div className="columns is-paddingless">
-        <div className="column is-half">
-            <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
-                {key.slice(0, 5) + (key.length > 5 ? '...' : '')}
-            </p>
-        </div>
-        <div className="column is-half">
+    return (
+        <Prop>
             <ValDisplay {...displayProps} />
-        </div>
-    </div>
+        </Prop>
+    )
 }
 
 const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio }) => {
@@ -80,36 +91,36 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         anim,
         textDisplay: "",
     }
-    if (typeof value === 'string') {
-        const type = store.viz.types[value]
-        if (type === 'Array') {
-            const parents = store.structs.pointers.get(value)
-            let flag = false
-            if (parents) {
-                const firstParent = parents.entries().next().value
-                if (firstParent) {
-                    const [parentId, [key]] = firstParent
-                    if (parentId !== objectId || (parentId === objectId && key !== prop)) {
+    if (typeof value === 'string' && value in store.viz.objects && store.viz.types[value] === 'Array') {
+        const parents = store.structs.parents[value]
+        let flag = false
+        if (parents) {
+            if (!parents.has(objectId)) flag = true
+            else {
+                const pointers = store.structs.pointers.get(value)
+                if (pointers) {
+                    const refs = pointers.get(objectId)
+                    if (refs[0] !== prop) {
                         flag = true
                     }
                 }
             }
-            if (store.structs.bindings.has(value)) flag = true
-            if (!flag) {
-                return (
-                    <div className={`hash-array-child columns is-mobile`}>
-                        <div className={`column is-narrow is-size-6 ${(anim[0] || anim[1]) && 'has-text-white'}`}>
-                            {prop}
-                        </div>
-                        {/* <div className="column is-1">
+        }
+        if (store.structs.bindings.has(value)) flag = true
+        if (!flag) {
+            return (
+                <div className={`hash-array-child columns is-mobile`}>
+                    <div className={`column is-narrow is-size-6 ${(anim[0] || anim[1]) && 'has-text-white'}`}>
+                        {prop}
+                    </div>
+                    {/* <div className="column is-1">
 
                         </div> */}
-                        <div className="column is-narrow">
-                            <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.5) * ratio} />
-                        </div>
+                    <div className="column is-narrow">
+                        <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.5) * ratio} />
                     </div>
-                )
-            }
+                </div>
+            )
         }
     }
     const style: React.CSSProperties = {
