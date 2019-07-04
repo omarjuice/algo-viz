@@ -55,9 +55,9 @@ class IteratorStore {
         }
         if (this.step) {
             const nextIdx = this.index
-            const nextType = (nextIdx in this.root.viz.steps && this.root.viz.steps[nextIdx] || { type: 'EXPRESSION' }).type
+            const nextType = (this.root.viz.steps[nextIdx] || { type: 'EXPRESSION' }).type
             let nextTime = this.baseTime
-            nextTime *= this.root.settings.speeds[nextType] || 0
+            nextTime *= this.root.settings.speeds[nextType as Viz.configurable] || 0
             const exec = () => {
                 const cont = this.next()
                 if (cont) {

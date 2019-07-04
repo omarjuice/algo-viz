@@ -9,33 +9,25 @@ type colors = {
 }
 
 type speeds = {
-    DECLARATION: number,
-    ASSIGNMENT: number,
-    EXPRESSION: number,
-    METHODCALL: number,
-    CALL: number,
-    DELETE: number,
-    METHOD: number,
-    RETURN: number,
-    BLOCK: number,
-    FUNC: number,
-    PROGRAM: number,
-    GET: number,
-    SET: number,
-    CLEAR: number,
-}
+    [key in Viz.configurable]: number;
+};
+
+
 
 interface AllSettings {
-    colors: colors
+    valueColors: colors
     background: string
     speeds: speeds
+    objectColors: {
+        [key: string]: string
+    }
 }
 
 
 
 
-class Settings {
-    @observable colors = {
+class Settings implements AllSettings {
+    @observable valueColors = {
         special: '#255e4f',
         number: 'steelblue',
         string: 'yellow',
@@ -43,7 +35,7 @@ class Settings {
         other: 'white'
     }
     @observable background = '#0b1423'
-    @observable speeds: { [key: string]: number } = {
+    @observable speeds = {
         DECLARATION: 5,
         ASSIGNMENT: 5,
         EXPRESSION: 5,
@@ -52,17 +44,24 @@ class Settings {
         DELETE: 3,
         GET: 3,
         SET: 3,
+        CLEAR: 3
     }
     @observable editing: boolean = false
-    constructor() {
-        const settings = window.localStorage.getItem('settings')
-        if (settings) {
-            const all: AllSettings = JSON.parse(settings)
-            this.background = all.background
-            this.colors = all.colors
-            this.speeds = all.speeds
-        }
+    @observable objectColors = {
+        'Array': 'whitesmoke',
+        'Object': 'fuchsia'
     }
+
+    // constructor() {
+    //     // const settings = window.localStorage.getItem('settings')
+    //     // if (settings) {
+    //     //     const all: AllSettings = JSON.parse(settings)
+    //     //     this.background = all.background
+    //     //     this.valueColors = all.valueColors
+    //     //     this.speeds = all.speeds
+    //     // }
+    //     window.localStorage.setItem('settings', JSON.stringify(this))
+    // }
     @action startEdit() {
         this.editing = true
     }
@@ -73,7 +72,7 @@ class Settings {
         const val = Number(value)
         if (type in this.speeds) {
             if (val >= 0) {
-                this.speeds[type] = val
+                this.speeds[type as Viz.configurable] = val
             }
         }
     }

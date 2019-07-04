@@ -28,7 +28,7 @@ type DisplayProps = {
 
 const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     key = String(key)
-    const { settings: { colors } } = store
+    const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
         displayProps.textDisplay = value ? 'T' : 'F'
@@ -75,7 +75,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
     const anim: Viz.anim = [info.get, info.set]
     const displayProps: DisplayProps = {
         objectId,
-        color: store.settings.colors.other,
+        color: store.settings.valueColors.other,
         size,
         anim,
         textDisplay: "",

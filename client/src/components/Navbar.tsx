@@ -80,7 +80,7 @@ const Navbar: React.FC = observer(() => {
                                         })}
                                     </select>
                                 </div>
-                                <input value={store.settings.speeds[type] || 0} type="number" min={0} step={1} onChange={(e) => {
+                                <input value={store.settings.speeds[type as Viz.configurable] || 0} type="number" min={0} step={1} onChange={(e) => {
                                     store.settings.changeSpeed(type, e.target.value)
                                 }} />
                             </div>

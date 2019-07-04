@@ -28,7 +28,7 @@ type DisplayProps = {
 
 
 const getArrayVal = (value: any, displayProps: DisplayProps) => {
-    const { settings: { colors } } = store
+    const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
         displayProps.textDisplay = value ? 'T' : 'F'
@@ -70,7 +70,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     const anim: Viz.anim = [info.get, info.set]
     const displayProps: DisplayProps = {
         objectId,
-        color: store.settings.colors.other,
+        color: store.settings.valueColors.other,
         size,
         anim,
         textDisplay: "",

@@ -7,7 +7,7 @@ type Props = {
 
 export const StringVal: React.FC<Props> = ({ value }) => {
     return (
-        <span style={{ color: store.settings.colors.string }}>"<span>{value}</span>"</span>
+        <span style={{ color: store.settings.valueColors.string }}>"<span>{value}</span>"</span>
     )
 }
 

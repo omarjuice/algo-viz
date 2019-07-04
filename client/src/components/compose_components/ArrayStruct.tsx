@@ -25,10 +25,19 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     }
 
     const size = Math.max(Math.round(ratio * 5), 3)
+    const color = store.settings.objectColors['Array']
     const styles: React.CSSProperties = {
         margin: `${size}px`,
         padding: `${size}px`,
         flexDirection: display as 'row' | 'column',
+        backgroundImage: `linear-gradient(${color}, ${color}),
+        linear-gradient(${color}, ${color}),
+        linear-gradient(${color}, ${color}),
+        linear-gradient(${color}, ${color})`,
+        backgroundSize: `4px 20px, 20px 4px, 4px 20px, 20px 4px`
+    }
+    if (pointed || store.structs.activePointers[objectId]) {
+        styles.boxShadow = `0 0 5px 2.5px ${color}`;
     }
 
     if (display === 'row') {
@@ -38,7 +47,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
         styles.overflowY = 'scroll'
     }
     return (
-        <div className={`array-struct ${(pointed || store.structs.activePointers[objectId]) && 'pointed'}`} style={styles}>
+        <div className={`array-struct`} style={styles}>
             {arr}
         </div>
     );

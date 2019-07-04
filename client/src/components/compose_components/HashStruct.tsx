@@ -24,14 +24,18 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     const size = Math.max(Math.round(ratio * 5), 3)
     const styles: React.CSSProperties = {
-        maxHeight: '100%',
-        overflowY: 'scroll'
+        // maxHeight: '100%',
+        // overflowY: 'scroll'
+    }
+    const color = store.settings.objectColors['Object']
+    if (pointed || store.structs.activePointers[objectId]) {
+        styles.boxShadow = `0 0 5px 2.5px ${color}`
     }
     return (
-        <div className={`object-struct ${(pointed || store.structs.activePointers[objectId]) && 'pointed'}`}>
-            <div className="is-size-1" style={{ transform: 'rotate(90deg)', color: 'white' }}>{'{'}</div>
+        <div style={styles} className={`object-struct`}>
+            <div className="is-size-1" style={{ transform: 'rotate(90deg)', color }}>{'{'}</div>
             {obj}
-            <div className="is-size-1" style={{ transform: 'rotate(90deg)', color: 'white' }}>{'}'}</div>
+            <div className="is-size-1" style={{ transform: 'rotate(90deg)', color }}>{'}'}</div>
         </div>
     );
 })

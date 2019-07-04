@@ -13,6 +13,7 @@ declare namespace Viz {
 
     }
     type anim = [boolean | Promise<void>, boolean | Promise<void>]
+    type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'METHODCALL' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 
     declare namespace Step {
         interface I {

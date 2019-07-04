@@ -7,7 +7,7 @@ type Props = {
 
 export const NumberVal: React.FC<Props> = ({ value }) => {
     return (
-        <span style={{ color: store.settings.colors.number }}><span>{value}</span></span>
+        <span style={{ color: store.settings.valueColors.number }}><span>{value}</span></span>
     )
 }
 
