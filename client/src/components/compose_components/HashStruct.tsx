@@ -12,7 +12,7 @@ type Props = {
 
 const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
     const obj: React.ReactElement[] = [];
-    const maxWidth = store.windowWidth * .3
+    const maxWidth = store.windowWidth * .3 * ratio
 
     for (const key in structure) {
         obj.push(

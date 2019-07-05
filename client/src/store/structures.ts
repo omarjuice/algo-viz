@@ -382,7 +382,7 @@ class Structures {
         const childType = this.root.viz.types[child]
         if (parentType === childType) {
             if (parentType === 'Array') {
-                return 3
+                return 2
             }
             if (hashTypes.includes(parentType)) {
                 return 0
@@ -393,7 +393,7 @@ class Structures {
             if (hashTypes.includes(parentType)) {
                 return 1
             }
-            return 2
+            return 3
         }
         if (hashTypes.includes(childType)) {
             if (!hashTypes.includes(parentType) && parentType !== 'Array') {

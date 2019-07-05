@@ -301,7 +301,8 @@ module.exports = {
               return this;
         }
       }
-        new BST(100).insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
+       const bst = new BST(100);
+       bst.insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
             .insert(1).insert(1).insert(3).insert(1).insert(1).insert(502).insert(55000)
             .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203)`,
         riverSizes: `function riverSizes(matrix, rivers = []) {

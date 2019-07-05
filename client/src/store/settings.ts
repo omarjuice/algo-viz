@@ -11,6 +11,9 @@ type colors = {
 type speeds = {
     [key in Viz.configurable]: number;
 };
+type objectColors = {
+    [key: string]: string
+}
 
 
 
@@ -18,9 +21,7 @@ interface AllSettings {
     valueColors: colors
     background: string
     speeds: speeds
-    objectColors: {
-        [key: string]: string
-    }
+    objectColors: objectColors
 }
 
 
