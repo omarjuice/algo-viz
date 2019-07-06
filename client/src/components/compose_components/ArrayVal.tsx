@@ -54,7 +54,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
         const strVal = String(value)
         let len = strVal.length
         if (strVal[0] === '-')--len
-        if (len < 3) displayProps.textDisplay = strVal
+        if (len < 4) displayProps.textDisplay = strVal
         return <ValDisplay {...displayProps} />
     }
 

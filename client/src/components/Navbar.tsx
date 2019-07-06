@@ -90,11 +90,11 @@ const Navbar: React.FC = observer(() => {
 
                     <div className="navbar-end">
 
-                        {/* <div className="navbar-item">
+                        <div className="navbar-item">
                             <button onClick={() => store.settings.startEdit()} className="button is-link is-small">
                                 Settings
                           </button>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </nav>

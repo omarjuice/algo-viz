@@ -27,7 +27,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         // maxHeight: '100%',
         // overflowY: 'scroll'
     }
-    const color = store.settings.objectColors['Object']
+    const color = store.settings.structColors['Object']
     if (pointed || store.structs.activePointers[objectId]) {
         styles.boxShadow = `0 0 5px 2.5px ${color}`
     }

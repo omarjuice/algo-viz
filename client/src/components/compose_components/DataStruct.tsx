@@ -4,6 +4,7 @@ import store from '../../store';
 import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
 import { observer } from 'mobx-react';
+import invertColor from '../../utils/invertColor';
 
 
 type Props = {
@@ -18,12 +19,12 @@ type DisplayProps = {
     anim: Viz.anim
     objectId: string
     textDisplay: string
+    textColor?: string
 }
 
 const getDataVal = (value: any, displayProps: DisplayProps) => {
     const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
-        displayProps.color = colors.boolean
         displayProps.textDisplay = value ? 'T' : 'F'
         return <ValDisplay {...displayProps} />
     } else if (typeof value === 'string') {
@@ -31,23 +32,15 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
             if (value in store.viz.objects) {
                 // return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
             }
-            if (store.viz.types[value] === '<empty>') {
-                displayProps.color = store.settings.background
-            } else {
-                displayProps.color = colors.special
-            }
-
         } else {
-            displayProps.color = colors.string
             if (value.length < 4) displayProps.textDisplay = value
         }
         return <ValDisplay {...displayProps} />
     } else if (typeof value === 'number') {
-        displayProps.color = colors.number
         const strVal = String(value)
         let len = strVal.length
         if (strVal[0] === '-')--len
-        if (len < 3) displayProps.textDisplay = strVal
+        if (len < 4) displayProps.textDisplay = strVal
         return <ValDisplay {...displayProps} />
     }
 
@@ -84,7 +77,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     store.structs.children[objectId].forEach(child => {
         children.push(
-            <DataChild parent={structure} objectId={child} ratio={ratio / 2 || (store.structs.children[objectId].size)} prop={childKeys[child]} />
+            <DataChild key={child} parent={structure} objectId={child} ratio={ratio / 2 || (store.structs.children[objectId].size)} prop={childKeys[child]} />
         )
     })
 
@@ -93,10 +86,11 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     const displayProps: DisplayProps = {
         objectId,
-        color: store.settings.valueColors.other,
+        color: store.settings.structColors[type],
         size,
         anim,
         textDisplay: "",
+        textColor: invertColor(store.settings.structColors[type])
     }
 
     return (

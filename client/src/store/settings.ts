@@ -1,4 +1,5 @@
 import { observable, action } from "mobx";
+import { RootStore } from ".";
 
 type colors = {
     special: string
@@ -11,23 +12,28 @@ type colors = {
 type speeds = {
     [key in Viz.configurable]: number;
 };
-type objectColors = {
+type structColors = {
     [key: string]: string
 }
 
-
+type structSettings = {
+    [key: string]: null | {
+        [key: string]: any
+    }
+}
 
 interface AllSettings {
     valueColors: colors
     background: string
     speeds: speeds
-    objectColors: objectColors
+    structColors: structColors
+    structSettings: structSettings
 }
 
 
 
 
-class Settings implements AllSettings {
+class Settings {
     @observable valueColors = {
         special: '#255e4f',
         number: 'steelblue',
@@ -48,23 +54,37 @@ class Settings implements AllSettings {
         CLEAR: 3
     }
     @observable editing: boolean = false
-    @observable objectColors = {
-        'Array': 'whitesmoke',
-        'Object': 'fuchsia'
+    @observable structColors: structColors = {
+        Array: 'whitesmoke',
+        Object: 'fucshia',
+        Map: 'steelblue',
+        Set: 'pink'
     }
+    @observable structSettings: structSettings = {}
+    @observable root: RootStore
+    constructor(store: RootStore) {
+        const settings = window.localStorage.getItem('settings')
+        if (settings) {
+            const all: AllSettings = JSON.parse(settings)
+            console.log(all);
+            this.background = all.background
+            this.valueColors = all.valueColors
+            this.speeds = all.speeds
+            this.structColors = all.structColors
+            this.structSettings = all.structSettings
+        }
 
-    // constructor() {
-    //     // const settings = window.localStorage.getItem('settings')
-    //     // if (settings) {
-    //     //     const all: AllSettings = JSON.parse(settings)
-    //     //     this.background = all.background
-    //     //     this.valueColors = all.valueColors
-    //     //     this.speeds = all.speeds
-    //     // }
-    //     window.localStorage.setItem('settings', JSON.stringify(this))
-    // }
+        this.root = store
+        window.onbeforeunload = () => {
+            delete this.root
+            window.localStorage.setItem('settings', JSON.stringify(this))
+        }
+    }
     @action startEdit() {
         this.editing = true
+        if (this.root.iterator) {
+            this.root.iterator.pause()
+        }
     }
     @action stopEdit() {
         this.editing = false
@@ -76,6 +96,23 @@ class Settings implements AllSettings {
                 this.speeds[type as Viz.configurable] = val
             }
         }
+    }
+    @action addStruct(structType: string) {
+        const restricted = ['Object', 'Array', 'Map', 'Set']
+        if (restricted.includes(structType)) return
+        if (structType in this.structSettings || structType in this.structColors) return
+        this.structSettings[structType] = null
+        if (!(structType in this.structColors)) {
+            this.setColor(structType)
+        }
+    }
+    @action setColor(structType: string, color?: string) {
+        if (!color) color = '#' + (Math.floor(Math.random() * (255 ** 3))).toString(16)
+        this.structColors[structType] = color
+    }
+    @action deleteStruct(structType: string) {
+        delete this.structColors[structType]
+        delete this.structSettings[structType]
     }
 }
 

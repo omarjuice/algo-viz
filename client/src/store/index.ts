@@ -8,7 +8,7 @@ import Editor from './editor';
 import Structures from './structures';
 import Settings from './settings';
 export class RootStore {
-    @observable settings = new Settings()
+    @observable settings: Settings
     @observable viz: VizStore
     @observable code: CodeStore
     @observable iterator: IteratorStore
@@ -21,7 +21,7 @@ export class RootStore {
     @observable windowWidth: number = window.innerWidth
     constructor() {
         const data = window.localStorage.getItem('data')
-
+        this.settings = new Settings(this)
         this.api = new ApiStore(this)
         if (data) {
             this.initialize(JSON.parse(data))

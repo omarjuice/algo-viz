@@ -23,6 +23,9 @@ class Structures {
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
             const type = this.root.viz.types[id]
+            if (!this.root.settings.structColors[type]) {
+                this.root.settings.setColor(type)
+            }
             if (type === 'Array') {
                 for (let i = 0; i < obj['length']; i++) {
                     const val = obj[i]

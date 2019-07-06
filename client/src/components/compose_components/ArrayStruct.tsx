@@ -25,7 +25,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     }
 
     const size = Math.max(Math.round(ratio * 5), 3)
-    const color = store.settings.objectColors['Array']
+    const color = store.settings.structColors['Array']
     const styles: React.CSSProperties = {
         margin: `${size}px`,
         padding: `${size}px`,

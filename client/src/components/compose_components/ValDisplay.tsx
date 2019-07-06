@@ -10,9 +10,10 @@ type DisplayProps = {
     anim: Viz.anim
     objectId: string
     textDisplay: string
+    textColor?: string
 }
 
-const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay }) => {
+const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay, textColor }) => {
     const ref = useRef(null)
     useEffect(() => {
         if (ref.current) {
@@ -46,7 +47,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
     return <svg ref={ref} height={size} width={size} viewBox="0 0 100 100" >
         <circle cx="50" cy="50" r="50" fill={color} stroke={color} />
         <text x={50} y={50}
-            fill={store.settings.background} fontSize={50} fontWeight={'bold'}
+            fill={textColor || store.settings.background} fontSize={50} fontWeight={'bold'}
             dominantBaseline="middle" textAnchor="middle" >
             {textDisplay}
         </text>
