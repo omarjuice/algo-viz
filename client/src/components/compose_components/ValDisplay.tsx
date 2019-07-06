@@ -16,7 +16,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
     const ref = useRef(null)
     useEffect(() => {
         if (ref.current) {
-            if (anim[0] && !(anim[0] as any instanceof Promise)) {
+            if (anim[0] && !(anim[0] as boolean | Promise<void> instanceof Promise)) {
                 const animation = anime({
                     targets: ref.current,
                     translateY: [0],
@@ -28,7 +28,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
                     store.structs.gets[objectId].get = animation
                 }
             }
-            if (anim[1] && !(anim[1] as any instanceof Promise)) {
+            if (anim[1] && !(anim[1] as boolean | Promise<void> instanceof Promise)) {
                 const animation = anime({
                     targets: ref.current,
                     translateY: [-1 * size, size / 2, 0],

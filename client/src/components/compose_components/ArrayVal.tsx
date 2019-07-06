@@ -6,7 +6,7 @@ import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
 import ArrayStruct from './ArrayStruct';
 import Pointer from './Pointer';
-import ArrayValDisplay from './ValDisplay';
+import ValDisplay from './ValDisplay';
 type ArrayValProps = {
     array: Viz.Structure
     index: number
@@ -32,7 +32,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
         displayProps.textDisplay = value ? 'T' : 'F'
-        return <ArrayValDisplay {...displayProps} />
+        return <ValDisplay {...displayProps} />
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
             if (value in store.viz.objects) {
@@ -48,17 +48,17 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
             displayProps.color = colors.string
             if (value.length < 4) displayProps.textDisplay = value
         }
-        return <ArrayValDisplay {...displayProps} />
+        return <ValDisplay {...displayProps} />
     } else if (typeof value === 'number') {
         displayProps.color = colors.number
         const strVal = String(value)
         let len = strVal.length
         if (strVal[0] === '-')--len
         if (len < 3) displayProps.textDisplay = strVal
-        return <ArrayValDisplay {...displayProps} />
+        return <ValDisplay {...displayProps} />
     }
 
-    return <ArrayValDisplay {...displayProps} />
+    return <ValDisplay {...displayProps} />
 }
 
 const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio }) => {
