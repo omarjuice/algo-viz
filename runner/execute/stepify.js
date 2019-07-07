@@ -155,6 +155,9 @@ module.exports = function (input) {
                     exit(path) {
                         // for call stack management
                         const parent = path.findParent(parent => t.isFunction(parent))
+                        if (!path.node.argument) {
+                            path.node.argument = t.identifier('undefined')
+                        }
                         path.node.argument = proxy(path.node.argument, {
                             type: TYPES.RETURN,
                             scope: getScope(parent),
