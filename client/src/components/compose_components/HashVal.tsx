@@ -49,7 +49,7 @@ const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
         displayProps.textDisplay = value ? 'T' : 'F'
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
-            if (value in store.viz.objects) {
+            if (value in store.structs.objects) {
                 return (
                     <Prop>
                         <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
@@ -95,7 +95,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         textDisplay: "",
         orientation
     }
-    if (typeof value === 'string' && value in store.viz.objects && store.viz.types[value] === 'Array') {
+    if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
         const parents = store.structs.parents[value]
         let flag = false
         if (parents) {

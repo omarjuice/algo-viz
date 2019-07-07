@@ -29,7 +29,7 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
         return <ValDisplay {...displayProps} />
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
-            if (value in store.viz.objects) {
+            if (value in store.structs.objects) {
                 // return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
             }
         } else {

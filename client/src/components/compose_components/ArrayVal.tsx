@@ -35,7 +35,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
         return <ValDisplay {...displayProps} />
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
-            if (value in store.viz.objects) {
+            if (value in store.structs.objects) {
                 return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
             }
             if (store.viz.types[value] === '<empty>') {
@@ -75,7 +75,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
         anim,
         textDisplay: "",
     }
-    if (typeof value === 'string' && value in store.viz.objects) {
+    if (typeof value === 'string' && value in store.structs.objects) {
         const parents = store.structs.parents[value]
         let flag = false
         if (parents) {
@@ -90,7 +90,9 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
                 }
             }
         }
+        const type = store.viz.types[value]
         if (store.structs.bindings.has(value)) flag = true
+        if (type !== 'Array') flag = true
         if (!flag) {
             return (
                 <div className={`array-line ${className}`}>

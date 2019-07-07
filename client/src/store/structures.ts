@@ -23,6 +23,7 @@ class Structures {
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
             const type = this.root.viz.types[id]
+            if (!type) return
             if (!this.root.settings.structColors[type] || !this.root.settings.structSettings[type]) {
                 this.root.settings.addStruct(type)
             }
@@ -74,15 +75,19 @@ class Structures {
             }
         }
         const deletes: string[] = []
+        const list: string[] = []
+
         ids.forEach(id => {
             const parents = this.parents[id]
             if (parents.size) {
                 parents.forEach(parentId => {
                     ids.add(parentId)
                 })
+                list.push(this.root.viz.types[id])
                 deletes.push(id)
             }
         })
+        console.log(list)
         deletes.forEach(id => {
             ids.delete(id)
         })
@@ -339,7 +344,7 @@ class Structures {
         this.pointers = new Map()
         this.children = {}
         this.parents = {}
-        for (const id in this.objects) {
+        for (const id in this.root.viz.objects) {
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
             if (!this.children[id]) this.children[id] = new Set()
             if (!this.parents[id]) this.parents[id] = new Set()
@@ -364,8 +369,8 @@ class Structures {
             }
             this.activePointers[id] = false
         }
-        await Promise.all(promises)
 
+        await Promise.all(promises)
     }
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
         if (prop[key] instanceof Promise) {
@@ -406,7 +411,17 @@ class Structures {
             return 0
         }
         if (parentType === 'Array') {
+            if (this.parents[parent].size) {
+                const [firstParent] = this.parents[parent].entries().next().value
+                const type = this.root.viz.types[firstParent];
+                if (type !== 'Array' && !hashTypes.includes(type)) {
+                    return 2
+                }
+            }
             return 0
+        }
+        if (['Object', 'Map'].includes(parentType)) {
+            if (this.parents[parent].size) return 1
         }
         if (!hashTypes.includes(parentType) && !hashTypes.includes(childType)) {
             return 3

@@ -2,6 +2,7 @@ import React from 'react';
 import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
 import store from '../../store';
+import { toJS } from 'mobx';
 
 type Props = {
     structure: Viz.Structure,
@@ -13,7 +14,13 @@ type Props = {
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
     const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .6
-    const len = structure['length'].value
+    let len;
+    try {
+        len = structure['length'].value
+    } catch (e) {
+        console.log(toJS(structure));
+        throw e
+    }
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
     for (let i = 0; i < len; i++) {
