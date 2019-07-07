@@ -119,10 +119,10 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         })
     } else {
         let newList = new Array(settings.numChildren)
-        const usedPositions = {}
         children.forEach(child => {
-            let pos = child.order.pos - 1
-            while (pos in usedPositions) {
+            let pos = child.order.pos === Infinity ? newList.length - 1 : child.order.pos - 1
+            console.log(pos)
+            while (newList[pos]) {
                 pos--
                 if (pos < 0) pos = newList.length - 1
             }
@@ -158,9 +158,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         }} >
             <div> {getDataVal(main ? main.value : '', displayProps)} </div>
             <div style={styles}>
-                {children.map(({ child, key, parent }) => {
+                {children.map(({ child, key, parent }, i) => {
                     if (!child) {
-                        return <div style={{
+                        return <div key={i} style={{
                             width: (styles.width as number) / children.length
                         }} />
 

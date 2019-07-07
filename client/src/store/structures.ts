@@ -87,7 +87,6 @@ class Structures {
                 deletes.push(id)
             }
         })
-        console.log(list)
         deletes.forEach(id => {
             ids.delete(id)
         })

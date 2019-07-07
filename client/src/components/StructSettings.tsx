@@ -19,6 +19,7 @@ type State = {
     },
     main: string
     numChildren: number
+    numKeys: number
 }
 type childType = 'child' | 'children'
 @observer
@@ -28,14 +29,16 @@ class StructSettings extends Component<Props> {
         newKeyName: '',
         order: {},
         main: '',
-        numChildren: null
+        numChildren: null,
+        numKeys: 0
     }
     componentDidMount() {
         const struct = store.settings.structSettings[this.props.name]
         this.setState({
             order: struct.order,
             main: struct.main,
-            numChildren: struct.numChildren || null
+            numChildren: struct.numChildren || null,
+            numKeys: Object.keys(struct.order).length
         })
     }
     addKey = () => {
@@ -47,7 +50,8 @@ class StructSettings extends Component<Props> {
                         isMultiple: null
                     }
                 },
-                newKeyName: ''
+                newKeyName: '',
+                numKeys: this.state.numKeys + 1
             })
         }
     }
@@ -55,12 +59,13 @@ class StructSettings extends Component<Props> {
         const { order } = this.state
         const newKeys = { ...order }
         delete newKeys[name]
-        this.setState({ keys: newKeys })
+        this.setState({ keys: newKeys, numKeys: this.state.numKeys - 1 })
+
     }
-    changePos = (name: string, pos: string) => {
+    changePos = (name: string, pos: number) => {
         const { order } = this.state
         const newKeys = { ...order }
-        newKeys[name].pos = Number(pos)
+        newKeys[name].pos = Math.max(1, Math.min(pos, this.state.numKeys))
         this.setState({
             order: newKeys
         })
@@ -143,14 +148,14 @@ class StructSettings extends Component<Props> {
                                                 {key}
                                             </div>
                                             <div className="column has-text-centered">
-                                                <input type="number" min={1} onChange={(e) => this.changePos(key, e.target.value)}
-                                                    value={Math.max(Math.min(this.state.order[key].pos, numKeys), 1)} className="input" />
+                                                <button onClick={() => this.changePos(key, this.state.order[key].pos - 1)} className="button is-small">Down</button>
+                                                {this.state.order[key].pos}
+                                                <button onClick={() => this.changePos(key, this.state.order[key].pos + 1)} className="button is-small">Up</button>
+
+                                                {/* <input type="number" min={1} onChange={(e) => this.changePos(key, e.target.value)}
+                                                    className="input" /> */}
                                             </div>
-                                            {/* {this.state.keys[key].isMultiple && (
-                                                <div className="column has-text-centered">
-                                                    {this.state.keys[key].isMultiple}
-                                                </div>
-                                            )} */}
+
                                             <div className="column has-text-right">
                                                 <button className="delete" onClick={() => this.removeKey(key)} />
                                             </div>
