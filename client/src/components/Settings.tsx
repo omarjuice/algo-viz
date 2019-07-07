@@ -37,7 +37,7 @@ class Settings extends React.Component {
                     </header>
                     <section className="modal-card-body">
                         Structure Settings
-                  {Object.keys(store.settings.structSettings).map(name => {
+                        {Object.keys(store.settings.structSettings).map(name => {
                             return (
                                 <StructSettings key={name} name={name} />
                             )

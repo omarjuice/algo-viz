@@ -17,8 +17,15 @@ type structColors = {
 }
 
 type structSettings = {
-    [key: string]: null | {
-        [key: string]: any
+    [key: string]: {
+        order: {
+            [child: string]: {
+                pos: number
+                isMultiple: boolean
+            }
+        },
+        main: string,
+        numChildren: null | number
     }
 }
 
@@ -100,8 +107,13 @@ class Settings {
     @action addStruct(structType: string) {
         const restricted = ['Object', 'Array', 'Map', 'Set']
         if (restricted.includes(structType)) return
-        if (structType in this.structSettings || structType in this.structColors) return
-        this.structSettings[structType] = null
+        if (!(structType in this.structSettings)) {
+            this.structSettings[structType] = {
+                order: {},
+                main: 'value',
+                numChildren: null
+            }
+        }
         if (!(structType in this.structColors)) {
             this.setColor(structType)
         }

@@ -51,7 +51,8 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
     const type = store.viz.types[objectId]
     const width = store.windowWidth * .5 * ratio
-    const color = 'green'
+    const color = store.settings.structColors[type]
+    const settings = store.settings.structSettings[type]
     const styles: React.CSSProperties = {
         width,
         display: 'flex',
@@ -63,34 +64,35 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     // }
 
     const childKeys: { [key: string]: string } = {}
-    let main: any = null
+
+
     for (const key in structure) {
         const value = structure[key].value
-        if (typeof value === 'string' && value in store.viz.objects) {
+        if (typeof value === 'string' && value in store.structs.objects) {
             childKeys[value] = key
-        } else if (!main) {
-            main = structure[key]
         }
     }
+    const children: ([number, React.ReactNode])[] = []
 
-    const children: React.ReactNode[] = []
-
+    const main = structure[settings.main]
     store.structs.children[objectId].forEach(child => {
+        const key = childKeys[child]
+        const order = settings.order[key]
+        console.log(key, order && order.pos)
         children.push(
-            <DataChild key={child} parent={structure} objectId={child} ratio={ratio / 2 || (store.structs.children[objectId].size)} prop={childKeys[child]} />
+            [order ? order.pos : Infinity, <DataChild key={child} parent={structure} objectId={child} ratio={ratio / 2 || (store.structs.children[objectId].size)} prop={key} />]
         )
     })
 
-    const anim: Viz.anim = [main.get, main.set]
+    const anim: Viz.anim = [main && main.get, main && main.set]
     const size = Math.min(30, Math.max(width - 1, 1))
-
     const displayProps: DisplayProps = {
         objectId,
-        color: store.settings.structColors[type],
+        color: color,
         size,
         anim,
         textDisplay: "",
-        textColor: invertColor(store.settings.structColors[type])
+        textColor: invertColor(color)
     }
 
     return (
@@ -99,9 +101,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             flexDirection: 'column',
             alignItems: 'center',
         }} >
-            <div> {main ? getDataVal(main.value, displayProps) : null} </div>
+            <div> {getDataVal(main ? main.value : '', displayProps)} </div>
             <div style={styles}>
-                {children}
+                {children.map(child => child[1])}
             </div>
         </div>
     )

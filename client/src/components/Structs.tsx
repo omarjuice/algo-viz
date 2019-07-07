@@ -35,12 +35,12 @@ const Structs: React.FC = observer(() => {
             <div className="column is-full">
                 {data}
             </div>
-            {/* <div className="column is-half">
+            <div className="column is-full">
                 {arrays}
             </div>
-            <div className="column is-half">
+            <div className="column is-full">
                 {objects}
-            </div> */}
+            </div>
         </div>
     );
 })
