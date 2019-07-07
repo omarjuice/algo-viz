@@ -134,7 +134,7 @@ class StructSettings extends Component<Props> {
                                         <div className="columns">
                                             <div className="column">
                                                 <select onChange={(e) => this.changeType(key, e.target.value as childType)}
-                                                    value={this.state.order[key].isMultiple ? "chilren" : 'child'} className="select">
+                                                    value={this.state.order[key].isMultiple ? "children" : 'child'} className="select">
                                                     <option value={'child'}>child</option>
                                                     <option value={'children'}>children</option>
                                                 </select>
@@ -182,7 +182,7 @@ class StructSettings extends Component<Props> {
                                 {!specifiedChildren ? 'Specify Potential Number of Children' : 'Unspecify Number of Chilren'}
                             </button>
                             {specifiedChildren && (
-                                <input type="number" min={1} max={1000} value={this.state.numChildren} onChange={(e) => {
+                                <input className="input" type="number" min={1} max={1000} value={this.state.numChildren} onChange={(e) => {
                                     this.setState({
                                         numChildren: Number(e.target.value)
                                     })

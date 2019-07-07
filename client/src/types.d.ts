@@ -12,6 +12,43 @@ declare namespace Viz {
         [prop: string]: StructProp
 
     }
+    type colors = {
+        special: string
+        number: string
+        string: string
+        boolean: string
+        other: string
+    }
+
+    type speeds = {
+        [key in Viz.configurable]: number;
+    };
+    type structColors = {
+        [key: string]: string
+    }
+    type order = {
+        pos: number
+        isMultiple: boolean
+    }
+    type structSettings = {
+        [key: string]: {
+            order: {
+                [child: string]: order
+            },
+            main: string,
+            numChildren: null | number
+        }
+    }
+
+    interface AllSettings {
+        valueColors: colors
+        background: string
+        speeds: speeds
+        structColors: structColors
+        structSettings: structSettings
+    }
+
+
     type anim = [boolean | Promise<void>, boolean | Promise<void>]
     type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'METHODCALL' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 

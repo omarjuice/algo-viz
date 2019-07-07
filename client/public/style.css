@@ -110,7 +110,6 @@ body, html, #root, .app{
 }
 .hash-struct{
     display: inline-flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 10px;
@@ -118,6 +117,11 @@ body, html, #root, .app{
 .object-container{
     display: flex;
     flex-direction: column;
+}
+.hash-val .columns .column.is-full{
+    padding-top: 0px !important;
+    padding-bottom:  0px !important
+    
 }
 /* .hash-array-child{
     display: flex;

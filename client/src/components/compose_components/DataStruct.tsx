@@ -57,7 +57,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         width,
         display: 'flex',
         flexDirection: 'row',
-        // justifyContent: 'center',
+        justifyContent: 'center',
     }
     // if (pointed || store.structs.activePointers[objectId]) {
     //     styles.boxShadow = `0 0 5px 2.5px ${color}`;
@@ -65,25 +65,81 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     const childKeys: { [key: string]: string } = {}
 
-
     for (const key in structure) {
         const value = structure[key].value
         if (typeof value === 'string' && value in store.structs.objects) {
             childKeys[value] = key
         }
     }
-    const children: ([number, React.ReactNode])[] = []
+    let children: ({
+        order: Viz.order
+        key: string | number
+        child: string | null
+        parent: Viz.Structure
+    })[] = []
 
     const main = structure[settings.main]
     store.structs.children[objectId].forEach(child => {
         const key = childKeys[child]
         const order = settings.order[key]
-        console.log(key, order && order.pos)
-        children.push(
-            [order ? order.pos : Infinity, <DataChild key={child} parent={structure} objectId={child} ratio={ratio / 2 || (store.structs.children[objectId].size)} prop={key} />]
-        )
-    })
+        if (order && order.isMultiple) {
+            const object = store.structs.objects[child]
+            const type = store.viz.types[child]
+            if (['Object', 'Array', 'Map'].includes(type))
+                for (const key in object) {
+                    const info = object[key]
+                    if (typeof info.value === 'string' && info.value in store.structs.objects) {
+                        children.push({
+                            order,
+                            key: type === 'Array' ? Number(key) : key,
+                            child: info.value,
+                            parent: object
+                        })
+                    }
+                }
 
+        } else {
+            children.push(
+                {
+                    order: order || { pos: Infinity, isMultiple: false },
+                    key,
+                    child,
+                    parent: structure
+                }
+            )
+        }
+    })
+    if (settings.numChildren === null) {
+        children.sort((a, b) => {
+            if (a.order.pos === b.order.pos) {
+                return a.key > b.key ? 1 : -1
+            } else {
+                return a.order.pos - b.order.pos
+            }
+        })
+    } else {
+        let newList = new Array(settings.numChildren)
+        const usedPositions = {}
+        children.forEach(child => {
+            let pos = child.order.pos - 1
+            while (pos in usedPositions) {
+                pos--
+                if (pos < 0) pos = newList.length - 1
+            }
+            newList[pos] = child
+        })
+        children = newList
+        for (let i = 0; i < children.length; i++) {
+            if (!(i in children)) {
+                children[i] = {
+                    child: null,
+                    key: null,
+                    order: null,
+                    parent: null
+                }
+            }
+        }
+    }
     const anim: Viz.anim = [main && main.get, main && main.set]
     const size = Math.min(30, Math.max(width - 1, 1))
     const displayProps: DisplayProps = {
@@ -94,7 +150,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         textDisplay: "",
         textColor: invertColor(color)
     }
-
     return (
         <div className={'data-struct'} style={{
             display: 'flex',
@@ -103,7 +158,22 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         }} >
             <div> {getDataVal(main ? main.value : '', displayProps)} </div>
             <div style={styles}>
-                {children.map(child => child[1])}
+                {children.map(({ child, key, parent }) => {
+                    if (!child) {
+                        return <div style={{
+                            width: (styles.width as number) / children.length
+                        }} />
+
+                    } else {
+                        return (
+                            <DataChild
+                                key={child} parent={parent}
+                                objectId={child}
+                                ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}
+                                prop={key} />)
+
+                    }
+                })}
             </div>
         </div>
     )

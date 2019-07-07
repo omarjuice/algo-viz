@@ -23,9 +23,10 @@ class Structures {
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = {}
             const type = this.root.viz.types[id]
-            if (!this.root.settings.structColors[type]) {
-                this.root.settings.setColor(type)
+            if (!this.root.settings.structColors[type] || !this.root.settings.structSettings[type]) {
+                this.root.settings.addStruct(type)
             }
+
             if (type === 'Array') {
                 for (let i = 0; i < obj['length']; i++) {
                     const val = obj[i]
@@ -400,7 +401,7 @@ class Structures {
         }
         if (hashTypes.includes(childType)) {
             if (!hashTypes.includes(parentType) && parentType !== 'Array') {
-                return 2
+                return 3
             }
             return 0
         }

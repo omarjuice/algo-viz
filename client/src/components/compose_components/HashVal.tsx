@@ -13,6 +13,7 @@ type ValProps = {
     objectId: string
     size: number
     ratio: number
+    orientation: 'row' | 'column'
 }
 
 
@@ -22,20 +23,22 @@ type DisplayProps = {
     anim: Viz.anim
     objectId: string
     textDisplay: string
+    orientation: 'row' | 'column'
 }
 
 
 
 const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     key = String(key)
+    const { orientation } = displayProps
     const Prop: React.FC = ({ children }) => (
-        <div className="columns is-paddingless">
-            <div className="column is-half">
+        <div className="columns is-paddingless is-multiline">
+            <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
                 <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
                     {key.slice(0, 5) + (key.length > 5 ? '...' : '')}
                 </p>
             </div>
-            <div className="column is-half">
+            <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
                 {children}
             </div>
         </div>
@@ -77,7 +80,7 @@ const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     )
 }
 
-const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio }) => {
+const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio, orientation }) => {
     const [hovered, toggle] = useState(false)
     if (!(prop in object)) return null;
     const info = object[prop]
@@ -90,6 +93,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         size,
         anim,
         textDisplay: "",
+        orientation
     }
     if (typeof value === 'string' && value in store.viz.objects && store.viz.types[value] === 'Array') {
         const parents = store.structs.parents[value]

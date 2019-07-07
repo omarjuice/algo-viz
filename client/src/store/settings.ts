@@ -1,42 +1,6 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
 
-type colors = {
-    special: string
-    number: string
-    string: string
-    boolean: string
-    other: string
-}
-
-type speeds = {
-    [key in Viz.configurable]: number;
-};
-type structColors = {
-    [key: string]: string
-}
-
-type structSettings = {
-    [key: string]: {
-        order: {
-            [child: string]: {
-                pos: number
-                isMultiple: boolean
-            }
-        },
-        main: string,
-        numChildren: null | number
-    }
-}
-
-interface AllSettings {
-    valueColors: colors
-    background: string
-    speeds: speeds
-    structColors: structColors
-    structSettings: structSettings
-}
-
 
 
 
@@ -61,18 +25,18 @@ class Settings {
         CLEAR: 3
     }
     @observable editing: boolean = false
-    @observable structColors: structColors = {
+    @observable structColors: Viz.structColors = {
         Array: 'whitesmoke',
         Object: 'fucshia',
         Map: 'steelblue',
         Set: 'pink'
     }
-    @observable structSettings: structSettings = {}
+    @observable structSettings: Viz.structSettings = {}
     @observable root: RootStore
     constructor(store: RootStore) {
         const settings = window.localStorage.getItem('settings')
         if (settings) {
-            const all: AllSettings = JSON.parse(settings)
+            const all: Viz.AllSettings = JSON.parse(settings)
             console.log(all);
             this.background = all.background
             this.valueColors = all.valueColors
