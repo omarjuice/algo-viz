@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, action, toJS } from "mobx";
 import { RootStore } from ".";
 
 
@@ -102,6 +102,7 @@ class Structures {
             if (parents) {
                 let refs = parents.get(parent)
                 if (refs) {
+                    console.log(toJS(refs))
                     refs.push(key)
                 } else {
                     parents.set(parent, [key])
