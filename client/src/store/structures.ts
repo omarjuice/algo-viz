@@ -27,7 +27,6 @@ class Structures {
             if (!this.root.settings.structColors[type] || !this.root.settings.structSettings[type]) {
                 this.root.settings.addStruct(type)
             }
-
             if (type === 'Array') {
                 for (let i = 0; i < obj['length']; i++) {
                     const val = obj[i]
@@ -62,6 +61,7 @@ class Structures {
             this.objects[id] = cloned
             this.activePointers[id] = false
         }
+
     }
     @action setBindings() {
         const activeIds = this.root.state.activeIds
@@ -261,14 +261,13 @@ class Structures {
                 this.switchOff(prop, 'set', object)
             }
             if (allowRender) {
-                if (allowRender) {
-                    if (this.gets[object] === this.objects[object][key]) {
-                        this.gets[object].get = false
-                    }
-                    this.objects[object][key].get = true
-                    this.switchOff(this.objects[object][key], 'set', object)
+                if (this.gets[object] === this.objects[object][key]) {
+                    this.gets[object].get = false
                 }
+                this.objects[object][key].get = true
+                this.switchOff(this.objects[object][key], 'set', object)
             }
+
             this.gets[object] = this.objects[object][key]
             const element = document.querySelector(`.get.${object}`)
             if (element) element.scrollIntoView()
@@ -355,47 +354,51 @@ class Structures {
         }
     }
     getAffinity(parent: string, child: string): number {
-        const hashTypes = ['Object', 'Map', 'Set']
-        const parentType = this.root.viz.types[parent]
-        const childType = this.root.viz.types[child]
-        if (parentType === childType) {
-            if (parentType === 'Array') {
-                return 2
+        const _this = this
+        const val = (function () {
+            const hashTypes = ['Object', 'Map', 'Set']
+            const parentType = _this.root.viz.types[parent]
+            const childType = _this.root.viz.types[child]
+            if (parentType === childType) {
+                if (parentType === 'Array') {
+                    return 2
+                }
+                if (hashTypes.includes(parentType)) {
+                    return 0
+                }
+                return 4
             }
-            if (hashTypes.includes(parentType)) {
+            if (childType === 'Array') {
+                if (hashTypes.includes(parentType)) {
+                    return 1
+                }
+                return 3
+            }
+            if (hashTypes.includes(childType)) {
+                if (!hashTypes.includes(parentType) && parentType !== 'Array') {
+                    return 3
+                }
                 return 0
             }
-            return 4
-        }
-        if (childType === 'Array') {
-            if (hashTypes.includes(parentType)) {
-                return 1
+            if (parentType === 'Array') {
+                if (_this.parents[parent].size) {
+                    const [firstParent] = _this.parents[parent].entries().next().value
+                    const type = _this.root.viz.types[firstParent];
+                    if (type !== 'Array' && !hashTypes.includes(type)) {
+                        return 2
+                    }
+                }
+                return 0
             }
-            return 3
-        }
-        if (hashTypes.includes(childType)) {
-            if (!hashTypes.includes(parentType) && parentType !== 'Array') {
+            if (['Object', 'Map'].includes(parentType)) {
+                if (_this.parents[parent].size) return 1
+            }
+            if (!hashTypes.includes(parentType) && !hashTypes.includes(childType)) {
                 return 3
             }
             return 0
-        }
-        if (parentType === 'Array') {
-            if (this.parents[parent].size) {
-                const [firstParent] = this.parents[parent].entries().next().value
-                const type = this.root.viz.types[firstParent];
-                if (type !== 'Array' && !hashTypes.includes(type)) {
-                    return 2
-                }
-            }
-            return 0
-        }
-        if (['Object', 'Map'].includes(parentType)) {
-            if (this.parents[parent].size) return 1
-        }
-        if (!hashTypes.includes(parentType) && !hashTypes.includes(childType)) {
-            return 3
-        }
-        return 0
+        })()
+        return val
     }
 
 }

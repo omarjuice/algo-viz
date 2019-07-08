@@ -115,6 +115,7 @@ class IteratorStore {
     }
     @action async afterChange() {
         if (this.handler.allow && this.handling) {
+            const t1 = Date.now()
             this.handling = false
             this.handler.allow = false
             if (this.handler.value > this.index) {
@@ -145,6 +146,7 @@ class IteratorStore {
             await this.root.structs.reset()
             this.root.allowRender = true
             this.play()
+            console.log(Date.now() - t1)
         }
     }
 }

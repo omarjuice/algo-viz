@@ -106,7 +106,6 @@ class StructSettings extends Component<Props> {
             color: invertColor(structColors[name])
         }
         const keys = Object.keys(this.state.order)
-        const numKeys = keys.length
         const specifiedChildren = this.state.numChildren !== null
         return (
             <div className="box" style={style}>

@@ -27,7 +27,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     const styles: React.CSSProperties = {
         // maxHeight: '100%',
         // overflowY: 'scroll'
-        flexDirection: orientation ? 'row' : 'column'
+        flexDirection: orientation
     }
     const color = store.settings.structColors['Object']
     if (pointed || store.structs.activePointers[objectId]) {

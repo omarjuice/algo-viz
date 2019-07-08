@@ -9,6 +9,10 @@ module.exports = function (obj) {
         if (this.map.has(obj)) {
             return this.map.get(obj)
         }
+        if (this.proxies.has(obj)) {
+            // if (this.proxies.get(obj)[1]) return this.map.get(obj)
+        }
+
         checkTypedArray(obj)
         const native = isNative(obj)
         if (native) {

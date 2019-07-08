@@ -82,7 +82,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     store.structs.children[objectId].forEach(child => {
         const key = childKeys[child]
         const order = settings.order[key]
-
+        if (!key) return
         if (order && order.isMultiple) {
             const object = store.structs.objects[child]
             const type = store.viz.types[child]
@@ -123,6 +123,11 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         children.forEach(child => {
             let pos = child.order.pos === Infinity ? newList.length - 1 : child.order.pos - 1
             while (newList[pos]) {
+                const current = newList[pos].order
+                if (current.order.pos === Infinity) {
+                    newList[pos] = child
+                    child = newList[pos]
+                }
                 pos--
                 if (pos < 0) pos = newList.length - 1
             }

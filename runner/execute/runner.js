@@ -78,6 +78,7 @@ class Runner {
         if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
             if (this.constructors.has(info.object)) {
                 const [allow] = this.constructors.get(info.object)
+                info.object = this.stringify(info.object)
                 if (!allow) return this.virtualize(val)
             }
             info.object = this.stringify(info.object)

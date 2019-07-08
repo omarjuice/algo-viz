@@ -7,8 +7,13 @@ function virtualize(object) {
         object instanceof Set ||
         object instanceof String ||
         object instanceof RegExp ||
-        object instanceof Date) return object
-    if (this.proxies.has(object)) return this.proxies.get(object)
+        object instanceof Date) {
+        return object
+    }
+
+    if (this.proxies.has(object)) {
+        return this.proxies.get(object)[0]
+    }
     const proxy = new Proxy(object, {
         get(target, prop) {
             if (!(prop in target)) return undefined
@@ -41,13 +46,16 @@ function virtualize(object) {
             })
         },
     })
-    this.proxies.set(object, proxy)
-    this.proxies.set(proxy, proxy)
+    this.proxies.set(object, [proxy, false])
+    this.proxies.set(proxy, [proxy, true])
     if (this.map.has(object)) {
         this.map.set(proxy, this.map.get(object))
     } else {
         if (this.constructors.has(object)) {
             const [, id] = this.constructors.get(object)
+            this.map.set(proxy, id)
+        } else {
+            const id = this.stringify(object)
             this.map.set(proxy, id)
         }
     }

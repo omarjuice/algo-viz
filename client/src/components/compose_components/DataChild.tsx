@@ -3,6 +3,7 @@ import store from '../../store';
 import DataStruct from './DataStruct';
 import ArrayStruct from './ArrayStruct';
 import HashStruct from './HashStruct';
+import { observer } from 'mobx-react';
 
 type Props = {
     objectId: string
@@ -11,7 +12,7 @@ type Props = {
     parent: Viz.Structure
 }
 
-const DataChild: React.FC<Props> = ({ objectId, ratio, prop, parent }) => {
+const DataChild: React.FC<Props> = observer(({ objectId, ratio, prop, parent }) => {
     const info = parent[prop]
     const type = store.viz.types[objectId]
     if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
@@ -24,5 +25,5 @@ const DataChild: React.FC<Props> = ({ objectId, ratio, prop, parent }) => {
         return null
     }
 }
-
+)
 export default DataChild;
