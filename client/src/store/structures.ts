@@ -180,10 +180,11 @@ class Structures {
         const { allowRender } = this.root
         if (step.type === 'SET') {
             const { object, access, value } = step
-            if (access[0] in this.objects[object]) {
-                step.prev = this.objects[object][access[0]].value
+            const [key] = access
+            if (key in this.objects[object]) {
+                step.prev = this.objects[object][key].value
                 if (step.prev in this.objects) {
-                    this.removePointers(step.prev, object, access[0])
+                    this.removePointers(step.prev, object, key)
                 }
 
             }
@@ -192,72 +193,42 @@ class Structures {
                 this.switchOff(prop, 'get', object)
                 this.switchOff(prop, 'set', object)
             }
-            if (!(access[0] in this.objects[object])) {
-                this.objects[object][access[0]] = {
+            if (!(key in this.objects[object])) {
+                this.objects[object][key] = {
                     get: false,
                     set: true,
                     value
                 }
-                this.sets[object] = this.objects[object][access[0]]
+                this.sets[object] = this.objects[object][key]
             } else {
                 if (allowRender) {
-                    if (this.sets[object] === this.objects[object][access[0]]) {
+                    if (this.sets[object] === this.objects[object][key]) {
                         this.sets[object].set = false
                     }
-                    this.objects[object][access[0]].set = true
-                    this.switchOff(this.objects[object][access[0]], 'get', object)
+                    this.objects[object][key].set = true
+                    this.switchOff(this.objects[object][key], 'get', object)
                 }
-                this.sets[object] = this.objects[object][access[0]]
-                this.objects[object][access[0]].value = value
+                this.sets[object] = this.objects[object][key]
+                this.objects[object][key].value = value
             }
             if (value in this.objects) {
-                this.addPointers(value, object, access[0])
-            }
-            if (allowRender && access[0] === 'length' && this.root.viz.types[object] === 'Array' && step.prev !== value) {
-                this.children[object].clear()
-                const obj = this.objects[object]
-                const moddedRefs: Set<Array<string | number>> = new Set()
-                for (let i = 0; i < value; i++) {
-                    if (i in obj) {
-                        const info = obj[i]
-                        const { value } = info
-                        if (typeof value === 'string' && value in this.objects) {
-                            const parents = this.pointers.get(value)
-                            const parent = parents.get(object)
-                            if (parent) {
-                                if (!moddedRefs.has(parent)) {
-                                    parent.splice(0, parent.length)
-                                    moddedRefs.add(parent)
-                                }
-                                this.addPointers(value, object, i)
-                            }
-                        }
-                    }
-                }
-                for (let i = value; i < step.prev; i++) {
-                    if (i in obj) {
-                        const info = obj[i]
-                        const { value } = info
-                        if (typeof value === 'string' && value in this.objects) {
-                            this.removePointers(value, object, i)
-                        }
-                    }
-                }
+                this.addPointers(value, object, key)
             }
             const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
+            const [key] = access
             if (value) {
-                const original = this.objects[object][access[0]].value
+                const original = this.objects[object][key].value
                 step.prev = original
 
                 if (this.root.viz.types[object] !== 'Array') {
-                    delete this.objects[object][access[0]]
+                    delete this.objects[object][key]
                 }
                 if (step.prev in this.objects) {
-                    this.removePointers(step.prev, object, access[0])
+                    this.removePointers(step.prev, object, key)
                 }
             }
         }
@@ -268,6 +239,7 @@ class Structures {
         }
         if (step.type === 'GET') {
             const { object, access } = step
+            const [key] = access
             if (this.gets[object]) {
                 const prop = this.gets[object]
                 this.switchOff(prop, 'get', object)
@@ -275,14 +247,14 @@ class Structures {
             }
             if (allowRender) {
                 if (allowRender) {
-                    if (this.gets[object] === this.objects[object][access[0]]) {
+                    if (this.gets[object] === this.objects[object][key]) {
                         this.gets[object].get = false
                     }
-                    this.objects[object][access[0]].get = true
-                    this.switchOff(this.objects[object][access[0]], 'set', object)
+                    this.objects[object][key].get = true
+                    this.switchOff(this.objects[object][key], 'set', object)
                 }
             }
-            this.gets[object] = this.objects[object][access[0]]
+            this.gets[object] = this.objects[object][key]
             const element = document.querySelector(`.get.${object}`)
             if (element) element.scrollIntoView()
         }
@@ -291,21 +263,23 @@ class Structures {
     @action prev(step: Viz.Step.Any) {
         if (step.type === 'SET') {
             const { object, access } = step
+            const [key] = access
             if ('prev' in step) {
-                this.objects[object][access[0]] = {
+                this.objects[object][key] = {
                     get: false,
                     set: false,
                     value: step.prev
                 }
 
             } else {
-                delete this.objects[object][access[0]]
+                delete this.objects[object][key]
             }
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
+            const [key] = access
             if (value) {
-                this.objects[object][access[0]] = {
+                this.objects[object][key] = {
                     get: false,
                     set: true,
                     value: step.prev
@@ -318,7 +292,8 @@ class Structures {
         }
         if (step.type === 'GET') {
             const { object, access, value } = step;
-            this.objects[object][access[0]] = {
+            const [key] = access
+            this.objects[object][key] = {
                 get: false,
                 set: false,
                 value

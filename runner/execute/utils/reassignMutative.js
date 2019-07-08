@@ -198,25 +198,62 @@ function reassignMutative() {
         // specifically methods that change the arrays length
         return function (...args) {
             runner.allowEmpty = true
-            const result = method.call(this, ...args)
             const id = runner.stringify(this)
-            const prevLen = runner.objects[id].final
-            if (this.length !== prevLen) {
-                runner.__(this.length, {
-                    type: TYPES.SET,
-                    object: id,
-                    access: ['length']
-                })
-            }
-            if (prevLen < this.length) {
-                for (let i = prevLen, value = this[i]; i < this.length; value = this[++i]) {
-                    runner.defProp(this, i, value)
-                    this[i] = value
+            const proxy = new Proxy(this, {
+                deleteProperty(target, prop) {
+                    const value = delete target[prop]
+                    return runner.__(value, {
+                        type: TYPES.DELETE,
+                        object: id,
+                        access: [prop],
+                        value
+                    })
+                },
+                get(target, prop) {
+                    runner.ignore = true
+                    const value = target[prop]
+                    runner.ignore = false
+                    if (typeof value === 'function' && value === Array.prototype[prop]) {
+                        return value
+                    }
+                    return runner.__(value, {
+                        type: TYPES.GET,
+                        object: id,
+                        access: [prop],
+                        value
+                    })
+                },
+                set(target, prop, value) {
+                    runner.ignore = true
+                    target[prop] = value
+                    runner.ignore = false
+                    runner.__(value, {
+                        type: TYPES.SET,
+                        object: id,
+                        access: [prop],
+                        value
+                    })
+                    return true
                 }
+            })
+            const result = method.call(proxy, ...args)
+            // const prevLen = runner.objects[id].final
+            // if (this.length !== prevLen) {
+            //     runner.__(this.length, {
+            //         type: TYPES.SET,
+            //         object: id,
+            //         access: ['length']
+            //     })
+            // }
+            // if (prevLen < this.length) {
+            //     for (let i = prevLen, value = this[i]; i < this.length; value = this[++i]) {
+            //         runner.defProp(this, i, value)
+            //         this[i] = value
+            //     }
 
-            }
+            // }
 
-            runner.objects[id].final = this.length
+            // runner.objects[id].final = this.length
             runner.allowEmpty = false
             return result
         }
