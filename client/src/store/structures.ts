@@ -271,8 +271,14 @@ class Structures {
                     set: false,
                     value: step.prev
                 }
-
+                if (typeof step.prev === 'string' && step.prev in this.objects) {
+                    this.addPointers(step.prev, object, key)
+                }
             } else {
+                const val = this.objects[object][key]
+                if (typeof val === 'string' && val in this.objects) {
+                    this.removePointers(val, object, key)
+                }
                 delete this.objects[object][key]
             }
         }
@@ -284,6 +290,9 @@ class Structures {
                     get: false,
                     set: true,
                     value: step.prev
+                }
+                if (step.prev in this.objects) {
+                    this.addPointers(step.prev, object, key)
                 }
             }
         }
@@ -316,35 +325,6 @@ class Structures {
                 this.switchOff(this.sets[key], 'set', key)
             )
         }
-        this.pointers = new Map()
-        this.children = {}
-        this.parents = {}
-        for (const id in this.root.viz.objects) {
-            if (!this.pointers.has(id)) this.pointers.set(id, new Map())
-            if (!this.children[id]) this.children[id] = new Set()
-            if (!this.parents[id]) this.parents[id] = new Set()
-            const type = this.root.viz.types[id]
-            const obj = this.objects[id]
-            if (type === 'Array') {
-                for (let i = 0; i < obj['length'].value; i++) {
-                    if (i in obj) {
-                        const val = obj[i].value
-                        if (val in this.objects) {
-                            this.addPointers(val, id, i)
-                        }
-                    }
-                }
-            } else {
-                for (const key in obj) {
-                    const val = obj[key].value
-                    if (val in this.objects) {
-                        this.addPointers(val, id, key)
-                    }
-                }
-            }
-            this.activePointers[id] = false
-        }
-
         await Promise.all(promises)
     }
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
