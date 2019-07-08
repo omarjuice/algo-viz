@@ -46,7 +46,7 @@ class StructSettings extends Component<Props> {
             this.setState({
                 order: {
                     ...this.state.order, [this.state.newKeyName]: {
-                        pos: Infinity,
+                        pos: this.state.numKeys + 1,
                         isMultiple: null
                     }
                 },

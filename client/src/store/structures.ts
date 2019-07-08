@@ -194,6 +194,11 @@ class Structures {
                 this.switchOff(prop, 'get', object)
                 this.switchOff(prop, 'set', object)
             }
+            if (this.root.viz.types[object] === 'Array' && typeof key === 'number') {
+                if (key >= this.objects[object]['length'].value) {
+                    this.objects[object]['length'].value = key + 1
+                }
+            }
             if (!(key in this.objects[object])) {
                 this.objects[object][key] = {
                     get: false,
@@ -209,12 +214,14 @@ class Structures {
                     this.objects[object][key].set = true
                     this.switchOff(this.objects[object][key], 'get', object)
                 }
+
                 this.sets[object] = this.objects[object][key]
                 this.objects[object][key].value = value
             }
             if (value in this.objects) {
                 this.addPointers(value, object, key)
             }
+
             const element = document.querySelector(`.set.${object}`)
             if (element) element.scrollIntoView()
         }
