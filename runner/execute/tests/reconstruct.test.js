@@ -47,7 +47,8 @@ describe('RECONSTRUCT', () => {
         expect(typeof normalResult).toBe('object')
         expect(transpiledResult).toBeTruthy()
         expect(typeof transpiledResult).toBe('object')
-        expect(normalResult).toEqual(transpiledResult)
+
+        expect(transpiledResult).toEqual(normalResult)
 
 
         const key = map.get(transpiledResult)
@@ -57,6 +58,7 @@ describe('RECONSTRUCT', () => {
         const { objects: { [key]: reconstructed } } = reconstructor({ types, steps, objects, code })
         expect(typeof reconstructed).toBe('object')
         expect(reconstructed).toBeTruthy()
+
         expect(reconstructed).toEqual(normalResult)
         expect(reconstructed).not.toBe(normalResult)
         expect(reconstructed).not.toBe(transpiledResult)
@@ -146,17 +148,18 @@ describe('RECONSTRUCT', () => {
             `
             await testRunner(func)
         })
-        it('case #7: array length changing', async () => {
+        it('case #8: array length changing', async () => {
             const func = `
             function init(obj){
                 obj[10] = 100
                 return obj.sort((a,b)=>a-b)
+                // return obj
             }
             init([5,4,3,2,1])
             `
             await testRunner(func)
         })
-        it('case #8: function mergeSort', async () => {
+        it('case #9: function mergeSort', async () => {
             const func = funcs.mergeSort
             await testRunner(func)
         })

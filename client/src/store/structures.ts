@@ -102,7 +102,6 @@ class Structures {
             if (parents) {
                 let refs = parents.get(parent)
                 if (refs) {
-                    console.log(toJS(refs))
                     refs.push(key)
                 } else {
                     parents.set(parent, [key])
@@ -196,6 +195,13 @@ class Structures {
             }
             if (this.root.viz.types[object] === 'Array' && typeof key === 'number') {
                 if (key >= this.objects[object]['length'].value) {
+                    for (let i = this.objects[object]['length'].value; i < key; i++) {
+                        this.objects[object][i] = {
+                            value: null,
+                            get: false,
+                            set: false
+                        }
+                    }
                     this.objects[object]['length'].value = key + 1
                 }
             }
@@ -231,9 +237,10 @@ class Structures {
             if (value) {
                 const original = this.objects[object][key].value
                 step.prev = original
-
                 if (this.root.viz.types[object] !== 'Array') {
                     delete this.objects[object][key]
+                } else {
+                    this.objects[object][key].value = null
                 }
                 if (step.prev in this.objects) {
                     this.removePointers(step.prev, object, key)

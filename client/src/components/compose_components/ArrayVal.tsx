@@ -56,6 +56,8 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
         if (strVal[0] === '-')--len
         if (len < 4) displayProps.textDisplay = strVal
         return <ValDisplay {...displayProps} />
+    } else {
+        displayProps.color = store.settings.background
     }
 
     return <ValDisplay {...displayProps} />
@@ -63,8 +65,11 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
 
 const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
-    if (!(index in array)) return null;
-    const info = array[index]
+    const info = array[index] || {
+        value: null,
+        get: false,
+        set: false,
+    }
     let value = info.value
     const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
     const anim: Viz.anim = [info.get, info.set]

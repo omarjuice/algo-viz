@@ -1,9 +1,8 @@
 module.exports = {
     DECLARATION: 'DECLARATION',
     ASSIGNMENT: 'ASSIGNMENT',
-    PROP_ASSIGNMENT: 'PROP_ASSIGNMENT',
     EXPRESSION: 'EXPRESSION',
-    METHODCALL: 'METHODCALL',
+    THIS: 'THIS',
     CALL: 'CALL',
     DELETE: 'DELETE',
     METHOD: 'METHOD',
@@ -14,5 +13,4 @@ module.exports = {
     GET: 'GET',
     SET: 'SET',
     CLEAR: 'CLEAR',
-    IN: 'IN'
 }

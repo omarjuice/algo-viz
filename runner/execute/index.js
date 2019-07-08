@@ -27,15 +27,9 @@ module.exports = async function (___code) {
         fs.writeFile('transpiled.js', code, () => { })
         return code + `\n___name = '${_name}';`
     })(___code))
-    global[___name].reset()
-    // console.log('NUMBER OF STEPS ', global[___name].steps.length);
     const fs = require('fs')
     const { types, objects, steps } = global[___name]
     delete global[___name]
-    // const stepIterator = require('./stepIterator')
-    // const reconstructor = require('./reconstructor')
-    // const { identifiers } = stepIterator(steps, { code: ___code })
-    // reconstructor({ types, steps, objects, primitives })
     fs.writeFile('executed.json', JSON.stringify({
         steps, objects, types
     }), () => { })

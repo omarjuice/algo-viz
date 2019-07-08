@@ -8,7 +8,6 @@ import DataStruct from './compose_components/DataStruct';
 
 
 const Structs: React.FC = observer(() => {
-
     const ids = store.structs.bindings
     const arrays: ReactNode[] = []
     const objects: ReactNode[] = []

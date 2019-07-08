@@ -32,7 +32,6 @@ module.exports = function ({ types, steps, objects, code }) {
                 if (strVal === 'undefined') return undefined
                 if (strVal === 'null') return null
                 if (strVal === 'NaN') return NaN
-                if (strVal === '<empty>') return undefined
             } else if (_counter === 2) {
                 return finalObjs[value]
             } else if (_counter === 3) {
@@ -46,7 +45,7 @@ module.exports = function ({ types, steps, objects, code }) {
                 return value
             }
         } else {
-            return value
+            return value === null ? undefined : value;
         }
     }
 

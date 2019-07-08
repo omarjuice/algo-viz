@@ -1,125 +1,8 @@
 const TYPES = require('./types')
-const empty = require('./empty')
-const {
-    concat,
-    copyWithin,
-    entries,
-    every,
-    fill,
-    filter,
-    find,
-    findIndex,
-    forEach,
-    from,
-    includes,
-    indexOf,
-    join,
-    keys,
-    lastIndexOf,
-    map,
-    pop,
-    push,
-    reduce,
-    reduceRight,
-    reverse,
-    shift,
-    slice,
-    some,
-    sort,
-    splice,
-    toString,
-    unshift,
-} = Array.prototype
-const arrayMethods = {
-    concat,
-    copyWithin,
-    entries,
-    every,
-    fill,
-    filter,
-    find,
-    findIndex,
-    forEach,
-    from,
-    includes,
-    indexOf,
-    join,
-    keys,
-    lastIndexOf,
-    map,
-    pop,
-    push,
-    reduce,
-    reduceRight,
-    reverse,
-    shift,
-    slice,
-    some,
-    sort,
-    splice,
-    toString,
-    unshift,
-}
 
 function reassignMutative() {
     const runner = this;
 
-    function arrayMutate(method) {
-        return function (...args) {
-            runner.allowEmpty = true
-            const id = runner.stringify(this)
-            const proxy = new Proxy(this, {
-                deleteProperty(target, prop) {
-                    const value = delete target[prop]
-                    return runner.__(value, {
-                        type: TYPES.DELETE,
-                        object: id,
-                        access: [Number(prop)],
-                        value
-                    })
-                },
-                get(target, prop) {
-                    runner.ignore = true
-                    const value = target[prop]
-                    runner.ignore = false
-                    if (typeof value === 'function' && value === Array.prototype[prop]) {
-                        return value
-                    }
-                    return runner.__(value, {
-                        type: TYPES.GET,
-                        object: id,
-                        access: [prop === 'length' ? prop : Number(prop)],
-                        value
-                    })
-                },
-                set(target, prop, value) {
-                    runner.ignore = true
-                    target[prop] = value
-                    runner.ignore = false
-                    runner.__(value, {
-                        type: TYPES.SET,
-                        object: id,
-                        access: [prop === 'length' ? prop : Number(prop)],
-                        value
-                    })
-                    return true
-                },
-                has(target, prop) {
-                    runner.ignore = true
-                    let val = prop in target
-                    if (val) {
-                        if (target[prop] === empty) val = false
-                    }
-                    runner.ignore = false
-                    return val
-                }
-            })
-            const result = method.call(proxy, ...args)
-            runner.allowEmpty = false
-            if (result === proxy) return this
-            return result
-        }
-    }
     const _definePropertyParams = {
         enumerable: false,
         writeable: true,
@@ -296,17 +179,6 @@ function reassignMutative() {
         })
     }
     return {
-        reassignArrayMethods: function (arr) {
-            if (Array.isArray(arr)) {
-                for (const method in arrayMethods) {
-                    Object.defineProperty(arr, method, {
-                        value: arrayMutate(arrayMethods[method]),
-                        ..._definePropertyParams
-                    })
-                }
-            }
-
-        },
         reassignMapMethods: obj => mapMutate(obj),
         reassignSetMethods: obj => setMutate(obj)
     }

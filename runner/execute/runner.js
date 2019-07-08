@@ -1,10 +1,8 @@
 const stringify = require('./utils/stringify')
 const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
-const defineProperty = require('./utils/defineProperty')
-const empty = require('./utils/empty')
 const reassignMutative = require('./utils/reassignMutative')
-
+const virtualize = require('./utils/virtualize')
 class Runner {
     constructor(name, code) {
         this.code = code
@@ -16,37 +14,31 @@ class Runner {
         this.objects = {}
         // the constructors of objects
         this.constructors = new Map()
+        this.proxies = new Map()
         this.types = {}
         // callStack for determining the type of function we are currently in
         this.callStack = []
         // a unique signature solely for preventing Object.defineProperty from throwing an error if it was called by the Runner or stringify()
-        this.signature = require('./utils/signature')
         // a wrapper for Object.defineProperty that gives it the signature
-        this.defProp = (obj, key, value) => {
-            Object.defineProperty(obj, key, { value }, this.signature)
-        }
-        // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
+
+        this.virtualize = virtualize
+
         this.genId = (l = 3, num_ = 2) => {
             let id;
             while (!id || id in this.objects) id = '_'.repeat(num_) + randomString(l)
             return id
         }
-        const { reassignArrayMethods, reassignMapMethods, reassignSetMethods } = reassignMutative.call(this)
-        this.reassignArrayMethods = reassignArrayMethods;
+        const { reassignMapMethods, reassignSetMethods } = reassignMutative.call(this)
         this.reassignMapMethods = reassignMapMethods;
         this.reassignSetMethods = reassignSetMethods
 
+        // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
         this.stringify = stringify.bind(this)
-        // this.reassignMutative = reassignMutative
 
-        // resets hijacked native methods
-        this.reset = defineProperty.call(this)
         this.name = name
+
         // types that will have an object property
         this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
-        // a flag that will ignore info while set to true
-        this.ignore = false
-        this.allowEmpty = false
 
 
         // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
@@ -59,9 +51,6 @@ class Runner {
         const nanLiteral = this.genId(5, 1)
         this.map.set('NaN', nanLiteral)
         this.types[nanLiteral] = 'NaN'
-        const emptyLiteral = this.genId(5, 1)
-        this.map.set(empty, emptyLiteral)
-        this.types[emptyLiteral] = '<empty>'
         const infinity = this.genId(5, 1)
         this.map.set('Infinity', infinity)
         this.types[infinity] = 'Infinity'
@@ -70,122 +59,63 @@ class Runner {
 
     __(val, info) {
         // main
-        if (this.ignore) return val
-
-        if (info.type === TYPES.IN) {
-            if (val) {
-                this.ignore = true
-                val = info.object[info.access[0]] !== empty
-                this.ignore = false
-            }
-            info.type === TYPES.EXPRESSION
+        if (info.type === TYPES.THIS) {
+            return this.virtualize(val)
         }
-        if (info.type === TYPES.DELETE) {
-            let obj = info.object
-            for (let i = 0; i < info.access.length - 1; i++) {
-                obj = obj[info.access[i]]
-            }
-            let prop = info.access[info.access.length - 1]
-            if (Array.isArray(obj)) {
-                this.defProp(obj, prop, empty)
-            }
-        }
-        if (info.type === TYPES.GET) {
-
-            if (val === empty && !this.allowEmpty) {
-                val = undefined
+        if (info.type === TYPES.EXPRESSION || info.type === TYPES.CALL) {
+            const call = this.callStack[this.callStack.length - 1]
+            if (call && call.type === TYPES.METHOD && call.kind === 'constructor') {
+                return this.virtualize(val)
             }
         }
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(info.type)) {
-            this._f(val, info)
+            this._f(info)
         }
-        if ([TYPES.ASSIGNMENT, TYPES.PROP_ASSIGNMENT].includes(info.type) && info.update) {
+        if ([TYPES.ASSIGNMENT].includes(info.type) && info.update) {
             info.value += info.update
         }
 
-        // is the currently executing function a constructor ?
-        // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
-
-        // const currentFunc = this.callStack[this.callStack.length - 1]
-        // const isConstructor = currentFunc && currentFunc.type === TYPES.METHOD && currentFunc.kind === 'constructor'
-
-        if (info.type === TYPES.PROP_ASSIGNMENT) {
-            this._p(val, info)
-        }
-        if ([TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.IN].includes(info.type)) {
+        if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
+            if (this.constructors.has(info.object)) {
+                const [allow] = this.constructors.get(info.object)
+                if (!allow) return this.virtualize(val)
+            }
             info.object = this.stringify(info.object)
         }
         info.value = this.stringify(val)
-        if (![TYPES.PROP_ASSIGNMENT].includes(info.type)) {
-            // we dont actually care about those types
+        this.steps.push(info)
 
-            this.steps.push(info)
-        }
-
-        // if (info.name) console.log(this.code.slice(info.name[0], info.name[1]))
-        return val
+        return this.virtualize(val)
     }
 
-    _f(val, info) {
+    _f(info) {
         // for function invocations and returns
+        // is the currently executing function a constructor ?
+        // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
+
         if (info.type === TYPES.RETURN) {
             const call = this.callStack.pop()
             if (call.type === TYPES.METHOD) {
                 if (call.kind === 'constructor') {
                     const [, id] = this.constructors.get(call.object)
                     this.constructors.set(call.object, [true, id])
+                    this.constructors.set(this.virtualize(call.object), [true, id])
                 }
                 call.object = this.stringify(call.object)
             }
         } else {
             if (info.type === TYPES.METHOD) {
                 if (info.kind === 'constructor') {
-                    this.constructors.set(info.object, [false, this.genId(5, 3)])
+                    const id = this.genId(5, 3)
+                    this.constructors.set(info.object, [false, id])
+                    this.constructors.set((this.virtualize), [false, id])
                 }
             }
             this.callStack.push(info)
         }
     }
 
-    _p(val, info) {
-        let obj = info.object
-        this.ignore = true
-        //traverse accessors
 
-        // redundant for current implementation, 
-        // but does not affect performance so we'll leave it for now incase accessor patterns change
-        for (let i = 0; i < info.access.length - 1; i++) {
-            obj = obj[info.access[i]]
-        }
-        const id = this.map.get(obj)
-        const prop = info.access[info.access.length - 1]
-        const objIsArray = Array.isArray(obj)
-        this.ignore = false
-        if (!Object.getOwnPropertyDescriptor(obj, prop).get) {
-            if (!objIsArray) {
-                this.defProp(obj, prop, val)
-            } else {
-                // because an arrays length can change if an assignment is given to an element beyond its length
-                // we must traverse the array to give getters and setters for all of the indices
-                const length = this.objects[id].final;
-                if (obj.length > length) {
-                    this.__(obj.length, {
-                        type: TYPES.SET,
-                        object: this.map.get(obj),
-                        access: ['length']
-                    })
-                    for (let i = length, el = obj[i]; i < obj.length; i++) {
-                        // we use a symbol to represent empty so that the `in` operator returns the proper value
-                        i in obj ? this.defProp(obj, i, el) : this.defProp(obj, i, empty)
-                    }
-
-                }
-                this.objects[id].final = obj.length
-
-            }
-            obj[prop] = val
-        }
-    }
 }
 
 

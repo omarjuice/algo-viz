@@ -1,7 +1,6 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
 const checkTypedArray = require('./checkTypedArray')
-const empty = require('./empty')
 // the values are specific to the Runner instance
 module.exports = function (obj) {
     // these are functions that change instance methods on their respective object tyes
@@ -18,7 +17,6 @@ module.exports = function (obj) {
         if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
 
         let newId = this.genId(5, 3)
-
         if (this.constructors.has(obj)) {
             const [flag, id] = this.constructors.get(obj)
             if (!flag) return id
@@ -26,7 +24,6 @@ module.exports = function (obj) {
             this.constructors.delete(obj)
         }
         this.map.set(obj, newId)
-
         if (obj instanceof Map) {
             // maps can have object keys, we need to this.stringify those too.
             const copy = {}
@@ -58,21 +55,22 @@ module.exports = function (obj) {
             for (let i = 0; i < obj.length; i++) {
                 let val = obj[i]
                 // we use a symbol to represent empty so that the `in` operator returns the proper value
-                if (!(i in obj)) {
-                    val = empty
+
+                copy[i] = !(i in obj) ? null : this.stringify(val)
+                if (i in obj) {
+                    obj[i] = this.virtualize(val)
                 }
-                copy[i] = this.stringify(val)
-                this.defProp(obj, i, val)
+                // this.defProp(obj, i, val)
             }
             copy.length = obj.length
-            copy.final = obj.length
-            this.reassignArrayMethods(obj)
+            // this.reassignArrayMethods(obj)
             this.objects[newId] = copy
         } else {
             const copy = {}
             for (const key in obj) {
                 copy[key] = this.stringify(obj[key])
-                this.defProp(obj, key, obj[key])
+                obj[key] = this.virtualize(obj[key])
+                // this.defProp(obj, key, obj[key])
             }
             this.objects[newId] = copy
         }
@@ -89,8 +87,6 @@ module.exports = function (obj) {
             return this.map.get('NaN')
         } else if (obj === Infinity) {
             return this.map.get('Infinity')
-        } else if (obj === empty) {
-            return this.map.get(empty)
         } else if (typeof obj === 'function') {
             if (this.map.has(obj)) return this.map.get(obj)
             const native = isNative(obj)

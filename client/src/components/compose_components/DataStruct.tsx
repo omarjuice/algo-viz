@@ -82,6 +82,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     store.structs.children[objectId].forEach(child => {
         const key = childKeys[child]
         const order = settings.order[key]
+
         if (order && order.isMultiple) {
             const object = store.structs.objects[child]
             const type = store.viz.types[child]

@@ -21,7 +21,7 @@ module.exports = function (input) {
             randomString,
             isBarredObject,
             getScope,
-            reassignSpread,
+            reassignSprad,
             createId;
 
         return {
@@ -43,7 +43,6 @@ module.exports = function (input) {
                     randomString = helpers.randomString
                     isBarredObject = helpers.isBarredObject
                     getScope = helpers.getScope
-                    reassignSpread = helpers.reassignSpread
                     createId = helpers.createId
                     references = path.scope.references
 
@@ -203,12 +202,7 @@ module.exports = function (input) {
 
                         if (t.isMemberExpression(assignment.left)) {
                             // we need to know if/when a new property is created on an object
-                            details.type = TYPES.PROP_ASSIGNMENT;
-                            const objectReassigned = reassignComputedValue(path, assignment.left, 'object')
-                            const propReassigned = reassignComputedValue(path, assignment.left, 'property')
-
-                            details.object = objectReassigned ? assignment.left.object.left : assignment.left.object
-                            details.access = t.arrayExpression([propReassigned ? assignment.left.property.left : assignment.left.computed ? assignment.left.property : t.stringLiteral(assignment.left.property.name)])
+                            details.type = TYPES.EXPRESSION;
                         } else {
                             details.varName = assignment.left.name
                         }
@@ -245,7 +239,7 @@ module.exports = function (input) {
                         const { init, test, update } = path.node
                         //since the parenthesized part of a `for` has its own scope
                         if (!t.isExpression(init) && !t.isExpression(update)) {
-                            if (t.isIdentifier(test)) {
+                            if (t.isIdentifier(test) || t.isMemberExpression(test)) {
                                 path.node.test = proxy(path.node.test, {
                                     type: TYPES.BLOCK,
                                     scope: getScope(path)
@@ -255,7 +249,7 @@ module.exports = function (input) {
                     }
                     if (t.isWhile(path.node)) {
                         const { test } = path.node
-                        if (t.isIdentifier(test)) {
+                        if (t.isIdentifier(test) || t.isMemberExpression(path.node.test)) {
                             path.node.test = proxy(path.node.test, {
                                 type: TYPES.BLOCK,
                                 scope: getScope(path)
@@ -265,11 +259,10 @@ module.exports = function (input) {
                 },
 
                 IfStatement(path) {
-
                     if (!t.isBlockStatement(path.node.consequent)) {
                         path.node.consequent = t.blockStatement([path.node.consequent])
                     }
-                    if (!t.isExpression(path.node.test) || t.isIdentifier(path.node.test)) {
+                    if (!t.isExpression(path.node.test) || t.isIdentifier(path.node.test) || t.isMemberExpression(path.node.test)) {
                         path.node.test = proxy(path.node.test, {
                             type: TYPES.BLOCK,
                             scope: getScope(path)
@@ -278,20 +271,7 @@ module.exports = function (input) {
                 },
                 MemberExpression: {
                     exit(path) {
-                        if (t.isUnaryExpression(path.parent) && path.parent.operator === 'delete') return
-                        // const { object } = computeAccessor(path, path.node)
                         if (isBarredObject(path.node.object.name)) return path.stop()
-                        if (!t.isExpression(path.parent) && !t.isVariableDeclarator(path.parent)) {
-                            // we need the scope of each statement
-                            if (!path.node.start) return;
-                            const details = {
-                                scope: getScope(path)
-                            }
-                            details.type = TYPES.EXPRESSION
-                            const node = proxy(path.node, details)
-                            path.replaceWith(node)
-                        }
-
                     }
                 },
                 ForStatement(path) {
@@ -334,15 +314,9 @@ module.exports = function (input) {
                         const details = {
                             scope: getScope(path),
                         }
-                        if (expression.operator === 'in') {
-                            // we have to consider this an accessor of some sort, also for getting the correct value
-                            // because we define getters and setters even on empty array indices
-                            details.access = t.arrayExpression([reassignComputedValue(path, expression, 'left') ? expression.left.left : expression.left])
-                            details.object = reassignComputedValue(path, expression, 'right') ? expression.right.left : expression.right
-                            details.type = TYPES.IN
-                        } else {
-                            details.type = TYPES.EXPRESSION
-                        }
+
+                        details.type = TYPES.EXPRESSION
+
 
                         path.replaceWith(proxy(expression, details))
                     }
@@ -358,16 +332,8 @@ module.exports = function (input) {
                             return
                         }
                         const details = { scope: getScope(path), type: TYPES.CALL }
-                        if (t.isMemberExpression(call.callee)) {
-                            details.type = TYPES.METHODCALL
-                            const objectReassigned = reassignComputedValue(path, call.callee, 'object')
-                            // const propReassigned = reassignComputedValue(path, call.callee, 'property')
 
-                            details.object = objectReassigned ? call.callee.object.left : call.callee.object
-                            // details.access = t.arrayExpression([propReassigned ? call.callee.property.left : call.callee.computed ? call.callee.property : t.stringLiteral(call.callee.property.name)])
-                        } else {
-                            details.type = TYPES.CALL
-                        }
+
                         path.replaceWith(proxy(call, details))
                     }
                 },
@@ -400,30 +366,22 @@ module.exports = function (input) {
                         const unary = path.node
                         if (unary.operator === '-' && unary.prefix) return
                         // we have to know when something was deleted
-                        if (unary.operator === 'delete' && t.isMemberExpression(unary.argument)) {
-                            // const { object, expression } = computeAccessor(path, unary.argument)
-                            const objectReassigned = reassignComputedValue(path, unary.argument, 'object')
-                            const propReassigned = reassignComputedValue(path, unary.argument, 'property')
 
+                        const details = {
+                            type: TYPES.EXPRESSION,
+                            scope: getScope(path),
 
-                            const details = {
-                                type: TYPES.DELETE,
-                                scope: getScope(path),
-                                // object,
-                                // access: expression,
-                            }
-                            details.object = objectReassigned ? unary.argument.object.left : unary.argument.object
-                            details.access = t.arrayExpression([propReassigned ? unary.argument.property.left : unary.argument.computed ? unary.argument.property : t.stringLiteral(unary.argument.property.name)])
-                            path.replaceWith(proxy(unary, details))
-                        } else {
-                            const details = {
-                                type: TYPES.EXPRESSION,
-                                scope: getScope(path),
-
-                            }
-                            if (!unary.start) return
-                            path.replaceWith(proxy(unary, details))
                         }
+                        if (!unary.start) return
+                        path.replaceWith(proxy(unary, details))
+
+                    }
+                },
+                ThisExpression: {
+                    exit(path) {
+                        path.replaceWith(proxy(path.node, {
+                            type: TYPES.THIS
+                        }))
                     }
                 },
                 Expression: {

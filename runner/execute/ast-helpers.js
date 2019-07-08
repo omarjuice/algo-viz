@@ -170,16 +170,7 @@ module.exports = function ({ t = types, input, code, Node }) {
     }
 
     // unused right now
-    const reassignSpread = (path, node) => {
-        const reassigned = reassignComputedValue(path, node, 'argument')
-        const object = reassigned ? node.argument.left : node.argument
-        node.argument = proxy(node.argument, {
-            type: TYPES.SPREAD,
-            object,
-            scope: getScope(path)
-        })
-        return object
-    }
+
 
     const willTraverse = path => {
         if (t.isBinaryExpression(path) || t.isLogicalExpression(path)) {
@@ -220,7 +211,6 @@ module.exports = function ({ t = types, input, code, Node }) {
         proxy,
         willTraverse,
         getScope,
-        reassignSpread,
         createId
     }
 }
