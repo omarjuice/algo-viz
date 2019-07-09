@@ -76,7 +76,6 @@ class Structures {
         }
         const deletes: string[] = []
         const list: string[] = []
-
         ids.forEach(id => {
             const parents = this.parents[id]
             if (parents.size) {
@@ -90,7 +89,6 @@ class Structures {
         deletes.forEach(id => {
             ids.delete(id)
         })
-
         this.bindings = ids
     }
     @action addPointers(id: string, parent: string, key: string | number) {
@@ -159,6 +157,7 @@ class Structures {
                     if (!this.parents[id].size) {
                         let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
                         parents.forEach((_, objectId) => {
+                            console.log(objectId)
                             const affinity = this.getAffinity(objectId, id)
                             if (affinity > bestParent.affinity) {
                                 bestParent = {
@@ -278,6 +277,10 @@ class Structures {
         if (step.type === 'SET') {
             const { object, access } = step
             const [key] = access
+            const info = this.objects[object][key]
+            if (info && typeof info.value === 'string' && info.value in this.objects) {
+                this.removePointers(info.value, object, key)
+            }
             if ('prev' in step) {
                 this.objects[object][key] = {
                     get: false,
@@ -288,12 +291,9 @@ class Structures {
                     this.addPointers(step.prev, object, key)
                 }
             } else {
-                const val = this.objects[object][key]
-                if (typeof val === 'string' && val in this.objects) {
-                    this.removePointers(val, object, key)
-                }
                 delete this.objects[object][key]
             }
+
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
@@ -321,6 +321,7 @@ class Structures {
                 set: false,
                 value
             }
+
         }
 
     }

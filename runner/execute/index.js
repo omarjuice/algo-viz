@@ -9,7 +9,6 @@ module.exports = async function (___code) {
             plugins: [
                 ['@babel/plugin-transform-destructuring', { loose: true }],
                 ['@babel/plugin-transform-parameters', { loose: true }],
-                ['@babel/plugin-transform-spread', { loose: true }],
                 'babel-plugin-transform-remove-console',
                 [stepify(input), {
                     disallow: {

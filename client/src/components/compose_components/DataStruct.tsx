@@ -53,11 +53,17 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     const width = store.windowWidth * .5 * ratio
     const color = store.settings.structColors[type]
     const settings = store.settings.structSettings[type]
+    const isList = settings.numChildren === 1
     const styles: React.CSSProperties = {
         width,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
+    }
+    if (isList) {
+        styles.width = Math.max(Math.min(width, 30) * ratio, .001)
+        styles.justifyContent = 'space-between'
+        styles.marginLeft = '10px'
     }
     // if (pointed || store.structs.activePointers[objectId]) {
     //     styles.boxShadow = `0 0 5px 2.5px ${color}`;
@@ -158,7 +164,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     return (
         <div className={'data-struct'} style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: isList ? 'row' : 'column',
             alignItems: 'center',
         }} >
             <div> {getDataVal(main ? main.value : '', displayProps)} </div>
