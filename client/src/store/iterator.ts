@@ -146,7 +146,7 @@ class IteratorStore {
             await this.root.structs.reset()
             this.root.allowRender = true
             this.play()
-            console.log(Date.now() - t1)
+            console.log('SKIP PERFORMANCE: ', Date.now() - t1)
         }
     }
 }

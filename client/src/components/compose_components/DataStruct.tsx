@@ -5,6 +5,8 @@ import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
 import { observer } from 'mobx-react';
 import invertColor from '../../utils/invertColor';
+import { getVal } from './getVal';
+import Tooltip from 'rc-tooltip';
 
 
 type Props = {
@@ -20,6 +22,7 @@ type DisplayProps = {
     objectId: string
     textDisplay: string
     textColor?: string
+    highlight?: boolean
 }
 
 const getDataVal = (value: any, displayProps: DisplayProps) => {
@@ -65,16 +68,23 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         styles.justifyContent = 'space-between'
         styles.marginLeft = '10px'
     }
-    // if (pointed || store.structs.activePointers[objectId]) {
-    //     styles.boxShadow = `0 0 5px 2.5px ${color}`;
-    // }
+
 
     const childKeys: { [key: string]: string } = {}
-
+    const otherKeys: React.ReactNode[] = []
     for (const key in structure) {
         const value = structure[key].value
         if (typeof value === 'string' && value in store.structs.objects) {
             childKeys[value] = key
+        } else {
+            otherKeys.push(
+                <div key={key} className="has-text-weight-bold">
+                    <span style={{ fontSize: 9 }}> {key}:{' '}</span>
+                    {getVal(value, true)}
+                </div >
+            )
+
+
         }
     }
     let children: ({
@@ -159,7 +169,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         size,
         anim,
         textDisplay: "",
-        textColor: invertColor(color)
+        textColor: invertColor(color),
+        // highlight: pointed || store.structs.activePointers[objectId]
     }
     return (
         <div className={'data-struct'} style={{
@@ -167,7 +178,16 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             flexDirection: isList ? 'row' : 'column',
             alignItems: 'center',
         }} >
-            <div> {getDataVal(main ? main.value : '', displayProps)} </div>
+            <Tooltip overlay={() => (
+                <div>
+                    {otherKeys}
+                </div>
+            )}
+                placement={'top'}
+                trigger={['hover']} defaultVisible={false} >
+                <div> {getDataVal(main ? main.value : '', displayProps)} </div>
+            </Tooltip>
+
             <div style={styles}>
                 {children.map(({ child, key, parent }, i) => {
                     if (!child) {

@@ -152,7 +152,8 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 <div className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {prop}:{' '}</span>
                     {getVal(value, true)}
-                </div >)}
+                </div >
+            )}
                 placement={'right'}
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
                 {getHashVal(prop, value, displayProps)}
