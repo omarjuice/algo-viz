@@ -46,13 +46,17 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
         }
     })
     const gradId = Math.random().toString()
-    return <svg ref={ref} height={size} width={size} viewBox="0 0 100 100" >
-        {/* <defs>
+    return <svg className="val-display" style={{
+        transform: `scale(${highlight ? String(1.5 * (1 / (size / 30))) : '1'})`,
+        position: 'relative',
+        zIndex: highlight ? 5 : 3
+    }} ref={ref} height={size} width={size} viewBox="0 0 100 100" >
+        <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                <stop offset="50%" style={{ stopColor: `${color}`, stopOpacity: 1 }} />
+                <stop offset="90%" style={{ stopColor: `${color}`, stopOpacity: 1 }} />
                 <stop offset="100%" style={{ stopColor: `white`, stopOpacity: 1 }} />
             </radialGradient>
-        </defs> */}
+        </defs>
         <circle cx="50" cy="50" r="50" fill={highlight ? `url(#${gradId})` : color} stroke={color} />
         <text x={50} y={50}
             fill={textColor || store.settings.background} fontSize={50} fontWeight={'bold'}

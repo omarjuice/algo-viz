@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useLayoutEffect } from 'react';
 
 import store from '../../store';
 import DataChild from './DataChild';
@@ -14,6 +14,7 @@ type Props = {
     objectId: string
     ratio: number
     pointed: boolean
+    prop?: string | number
 }
 type DisplayProps = {
     color: string
@@ -52,6 +53,14 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
 
 
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
+    const ref: {
+        current: HTMLDivElement
+    } = useRef(null)
+    useLayoutEffect(() => {
+        if (ref.current) {
+            store.structs.setPosition(objectId, ref.current)
+        }
+    })
     const type = store.viz.types[objectId]
     const width = store.windowWidth * .5 * ratio
     const color = store.settings.structColors[type]
@@ -170,7 +179,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         anim,
         textDisplay: "",
         textColor: invertColor(color),
-        // highlight: pointed || store.structs.activePointers[objectId]
+        highlight: store.structs.activePointers[objectId]
     }
     return (
         <div className={'data-struct'} style={{
@@ -185,7 +194,12 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             )}
                 placement={'top'}
                 trigger={['hover']} defaultVisible={false} >
-                <div> {getDataVal(main ? main.value : '', displayProps)} </div>
+                <div ref={ref} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: '10px'
+                }}> {getDataVal(main ? main.value : '', displayProps)} </div>
             </Tooltip>
 
             <div style={styles}>
@@ -199,6 +213,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
                         return (
                             <DataChild
                                 key={child} parent={parent}
+                                parentId={objectId}
                                 objectId={child}
                                 ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}
                                 prop={key} />)

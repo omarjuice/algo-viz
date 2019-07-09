@@ -123,25 +123,4 @@ body, html, #root, .app{
     padding-bottom:  0px !important
     
 }
-/* .hash-array-child{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-} */
-/* .object-struct::before{
-    content: "{";
-    position: relative;
-   text-align: left;
-    width: 150%;
-    height: 100%;
-    margin-bottom: -60%;
-}
-.object-struct::after{
-    content: "}";
-    position: relative;
-    width: 150%;
-    height: 100%;
-    text-align: right;
-    margin-top: -60%
-} */
 

@@ -8,9 +8,10 @@ class Structures {
     @observable sets: { [id: string]: Viz.StructProp } = {}
     @observable pointers: Map<string, Viz.pointers> = new Map()
     @observable bindings: Set<string> = new Set()
-    @observable children: { [key: string]: Set<string> } = {}
-    @observable parents: { [key: string]: Set<string> } = {}
+    @observable children: { [id: string]: Set<string> } = {}
+    @observable parents: { [id: string]: Set<string> } = {}
     @observable activePointers: { [id: string]: boolean } = {}
+    @observable positions: { [id: string]: { x: number, y: number } } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
     constructor(store: RootStore) {
@@ -90,6 +91,7 @@ class Structures {
             ids.delete(id)
         })
         this.bindings = ids
+        console.log(ids.size)
     }
     @action addPointers(id: string, parent: string, key: string | number) {
         if (id !== parent) {
@@ -108,7 +110,7 @@ class Structures {
             const currentParents = this.parents[id]
             const affinity = this.getAffinity(parent, id)
             if (affinity > 0) {
-                if (affinity === 4) {
+                if (affinity === 5) { // TEMPORARY STOP ON MULTIPLE PARENTS
                     const deletes: string[] = []
                     currentParents.forEach(objectId => {
                         if (this.getAffinity(objectId, id) < 4) {
@@ -138,7 +140,6 @@ class Structures {
                 }
             }
         }
-
     }
     @action removePointers(id: string, parent: string, ref: string | number) {
         const parents = this.pointers.get(id)
@@ -154,10 +155,11 @@ class Structures {
                     parents.delete(parent)
                     this.children[parent].delete(id)
                     this.parents[id].delete(parent)
+                    delete this.positions[id]
                     if (!this.parents[id].size) {
+
                         let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
                         parents.forEach((_, objectId) => {
-                            console.log(objectId)
                             const affinity = this.getAffinity(objectId, id)
                             if (affinity > bestParent.affinity) {
                                 bestParent = {
@@ -352,6 +354,15 @@ class Structures {
             })
         } else {
             prop[key] = false
+        }
+    }
+    @action setPosition(id: string, e: HTMLDivElement) {
+        const { top, left, width, height } = e.getBoundingClientRect()
+        const y = top + (height / 2)
+        const x = left + (width / 2)
+        const pos = this.positions[id]
+        if (!pos || pos.x !== x || pos.y !== y) {
+            this.positions[id] = { x, y }
         }
     }
     getAffinity(parent: string, child: string): number {
