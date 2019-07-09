@@ -45,6 +45,20 @@ function virtualize(object) {
                 access: [convert(prop)]
             })
         },
+        defineProperty(target, prop, descriptor) {
+            const defined = Reflect.defineProperty(target, prop, descriptor)
+            if (defined) {
+                const definition = Reflect.getOwnPropertyDescriptor(target, prop)
+                if (definition.enumerable && typeof prop !== 'symbol') {
+                    runner.__(target[prop], {
+                        type: TYPES.SET,
+                        object,
+                        access: [convert(prop)]
+                    })
+                }
+            }
+            return defined
+        }
     })
     this.proxies.set(object, [proxy, false])
     this.proxies.set(proxy, [proxy, true])
@@ -63,7 +77,7 @@ function virtualize(object) {
 }
 
 function isVirtualProperty(object, property) {
-    const definition = Object.getOwnPropertyDescriptor(object, property)
+    const definition = Reflect.getOwnPropertyDescriptor(object, property)
     if (Array.isArray(object)) {
         const prop = convert(property)
         if (typeof prop === 'number') {
