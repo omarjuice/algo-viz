@@ -32,15 +32,15 @@ const Structs: React.FC = observer(() => {
 
     return (
         <div className="structs columns is-multiline">
-            <div className="column is-full">
+            {data.length ? <div className="column is-full">
                 {data}
-            </div>
-            <div className="column is-full">
+            </div> : null}
+            {arrays.length ? <div className={`column is-${objects.length ? 'half' : 'full'}`}>
                 {arrays}
-            </div>
-            <div className="column is-full">
+            </div> : null}
+            {objects.length ? <div className={`column is-${arrays.length ? 'half' : 'full'}`}>
                 {objects}
-            </div>
+            </div> : null}
         </div>
     );
 })

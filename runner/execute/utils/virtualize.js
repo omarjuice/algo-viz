@@ -28,7 +28,7 @@ function virtualize(object) {
             return val
         },
         set(target, prop, value) {
-            target[prop] = value
+            target[prop] = runner.virtualize(value)
             if (isVirtualProperty(target, prop))
                 runner.__(target[prop], {
                     type: TYPES.SET,

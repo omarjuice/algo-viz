@@ -14,7 +14,7 @@ export const getVal = (value: any, textOnly: boolean = false) => {
             return <SpecialVal value={type as 'undefined' | 'null' | '<empty>' | 'NaN' | 'Infinity'} />
         }
         if (count === 2 && type) {
-            return '[Function]'
+            return type
         }
         if (count === 3 && type) {
             return textOnly ? store.viz.types[value] : <Pointer color={"white"} size={30} id={value} active={false} />

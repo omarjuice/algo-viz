@@ -12,7 +12,7 @@ module.exports = function ({ t = types, input, code, Node }) {
     }
     input._name = createId()
     const { _name } = input
-    const isBarredObject = (name, bar_ = true) => bar_ && name && name[0] === '_' || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
+    const isBarredObject = (name, bar_ = true) => (bar_ && name && name[0] === '_') || [_name, 'console', 'window', 'global', 'process', 'arguments'].includes(name)
 
 
     // Creates a wrapper around expressions to be used by the runner

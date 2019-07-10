@@ -100,7 +100,7 @@ module.exports = function (obj) {
             while (!id || (id in this.objects)) {
                 id = '__' + randomString(5)
             }
-            this.objects[id] = `[Function: ${name}]`
+            this.types[id] = `[Function: ${name}]`
             this.map.set(obj, id)
             return id
         } else if (typeof obj === 'symbol') {

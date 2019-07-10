@@ -18,7 +18,7 @@ const Identifiers: React.FC = observer(() => {
                             <p key={i}>
                                 <span>{id.name}</span>
                                 <span>{' '}={' '}</span>
-                                <span>{getVal(id.value)}</span>
+                                <span className="has-text-primary">{getVal(id.value)}</span>
                             </p>
                         ))
                     }</div>

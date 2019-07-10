@@ -51,8 +51,8 @@ module.exports = function (input) {
                 },
                 Function: {
                     enter(path, { opts }) {
-                        if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.variableDeclarator(path.parent)) {
-                            return path.stop()
+                        if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.isVariableDeclarator(path.parent)) {
+                            return path.skip()
                         }
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
                         if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
@@ -166,33 +166,37 @@ module.exports = function (input) {
                 },
                 VariableDeclaration: {
                     exit(path) {
-
                         path.node.declarations.forEach((declaration) => {
                             const { id: identifier, init } = declaration
-                            if (identifier.name[0] !== '_' && init && !t.isFunction(init)) {
-                                if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
-                                    if (init.callee.object.name !== _name) return
-                                }
-                                if (!declaration.init.visited) {
-                                    const details = {
-                                        type: TYPES.DECLARATION,
-                                        varName: identifier.name,
-                                        scope: getScope(path),
-                                        block: path.node.kind !== 'var',
+                            if (identifier.name[0] !== '_') {
+                                if (!t.isFunction(init)) {
+                                    if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
+                                        if (init.callee.object.name !== _name) return
                                     }
-                                    if (path.node.start) {
-                                        details.name = t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
+                                    if (!init || !declaration.init.visited) {
+                                        const details = {
+                                            type: TYPES.DECLARATION,
+                                            varName: identifier.name,
+                                            scope: getScope(path),
+                                            block: path.node.kind !== 'var',
+                                        }
+                                        if (path.node.start) {
+                                            details.name = t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
+                                        }
+                                        declaration.init = proxy(
+                                            init || t.identifier('undefined'), details
+                                        )
                                     }
-                                    declaration.init = proxy(
-                                        init, details
-                                    )
+                                    declaration.init.visited = true
                                 }
-                                declaration.init.visited = true
                             }
+
+
 
                         });
                     },
                 },
+
                 AssignmentExpression: {
                     exit(path) {
                         const assignment = path.node
@@ -271,7 +275,9 @@ module.exports = function (input) {
                 },
                 MemberExpression: {
                     exit(path) {
-                        if (isBarredObject(path.node.object.name)) return path.stop()
+                        if (isBarredObject(path.node.object.name, false)) {
+                            return path.stop()
+                        }
                     }
                 },
                 ForStatement(path) {
