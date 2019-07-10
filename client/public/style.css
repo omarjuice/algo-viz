@@ -35,7 +35,8 @@ body, html, #root, .app{
     background: transparent; /* make scrollbar transparent */
 }
 .iterator-control{
-    height: 5vh
+    height: 5vh;
+    margin-left: 5px;
 }
 .identifiers{
     height: 100% !important

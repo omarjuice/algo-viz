@@ -51,7 +51,7 @@ declare namespace Viz {
 
 
     type anim = [boolean | Promise<void>, boolean | Promise<void>]
-    type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'METHODCALL' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
+    type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 
     declare namespace Step {
         interface Generic {
@@ -82,9 +82,6 @@ declare namespace Viz {
         }
         interface CALL extends Generic {
             type: 'CALL'
-        }
-        interface METHODCALL extends ObjectType {
-            type: 'METHODCALL'
         }
 
         interface DECLARATION extends VarType {
@@ -121,14 +118,11 @@ declare namespace Viz {
         interface CLEAR extends ObjectType {
             type: 'CLEAR'
         }
-        interface IN extends ObjectType {
-            type: 'IN'
-        }
+
         type Any = (PROGRAM |
             BLOCK |
             EXPRESSION |
             CALL |
-            METHODCALL |
             DECLARATION |
             ASSIGNMENT |
             FUNC |
@@ -137,8 +131,8 @@ declare namespace Viz {
             GET |
             SET |
             DELETE |
-            CLEAR |
-            IN)
+            CLEAR
+        )
     }
 
 

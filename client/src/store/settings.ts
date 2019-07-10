@@ -17,7 +17,6 @@ class Settings {
         DECLARATION: 5,
         ASSIGNMENT: 5,
         EXPRESSION: 5,
-        METHODCALL: 5,
         CALL: 5,
         DELETE: 3,
         GET: 3,
