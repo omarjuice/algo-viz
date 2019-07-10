@@ -5,7 +5,7 @@
 ### The application will take user code and execute it to transform it into a visualization of the involved data structures and expressions. 
 
 ## EXAMPLES
-![bst](https://res.cloudinary.com/omarjuice/image/upload/v1562778590/algo-viz/algo-viz-example-bst.gif)
+![bst](https://res.cloudinary.com/omarjuice/image/upload/v1562789972/algo-viz/algo-viz-bst.gif)
 ![trie](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-trie.png)
 ![riverSizes](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-riverSizes.png)
 ![letterCombinations](https://res.cloudinary.com/omarjuice/image/upload/v1562782410/algo-viz/algo-viz-example-lc.png)
