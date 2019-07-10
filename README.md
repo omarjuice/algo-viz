@@ -31,7 +31,33 @@ In particular, we need to interact with Babel's Abstract Syntax Tree(AST). Babel
 For more reading on Babel's AST, see [this helful article](https://www.sitepoint.com/understanding-asts-building-babel-plugin/)
 and Babels [plugin handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md).
 
-Algo-viz's plugin wraps every expression in an external function call. These calls will take the values and metadata from the code. Of course, the values will be passed back into the code.
+Algo-viz's plugin wraps every expression in an external function call. These calls will take the values and metadata from the code. Of course, the values will be passed back into the code. I will spare you the gory details of that. If you like, see the transpiler [here](https://github.com/omarjuice/algo-viz/blob/master/runner/execute/stepify.js)
 
 Here is an example of the output:
 ![transpiled](https://res.cloudinary.com/omarjuice/image/upload/v1562786375/algo-viz/transpiled.png)
+
+### Running the code
+
+Running the transpiled code is quite straighforward. An object with the aforementioned function is instantiated in the global scope and extracts the metadata and values as the code executes. 
+
+There is just one problem. What do we do about data structures?
+
+First of all, they can have nesting and circularity, which is not possible to convert to JSON to send to the client.
+So we traverse the structure recursively and normalize it, generating unique ids for each object. The code that does this can be found [here](https://github.com/omarjuice/algo-viz/blob/master/runner/execute/utils/stringify.js)
+
+
+They are also mutable and the code that mutates them may not be visible in the user code (The Array.prototype.sort() for example. We could make the runner aware that this function was executed, but we can't know what is actually happening).
+
+I came up with three viable approaches to tackle this problem:
+
+1. Make copies of objects and store them everytime they get passed through the runner
+2. Use the transpiler to keep track of user written gets, sets, and deletes and then rewrite all native mutative methods
+3. Find a way to observe changes to properties on objects.
+
+Option 1 would have been quite clean, as each copy would represent the objects state at a given point, but it would take up an unacceptable amount of space. After all, this data will eventually be sent to the front end to create a visualization.
+
+I almost went with option 2. Catching things in the transpiler actually worked quite nicely, although it introduced some other interesting problems, like handling computed property accesses. I did write the code that does that, and I got to the point where I was rewriting all of the Array.prototype methods. Something felt wrong about that. My versions were executing quite fine, but it didnt make sense that I was rewriting code when the whole point of this thing was to see how Node executes the code. I had to find a different way.
+
+Option 3 turned out very nicely. At first, while traversing and normalizing objects, I used Object.defineProperty() to define getters and setters on every property. This introduced some other issues, particularly with Arrays(empty array indices and also length mutative methods). For some time, this was the implementation of object observation in the runner, I even finished a large part of the front-end with this in place. And it worked pefectly fine. However, I wasn't satisfied with the dirty things I had to do to make it work, like creating an "empty" symbol value for empty array values.
+
+After using Mobx extensively on the front end, I decided to borrow its observable creation pattern, using ES6 proxies, to do it in a cleaner way. Now the code is very clean. Essentially, it works by intercepting all objects and returning their virtualized versions back into the user code. The user code cannot know the difference without using some particular function in the Node inspect utility API. The code for that can be found [here](https://github.com/omarjuice/algo-viz/blob/master/runner/execute/utils/virtualize.js)
