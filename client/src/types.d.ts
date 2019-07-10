@@ -7,6 +7,7 @@ declare namespace Viz {
         set: boolean | Promise
         value: any
     }
+    type RenderMap = { [childId: string]: string }
 
     type Structure = {
         [prop: string]: StructProp

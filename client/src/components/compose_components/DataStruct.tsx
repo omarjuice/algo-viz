@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useRef, useEffect, } from 'react';
 
 import store from '../../store';
 import DataChild from './DataChild';
@@ -52,15 +52,16 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
 }
 
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, prop }) => {
     const ref: {
         current: HTMLDivElement
     } = useRef(null)
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (ref.current) {
             store.structs.setPosition(objectId, ref.current)
         }
     })
+
     const type = store.viz.types[objectId]
     const width = store.windowWidth * .5 * ratio
     const color = store.settings.structColors[type]

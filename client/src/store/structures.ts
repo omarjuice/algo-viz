@@ -12,6 +12,7 @@ class Structures {
     @observable parents: { [id: string]: Set<string> } = {}
     @observable activePointers: { [id: string]: boolean } = {}
     @observable positions: { [id: string]: { x: number, y: number } } = {}
+    @observable renderMaps: { [id: string]: Viz.RenderMap } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
     constructor(store: RootStore) {
@@ -75,23 +76,25 @@ class Structures {
                 }
             }
         }
-        const deletes: string[] = []
-        const list: string[] = []
+        const deletes: Set<string> = new Set()
         ids.forEach(id => {
             const parents = this.parents[id]
             if (parents.size) {
                 parents.forEach(parentId => {
                     ids.add(parentId)
                 })
-                list.push(this.root.viz.types[id])
-                deletes.push(id)
+                if (deletes.has(id)) {
+                    deletes.delete(id)
+                } else {
+                    deletes.add(id)
+                }
             }
         })
         deletes.forEach(id => {
+            if (ids.size === 1) return
             ids.delete(id)
         })
         this.bindings = ids
-        console.log(ids.size)
     }
     @action addPointers(id: string, parent: string, key: string | number) {
         if (id !== parent) {
@@ -155,9 +158,8 @@ class Structures {
                     parents.delete(parent)
                     this.children[parent].delete(id)
                     this.parents[id].delete(parent)
-                    delete this.positions[id]
                     if (!this.parents[id].size) {
-
+                        delete this.positions[id]
                         let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
                         parents.forEach((_, objectId) => {
                             const affinity = this.getAffinity(objectId, id)

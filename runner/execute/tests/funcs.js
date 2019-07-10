@@ -302,9 +302,10 @@ module.exports = {
         }
       }
        const bst = new BST(100);
-       bst.insert(5).insert(15).insert(5).insert(2).insert(1).insert(22)
-            .insert(1).insert(1).insert(3).insert(1).insert(1).insert(502).insert(55000)
-            .insert(204).insert(205).insert(207).insert(206).insert(208).insert(203)`,
+       bst.insert(5).insert(15).insert(6).insert(2).insert(1).insert(22).insert(3).insert(1).insert(0).insert(4).insert(2).insert(5).insert(7).insert(90).insert(20).insert(540).insert(500)
+        .insert(204).insert(205).insert(203).insert(550).insert(501).insert(500).insert(502).insert(700).insert(999).insert(600).insert(545).insert(549).insert(542)
+
+`,
         riverSizes: `function riverSizes(matrix, rivers = []) {
                 for (let i = 0; i < matrix.length; i++) {
                     for (let j = 0; j < matrix[i].length; j++) {

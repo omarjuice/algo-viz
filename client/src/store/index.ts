@@ -42,8 +42,8 @@ export class RootStore {
         // this.iterator.play()
     }
     @action onWindowResize(val: number) {
-        console.log(val);
-        this.windowWidth = val
+        if (val !== this.windowWidth)
+            this.windowWidth = val
     }
 }
 
