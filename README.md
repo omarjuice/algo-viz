@@ -6,9 +6,9 @@
 
 ## EXAMPLES
 ![bst](https://res.cloudinary.com/omarjuice/image/upload/v1562778590/algo-viz/algo-viz-example-bst.gif)
-![trie](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-riverSizes.png)
-![nthFib](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-nthFib.png)
+![trie](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-trie.png)
 ![riverSizes](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-riverSizes.png)
+![nthFib](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-nthFib.png)
 ## How it works
 The functionality can be broken down into high level steps.
 
