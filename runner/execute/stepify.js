@@ -76,8 +76,10 @@ module.exports = function (input) {
                         if (path.node.id) {
                             funcName = path.node.id.name
                         } else if (t.isVariableDeclarator(path.parent)) {
+                            if (path.parent.id.name[0] === '_') return path.skip()
                             funcName = path.parent.id.name
                         } else if (t.isObjectProperty(path.parent) && !path.parent.computed) {
+                            if (path.parent.key.name[0] === '_') return path.skip()
                             funcName = 'method:' + path.parent.key.name
                         } else if (t.isCallExpression(path.parent)) {
                             if (t.isMemberExpression(path.parent.callee)) {
@@ -100,6 +102,7 @@ module.exports = function (input) {
                             const parent = path.findParent(p => t.isClassDeclaration(p))
                             if (t.isIdentifier(parent.node.id)) {
                                 if (t.isIdentifier(path.node.key)) {
+                                    if (path.node.key.name[0] === '_') return path.skip()
                                     funcName = parent.node.id.name + '.' + path.node.key.name
                                 }
                             }
@@ -166,6 +169,7 @@ module.exports = function (input) {
                 },
                 VariableDeclaration: {
                     exit(path) {
+                        if (t.isForInStatement(path.parent) || t.isForOfStatement(path.parent)) return
                         path.node.declarations.forEach((declaration) => {
                             const { id: identifier, init } = declaration
                             if (identifier.name[0] !== '_') {

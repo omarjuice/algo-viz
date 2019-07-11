@@ -104,7 +104,7 @@ function reassignMutative() {
             ..._definePropertyParams
         })
     }
-    function setMutate(obj = new Set()) {
+    function setMutate(obj) {
         const { has, add, clear, delete: setDelete, forEach } = obj
         Object.defineProperty(obj, 'has', {
             value: function (key) {

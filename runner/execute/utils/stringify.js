@@ -9,9 +9,7 @@ module.exports = function (obj) {
         if (this.map.has(obj)) {
             return this.map.get(obj)
         }
-        if (this.proxies.has(obj)) {
-            // if (this.proxies.get(obj)[1]) return this.map.get(obj)
-        }
+
 
         checkTypedArray(obj)
         const native = isNative(obj)
@@ -29,7 +27,9 @@ module.exports = function (obj) {
         }
         this.map.set(obj, newId)
         if (obj instanceof Map) {
-            // maps can have object keys, we need to this.stringify those too.
+            // maps can have object keys, we need to stringify those too.
+
+            // Map & Set virtualization needs a refactor
             const copy = {}
             for (const entry of obj.entries()) {
                 const [key, val] = entry
@@ -54,27 +54,23 @@ module.exports = function (obj) {
             this.reassignSetMethods(obj)
             this.objects[newId] = copy
         } else if (Array.isArray(obj)) {
-            // we store arrays as this.objects, they will be easier to modify when the visualizer consumes the data
+            // we store arrays as hashes, they will be easier to modify when the visualizer consumes the data
             const copy = {}
             for (let i = 0; i < obj.length; i++) {
                 let val = obj[i]
-                // we use a symbol to represent empty so that the `in` operator returns the proper value
 
                 copy[i] = !(i in obj) ? null : this.stringify(val)
                 if (i in obj) {
                     obj[i] = this.virtualize(val)
                 }
-                // this.defProp(obj, i, val)
             }
             copy.length = obj.length
-            // this.reassignArrayMethods(obj)
             this.objects[newId] = copy
         } else {
             const copy = {}
             for (const key in obj) {
                 copy[key] = this.stringify(obj[key])
                 obj[key] = this.virtualize(obj[key])
-                // this.defProp(obj, key, obj[key])
             }
             this.objects[newId] = copy
         }
