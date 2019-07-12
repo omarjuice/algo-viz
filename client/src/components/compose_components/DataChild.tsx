@@ -14,24 +14,27 @@ type Props = {
     parentId: string
 }
 
-const DataChild: React.FC<Props> = observer(({ objectId, ratio, prop, parent, parentId }) => {
-    const info = parent[prop]
-    const type = store.viz.types[objectId]
-    let element;
-    if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
-        element = <DataStruct prop={prop} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
-    } else if (type === 'Array') {
-        element = <ArrayStruct objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
-    } else if (type === 'Object') {
-        element = <HashStruct orientation={'row'} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
-    } else {
-        element = null
+class DataChild extends React.Component<Props>{
+    render() {
+        const { objectId, ratio, prop, parent, parentId } = this.props
+        const info = parent[prop]
+        const type = store.viz.types[objectId]
+        let element;
+        if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
+            element = <DataStruct prop={prop} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
+        } else if (type === 'Array') {
+            element = <ArrayStruct objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
+        } else if (type === 'Object') {
+            element = <HashStruct orientation={'row'} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
+        } else {
+            element = null
+        }
+        return (
+            <LinePointer get={info.get} set={info.set} from={parentId} to={objectId}>
+                {element}
+            </LinePointer>
+        )
     }
-    return (
-        <LinePointer get={info.get} set={info.set} from={parentId} to={objectId}>
-            {element}
-        </LinePointer>
-    )
 }
-)
+
 export default DataChild;
