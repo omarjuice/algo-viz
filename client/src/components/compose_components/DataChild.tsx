@@ -5,6 +5,7 @@ import ArrayStruct from './ArrayStruct';
 import HashStruct from './HashStruct';
 import { observer } from 'mobx-react';
 import LinePointer from './LinePointer';
+import genId from '../../utils/genId';
 
 type Props = {
     objectId: string
@@ -15,13 +16,17 @@ type Props = {
 }
 
 class DataChild extends React.Component<Props>{
+    renderId: string = genId(5)
+    componentWillUnmount() {
+        delete store.structs.positions[this.props.objectId]
+    }
     render() {
         const { objectId, ratio, prop, parent, parentId } = this.props
         const info = parent[prop]
         const type = store.viz.types[objectId]
         let element;
         if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
-            element = <DataStruct prop={prop} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
+            element = <DataStruct renderId={this.renderId} prop={prop} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else if (type === 'Array') {
             element = <ArrayStruct objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else if (type === 'Object') {

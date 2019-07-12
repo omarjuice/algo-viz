@@ -11,7 +11,7 @@ class Structures {
     @observable children: { [id: string]: Set<string> } = {}
     @observable parents: { [id: string]: Set<string> } = {}
     @observable activePointers: { [id: string]: boolean } = {}
-    @observable positions: { [id: string]: { x: number, y: number } } = {}
+    @observable positions: { [id: string]: { x: number, y: number, renderId: string } } = {}
     @observable renderMaps: { [id: string]: Viz.RenderMap } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
@@ -344,6 +344,7 @@ class Structures {
             )
         }
         await Promise.all(promises)
+        this.positions = {}
     }
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
         if (prop[key] instanceof Promise) {
@@ -358,13 +359,13 @@ class Structures {
             prop[key] = false
         }
     }
-    @action setPosition(id: string, e: HTMLDivElement) {
+    @action setPosition(id: string, e: HTMLDivElement, renderId: string) {
         const { top, left, width, height } = e.getBoundingClientRect()
         const y = top + (height / 2)
         const x = left + (width / 2)
         const pos = this.positions[id]
         if (!pos || pos.x !== x || pos.y !== y) {
-            this.positions[id] = { x, y }
+            this.positions[id] = { x, y, renderId }
         }
     }
     getAffinity(parent: string, child: string): number {

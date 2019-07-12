@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, } from 'react';
+import React, { useRef, useEffect, useMemo, } from 'react';
 
 import store from '../../store';
 import DataChild from './DataChild';
@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import invertColor from '../../utils/invertColor';
 import { getVal } from './getVal';
 import Tooltip from 'rc-tooltip';
+import genId from '../../utils/genId';
 
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
     ratio: number
     pointed: boolean
     prop?: string | number
+    renderId?: string
 }
 type DisplayProps = {
     color: string
@@ -52,16 +54,21 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
 }
 
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, prop }) => {
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, prop, renderId }) => {
     const ref: {
         current: HTMLDivElement
     } = useRef(null)
+    renderId = useMemo(() => renderId || genId(objectId.length), [objectId, renderId])
+    const pos = store.structs.positions[objectId]
     useEffect(() => {
         if (ref.current) {
-            store.structs.setPosition(objectId, ref.current)
+            store.structs.setPosition(objectId, ref.current, renderId)
         }
     })
-
+    if (pos && pos.renderId !== renderId) {
+        console.log(pos.renderId, renderId);
+        return null
+    }
     const type = store.viz.types[objectId]
     const width = store.windowWidth * .5 * ratio
     const color = store.settings.structColors[type]
