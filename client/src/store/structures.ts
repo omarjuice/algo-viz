@@ -143,6 +143,8 @@ class Structures {
                 }
             }
         }
+
+        delete this.positions[id]
     }
     @action removePointers(id: string, parent: string, ref: string | number) {
         const parents = this.pointers.get(id)
@@ -159,7 +161,6 @@ class Structures {
                     this.children[parent].delete(id)
                     this.parents[id].delete(parent)
                     if (!this.parents[id].size) {
-                        delete this.positions[id]
                         let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
                         parents.forEach((_, objectId) => {
                             const affinity = this.getAffinity(objectId, id)
@@ -177,6 +178,7 @@ class Structures {
                 }
             }
         }
+        delete this.positions[id]
     }
 
     @action next(step: Viz.Step.Any) {
@@ -344,8 +346,8 @@ class Structures {
             )
         }
         await Promise.all(promises)
-        this.positions = {}
     }
+    @action resetPositions = () => this.positions = {};
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
         if (prop[key] instanceof Promise) {
             await prop[key].then(() => {
@@ -364,8 +366,9 @@ class Structures {
         const y = top + (height / 2)
         const x = left + (width / 2)
         const pos = this.positions[id]
-        if (!pos || pos.x !== x || pos.y !== y) {
+        if (!pos || pos.x !== x || pos.y !== y || pos.renderId !== renderId) {
             this.positions[id] = { x, y, renderId }
+            console.log('SET POS', this.objects[id].value.value, renderId);
         }
     }
     getAffinity(parent: string, child: string): number {

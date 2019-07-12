@@ -144,6 +144,7 @@ class IteratorStore {
             }, 500)
             //remove highlights and flashes
             await this.root.structs.reset()
+            this.root.structs.resetPositions()
             this.root.allowRender = true
             this.play()
             console.log('SKIP PERFORMANCE: ', Date.now() - t1)

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, } from 'react';
+import React, { useRef, useEffect, useMemo, useState, useCallback, } from 'react';
 
 import store from '../../store';
 import DataChild from './DataChild';
@@ -55,18 +55,31 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
 
 
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, prop, renderId }) => {
-    const ref: {
-        current: HTMLDivElement
-    } = useRef(null)
-    renderId = useMemo(() => renderId || genId(objectId.length), [objectId, renderId])
+    // const ref: {
+    //     current: HTMLDivElement
+    // } = useRef(null)
+    const [node, setNode] = useState(null)
+    const ref = useCallback((node) => {
+        if (node) {
+            setNode(node)
+        }
+    }, [])
     const pos = store.structs.positions[objectId]
+    renderId = useMemo(() => {
+        return renderId || genId(objectId.length)
+    }, [objectId, renderId])
+
+
     useEffect(() => {
-        if (ref.current) {
-            store.structs.setPosition(objectId, ref.current, renderId)
+        if (node) {
+            store.structs.setPosition(objectId, node, renderId)
         }
     })
-    if (pos && pos.renderId !== renderId) {
-        console.log(pos.renderId, renderId);
+    if (!pos) {
+        console.log('NO POS', structure.value.value);
+    }
+    if (pos && pos.renderId && pos.renderId !== renderId) {
+        console.log('DIFFERENT', structure.value.value, pos.renderId, renderId);
         return null
     }
     const type = store.viz.types[objectId]
@@ -210,25 +223,27 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
                 }}> {getDataVal(main ? main.value : '', displayProps)} </div>
             </Tooltip>
 
-            <div style={styles}>
-                {children.map(({ child, key, parent }, i) => {
-                    if (!child) {
-                        return <div key={i} style={{
-                            width: (styles.width as number) / children.length
-                        }} />
+            {node && (
+                <div style={styles}>
+                    {children.map(({ child, key, parent }, i) => {
+                        if (!child) {
+                            return <div key={i} style={{
+                                width: (styles.width as number) / children.length
+                            }} />
 
-                    } else {
-                        return (
-                            <DataChild
-                                key={child} parent={parent}
-                                parentId={objectId}
-                                objectId={child}
-                                ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}
-                                prop={key} />)
+                        } else {
+                            return (
+                                <DataChild
+                                    key={child} parent={parent}
+                                    parentId={objectId}
+                                    objectId={child}
+                                    ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}
+                                    prop={key} />)
 
-                    }
-                })}
-            </div>
+                        }
+                    })}
+                </div>
+            )}
         </div>
     )
 })

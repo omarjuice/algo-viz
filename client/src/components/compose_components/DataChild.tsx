@@ -15,13 +15,20 @@ type Props = {
     parentId: string
 }
 
+@observer
 class DataChild extends React.Component<Props>{
     renderId: string = genId(5)
     componentWillUnmount() {
-        delete store.structs.positions[this.props.objectId]
+        const pos = store.structs.positions[this.props.objectId]
+        if (pos) {
+            if (pos.renderId === this.renderId) {
+                delete store.structs.positions[this.props.objectId]
+            }
+        }
     }
     render() {
         const { objectId, ratio, prop, parent, parentId } = this.props
+
         const info = parent[prop]
         const type = store.viz.types[objectId]
         let element;

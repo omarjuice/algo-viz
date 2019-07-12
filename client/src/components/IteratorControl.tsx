@@ -14,7 +14,7 @@ const handle = (props: any) => {
     return (
         <Tooltip
             prefixCls="rc-slider-tooltip"
-            overlay={value}
+            overlay={value + (store.viz.steps[value] ? ': ' + store.viz.steps[value].type : '')}
             visible={dragging}
             placement="top"
             key={index}
