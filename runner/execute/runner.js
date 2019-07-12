@@ -54,6 +54,7 @@ class Runner {
         const infinity = this.genId(5, 1)
         this.map.set('Infinity', infinity)
         this.types[infinity] = 'Infinity'
+
     }
 
 
@@ -85,7 +86,7 @@ class Runner {
         }
         info.value = this.stringify(val)
         this.steps.push(info)
-
+        if (this.steps.length > 30000) throw new Error('Timeout exceeded')
         return this.virtualize(val)
     }
 

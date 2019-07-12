@@ -9,12 +9,7 @@ monaco.editor.defineTheme('pastels', Pastels)
 @observer
 class Input extends Component {
 
-    componentDidMount() {
-        const code = document.querySelector('.react-monaco-editor-container') as HTMLElement
-        if (code) {
-            monaco.editor.colorizeElement(code, { theme: 'vs-dark' })
-        }
-    }
+
 
     render() {
         return (
