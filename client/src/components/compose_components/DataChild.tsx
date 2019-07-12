@@ -28,6 +28,7 @@ class DataChild extends React.Component<Props>{
     }
     render() {
         const { objectId, ratio, prop, parent, parentId } = this.props
+        const pos = store.structs.positions[objectId]
 
         const info = parent[prop]
         const type = store.viz.types[objectId]
@@ -42,7 +43,7 @@ class DataChild extends React.Component<Props>{
             element = null
         }
         return (
-            <LinePointer get={info.get} set={info.set} from={parentId} to={objectId}>
+            <LinePointer arc={pos ? this.renderId !== pos.renderId : false} get={info.get} set={info.set} from={parentId} to={objectId}>
                 {element}
             </LinePointer>
         )

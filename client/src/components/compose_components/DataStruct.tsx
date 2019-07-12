@@ -1,5 +1,4 @@
-import React, { useRef, useEffect, useMemo, useState, useCallback, } from 'react';
-
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import store from '../../store';
 import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
@@ -55,9 +54,7 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
 
 
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, prop, renderId }) => {
-    // const ref: {
-    //     current: HTMLDivElement
-    // } = useRef(null)
+
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
         if (node) {
@@ -75,11 +72,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             store.structs.setPosition(objectId, node, renderId)
         }
     })
-    if (!pos) {
-        console.log('NO POS', structure.value.value);
-    }
+
     if (pos && pos.renderId && pos.renderId !== renderId) {
-        console.log('DIFFERENT', structure.value.value, pos.renderId, renderId);
         return null
     }
     const type = store.viz.types[objectId]

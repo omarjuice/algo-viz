@@ -8,9 +8,10 @@ type Props = {
     to: string
     get: boolean | Promise<void>
     set: boolean | Promise<void>
+    arc: boolean
 }
 
-const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
+const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, arc }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
 
@@ -26,15 +27,24 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
         const shiftLeft = fromCoords.x > toCoords.x
         const shiftTop = fromCoords.y < toCoords.y
         let left = shiftLeft ? fromCoords.x - width : fromCoords.x
-        let top = shiftTop ? fromCoords.y : fromCoords.y + height
+        let top = shiftTop ? fromCoords.y : fromCoords.y - height
         const noWidth = width < 1
         const noHeight = height < 1
         if (noWidth) {
-            width = 5
+            if (arc) {
+                width = height
+            } else {
+                width = 5
+            }
             left -= 2.5
         }
         if (noHeight) {
-            height = 5
+            if (arc) {
+                height = width
+            } else {
+                height = 5
+            }
+
             top -= 2.5
         }
         const lineCoords = {
@@ -51,10 +61,68 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
             lineCoords.x1 = 2.5
             lineCoords.x2 = 2.5
         }
+
+        const lineStyle = { stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set) ? '3px' : '1px' }
+        const circleCoords = {
+            cx: noWidth ? lineCoords.x2 : Math.abs(lineCoords.x2 - toCoords.radius),
+            cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),
+            r: toCoords.radius / 5
+        }
+        let path: any;
+        if (arc) {
+            path = {}
+            // circleCoords.cy += toCoords.radius - 1
+            // circleCoords.cx -= toCoords.radius
+            if (noHeight) {
+                circleCoords.cy = lineCoords.y2 + toCoords.radius - 1
+                circleCoords.cx = lineCoords.x2
+                path.pointA = {
+                    x: lineCoords.x1,
+                    y: lineCoords.y1 + fromCoords.radius - 1
+                }
+                path.pointB = {
+                    x: lineCoords.x2,
+                    y: lineCoords.y2 + toCoords.radius - 1
+                }
+                path.control = {
+                    x: width / 2,
+                    y: height
+                }
+            } else if (noWidth) {
+                circleCoords.cx = lineCoords.x2 + toCoords.radius - 1
+                circleCoords.cy = lineCoords.y2
+                path.pointA = {
+                    x: lineCoords.x1 + fromCoords.radius - 1,
+                    y: lineCoords.y1
+                }
+                path.pointB = {
+                    x: lineCoords.x2 + toCoords.radius - 1,
+                    y: lineCoords.y2
+                }
+                path.control = {
+                    x: width,
+                    y: height / 2
+                }
+            } else {
+                path = null
+            }
+        }
+        console.log(path);
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-                    <line {...lineCoords} style={{ stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set) ? '3px' : '1px' }}></line>
+
+                    {arc ? (
+                        <>
+                            {path && <path d={`M ${path.pointA.x} ${path.pointA.y} Q ${path.control.x} ${path.control.y} ${path.pointB.x} ${path.pointB.y}`} style={lineStyle} fill="transparent" />}
+                            <circle {...circleCoords} fill={lineStyle.stroke} />
+                        </>
+                    ) : (
+                            <>
+                                <line {...lineCoords} style={lineStyle}></line>
+                                <circle {...circleCoords} fill={lineStyle.stroke} />
+                            </>
+                        )}
                 </svg>
                 {children}
             </div>

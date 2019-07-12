@@ -11,7 +11,7 @@ class Structures {
     @observable children: { [id: string]: Set<string> } = {}
     @observable parents: { [id: string]: Set<string> } = {}
     @observable activePointers: { [id: string]: boolean } = {}
-    @observable positions: { [id: string]: { x: number, y: number, renderId: string } } = {}
+    @observable positions: { [id: string]: { x: number, y: number, radius: number, renderId: string } } = {}
     @observable renderMaps: { [id: string]: Viz.RenderMap } = {}
     // @observable children: Map<string, string> = new Map()
     root: RootStore
@@ -363,12 +363,12 @@ class Structures {
     }
     @action setPosition(id: string, e: HTMLDivElement, renderId: string) {
         const { top, left, width, height } = e.getBoundingClientRect()
+        const radius = width / 2
         const y = top + (height / 2)
-        const x = left + (width / 2)
+        const x = left + (radius)
         const pos = this.positions[id]
         if (!pos || pos.x !== x || pos.y !== y || pos.renderId !== renderId) {
-            this.positions[id] = { x, y, renderId }
-            console.log('SET POS', this.objects[id].value.value, renderId);
+            this.positions[id] = { x, y, renderId, radius }
         }
     }
     getAffinity(parent: string, child: string): number {
