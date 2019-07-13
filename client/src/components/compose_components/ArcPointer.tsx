@@ -10,7 +10,7 @@ type Props = {
     set: boolean | Promise<void>
 }
 
-const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
+const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
 
@@ -30,11 +30,12 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
         const noWidth = width < 1
         const noHeight = height < 1
         if (noWidth) {
-            width = 5
+            width = height
             left -= 2.5
         }
         if (noHeight) {
-            height = 5
+            height = width
+
 
             top -= 2.5
         }
@@ -59,12 +60,53 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
             cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),
             r: toCoords.radius / 5
         }
+        let path: any;
+        path = {}
+        // circleCoords.cy += toCoords.radius - 1
+        // circleCoords.cx -= toCoords.radius
+        if (noHeight) {
+            circleCoords.cy = lineCoords.y2 + toCoords.radius
+            circleCoords.cx = lineCoords.x2
+            path.pointA = {
+                x: lineCoords.x1,
+                y: lineCoords.y1 + fromCoords.radius - 1
+            }
+            path.pointB = {
+                x: lineCoords.x2,
+                y: lineCoords.y2 + toCoords.radius - 1
+            }
+            path.control = {
+                x: width / 2,
+                y: height
+            }
+        } else if (noWidth) {
+            circleCoords.cx = lineCoords.x2 + toCoords.radius
+            circleCoords.cy = lineCoords.y2
+            path.pointA = {
+                x: lineCoords.x1 + fromCoords.radius - 1,
+                y: lineCoords.y1
+            }
+            path.pointB = {
+                x: lineCoords.x2 + toCoords.radius - 1,
+                y: lineCoords.y2
+            }
+            path.control = {
+                x: width,
+                y: height / 2
+            }
+        } else {
+            path = null
+        }
 
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-                    <line {...lineCoords} style={lineStyle}></line>
+
+
+                    {path && <path d={`M ${path.pointA.x} ${path.pointA.y} Q ${path.control.x} ${path.control.y} ${path.pointB.x} ${path.pointB.y}`} style={lineStyle} fill="transparent" />}
                     <circle {...circleCoords} fill={lineStyle.stroke} />
+
+
                 </svg>
                 {children}
             </div>
@@ -74,4 +116,4 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
 
 })
 
-export default LinePointer;
+export default ArcPointer;

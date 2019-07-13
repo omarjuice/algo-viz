@@ -6,6 +6,7 @@ import HashStruct from './HashStruct';
 import { observer } from 'mobx-react';
 import LinePointer from './LinePointer';
 import genId from '../../utils/genId';
+import ArcPointer from './ArcPointer';
 
 type Props = {
     objectId: string
@@ -32,6 +33,14 @@ class DataChild extends React.Component<Props>{
 
         const info = parent[prop]
         const type = store.viz.types[objectId]
+        const arc = pos ? this.renderId !== pos.renderId : false
+        const pointerProps = {
+            arc,
+            get: info.get,
+            set: info.set,
+            from: parentId,
+            to: objectId
+        }
         let element;
         if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
             element = <DataStruct renderId={this.renderId} prop={prop} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
@@ -42,11 +51,15 @@ class DataChild extends React.Component<Props>{
         } else {
             element = null
         }
-        return (
-            <LinePointer arc={pos ? this.renderId !== pos.renderId : false} get={info.get} set={info.set} from={parentId} to={objectId}>
+        return !arc ? (
+            <LinePointer {...pointerProps}>
                 {element}
             </LinePointer>
-        )
+        ) : (
+                <ArcPointer {...pointerProps}>
+                    {element}
+                </ArcPointer>
+            )
     }
 }
 

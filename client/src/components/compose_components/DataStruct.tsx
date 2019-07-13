@@ -164,7 +164,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             let pos = child.order.pos === Infinity ? newList.length - 1 : child.order.pos - 1
             while (newList[pos]) {
                 const current = newList[pos].order
-                if (current.order.pos === Infinity) {
+                if (current.pos === Infinity) {
                     newList[pos] = child
                     child = newList[pos]
                 }

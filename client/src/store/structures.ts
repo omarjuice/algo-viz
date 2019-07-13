@@ -82,16 +82,15 @@ class Structures {
             if (parents.size) {
                 parents.forEach(parentId => {
                     ids.add(parentId)
+                    if (deletes.has(parentId)) {
+                        deletes.delete(parentId)
+                    }
                 })
-                if (deletes.has(id)) {
-                    deletes.delete(id)
-                } else {
-                    deletes.add(id)
-                }
+                deletes.add(id)
             }
         })
         deletes.forEach(id => {
-            if (ids.size === 1) return
+            // if (ids.size === 1) return
             ids.delete(id)
         })
         this.bindings = ids
