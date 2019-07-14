@@ -27,8 +27,7 @@ type DisplayProps = {
     highlight?: boolean
 }
 
-const getDataVal = (value: any, displayProps: DisplayProps) => {
-    const { settings: { valueColors: colors } } = store
+const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) => {
     if (typeof value === 'boolean') {
         displayProps.textDisplay = value ? 'T' : 'F'
         return <ValDisplay {...displayProps} />
@@ -36,6 +35,11 @@ const getDataVal = (value: any, displayProps: DisplayProps) => {
         if (value in store.viz.types) {
             if (value in store.structs.objects) {
                 // return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
+                // if (value === objectId) {
+                //     displayProps.textDisplay = 'this'
+                //     displayProps.color = 'scarlet'
+                // }
+                return null
             }
         } else {
             if (value.length < 4) displayProps.textDisplay = value
@@ -98,13 +102,13 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     const otherKeys: React.ReactNode[] = []
     for (const key in structure) {
         const value = structure[key].value
-        if (typeof value === 'string' && value in store.structs.objects) {
+        if (typeof value === 'string' && value in store.structs.objects && value !== objectId) {
             childKeys[value] = key
         } else {
             otherKeys.push(
                 <div key={key} className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {key}:{' '}</span>
-                    {getVal(value, true)}
+                    {value === objectId ? <span className="has-text-danger">this</span> : getVal(value, true)}
                 </div >
             )
 
@@ -214,7 +218,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginBottom: '10px'
-                }}> {getDataVal(main ? main.value : '', displayProps)} </div>
+                }}> {getDataVal(main ? main.value : '', displayProps, objectId)} </div>
             </Tooltip>
 
             {node && (

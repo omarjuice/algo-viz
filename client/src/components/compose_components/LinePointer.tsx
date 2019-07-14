@@ -54,17 +54,19 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
         }
 
         const lineStyle = { stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set) ? '3px' : '1px' }
-        const circleCoords = {
-            cx: noWidth ? lineCoords.x2 : Math.abs(lineCoords.x2 - toCoords.radius),
-            cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),
-            r: toCoords.radius / 5
-        }
+        // const circleCoords = {
+        //     cx: noWidth ? lineCoords.x2 : Math.abs(lineCoords.x2 - toCoords.radius),
+        //     cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),
+        //     r: toCoords.radius / 5
+        // }
+
+
 
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
                     <line {...lineCoords} style={lineStyle}></line>
-                    <circle {...circleCoords} fill={lineStyle.stroke} />
+                    {/* <circle {...circleCoords} fill={lineStyle.stroke} /> */}
                 </svg>
                 {children}
             </div>

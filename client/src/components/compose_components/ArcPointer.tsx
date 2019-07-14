@@ -13,7 +13,6 @@ type Props = {
 const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
-
     if (!fromCoords || !toCoords) {
         return (
             <>
