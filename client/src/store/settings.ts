@@ -74,7 +74,8 @@ class Settings {
             this.structSettings[structType] = {
                 order: {},
                 main: 'value',
-                numChildren: null
+                numChildren: null,
+                pointers: {}
             }
         }
         if (!(structType in this.structColors)) {

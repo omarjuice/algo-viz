@@ -94,7 +94,20 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) 
                 y: height / 2
             }
         } else {
-            path = null
+            circleCoords.cx = lineCoords.x2 + toCoords.radius
+            circleCoords.cy = lineCoords.y2
+            path.pointA = {
+                x: lineCoords.x1,
+                y: lineCoords.y1
+            }
+            path.pointB = {
+                x: lineCoords.x2,
+                y: lineCoords.y2
+            }
+            path.control = {
+                x: shiftLeft ? width : 0,
+                y: shiftTop ? height : 0
+            }
         }
 
         return (
@@ -103,7 +116,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) 
 
 
                     {path && <path d={`M ${path.pointA.x} ${path.pointA.y} Q ${path.control.x} ${path.control.y} ${path.pointB.x} ${path.pointB.y}`} style={lineStyle} fill="transparent" />}
-                    <circle {...circleCoords} fill={lineStyle.stroke} />
+                    {/* <circle {...circleCoords} fill={lineStyle.stroke} /> */}
 
 
                 </svg>

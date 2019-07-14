@@ -38,6 +38,7 @@ declare namespace Viz {
             },
             main: string,
             numChildren: null | number
+            pointers: { [key: string]: boolean }
         }
     }
 

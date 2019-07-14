@@ -7,6 +7,8 @@ import invertColor from '../../utils/invertColor';
 import { getVal } from './getVal';
 import Tooltip from 'rc-tooltip';
 import genId from '../../utils/genId';
+import ArcPointer from './ArcPointer';
+import { toJS } from 'mobx';
 
 
 type Props = {
@@ -121,37 +123,48 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         child: string | null
         parent: Viz.Structure
     })[] = []
-
+    const pointers: React.ReactNode[] = []
     const main = structure[settings.main]
     store.structs.children[objectId].forEach(child => {
         const key = childKeys[child]
-        const order = settings.order[key]
-        if (!key) return
-        if (order && order.isMultiple) {
-            const object = store.structs.objects[child]
-            const type = store.viz.types[child]
-            if (['Object', 'Array', 'Map'].includes(type))
-                for (const key in object) {
-                    const info = object[key]
-                    if (typeof info.value === 'string' && info.value in store.structs.objects) {
-                        children.push({
-                            order,
-                            key: type === 'Array' ? Number(key) : key,
-                            child: info.value,
-                            parent: object
-                        })
+        if (key in settings.order) {
+            const order = settings.order[key]
+            if (!key) return
+            if (order && order.isMultiple) {
+                const object = store.structs.objects[child]
+                const type = store.viz.types[child]
+                if (['Object', 'Array', 'Map'].includes(type))
+                    for (const key in object) {
+                        const info = object[key]
+                        if (typeof info.value === 'string' && info.value in store.structs.objects) {
+                            children.push({
+                                order,
+                                key: type === 'Array' ? Number(key) : key,
+                                child: info.value,
+                                parent: object
+                            })
+                        }
                     }
-                }
 
-        } else {
-            children.push(
-                {
-                    order: order || { pos: Infinity, isMultiple: false },
-                    key,
-                    child,
-                    parent: structure
-                }
-            )
+            } else {
+                children.push(
+                    {
+                        order: order || { pos: Infinity, isMultiple: false },
+                        key,
+                        child,
+                        parent: structure
+                    }
+                )
+            }
+        } else if (key in settings.pointers) {
+            const pointer: boolean = settings.pointers[key]
+            if (!pointer) {
+                pointers.push(
+                    <ArcPointer from={objectId} to={child} get={!!structure[key].get} set={!!structure[key].set}>
+                        {null}
+                    </ArcPointer >
+                )
+            }
         }
     })
     if (settings.numChildren === null) {
@@ -220,7 +233,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
                     marginBottom: '10px'
                 }}> {getDataVal(main ? main.value : '', displayProps, objectId)} </div>
             </Tooltip>
-
             {node && (
                 <div style={styles}>
                     {children.map(({ child, key, parent }, i) => {
@@ -242,6 +254,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
                     })}
                 </div>
             )}
+            {node && pointers}
         </div>
     )
 })
