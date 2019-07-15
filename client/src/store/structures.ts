@@ -1,4 +1,4 @@
-import { observable, action, toJS } from "mobx";
+import { observable, action } from "mobx";
 import { RootStore } from ".";
 
 
@@ -97,7 +97,6 @@ class Structures {
                 delete this.positions[id]
             }
         })
-        console.log(toJS(ids))
         this.bindings = ids
     }
     @action addPointers(id: string, parent: string, key: string | number) {

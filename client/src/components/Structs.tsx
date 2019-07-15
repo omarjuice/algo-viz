@@ -29,7 +29,7 @@ const Structs: React.FC = observer(() => {
             )
         }
     })
-
+    // const total = Math.min(data.length, 1) + Math.min(objects.length, 1) + Math.min(arrays.length, 1)
     return (
         <div className="structs columns is-multiline">
             {data.length ? <div className="column is-full">
