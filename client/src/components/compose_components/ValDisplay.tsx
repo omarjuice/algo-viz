@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import store from '../../store';
 import anime from 'animejs'
 import { observer } from 'mobx-react';

@@ -1,5 +1,5 @@
 import { observable, action, toJS } from "mobx";
-import store, { RootStore } from ".";
+import { RootStore } from ".";
 
 
 class Structures {
@@ -13,7 +13,6 @@ class Structures {
     @observable activePointers: { [id: string]: boolean } = {}
     @observable positions: { [id: string]: { x: number, y: number, radius: number, renderId: string } } = {}
     @observable renderMaps: { [id: string]: Viz.RenderMap } = {}
-    // @observable children: Map<string, string> = new Map()
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -76,23 +75,29 @@ class Structures {
                 }
             }
         }
-        const deletes: Set<string> = new Set()
         ids.forEach(id => {
-            const parents = this.parents[id]
-            if (parents.size) {
-                parents.forEach(parentId => {
-                    ids.add(parentId)
-                    if (deletes.has(parentId)) {
-                        // deletes.delete(parentId)
-                    }
-                })
-                deletes.add(id)
+            let current = id
+            let parents = this.parents[id]
+            let isCircular = false
+            while (parents && parents.size) {
+                current = parents.values().next().value
+                parents = this.parents[current]
+                if (current === id) {
+                    isCircular = true
+                    break;
+                }
+            }
+            if (!isCircular && current !== id) {
+                ids.delete(id)
+                ids.add(current)
             }
         })
-        deletes.forEach(id => {
-            if (ids.size === 1) return
-            ids.delete(id)
+        this.bindings.forEach(id => {
+            if (!ids.has(id)) {
+                delete this.positions[id]
+            }
         })
+        console.log(toJS(ids))
         this.bindings = ids
     }
     @action addPointers(id: string, parent: string, key: string | number) {

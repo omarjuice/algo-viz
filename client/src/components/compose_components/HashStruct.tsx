@@ -13,7 +13,7 @@ type Props = {
 
 const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, orientation }) => {
     const obj: React.ReactElement[] = [];
-    const maxWidth = store.windowWidth * .3 * ratio
+    // const maxWidth = store.windowWidth * .3 * ratio
 
     for (const key in structure) {
         obj.push(
@@ -23,7 +23,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         )
     }
 
-    const size = Math.max(Math.round(ratio * 5), 3)
+    // const size = Math.max(Math.round(ratio * 5), 3)
     const styles: React.CSSProperties = {
         // maxHeight: '100%',
         // overflowY: 'scroll'

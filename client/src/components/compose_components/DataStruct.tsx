@@ -8,7 +8,6 @@ import { getVal } from './getVal';
 import Tooltip from 'rc-tooltip';
 import genId from '../../utils/genId';
 import ArcPointer from './ArcPointer';
-import { toJS } from 'mobx';
 
 
 type Props = {
@@ -81,9 +80,13 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         return null
     }
     const type = store.viz.types[objectId]
+    if (!type) {
+        return null
+    }
     const width = store.windowWidth * .5 * ratio
     const color = store.settings.structColors[type]
     const settings = store.settings.structSettings[type]
+
     const isList = settings.numChildren === 1
     const styles: React.CSSProperties = {
         width,
@@ -98,20 +101,70 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     }
 
 
-    const childKeys: { [key: string]: string } = {}
     const otherKeys: React.ReactNode[] = []
     const pointers: React.ReactNode[] = []
+    let children: ({
+        order: Viz.order
+        key: string | number
+        child: string | null
+        parent: Viz.Structure
+    })[] = []
+
     for (const key in structure) {
         const value = structure[key].value
+
+
         if (typeof value === 'string' && value in store.structs.objects && value !== objectId) {
-            childKeys[value] = key
             if (key in settings.pointers) {
                 const pointer: boolean = settings.pointers[key]
                 if (!pointer) {
                     pointers.push(
-                        <ArcPointer from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                        <ArcPointer key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
                             {null}
                         </ArcPointer >
+                    )
+                }
+            } else if (key in settings.order) {
+                const parents = store.structs.parents[value]
+                if (parents) {
+                    if (!parents.has(objectId)) {
+                        const firstParent = parents.values().next().value
+                        if (store.structs.bindings.has(firstParent)) {
+                            pointers.push(
+                                <ArcPointer key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                                    {null}
+                                </ArcPointer >
+                            )
+                            continue;
+                        }
+                    }
+                }
+                const order = settings.order[key]
+
+                if (order && order.isMultiple) {
+                    const object = store.structs.objects[value]
+                    const type = store.viz.types[value]
+                    if (['Object', 'Array', 'Map'].includes(type))
+                        for (const key in object) {
+                            const info = object[key]
+                            if (typeof info.value === 'string' && info.value in store.structs.objects) {
+                                children.push({
+                                    order,
+                                    key: type === 'Array' ? Number(key) : key,
+                                    child: info.value,
+                                    parent: object
+                                })
+                            }
+                        }
+
+                } else {
+                    children.push(
+                        {
+                            order: order || { pos: Infinity, isMultiple: false },
+                            key,
+                            child: value,
+                            parent: structure
+                        }
                     )
                 }
             }
@@ -126,48 +179,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
         }
     }
-    let children: ({
-        order: Viz.order
-        key: string | number
-        child: string | null
-        parent: Viz.Structure
-    })[] = []
 
     const main = structure[settings.main]
-    store.structs.children[objectId].forEach(child => {
 
-        const key = childKeys[child]
-        if (key in settings.order) {
-            const order = settings.order[key]
-            if (!key) return
-            if (order && order.isMultiple) {
-                const object = store.structs.objects[child]
-                const type = store.viz.types[child]
-                if (['Object', 'Array', 'Map'].includes(type))
-                    for (const key in object) {
-                        const info = object[key]
-                        if (typeof info.value === 'string' && info.value in store.structs.objects) {
-                            children.push({
-                                order,
-                                key: type === 'Array' ? Number(key) : key,
-                                child: info.value,
-                                parent: object
-                            })
-                        }
-                    }
-
-            } else {
-                children.push(
-                    {
-                        order: order || { pos: Infinity, isMultiple: false },
-                        key,
-                        child,
-                        parent: structure
-                    }
-                )
-            }
-        }
-    })
     if (settings.numChildren === null) {
         children.sort((a, b) => {
             if (a.order.pos === b.order.pos) {
