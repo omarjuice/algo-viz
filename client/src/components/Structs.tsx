@@ -25,7 +25,7 @@ const Structs: React.FC = observer(() => {
             )
         } else {
             data.push(
-                <DataStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
+                <DataStruct key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} />
             )
         }
     })

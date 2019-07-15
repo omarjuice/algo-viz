@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import store from '../../store';
 import anime from 'animejs'
 import { observer } from 'mobx-react';
@@ -46,11 +46,13 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
         }
     })
     const gradId = Math.random().toString()
-    return <svg className="val-display" style={{
-        transform: `scale(${highlight ? String(1.5 * (1 / (size / 30))) : '1'})`,
-        position: 'relative',
-        zIndex: highlight ? 5 : 3
-    }} ref={ref} height={size} width={size} viewBox="0 0 100 100" >
+    return <svg
+
+        className="val-display" style={{
+            transform: `scale(${highlight ? String(1.5 * (1 / (size / 30))) : '1'})`,
+            position: 'relative',
+            zIndex: highlight ? 5 : 3
+        }} ref={ref} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                 <stop offset="90%" style={{ stopColor: `${color}`, stopOpacity: 1 }} />

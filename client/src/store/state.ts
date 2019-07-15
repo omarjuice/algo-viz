@@ -214,6 +214,7 @@ class StateStore {
             const ids = this.identifiers[scope]
             for (const id in ids) {
                 const values = ids[id]
+                if (id[0] === '_') continue;
                 const info = {
                     name: id,
                     value: values[values.length - 1]

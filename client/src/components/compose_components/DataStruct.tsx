@@ -15,8 +15,6 @@ type Props = {
     structure: Viz.Structure
     objectId: string
     ratio: number
-    pointed: boolean
-    prop?: string | number
     renderId?: string
 }
 type DisplayProps = {
@@ -59,7 +57,7 @@ const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) =>
 }
 
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, prop, renderId }) => {
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId }) => {
 
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
@@ -102,10 +100,21 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     const childKeys: { [key: string]: string } = {}
     const otherKeys: React.ReactNode[] = []
+    const pointers: React.ReactNode[] = []
     for (const key in structure) {
         const value = structure[key].value
         if (typeof value === 'string' && value in store.structs.objects && value !== objectId) {
             childKeys[value] = key
+            if (key in settings.pointers) {
+                const pointer: boolean = settings.pointers[key]
+                if (!pointer) {
+                    pointers.push(
+                        <ArcPointer from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                            {null}
+                        </ArcPointer >
+                    )
+                }
+            }
         } else {
             otherKeys.push(
                 <div key={key} className="has-text-weight-bold">
@@ -123,9 +132,10 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         child: string | null
         parent: Viz.Structure
     })[] = []
-    const pointers: React.ReactNode[] = []
+
     const main = structure[settings.main]
     store.structs.children[objectId].forEach(child => {
+
         const key = childKeys[child]
         if (key in settings.order) {
             const order = settings.order[key]
@@ -154,15 +164,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
                         child,
                         parent: structure
                     }
-                )
-            }
-        } else if (key in settings.pointers) {
-            const pointer: boolean = settings.pointers[key]
-            if (!pointer) {
-                pointers.push(
-                    <ArcPointer from={objectId} to={child} get={!!structure[key].get} set={!!structure[key].set}>
-                        {null}
-                    </ArcPointer >
                 )
             }
         }
@@ -226,12 +227,15 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             )}
                 placement={'top'}
                 trigger={['hover']} defaultVisible={false} >
-                <div ref={ref} style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: '10px'
-                }}> {getDataVal(main ? main.value : '', displayProps, objectId)} </div>
+                <div ref={ref}
+                    onMouseEnter={() => store.structs.activePointers[objectId] = true}
+                    onMouseLeave={() => store.structs.activePointers[objectId] = false}
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: '10px'
+                    }}> {getDataVal(main ? main.value : '', displayProps, objectId)} </div>
             </Tooltip>
             {node && (
                 <div style={styles}>

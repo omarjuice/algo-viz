@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
 
@@ -13,6 +13,7 @@ type Props = {
 const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
+
     if (!fromCoords || !toCoords) {
         return (
             <>
@@ -20,6 +21,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) 
             </>
         );
     } else {
+        const active = store.structs.activePointers[from]
         let width = Math.abs(fromCoords.x - toCoords.x)
         let height = Math.abs(fromCoords.y - toCoords.y)
         const shiftLeft = fromCoords.x > toCoords.x
@@ -53,7 +55,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) 
             lineCoords.x2 = 2.5
         }
 
-        const lineStyle = { stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set) ? '3px' : '1px' }
+        const lineStyle = { stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set || active) ? '3px' : '1px' }
         const circleCoords = {
             cx: noWidth ? lineCoords.x2 : Math.abs(lineCoords.x2 - toCoords.radius),
             cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),

@@ -43,6 +43,18 @@ class Settings {
             this.structColors = all.structColors
             this.structSettings = all.structSettings
         }
+        this.structSettings['Array'] = {
+            order: {},
+            main: 'value',
+            numChildren: null,
+            pointers: {}
+        }
+        this.structSettings['Object'] = {
+            order: {},
+            main: 'value',
+            numChildren: null,
+            pointers: {}
+        }
 
         this.root = store
         window.onbeforeunload = () => {
