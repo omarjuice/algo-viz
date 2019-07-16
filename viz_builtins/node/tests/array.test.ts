@@ -1,3 +1,4 @@
+
 import Viz from '../src'
 import expect from 'expect'
 

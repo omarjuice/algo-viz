@@ -39,7 +39,8 @@ class DataChild extends React.Component<Props>{
             get: info.get,
             set: info.set,
             from: parentId,
-            to: objectId
+            to: objectId,
+            prop
         }
         let element;
         if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {

@@ -1,16 +1,17 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
-
+import Tooltip from 'rc-tooltip';
 
 type Props = {
     from: string
     to: string
     get: boolean | Promise<void>
     set: boolean | Promise<void>
+    prop: string | number
 }
 
-const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
+const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, prop }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
 
@@ -67,7 +68,15 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set })
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
+
+                    {/* <Tooltip overlay={() => (
+                        <div className="has-text-weight-bold">
+                            {prop}
+                        </div >)}
+                        placement={shiftTop && shiftLeft ? 'bottomRight' : shiftTop ? 'topRight' : shiftLeft ? 'topRight' : 'bottom'}
+                        trigger={['hover']} visible={active} defaultVisible={false} > */}
                     <line {...lineCoords} style={lineStyle}></line>
+                    {/* </Tooltip> */}
                     {/* <circle {...circleCoords} fill={lineStyle.stroke} /> */}
                 </svg>
                 {children}

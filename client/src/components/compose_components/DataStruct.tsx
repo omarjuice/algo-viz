@@ -119,7 +119,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 const pointer: boolean = settings.pointers[key]
                 if (!pointer) {
                     pointers.push(
-                        <ArcPointer key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                        <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
                             {null}
                         </ArcPointer >
                     )
@@ -131,7 +131,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                         const firstParent = parents.values().next().value
                         if (store.structs.bindings.has(firstParent)) {
                             pointers.push(
-                                <ArcPointer key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                                <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
                                     {null}
                                 </ArcPointer >
                             )

@@ -6,6 +6,10 @@ declare namespace Main {
         next: null | SinglyLinkedList
         value: any
     }
-
+    interface DoublyLinkedList {
+        next: null | DoublyLinkedList
+        prev: null | DoublyLinkedList
+        value: any
+    }
 }
 

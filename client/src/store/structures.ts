@@ -75,22 +75,30 @@ class Structures {
                 }
             }
         }
+        const deletes: Set<string> = new Set()
         ids.forEach(id => {
+            console.log('NEW ID', id)
+            const seen: Set<string> = new Set()
+            seen.add(id)
             let current = id
             let parents = this.parents[id]
             let isCircular = false
             while (parents && parents.size) {
                 current = parents.values().next().value
                 parents = this.parents[current]
-                if (current === id) {
+                if (seen.has(current)) {
                     isCircular = true
                     break;
                 }
+                seen.add(current)
             }
             if (!isCircular && current !== id) {
-                ids.delete(id)
+                deletes.add(id)
                 ids.add(current)
             }
+        })
+        deletes.forEach((id) => {
+            ids.delete(id)
         })
         this.bindings.forEach(id => {
             if (!ids.has(id)) {
@@ -114,8 +122,8 @@ class Structures {
                 }
             }
             const parentType = this.root.viz.types[id]
-            const isPointer = key in this.root.settings.structSettings[parentType].pointers
-            if (!isPointer) {
+            const isChild = key in this.root.settings.structSettings[parentType].order
+            if (isChild) {
                 const currentParents = this.parents[id]
                 const affinity = this.getAffinity(parent, id)
                 if (affinity > 0) {
@@ -127,21 +135,21 @@ class Structures {
                             }
                         })
                         deletes.forEach(objectId => {
-                            if (!isPointer) currentParents.delete(objectId)
+                            currentParents.delete(objectId)
                             this.children[objectId].delete(id)
                         })
-                        if (!isPointer) currentParents.add(parent)
+                        currentParents.add(parent)
                         this.children[parent].add(id)
                     } else {
                         if (!currentParents.size) {
-                            if (!isPointer) currentParents.add(parent)
+                            currentParents.add(parent)
                             this.children[parent].add(id)
                         } else {
                             const entries = currentParents.entries()
                             const first = entries.next().value
                             if (affinity > this.getAffinity(first[0], id)) {
-                                if (!isPointer) currentParents.delete(first[0])
-                                if (!isPointer) currentParents.add(parent)
+                                currentParents.delete(first[0])
+                                currentParents.add(parent)
                                 this.children[first[0]].delete(id)
                                 this.children[parent].add(id)
                             }

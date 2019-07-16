@@ -11,8 +11,7 @@ class SLL implements Main.SinglyLinkedList {
         const list = new SLL(elems[0])
         let current = list
         for (let i = 1; i < elems.length; i++) {
-            current.next = new SLL(elems[i])
-            current = current.next
+            current = current.next = new SLL(elems[i])
         }
         return list
     }
@@ -20,10 +19,13 @@ class SLL implements Main.SinglyLinkedList {
         this.assert(list)
         let current: SLL | null = list
         let prev = null
+        const seen: Set<SLL> = new Set()
         while (current) {
+            if (seen.has(current)) throw new Error('Cannot reverse cyclic list')
             const next: SLL | null = current.next
             current.next = prev
             prev = current
+            seen.add(current)
             current = next
         }
         return prev
@@ -31,8 +33,11 @@ class SLL implements Main.SinglyLinkedList {
     static toArray(list: SLL) {
         this.assert(list)
         const elems: any[] = []
+        const seen: Set<SLL> = new Set()
         for (let current: SLL | null = list; !!current; current = current.next) {
+            if (seen.has(current)) throw new Error('Cannot convert a cyclic list to array')
             elems.push(current.value)
+            seen.add(current)
         }
         return elems
     }

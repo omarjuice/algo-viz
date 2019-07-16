@@ -6,6 +6,8 @@ import * as monaco from 'monaco-editor';
 import pastels from '../pastels.json'
 let Pastels = pastels as any
 monaco.editor.defineTheme('pastels', Pastels)
+
+
 @observer
 class Input extends Component {
 

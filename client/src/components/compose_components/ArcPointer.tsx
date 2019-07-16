@@ -1,16 +1,17 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
-
+import Tooltip from 'rc-tooltip';
 
 type Props = {
     from: string
     to: string
     get: boolean | Promise<void>
     set: boolean | Promise<void>
+    prop: string | number
 }
 
-const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) => {
+const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, prop }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
 
@@ -114,10 +115,30 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set }) 
 
         return (
             <div>
+
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
 
+                    {/* {(active) && <text x={width / 2} y={height / 2}
+                        fill={'yellow'} fontSize={10} fontWeight={'bold'}
+                        dominantBaseline="middle" textAnchor="middle"
+                        style={{
+                            position: 'relative',
+                            zIndex: 6,
 
+                        }}
+                    >
+
+                        {prop}
+                    </text>} */}
+                    {/* <Tooltip overlay={() => (
+                        <div className="has-text-weight-bold">
+                            {prop}
+                        </div >)}
+                        placement={shiftTop && shiftLeft ? 'bottomRight' : shiftTop ? 'topRight' : shiftLeft ? 'topRight' : 'topLeft'}
+                        trigger={['hover']} visible={active} defaultVisible={false} > */}
                     {path && <path d={`M ${path.pointA.x} ${path.pointA.y} Q ${path.control.x} ${path.control.y} ${path.pointB.x} ${path.pointB.y}`} style={lineStyle} fill="transparent" />}
+                    {/* </Tooltip> */}
+
                     {/* <circle {...circleCoords} fill={lineStyle.stroke} /> */}
 
 
