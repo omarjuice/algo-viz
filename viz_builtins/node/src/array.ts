@@ -1,4 +1,4 @@
-const array: Main.Array = {
+const array = {
     sortedInts: (length = 10) => {
         if (typeof length !== 'number') throw new Error('length must be a number')
         if (length > 1000) throw new Error('Requested length is too high. length < 1000')

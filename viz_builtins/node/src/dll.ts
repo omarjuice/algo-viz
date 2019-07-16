@@ -1,4 +1,4 @@
-class DLL implements Main.DoublyLinkedList {
+class DLL {
     next: DLL | null = null
     prev: DLL | null = null
     value: any

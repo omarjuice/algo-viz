@@ -1,15 +1,17 @@
-declare namespace Main {
-    type Array = {
-        sortedInts: (length: number) => number[]
-    }
-    interface SinglyLinkedList {
-        next: null | SinglyLinkedList
-        value: any
-    }
-    interface DoublyLinkedList {
-        next: null | DoublyLinkedList
-        prev: null | DoublyLinkedList
-        value: any
-    }
+declare class Viz {
+    array: array
+    SLL: SLL
 }
 
+declare class SLL {
+    next: null | SLL
+    value: any
+}
+declare class DLL {
+    next: null | DLL
+    prev: null | DLL
+    value: any
+}
+declare type array = {
+    sortedInts: (length: number) => number[]
+}

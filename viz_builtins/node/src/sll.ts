@@ -1,4 +1,4 @@
-class SLL implements Main.SinglyLinkedList {
+class SLL {
     next: SLL | null
     value: any
     constructor(val: any) {
