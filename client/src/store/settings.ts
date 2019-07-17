@@ -1,8 +1,67 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
 
+export const structInfo: Viz.structSettings = {
+    BST: {
+        order: {
+            left: {
+                pos: 1,
+                isMultiple: false
+            },
+            right: {
+                pos: 2,
+                isMultiple: false
+            }
+        },
+        main: 'value',
+        numChildren: 2,
+        pointers: {
 
+        }
+    },
+    DLL: {
+        order: {
+            next: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'value',
+        numChildren: 1,
+        pointers: {
+            prev: false
+        }
+    },
+    SLL: {
+        order: {
+            next: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'value',
+        numChildren: 1,
+        pointers: {
+        }
+    },
+    BTree: {
+        order: {
+            left: {
+                pos: 1,
+                isMultiple: false
+            },
+            right: {
+                pos: 2,
+                isMultiple: false
+            }
+        },
+        main: 'value',
+        numChildren: 2,
+        pointers: {
 
+        }
+    }
+}
 
 class Settings {
     @observable valueColors = {
@@ -54,6 +113,13 @@ class Settings {
             main: 'value',
             numChildren: null,
             pointers: {}
+        }
+        for (const name in structInfo) {
+            const newName = 'Viz.' + name
+            this.structSettings[newName] = structInfo[name]
+            if (!this.structColors[newName]) {
+                this.setColor(newName)
+            }
         }
 
         this.root = store

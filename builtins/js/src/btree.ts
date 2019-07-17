@@ -55,17 +55,17 @@ class BTree {
         }
         seen.add(this)
         if (order === 'inOrder') {
-            if (this.left && this.left instanceof BTree) this.left.traverse(callback, order, seen)
+            if (this.left && this.left instanceof this.constructor) this.left.traverse(callback, order, seen)
             callback(this.value)
-            if (this.right && this.right instanceof BTree) this.right.traverse(callback, order, seen)
+            if (this.right && this.right instanceof this.constructor) this.right.traverse(callback, order, seen)
         } else if (order === 'postOrder') {
-            if (this.left && this.left instanceof BTree) this.left.traverse(callback, order, seen)
-            if (this.right && this.right instanceof BTree) this.right.traverse(callback, order, seen)
+            if (this.left && this.left instanceof this.constructor) this.left.traverse(callback, order, seen)
+            if (this.right && this.right instanceof this.constructor) this.right.traverse(callback, order, seen)
             callback(this.value)
         } else if (order === 'preOrder') {
             callback(this.value)
-            if (this.left && this.left instanceof BTree) this.left.traverse(callback, order, seen)
-            if (this.right && this.right instanceof BTree) this.right.traverse(callback, order, seen)
+            if (this.left && this.left instanceof this.constructor) this.left.traverse(callback, order, seen)
+            if (this.right && this.right instanceof this.constructor) this.right.traverse(callback, order, seen)
         } else if (order === 'breadthFirst') {
             const queue: BTree[] = [this]
             while (queue.length) {
@@ -73,8 +73,8 @@ class BTree {
                 if (seen.has(current) && current !== this) throw new Error('Cannot traverse cyclic trees')
                 seen.add(current)
                 callback(current.value)
-                if (current.left && current.left instanceof BTree) queue.push(current.left)
-                if (current.right && current.right instanceof BTree) queue.push(current.right)
+                if (current.left && current.left instanceof this.constructor) queue.push(current.left)
+                if (current.right && current.right instanceof this.constructor) queue.push(current.right)
             }
         }
         return this

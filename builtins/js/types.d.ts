@@ -15,3 +15,9 @@ declare class DLL {
 declare type array = {
     sortedInts: (length: number) => number[]
 }
+declare class BTree {
+    left: BTree
+    right: BTree
+    value: any
+}
+declare class BST extends BTree { }

@@ -1,4 +1,4 @@
-const { default: Viz } = require('../../viz_builtins/node/dist/index')
+const { default: Viz } = require('../../builtins/js/dist/index')
 module.exports = async function (___code) {
     let ___name;
     eval(await (async function (func) {

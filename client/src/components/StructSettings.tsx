@@ -163,9 +163,9 @@ class StructSettings extends Component<Props> {
                         <h1 className="title is-5 has-text-weight-bold">{name}</h1>
                     </div>
                     <div className="column">
-                        <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small">
+                        {!(/Viz\./g.test(name)) && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small">
                             {this.state.editing ? 'Cancel' : 'Edit'}
-                        </button>
+                        </button>}
                     </div>
                     <div className="column has-text-centered">
                         <input type="color" value={structColors[name]} onChange={(e) => structColors[name] = e.target.value} />
