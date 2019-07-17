@@ -38,5 +38,19 @@ class DLL {
         if (!('next' in list) || !('value' in list) || !('prev' in list))
             throw new Error('List must have properties "next" and "value"');
     }
+    static reverse(list) {
+        let current = list;
+        let prev = null;
+        while (current) {
+            const next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+            if (prev) {
+                prev.prev = current;
+            }
+        }
+        return prev;
+    }
 }
 exports.default = DLL;

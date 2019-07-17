@@ -33,5 +33,25 @@ class DLL {
     private static assert(list: DLL) {
         if (!('next' in list) || !('value' in list) || !('prev' in list)) throw new Error('List must have properties "next" and "value"');
     }
+    static reverse(list: DLL) {
+        const seen: Set<DLL> = new Set()
+        let current = list
+        let prev = null
+        while (current) {
+            if (seen.has(current)) {
+                throw new Error('Cannot reverse cyclic lists')
+            }
+            const next: DLL | null = current.next
+            current.next = prev
+            prev = current
+            seen.add(current)
+            current = next
+            if (prev) {
+                prev.prev = current
+            }
+        }
+        return prev
+
+    }
 }
 export default DLL

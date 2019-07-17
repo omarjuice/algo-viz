@@ -93,12 +93,10 @@ class Structures {
             }
             if (!isCircular && current !== id) {
                 deletes.add(id)
-
                 ids.add(current)
             }
         })
         deletes.forEach((id) => {
-            // delete this.positions[id]
             ids.delete(id)
         })
         this.bindings.forEach(id => {
