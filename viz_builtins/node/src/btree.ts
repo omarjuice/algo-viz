@@ -24,8 +24,7 @@ class BTree {
                 }
             }
             return btree
-        }
-        if (method === 'binary') {
+        } else if (method === 'binary') {
             function helper(elems: any[], left: number, right: number) {
                 if (left >= right) {
                     return null
@@ -37,6 +36,8 @@ class BTree {
                 return bst
             }
             return helper(elems, 0, elems.length)
+        } else {
+            throw new Error('Method must be "breadth" or "binary"')
         }
     }
     traverse(callback: (val: any) => any, order: 'inOrder' | 'postOrder' | 'preOrder' | 'breadthFirst', seen?: any) {

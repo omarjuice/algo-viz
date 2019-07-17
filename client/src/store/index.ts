@@ -7,6 +7,12 @@ import ApiStore from './api';
 import Editor from './editor';
 import Structures from './structures';
 import Settings from './settings';
+
+type widths = {
+    array: number
+    object: number
+    data: number
+}
 export class RootStore {
     @observable settings: Settings
     @observable viz: VizStore
@@ -19,6 +25,11 @@ export class RootStore {
     @observable ready: boolean = false
     @observable allowRender: boolean = true
     @observable windowWidth: number = window.innerWidth
+    @observable widths: widths = {
+        array: 0,
+        object: 0,
+        data: 0
+    }
     constructor() {
         const data = window.localStorage.getItem('data')
         this.settings = new Settings(this)
@@ -42,8 +53,14 @@ export class RootStore {
         // this.iterator.play()
     }
     @action onWindowResize(val: number) {
-        if (val !== this.windowWidth)
+        if (val !== this.windowWidth) {
             this.windowWidth = val
+        }
+    }
+    @action setWidths(vals: widths) {
+        this.widths.array = vals.array
+        this.widths.object = vals.object
+        this.widths.data = vals.data
     }
 }
 

@@ -77,7 +77,6 @@ class Structures {
         }
         const deletes: Set<string> = new Set()
         ids.forEach(id => {
-            console.log('NEW ID', id)
             const seen: Set<string> = new Set()
             seen.add(id)
             let current = id
@@ -94,10 +93,12 @@ class Structures {
             }
             if (!isCircular && current !== id) {
                 deletes.add(id)
+
                 ids.add(current)
             }
         })
         deletes.forEach((id) => {
+            // delete this.positions[id]
             ids.delete(id)
         })
         this.bindings.forEach(id => {
@@ -123,7 +124,7 @@ class Structures {
             }
             const parentType = this.root.viz.types[id]
             const isChild = key in this.root.settings.structSettings[parentType].order
-            if (isChild) {
+            if (isChild || ['Object', 'Map', 'Array'].includes(parentType)) {
                 const currentParents = this.parents[id]
                 const affinity = this.getAffinity(parent, id)
                 if (affinity > 0) {
@@ -156,9 +157,9 @@ class Structures {
                         }
                     }
                 }
+
             }
         }
-
         delete this.positions[id]
     }
     @action removePointers(id: string, parent: string, ref: string | number) {
@@ -362,7 +363,12 @@ class Structures {
         }
         await Promise.all(promises)
     }
-    @action resetPositions = () => this.positions = {};
+    @action resetPositions = () => {
+        for (const key in this.positions) {
+            delete this.positions[key]
+        }
+        this.setBindings()
+    };
     @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
         if (prop[key] instanceof Promise) {
             await prop[key].then(() => {

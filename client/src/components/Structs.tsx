@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import store from '../store';
 import ArrayStruct from './compose_components/ArrayStruct';
@@ -29,7 +29,14 @@ const Structs: React.FC = observer(() => {
             )
         }
     })
-    // const total = Math.min(data.length, 1) + Math.min(objects.length, 1) + Math.min(arrays.length, 1)
+    useEffect(() => {
+        const ratio = 1 / (Math.min(objects.length, 1) + Math.min(arrays.length, 1) + Math.min(data.length, 1))
+        store.setWidths({
+            array: arrays.length ? ratio : 0,
+            object: objects.length ? ratio : 0,
+            data: data.length ? ratio : 0
+        })
+    })
     return (
         <div className="structs columns is-multiline">
             {data.length ? <div className="column is-full">

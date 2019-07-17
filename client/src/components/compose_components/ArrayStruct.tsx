@@ -13,7 +13,7 @@ type Props = {
 
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
     const arr: React.ReactElement[] = [];
-    const maxWidth = store.windowWidth * .25
+    const maxWidth = store.windowWidth * .5 * store.widths.array
     let len;
     try {
         len = structure['length'].value
