@@ -17,17 +17,18 @@ class DLL {
         return list
     }
     static toArray(list: DLL): any[] {
-        this.assert(list)
-        const elems = []
-        const seen: Set<DLL> = new Set()
-        let current = list
-        while (current) {
-            if (seen.has(current)) throw new Error('Cannot convert cyclic lists to array')
-            elems.push(current.value)
-            seen.add(current)
-            current = current.next
-        }
+        const elems: any[] = []
+        this.forEach(list, val => elems.push(val))
         return elems
+    }
+    static forEach(list: DLL, callback: (val: any) => any): void {
+        this.assert(list)
+        const seen: Set<DLL> = new Set()
+        for (let current: DLL | null = list; !!current; current = current.next) {
+            if (seen.has(current)) throw new Error('Cannot convert a cyclic list to array')
+            callback(current.value)
+            seen.add(current)
+        }
     }
     private static assert(list: DLL) {
         if (!('next' in list) || !('value' in list) || !('prev' in list)) throw new Error('List must have properties "next" and "value"');

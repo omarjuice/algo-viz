@@ -15,7 +15,7 @@ class SLL {
         }
         return list
     }
-    static reverse(list: SLL) {
+    static reverse(list: SLL): SLL {
         this.assert(list)
         let current: SLL | null = list
         let prev = null
@@ -30,20 +30,24 @@ class SLL {
         }
         return prev
     }
-    static toArray(list: SLL) {
-        this.assert(list)
+    static toArray(list: SLL): any[] {
         const elems: any[] = []
+        this.forEach(list, val => elems.push(val))
+        return elems
+    }
+    static forEach(list: SLL, callback: (val: any) => any): void {
+        this.assert(list)
         const seen: Set<SLL> = new Set()
         for (let current: SLL | null = list; !!current; current = current.next) {
             if (seen.has(current)) throw new Error('Cannot convert a cyclic list to array')
-            elems.push(current.value)
+            callback(current.value)
             seen.add(current)
         }
-        return elems
     }
     private static assert(list: SLL) {
         if (!('next' in list) || !('value' in list)) throw new Error('List must have properties "next" and "value"');
     }
+
 
 }
 export default SLL

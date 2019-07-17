@@ -29,7 +29,6 @@ describe('Viz.Array', () => {
             const arr = [1, 1, 2, 3, , 4, 5, 5, , 5, 6, 7, 8]
             const result = Viz.array.filterDuplicates(arr)
             expect(result).toBe(arr)
-            console.log(result);
             const set = new Set()
             for (const el of result) {
                 expect(set.has(el)).toBe(false)
