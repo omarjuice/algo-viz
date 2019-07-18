@@ -36,4 +36,28 @@ describe('Viz.Array', () => {
             }
         })
     })
+    describe('matrix', () => {
+        it('should create a matrix', () => {
+            const rows = 5
+            const cols = 4
+            const matrix = Viz.array.matrix(rows, cols)
+            expect(matrix.length).toBe(rows)
+            expect(matrix[0].length).toBe(cols)
+            matrix.forEach(row => {
+                row.forEach(el => {
+                    expect(typeof el).toBe('number')
+                })
+            })
+        })
+        it('should work with a custom callback', () => {
+            const rows = 5
+            const cols = 5
+            const matrix = Viz.array.matrix(rows, cols, (i, j) => Math.random() > .5 ? null : 1)
+            matrix.forEach(row => {
+                row.forEach(el => {
+                    expect(el === 1 || el === null).toBe(true)
+                })
+            })
+        })
+    })
 })

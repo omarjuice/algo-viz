@@ -25,6 +25,7 @@ export class RootStore {
     @observable ready: boolean = false
     @observable allowRender: boolean = true
     @observable windowWidth: number = window.innerWidth
+    @observable windowHeight: number = window.innerHeight
     @observable widths: widths = {
         array: 0,
         object: 0,
@@ -39,7 +40,7 @@ export class RootStore {
         }
         this.editor = new Editor(this, this.viz ? this.viz.code.trim() : '')
         window.onresize = () => {
-            this.onWindowResize(window.innerWidth)
+            this.onWindowResize(window.innerWidth, window.innerHeight)
         }
 
     }
@@ -52,9 +53,12 @@ export class RootStore {
         this.ready = true
         // this.iterator.play()
     }
-    @action onWindowResize(val: number) {
-        if (val !== this.windowWidth) {
-            this.windowWidth = val
+    @action onWindowResize(width: number, height: number) {
+        if (width !== this.windowWidth) {
+            this.windowWidth = width
+        }
+        if (height !== this.windowHeight) {
+            this.windowHeight = height
         }
     }
     @action setWidths(vals: widths) {

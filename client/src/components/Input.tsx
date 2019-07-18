@@ -6,25 +6,28 @@ import * as monaco from 'monaco-editor';
 import pastels from '../pastels.json'
 let Pastels = pastels as any
 monaco.editor.defineTheme('pastels', Pastels)
-
-
 @observer
 class Input extends Component {
-
-
 
     render() {
         return (
             <MonacoEditor
                 width="50vw"
-                height="600"
+                height="90vh"
                 language="javascript"
                 theme="vs-dark"
+                editorDidMount={(editor) => {
+                    editor.updateOptions({
+                        minimap: {
+                            enabled: false
+                        }
+                    })
+                }}
                 value={store.editor.code}
                 options={{ theme: 'pastels' }}
                 onChange={(code) => store.editor.code = code}
-            />
 
+            />
         );
     }
 }

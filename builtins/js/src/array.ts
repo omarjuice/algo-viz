@@ -49,6 +49,19 @@ const array = {
         arr.splice(last, arr.length - last)
         return arr
     },
+    matrix: (rows: number, cols: number, callback?: (row: number, col: number, matrix?: any[][]) => any) => {
+        if (typeof rows !== 'number') throw new Error('rows must be a number')
+        if (typeof cols !== 'number') throw new Error('cols must be a number')
+        const cb = typeof callback === 'function' ? callback : (i: number, j: number) => (i + 1) * (j + 1)
+        const matrix: any[][] = []
+        for (let row = 0; row < rows; row++) {
+            matrix.push([])
+            for (let col = 0; col < cols; col++) {
+                matrix[row].push(cb(row, col, matrix))
+            }
+        }
+        return matrix
+    }
 
 }
 export default array

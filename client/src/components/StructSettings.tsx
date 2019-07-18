@@ -155,6 +155,7 @@ class StructSettings extends Component<Props> {
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
         const specifiedChildren = this.state.numChildren !== null
+        const isBuiltin = /Viz\./g.test(name) || ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
             <div className="box" style={style}>
 
@@ -163,7 +164,7 @@ class StructSettings extends Component<Props> {
                         <h1 className="title is-5 has-text-weight-bold">{name}</h1>
                     </div>
                     <div className="column">
-                        {!(/Viz\./g.test(name)) && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small">
+                        {!isBuiltin && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small">
                             {this.state.editing ? 'Cancel' : 'Edit'}
                         </button>}
                     </div>
@@ -171,7 +172,7 @@ class StructSettings extends Component<Props> {
                         <input type="color" value={structColors[name]} onChange={(e) => structColors[name] = e.target.value} />
                     </div>
                     <div className="column has-text-right">
-                        <button className="delete" onClick={() => settings.deleteStruct(name)}></button>
+                        {!isBuiltin && <button className="delete" onClick={() => settings.deleteStruct(name)}></button>}
                     </div>
                 </div>
                 {this.state.editing && (

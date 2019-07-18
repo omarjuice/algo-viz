@@ -15,14 +15,13 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .5 * store.widths.array
     let len;
-    try {
-        len = structure['length'].value
-    } catch (e) {
-        console.log(toJS(structure));
-        throw e
-    }
+    len = structure['length'].value
+
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
+    if (display === 'column' && store.widths.array === 1) {
+        ratio *= Math.min(1, 8 / len)
+    }
     for (let i = 0; i < len; i++) {
         arr.push(
             <ArrayVal display={display}

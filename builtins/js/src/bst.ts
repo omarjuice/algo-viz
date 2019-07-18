@@ -50,6 +50,42 @@ class BST {
         }
         return this
     }
+    remove(value: any, parent: BST | null = null): BST {
+        if (value < this.value) {
+            this.left.remove(value, this)
+        } else if (value > this.value) {
+            this.right.remove(value, this)
+        } else {
+            if (this.left instanceof BST && this.right instanceof BST) {
+                this.value = this.right.getMinValue()
+                this.right.remove(this.value, this)
+            } else if (parent === null) {
+                if (this.left instanceof BST) {
+                    this.value = this.left.value
+                    this.right = this.left.right
+                    this.left = this.left.left
+                } else if (this.right instanceof BST) {
+                    this.value = this.right.value
+                    this.left = this.right.left
+                    this.right = this.right.right
+                } else {
+                    this.value = null
+                }
+            } else if (parent.left === this) {
+                parent.left = this.left !== null ? this.left : this.right
+            } else if (parent.right === this) {
+                parent.right = this.left !== null ? this.left : this.right
+            }
+        }
+        return this
+    }
+    private getMinValue(): any {
+        if (!(this.left instanceof BST)) {
+            return this.value
+        } else {
+            return this.left.getMinValue()
+        }
+    }
     traverse(callback: (val: any) => any, order: 'inOrder' | 'postOrder' | 'preOrder' | 'breadthFirst', seen?: any) {
         return BTree.prototype.traverse.call(this, callback, order, seen)
     }
