@@ -29,9 +29,7 @@ type DisplayProps = {
 
 
 
-const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
-    key = String(key)
-    const { orientation, type } = displayProps
+const getHashVal = (value: any, displayProps: DisplayProps) => {
 
     const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
@@ -150,14 +148,12 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
                 <div className="columns is-paddingless is-multiline">
                     {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
-                        <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
-                            {type === 'Map' && prop in store.structs.objects ?
-                                <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
-                                : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
+                        < p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
+                            {type === 'Map' && prop in store.viz.types ? getVal(prop) : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
                         </p>
                     </div>}
                     <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
-                        {getHashVal(prop, value, displayProps)}
+                        {getHashVal(value, displayProps)}
                     </div>
                 </div>
             </Tooltip>

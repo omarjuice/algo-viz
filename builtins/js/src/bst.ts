@@ -20,13 +20,13 @@ class BST {
             bst.insertMany(elems, method)
             return bst
         } else if (method === 'binary') {
-            const middle = Math.round((elems.length / 2))
+            const middle = Math.floor((elems.length / 2))
             const bst = new BST(elems[middle])
             delete elems[middle]
             bst.insertMany(elems, method)
             return bst
         } else {
-            throw new Error('Method must be "breadth" or "binary"')
+            throw new Error('Method must be "inOrder" or "binary"')
         }
     }
     insertMany(elems: any[], method: 'inOrder' | 'binary') {
@@ -44,7 +44,7 @@ class BST {
                     return null
                 }
                 const middle = Math.floor((left + right) / 2)
-                if(middle in elems) cb(elems[middle])
+                if (middle in elems) cb(elems[middle])
                 helper(elems, left, middle, callback)
                 helper(elems, middle + 1, right, callback)
             }

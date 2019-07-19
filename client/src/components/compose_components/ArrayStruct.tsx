@@ -46,6 +46,8 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
 
     const size = Math.max(Math.round(ratio * 5), 3)
     const color = store.settings.structColors['Array']
+    const active = pointed || store.structs.activePointers[objectId];
+    const bkgExtend = active ? '600px' : '20px'
     const styles: React.CSSProperties = {
         margin: `${size}px`,
         padding: `${size}px`,
@@ -54,11 +56,9 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
         linear-gradient(${color}, ${color}),
         linear-gradient(${color}, ${color}),
         linear-gradient(${color}, ${color})`,
-        backgroundSize: `4px 20px, 20px 4px, 4px 20px, 20px 4px`
+        backgroundSize: `4px ${bkgExtend}, ${bkgExtend} 4px, 4px ${bkgExtend}, ${bkgExtend} 4px`
     }
-    if (pointed || store.structs.activePointers[objectId]) {
-        styles.boxShadow = `0 0 5px 2.5px ${color}`;
-    }
+
 
     if (display === 'row') {
         styles.height = valSize * 1.5 + 5

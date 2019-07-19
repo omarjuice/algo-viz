@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../../store';
 import HashVal from './HashVal';
 import genId from '../../utils/genId';
+import invertColor from '../../utils/invertColor';
 
 type Props = {
     structure: Viz.Structure,
@@ -46,15 +47,19 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     }
     const type = store.viz.types[objectId]
     const color = store.settings.structColors[type] || 'white'
-    if (pointed || store.structs.activePointers[objectId]) {
-        styles.boxShadow = `0 0 5px 2.5px ${color}`
-    }
+
+    const active = pointed || store.structs.activePointers[objectId]
     const rotation = orientation === 'column' ? 90 : 0
+
+    const braceStyle: React.CSSProperties = { transform: `rotate(${rotation}deg)`, color }
+    if (active) {
+        braceStyle.transform += ' scale(2)'
+    }
     return (
         <div style={styles} className={`hash-struct`}>
-            <div className="is-size-1" style={{ transform: `rotate(${rotation}deg)`, color }}>{`{`}</div>
+            <div className="is-size-1" style={braceStyle}>{`{`}</div>
             {obj}
-            <div className="is-size-1" style={{ transform: `rotate(${rotation}deg)`, color }}>{'}'}</div>
+            <div className="is-size-1" style={braceStyle}>{'}'}</div>
         </div>
     );
 })
