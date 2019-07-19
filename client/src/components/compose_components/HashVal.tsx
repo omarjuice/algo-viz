@@ -32,20 +32,7 @@ type DisplayProps = {
 const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     key = String(key)
     const { orientation, type } = displayProps
-    const Prop: React.FC = ({ children }) => (
-        <div className="columns is-paddingless is-multiline">
-            {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
-                <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
-                    {type === 'Map' && key in store.structs.objects ?
-                        <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
-                        : key.slice(0, 5) + (key.length > 5 ? '...' : '')}
-                </p>
-            </div>}
-            <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
-                {children}
-            </div>
-        </div>
-    )
+
     const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
@@ -54,9 +41,7 @@ const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
         if (value in store.viz.types) {
             if (value in store.structs.objects) {
                 return (
-                    <Prop>
-                        <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
-                    </Prop>
+                    <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size} />
                 )
             }
             if (store.viz.types[value] === '<empty>') {
@@ -74,12 +59,10 @@ const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
         const strVal = String(value)
         let len = strVal.length
         if (strVal[0] === '-')--len
-        if (len < 3) displayProps.textDisplay = strVal
+        if (len < 4) displayProps.textDisplay = strVal
     }
     return (
-        <Prop>
-            <ValDisplay {...displayProps} />
-        </Prop>
+        <ValDisplay {...displayProps} />
     )
 }
 
@@ -118,15 +101,19 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         if (store.structs.bindings.has(value)) flag = true
         if (!flag) {
             return (
-                <div className={`hash-array-child columns is-mobile`}>
-                    <div className={`column is-narrow is-size-6 ${(anim[0] || anim[1]) && 'has-text-white'}`}>
-                        {prop}
-                    </div>
-
-                    <div className="column is-narrow">
+                <div className="columns is-paddingless is-multiline">
+                    {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
+                        <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
+                            {type === 'Map' && prop in store.structs.objects ?
+                                <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
+                                : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
+                        </p>
+                    </div>}
+                    <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
                         <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.5) * ratio} />
                     </div>
                 </div>
+
             )
         }
     }
@@ -153,15 +140,26 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         >
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
-                    <span style={{ fontSize: 9 }}>
+                    {type !== 'Set' && <span style={{ fontSize: 9 }}>
                         {type === 'Map' && prop in store.structs.objects ? store.viz.types[prop] : prop}:{' '}
-                    </span>
+                    </span>}
                     {getVal(value, true)}
                 </div >
             )}
                 placement={'right'}
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
-                {getHashVal(prop, value, displayProps)}
+                <div className="columns is-paddingless is-multiline">
+                    {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
+                        <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
+                            {type === 'Map' && prop in store.structs.objects ?
+                                <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
+                                : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
+                        </p>
+                    </div>}
+                    <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
+                        {getHashVal(prop, value, displayProps)}
+                    </div>
+                </div>
             </Tooltip>
         </div >
     );

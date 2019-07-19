@@ -120,7 +120,7 @@ class Structures {
                     parents.set(parent, [key])
                 }
             }
-            const parentType = this.root.viz.types[id]
+            const parentType = this.root.viz.types[parent]
             const isChild = key in this.root.settings.structSettings[parentType].order
             if (isChild || ['Object', 'Map', 'Array'].includes(parentType)) {
                 const currentParents = this.parents[id]
@@ -405,6 +405,9 @@ class Structures {
                 }
                 return 4
             }
+            if (!hashTypes.includes(parentType) && !hashTypes.includes(childType) && parentType !== 'Array' && childType !== 'Array') {
+                return 3
+            }
             if (childType === 'Array') {
                 if (hashTypes.includes(parentType)) {
                     return 1
@@ -428,11 +431,9 @@ class Structures {
                 return 0
             }
             if (['Object', 'Map'].includes(parentType)) {
-                if (_this.parents[parent].size) return 1
+                if (_this.parents[parent].size) return 2
             }
-            if (!hashTypes.includes(parentType) && !hashTypes.includes(childType)) {
-                return 3
-            }
+
             return 0
         })()
         return val

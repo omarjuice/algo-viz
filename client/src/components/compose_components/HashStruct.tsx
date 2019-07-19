@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
 import HashVal from './HashVal';
+import genId from '../../utils/genId';
 
 type Props = {
     structure: Viz.Structure,
@@ -14,6 +15,20 @@ type Props = {
 const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, orientation }) => {
     const obj: React.ReactElement[] = [];
     // const maxWidth = store.windowWidth * .3 * ratio
+    const [node, setNode] = useState(null)
+    const ref = useCallback((node) => {
+        if (node) {
+            setNode(node)
+        }
+    }, [])
+    const renderId = useMemo(() => genId(objectId.length), [objectId])
+
+
+    useEffect(() => {
+        if (node) {
+            store.structs.setPosition(objectId, node, renderId)
+        }
+    })
 
     for (const key in structure) {
         obj.push(

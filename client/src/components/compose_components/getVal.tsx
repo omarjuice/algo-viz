@@ -17,7 +17,7 @@ export const getVal = (value: any, textOnly: boolean = false, size: number = 30)
             return type
         }
         if (count === 3 && type) {
-            return textOnly ? store.viz.types[value] : <Pointer color={"white"} size={size} id={value} active={false} />
+            return textOnly ? store.viz.types[value] : <Pointer size={size} id={value} active={false} />
         }
         return <StringVal value={value} />
     } else if (typeof value === 'number') {

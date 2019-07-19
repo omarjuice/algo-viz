@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
 import store from '../../store';
+import genId from '../../utils/genId';
 
 type Props = {
     structure: Viz.Structure,
@@ -11,6 +12,20 @@ type Props = {
 }
 
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
+    const [node, setNode] = useState(null)
+    const ref = useCallback((node) => {
+        if (node) {
+            setNode(node)
+        }
+    }, [])
+    const renderId = useMemo(() => genId(objectId.length), [objectId])
+
+
+    useEffect(() => {
+        if (node) {
+            store.structs.setPosition(objectId, node, renderId)
+        }
+    })
     const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .5 * store.widths.array
     let len;
@@ -52,7 +67,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
         styles.overflowY = 'scroll'
     }
     return (
-        <div className={`array-struct`} style={styles}>
+        <div className={`array-struct`} ref={ref} style={styles}>
             {arr}
         </div>
     );

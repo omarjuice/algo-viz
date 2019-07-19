@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import store from '../../store';
 import anime from 'animejs'
 import { observer } from 'mobx-react';
+import genId from '../../utils/genId';
 
 
 type DisplayProps = {
@@ -31,6 +32,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
                 }
             }
             if (anim[1] && !(anim[1] as boolean | Promise<void> instanceof Promise)) {
+
                 const animation = anime({
                     targets: ref.current,
                     translateY: [-1 * size, size / 2, 0],
@@ -45,7 +47,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
             }
         }
     })
-    const gradId = Math.random().toString()
+    const gradId = useMemo(() => genId(7), [])
     return <svg
 
         className="val-display" style={{

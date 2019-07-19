@@ -126,6 +126,12 @@ class Settings {
             numChildren: null,
             pointers: {}
         }
+        // for (let structType of ['Object', 'Array', 'Map', 'Set']) {
+        //     if (!(structType in this.structColors)) {
+        //         this.setColor(structType)
+        //     }
+        // }
+
         for (const name in structInfo) {
             const newName = 'Viz.' + name
             this.structSettings[newName] = structInfo[name]
@@ -159,7 +165,11 @@ class Settings {
     }
     @action addStruct(structType: string) {
         const restricted = ['Object', 'Array', 'Map', 'Set']
+        if (!(structType in this.structColors)) {
+            this.setColor(structType)
+        }
         if (restricted.includes(structType)) return
+
         if (!(structType in this.structSettings)) {
             this.structSettings[structType] = {
                 order: {},
@@ -168,9 +178,7 @@ class Settings {
                 pointers: {}
             }
         }
-        if (!(structType in this.structColors)) {
-            this.setColor(structType)
-        }
+
     }
     @action setColor(structType: string, color?: string) {
         if (!color) color = '#' + (Math.floor(Math.random() * (255 ** 3))).toString(16)

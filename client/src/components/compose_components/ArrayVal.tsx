@@ -36,7 +36,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
             if (value in store.structs.objects) {
-                return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
+                return <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size} />
             }
             if (store.viz.types[value] === '<empty>') {
                 displayProps.color = store.settings.background

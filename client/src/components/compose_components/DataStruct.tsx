@@ -15,6 +15,7 @@ type Props = {
     objectId: string
     ratio: number
     renderId?: string
+    isList?: boolean
 }
 type DisplayProps = {
     color: string
@@ -56,7 +57,7 @@ const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) =>
 }
 
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId }) => {
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList }) => {
     if (store.structs.children[objectId]) { }
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
@@ -86,8 +87,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const width = store.windowWidth * .5 * ratio * store.widths.data
     const color = store.settings.structColors[type]
     const settings = store.settings.structSettings[type]
+    isList = isList && settings.numChildren === 1
 
-    const isList = settings.numChildren === 1
     const styles: React.CSSProperties = {
         width,
         display: 'flex',
