@@ -57,7 +57,7 @@ const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) =>
 
 
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId }) => {
-    if (!store.structs.bindings) return null // literally only here to make the component rerender
+    if (store.structs.children[objectId]) { }
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
         if (node) {

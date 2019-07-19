@@ -23,21 +23,24 @@ type DisplayProps = {
     anim: Viz.anim
     objectId: string
     textDisplay: string
-    orientation: 'row' | 'column'
+    orientation: 'row' | 'column',
+    type: string
 }
 
 
 
 const getHashVal = (key: string, value: any, displayProps: DisplayProps) => {
     key = String(key)
-    const { orientation } = displayProps
+    const { orientation, type } = displayProps
     const Prop: React.FC = ({ children }) => (
         <div className="columns is-paddingless is-multiline">
-            <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
+            {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
                 <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
-                    {key.slice(0, 5) + (key.length > 5 ? '...' : '')}
+                    {type === 'Map' && key in store.structs.objects ?
+                        <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
+                        : key.slice(0, 5) + (key.length > 5 ? '...' : '')}
                 </p>
-            </div>
+            </div>}
             <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
                 {children}
             </div>
@@ -87,13 +90,15 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
     let value = info.value
     const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
     const anim: Viz.anim = [info.get, info.set]
+    const type = store.viz.types[objectId]
     const displayProps: DisplayProps = {
         objectId,
         color: store.settings.valueColors.other,
         size,
         anim,
         textDisplay: "",
-        orientation
+        orientation,
+        type
     }
     if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
         const parents = store.structs.parents[value]
@@ -117,9 +122,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                     <div className={`column is-narrow is-size-6 ${(anim[0] || anim[1]) && 'has-text-white'}`}>
                         {prop}
                     </div>
-                    {/* <div className="column is-1">
 
-                        </div> */}
                     <div className="column is-narrow">
                         <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.5) * ratio} />
                     </div>
@@ -150,7 +153,9 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         >
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
-                    <span style={{ fontSize: 9 }}> {prop}:{' '}</span>
+                    <span style={{ fontSize: 9 }}>
+                        {type === 'Map' && prop in store.structs.objects ? store.viz.types[prop] : prop}:{' '}
+                    </span>
                     {getVal(value, true)}
                 </div >
             )}

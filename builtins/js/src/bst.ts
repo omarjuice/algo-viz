@@ -8,12 +8,30 @@ class BST {
         this.value = val
         this.left = this.right = null
     }
-    static create(elems: any[], method: 'inOrder' | 'binary') {
+    private static checkElems(elems: any[]) {
         if (!Array.isArray(elems)) throw new Error('elems must be an array')
         if (!elems.length) throw new Error('elems must have a length of at least 1')
-
+    }
+    static create(elems: any[], method: 'inOrder' | 'binary') {
+        elems = [...elems]
+        BST.checkElems(elems)
         if (method === 'inOrder') {
-            const bst = new BST(elems[0])
+            const bst = new BST(elems.shift())
+            bst.insertMany(elems, method)
+            return bst
+        } else if (method === 'binary') {
+            const middle = Math.round((elems.length / 2))
+            const bst = new BST(elems[middle])
+            delete elems[middle]
+            bst.insertMany(elems, method)
+            return bst
+        } else {
+            throw new Error('Method must be "breadth" or "binary"')
+        }
+    }
+    insertMany(elems: any[], method: 'inOrder' | 'binary') {
+        const bst = this
+        if (method === 'inOrder') {
             for (let i = 1; i < elems.length; i++) {
                 if (i in elems) {
                     bst.insert(elems[i])
@@ -26,19 +44,15 @@ class BST {
                     return null
                 }
                 const middle = Math.floor((left + right) / 2)
-                cb(elems[middle])
+                if(middle in elems) cb(elems[middle])
                 helper(elems, left, middle, callback)
                 helper(elems, middle + 1, right, callback)
             }
-            const middle = Math.floor(elems.length / 2)
-            const bst = new BST(elems[middle])
             const callback = (val: any) => bst.insert(val)
-            helper(elems, 0, middle, callback)
-            helper(elems, middle + 1, elems.length, callback)
+            helper(elems, 0, elems.length, callback)
             return bst
-        } else {
-            throw new Error('Method must be "breadth" or "binary"')
         }
+
     }
     insert(val: any): BST {
         if (val >= this.value) {

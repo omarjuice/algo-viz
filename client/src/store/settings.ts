@@ -114,6 +114,18 @@ class Settings {
             numChildren: null,
             pointers: {}
         }
+        this.structSettings['Map'] = {
+            order: {},
+            main: 'value',
+            numChildren: null,
+            pointers: {}
+        }
+        this.structSettings['Set'] = {
+            order: {},
+            main: 'value',
+            numChildren: null,
+            pointers: {}
+        }
         for (const name in structInfo) {
             const newName = 'Viz.' + name
             this.structSettings[newName] = structInfo[name]

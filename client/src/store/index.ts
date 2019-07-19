@@ -64,7 +64,7 @@ export class RootStore {
     @action setWidths(vals: widths) {
         this.widths.array = vals.array
         this.widths.object = vals.object
-        this.widths.data = vals.data
+        this.widths.data = 1
     }
 }
 

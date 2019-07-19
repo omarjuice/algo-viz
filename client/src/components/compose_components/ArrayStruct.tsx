@@ -2,7 +2,6 @@ import React from 'react';
 import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
 import store from '../../store';
-import { toJS } from 'mobx';
 
 type Props = {
     structure: Viz.Structure,

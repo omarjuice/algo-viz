@@ -6,4 +6,11 @@ class MinHeap {
         this.left = this.right = null
         this.value = val
     }
+    insert(val: any) {
+
+    }
 }
+
+
+
+

@@ -14,9 +14,7 @@ function reassignMutative() {
         const { get, has, set, delete: mapDelete, clear, forEach } = obj
         Object.defineProperty(obj, 'get', {
             value: function (key) {
-                ignore = true
                 const result = this.has(key)
-                ignore = false
                 if (result) {
                     const val = get.call(this, key)
                     return ignore ? val : runner.__(val, {
@@ -27,22 +25,6 @@ function reassignMutative() {
                     })
                 } else {
                     return undefined
-                }
-            },
-            ..._definePropertyParams
-        })
-        Object.defineProperty(obj, 'has', {
-            value: function (key) {
-                const result = has.call(this, key)
-                if (!ignore) {
-                    return runner.__(result, {
-                        type: TYPES.GET,
-
-                        object: runner.stringify(this),
-                        access: [runner.stringify(key)]
-                    })
-                } else {
-                    return result
                 }
             },
             ..._definePropertyParams
@@ -89,14 +71,14 @@ function reassignMutative() {
             value: function (...args) {
                 if (args[0]) {
                     const [cb] = args
-                    args[0] = (key, val, ..._args) => {
+                    args[0] = (val, key, ..._args) => {
                         runner.__(val, {
                             type: TYPES.GET,
 
                             object: runner.stringify(this),
                             access: [runner.stringify(key)]
                         })
-                        return cb.call(args[1] || null, key, val, ..._args)
+                        return cb.call(args[1] || null, val, key, ..._args)
                     }
                 }
                 return forEach.call(this, ...args)
@@ -112,7 +94,6 @@ function reassignMutative() {
                 if (result) {
                     return runner.__(key, {
                         type: TYPES.GET,
-
                         object: runner.stringify(this),
                         access: [runner.stringify(key)]
                     })

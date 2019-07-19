@@ -3,7 +3,8 @@ const isNative = require('./isNative')
 function virtualize(object) {
     const runner = this
     if (!object || typeof object !== 'object') return object
-    if (isNative(object) || object instanceof Map ||
+    if (isNative(object) ||
+        object instanceof Map ||
         object instanceof Set ||
         object instanceof String ||
         object instanceof RegExp ||

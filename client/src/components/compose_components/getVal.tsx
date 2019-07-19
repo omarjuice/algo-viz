@@ -3,7 +3,7 @@ import { BooleanVal, StringVal, NumberVal, SpecialVal } from './value_components
 import store from '../../store';
 import Pointer from './Pointer';
 
-export const getVal = (value: any, textOnly: boolean = false) => {
+export const getVal = (value: any, textOnly: boolean = false, size: number = 30) => {
     if (typeof value === 'boolean') {
         return <BooleanVal value={value} />
     } else if (typeof value === 'string') {
@@ -17,7 +17,7 @@ export const getVal = (value: any, textOnly: boolean = false) => {
             return type
         }
         if (count === 3 && type) {
-            return textOnly ? store.viz.types[value] : <Pointer color={"white"} size={30} id={value} active={false} />
+            return textOnly ? store.viz.types[value] : <Pointer color={"white"} size={size} id={value} active={false} />
         }
         return <StringVal value={value} />
     } else if (typeof value === 'number') {
