@@ -11,6 +11,19 @@ type Props = {
     pointed: boolean
 }
 
+
+const iterate = (len: number, display: 'column' | 'row', ratio: number, valSize: number, objectId: string, structure: Viz.Structure) => {
+    const arr = []
+    for (let i = 0; i < len; i++) {
+        arr.push(
+            <ArrayVal display={display}
+                ratio={ratio} size={valSize}
+                key={i} index={i} objectId={objectId} array={structure} />
+        )
+    }
+    return arr
+}
+
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed }) => {
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
@@ -20,30 +33,24 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     }, [])
     const renderId = useMemo(() => genId(objectId.length), [objectId])
 
-
     useEffect(() => {
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
         }
     })
-    const arr: React.ReactElement[] = [];
     const maxWidth = store.windowWidth * .5 * store.widths.array
-    let len;
-    len = structure['length'].value
+    const len = structure['length'].value
 
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
     if (display === 'column' && store.widths.array === 1) {
         ratio *= Math.min(1, 8 / len)
     }
-    for (let i = 0; i < len; i++) {
-        arr.push(
-            <ArrayVal display={display}
-                ratio={ratio} size={valSize}
-                key={i} index={i} objectId={objectId} array={structure} />
-        )
-    }
 
+    const arr: React.ReactNode[] = useMemo(
+        () => iterate(len, display, ratio, valSize, objectId, structure),
+        [len, display, ratio, valSize, objectId, structure]
+    )
     const size = Math.max(Math.round(ratio * 5), 3)
     const color = store.settings.structColors['Array']
     const active = pointed || store.structs.activePointers[objectId];
