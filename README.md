@@ -9,6 +9,8 @@
 ![trie](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-trie.png)
 ![riverSizes](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-riverSizes.png)
 ![letterCombinations](https://res.cloudinary.com/omarjuice/image/upload/v1562782410/algo-viz/algo-viz-example-lc.png)
+### *What have I done...*
+![What have I done](https://res.cloudinary.com/omarjuice/image/upload/v1563550903/algo-viz/algo-viz-whid2.png)
 ## How it works
 The functionality can be broken down into high level steps.
 
