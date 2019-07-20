@@ -14,30 +14,20 @@ const Pointer: React.FC<Props> = observer(({ active, id, size }) => {
     const isActive = hovered || active
     useEffect(() => {
         store.structs.activePointers[id] = isActive
-        let flag = false
         if (isActive) {
             if (!store.structs.positions[id]) {
                 store.structs.bindings.add(id)
-                flag = true
             }
         }
-
-        // return () => {
-        //     if (flag) {
-        //         store.structs.bindings.delete(id)
-        //     }
-        // }
     }, [isActive, id])
     const type = store.viz.types[id]
     const color = store.settings.structColors[type]
     return <svg width={size} height={size}
         onMouseEnter={() => {
             toggle(true)
-            // store.structs.activePointers[id] = true
         }}
         onMouseLeave={() => {
             toggle(false)
-            // store.structs.activePointers[id] = false
         }}
         viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" >
 

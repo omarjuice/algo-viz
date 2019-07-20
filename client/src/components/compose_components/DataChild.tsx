@@ -14,6 +14,8 @@ type Props = {
     prop: string | number
     parent: Viz.Structure
     parentId: string
+    isList?: boolean
+    idx?: number
 }
 
 @observer
@@ -28,7 +30,7 @@ class DataChild extends React.Component<Props>{
         }
     }
     render() {
-        const { objectId, ratio, prop, parent, parentId } = this.props
+        const { objectId, ratio, prop, parent, parentId, isList, idx } = this.props
         const pos = store.structs.positions[objectId]
 
         const info = parent[prop]
@@ -44,7 +46,7 @@ class DataChild extends React.Component<Props>{
         }
         let element;
         if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
-            element = <DataStruct renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
+            element = <DataStruct idx={idx} isList={isList} renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
         } else if (type === 'Array') {
             element = <ArrayStruct objectId={objectId} ratio={ratio * 1.5} pointed={false} structure={store.structs.objects[objectId]} />
         } else if (type === 'Object') {

@@ -17,10 +17,21 @@ class BTree {
             const queue = [btree]
             for (let i = 1; i < elems.length; i += 2) {
                 const current = queue.shift()
-                current.left = new BTree(elems[i])
-                if (i + 1 in elems) {
-                    current.right = new BTree(elems[i + 1])
-                    queue.push(current.left, current.right)
+                if (current) {
+                    if (i in elems && elems[i] !== null) {
+                        current.left = new BTree(elems[i])
+                        queue.push(current.left)
+                    } else {
+                        queue.push(null)
+                    }
+                    if (i + 1 in elems && elems[i + 1] !== null) {
+                        current.right = new BTree(elems[i + 1])
+                        queue.push(current.right)
+                    } else {
+                        queue.push(null)
+                    }
+                } else {
+                    queue.push(null, null)
                 }
             }
             return btree

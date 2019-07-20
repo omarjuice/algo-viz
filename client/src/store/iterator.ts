@@ -19,7 +19,7 @@ class IteratorStore {
     @observable handler: handler = { value: 0, allow: true, changing: false }
     baseTime: number = 100
     timer: any = null
-    maxSpeed: number = 64
+    maxSpeed: number = 32
     minSpeed: number = 1 / 4
     root: RootStore
     constructor(store: RootStore) {
@@ -116,6 +116,7 @@ class IteratorStore {
     @action async afterChange() {
         if (this.handler.allow && this.handling) {
             const t1 = Date.now()
+            const { iterating } = this
             this.handling = false
             this.handler.allow = false
             if (this.handler.value > this.index) {
@@ -146,7 +147,7 @@ class IteratorStore {
             await this.root.structs.reset()
             this.root.structs.resetPositions()
             this.root.allowRender = true
-            this.play()
+            if (iterating) this.play()
             console.log('SKIP PERFORMANCE: ', Date.now() - t1)
         }
     }

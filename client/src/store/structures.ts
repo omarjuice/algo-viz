@@ -83,7 +83,11 @@ class Structures {
             let parents = this.parents[id]
             let isCircular = false
             while (parents && parents.size) {
-                current = parents.values().next().value
+                const parent = parents.values().next().value
+                if (!ids.has(parent)) {
+                    break // only active parents allowed?
+                }
+                current = parent
                 parents = this.parents[current]
                 if (seen.has(current)) {
                     isCircular = true

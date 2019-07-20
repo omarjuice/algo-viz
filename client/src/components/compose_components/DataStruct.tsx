@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import store from '../../store';
 import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
@@ -16,6 +16,7 @@ type Props = {
     ratio: number
     renderId?: string
     isList?: boolean
+    idx?: number
 }
 type DisplayProps = {
     color: string
@@ -57,14 +58,19 @@ const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) =>
 }
 
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList }) => {
-    if (store.structs.children[objectId]) { }
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx }) => {
     const [node, setNode] = useState(null)
-    const ref = useCallback((node) => {
-        if (node) {
-            setNode(node)
+    const ref = useCallback((elem) => {
+        if (idx) { }//For rerendered
+        if (elem) {
+            console.log('UPDATE');
+            if (!node) {
+                setImmediate(() => {
+                    setNode(elem)
+                })
+            }
         }
-    }, [])
+    }, [node, idx])
     const pos = store.structs.positions[objectId]
     renderId = useMemo(() => {
         return renderId || genId(objectId.length)
@@ -74,6 +80,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     useEffect(() => {
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
+
         }
     })
 
@@ -88,7 +95,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const color = store.settings.structColors[type]
     const settings = store.settings.structSettings[type]
     isList = isList && settings.numChildren === 1
-
     const styles: React.CSSProperties = {
         width,
         display: 'flex',
@@ -114,7 +120,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     for (const key in structure) {
         const value = structure[key].value
 
-
         if (typeof value === 'string' && value in store.structs.objects && value !== objectId) {
             if (key in settings.pointers) {
                 const pointer: boolean = settings.pointers[key]
@@ -124,6 +129,18 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                             {null}
                         </ArcPointer >
                     )
+                } else {
+                    const object = store.structs.objects[value]
+                    for (const key in object) {
+                        const info = object[key]
+                        if (typeof info.value === 'string' && info.value in store.structs.objects) {
+                            pointers.push(
+                                <ArcPointer prop={key} key={value + key} from={objectId} to={info.value} get={!!object[key].get} set={!!object[key].set}>
+                                    {null}
+                                </ArcPointer >
+                            )
+                        }
+                    }
                 }
             } else if (key in settings.order) {
                 const parents = store.structs.parents[value]
@@ -263,11 +280,16 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                         } else {
                             return (
                                 <DataChild
+                                    idx={idx}
                                     key={child} parent={parent}
                                     parentId={objectId}
                                     objectId={child}
                                     ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}
-                                    prop={key} />)
+                                    prop={key}
+                                    isList={isList} />
+
+                            )
+
 
                         }
                     })}

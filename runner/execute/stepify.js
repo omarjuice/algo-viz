@@ -257,7 +257,7 @@ module.exports = function (input) {
                     }
                     if (t.isWhile(path.node)) {
                         const { test } = path.node
-                        if (t.isIdentifier(test) || t.isMemberExpression(path.node.test)) {
+                        if (t.isIdentifier(test) || t.isMemberExpression(path.node.test) || t.isLiteral(path.node.test)) {
                             path.node.test = proxy(path.node.test, {
                                 type: TYPES.BLOCK,
                                 scope: getScope(path)
@@ -270,7 +270,7 @@ module.exports = function (input) {
                     if (!t.isBlockStatement(path.node.consequent)) {
                         path.node.consequent = t.blockStatement([path.node.consequent])
                     }
-                    if (!t.isExpression(path.node.test) || t.isIdentifier(path.node.test) || t.isMemberExpression(path.node.test)) {
+                    if (!t.isExpression(path.node.test) || t.isIdentifier(path.node.test) || t.isMemberExpression(path.node.test) || t.isLiteral(path.node.test)) {
                         path.node.test = proxy(path.node.test, {
                             type: TYPES.BLOCK,
                             scope: getScope(path)
