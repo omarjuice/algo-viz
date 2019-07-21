@@ -7,6 +7,7 @@ import store from '../../store';
 import ArrayStruct from './ArrayStruct';
 import Pointer from './Pointer';
 import ValDisplay from './ValDisplay';
+import ArrayChild from './ArrayChild';
 type ArrayValProps = {
     array: Viz.Structure
     index: number
@@ -83,7 +84,10 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     if (typeof value === 'string' && value in store.structs.objects) {
         const parents = store.structs.parents[value]
         let flag = false
-        if (parents) {
+        const type = store.viz.types[value]
+        if (type !== 'Array') flag = true
+        if (store.structs.bindings.has(value)) flag = true
+        if (!flag && parents) {
             if (!parents.has(objectId)) flag = true
             else {
                 const pointers = store.structs.pointers.get(value)
@@ -95,16 +99,10 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
                 }
             }
         }
-        const type = store.viz.types[value]
-        if (store.structs.bindings.has(value)) flag = true
-        if (type !== 'Array') flag = true
         if (!flag) {
             return (
-                <div className={`array-line ${className}`}>
-                    <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.9) * ratio} />
-                </div>
+                <ArrayChild className={className} objectId={value} ratio={ratio} anim={anim} />
             )
-
         }
 
     }
