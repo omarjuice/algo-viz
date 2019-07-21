@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, ReactNode } from 'react';
 import store from '../../store';
 import anime from 'animejs'
 import { observer } from 'mobx-react';
@@ -10,7 +10,7 @@ type DisplayProps = {
     size: number
     anim: Viz.anim
     objectId: string
-    textDisplay: string
+    textDisplay: string | ReactNode
     textColor?: string
     highlight?: boolean
 }

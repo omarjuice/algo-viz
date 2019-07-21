@@ -69,6 +69,7 @@ module.exports = function (obj) {
         } else {
             const copy = {}
             for (const key in obj) {
+                if (key[0] === '_') continue;
                 copy[key] = this.stringify(obj[key])
                 obj[key] = this.virtualize(obj[key])
             }

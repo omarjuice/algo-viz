@@ -34,7 +34,7 @@ function virtualize(object) {
 
 function isVirtualProperty(object, property) {
     const definition = Reflect.getOwnPropertyDescriptor(object, property)
-    return !!definition && typeof property !== 'symbol'
+    return !!definition && typeof property !== 'symbol' && property[0] !== '_'
 }
 function convert(val) {
     if (typeof val !== 'string') return val

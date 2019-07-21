@@ -16,6 +16,7 @@ type Props = {
 const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, orientation }) => {
     const obj: React.ReactElement[] = [];
     // const maxWidth = store.windowWidth * .3 * ratio
+    const windowWidth = store.windowWidth
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
         if (node) {
@@ -23,6 +24,10 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         }
     }, [])
     const renderId = useMemo(() => genId(objectId.length), [objectId])
+    // const pos = store.structs.positions[objectId]
+    // if (pos && pos.renderId && pos.renderId !== renderId) {
+    //     return null
+    // }
 
 
     useEffect(() => {
@@ -56,7 +61,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         braceStyle.transform += ' scale(2)'
     }
     return (
-        <div style={styles} className={`hash-struct`}>
+        <div style={styles} ref={ref} className={`hash-struct`}>
             <div className="is-size-1" style={braceStyle}>{`{`}</div>
             {obj}
             <div className="is-size-1" style={braceStyle}>{'}'}</div>

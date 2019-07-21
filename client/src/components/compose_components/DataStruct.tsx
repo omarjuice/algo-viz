@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, ReactNode } from 'react';
 import store from '../../store';
 import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
@@ -8,6 +8,7 @@ import { getVal } from './getVal';
 import Tooltip from 'rc-tooltip';
 import genId from '../../utils/genId';
 import ArcPointer from './ArcPointer';
+import Pointer from './Pointer';
 
 
 type Props = {
@@ -34,14 +35,14 @@ const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) =>
         return <ValDisplay {...displayProps} />
     } else if (typeof value === 'string') {
         if (value in store.viz.types) {
-            if (value in store.structs.objects) {
-                // return <Pointer active={!!displayProps.anim[0]} id={value} color={"white"} size={displayProps.size} />
-                // if (value === objectId) {
-                //     displayProps.textDisplay = 'this'
-                //     displayProps.color = 'scarlet'
-                // }
-                return null
+            if (value === objectId) {
+                displayProps.textDisplay = 'this'
+                displayProps.textColor = 'red'
+            } else {
+                return <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size} />
             }
+
+
         } else {
             if (value.length < 4) displayProps.textDisplay = value
         }
@@ -60,13 +61,24 @@ const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) =>
 
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx }) => {
     const [node, setNode] = useState(null)
+    const type = store.viz.types[objectId]
+    if (!type) return null
+    const settings = store.settings.structSettings[type]
+
+    isList = isList && settings.numChildren === 1
     const ref = useCallback((elem) => {
         if (idx) { }//For rerendered
         if (elem) {
             console.log('UPDATE');
-            if (!node) setNode(elem)
+            if (!node) {
+                if (!isList) {
+                    setNode(elem)
+                } else {
+                    setImmediate(() => setNode(elem))
+                }
+            }
         }
-    }, [node, idx])
+    }, [node, idx, isList])
     const pos = store.structs.positions[objectId]
     renderId = useMemo(() => {
         return renderId || genId(objectId.length)
@@ -83,14 +95,10 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     if (pos && pos.renderId && pos.renderId !== renderId) {
         return null
     }
-    const type = store.viz.types[objectId]
-    if (!type) {
-        return null
-    }
+
     const width = store.windowWidth * .5 * ratio * store.widths.data
     const color = store.settings.structColors[type]
-    const settings = store.settings.structSettings[type]
-    isList = isList && settings.numChildren === 1
+
     const styles: React.CSSProperties = {
         width,
         display: 'flex',
@@ -116,7 +124,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     for (const key in structure) {
         const value = structure[key].value
 
-        if (typeof value === 'string' && value in store.structs.objects && value !== objectId) {
+        if (typeof value === 'string' && value in store.structs.objects && value !== objectId && (key in settings.pointers || key in settings.order)) {
             if (key in settings.pointers) {
                 const pointer: boolean = settings.pointers[key]
                 if (!pointer) {
@@ -186,7 +194,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
             otherKeys.push(
                 <div key={key} className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {key}:{' '}</span>
-                    {value === objectId ? <span className="has-text-danger">this</span> : getVal(value, true)}
+                    {value === objectId ? <span className="has-text-danger">this</span> : getVal(value, false, 10)}
                 </div >
             )
 
