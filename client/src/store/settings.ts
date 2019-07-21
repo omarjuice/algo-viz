@@ -58,7 +58,7 @@ export const structInfo: Viz.structSettings = {
         main: 'value',
         numChildren: 2,
         pointers: {
-
+            parent: false
         }
     }
 }

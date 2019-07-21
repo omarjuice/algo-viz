@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
 // import Tooltip from 'rc-tooltip';
@@ -16,18 +16,23 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
     const toCoords = store.structs.positions[to]
 
     const active = store.structs.activePointers[from]
-
+    const willRender = fromCoords && toCoords
+    const timeout = useRef(null)
     useEffect(() => {
-        if (active) {
-            setTimeout(() => {
-                store.structs.activePointers[to] = true
-            }, 500)
-        } else {
-            store.structs.activePointers[to] = false
-        }
-    }, [active])
+        if (willRender) {
+            if (active) {
+                timeout.current = setTimeout(() => {
+                    store.structs.activePointers[to] = true
+                }, 300)
+            } else {
+                if (timeout.current) clearTimeout(timeout.current)
+                store.structs.activePointers[to] = false
 
-    if (!fromCoords || !toCoords) {
+            }
+        }
+    }, [active, to, willRender])
+
+    if (!willRender) {
         return (
             <>
                 {children}
@@ -69,11 +74,11 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
         }
         const isActive = (get || set || active)
         const lineStyle: React.CSSProperties = {
-            stroke: get ? 'green' : set ? 'purple' : 'white',
+            stroke: get ? '#23D160' : set ? '#A663CC' : 'white',
             strokeWidth: isActive ? '5px' : '1px',
             strokeDasharray: '1000',
             strokeDashoffset: isActive ? '0' : '1000',
-            transition: 'stroke-dashoffset 2s, stroke-width .5s'
+            transition: 'stroke-dashoffset 2s'
 
         }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
 // import Tooltip from 'rc-tooltip';
@@ -10,12 +10,37 @@ type Props = {
     set: boolean | Promise<void>
     prop: string | number
 }
+type coords = {
+    x: number
+    y: number
+}
+type path = {
+    pointA?: coords
+    pointB?: coords
+    control?: coords
+}
 
 const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, prop }) => {
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
+    const active = store.structs.activePointers[from]
+    const willRender = fromCoords && toCoords
+    const timeout = useRef(null)
+    useEffect(() => {
+        if (willRender) {
+            if (active) {
 
-    if (!fromCoords || !toCoords) {
+                timeout.current = setTimeout(() => {
+                    store.structs.activePointers[to] = true
+                }, 300)
+            } else {
+                if (timeout.current) clearTimeout(timeout.current)
+                store.structs.activePointers[to] = false
+            }
+        }
+    }, [active, to, willRender])
+
+    if (!willRender) {
         return (
             <>
                 {children}
@@ -56,19 +81,21 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
             lineCoords.x2 = 2.5
         }
 
-        const lineStyle = { stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set || active) ? '3px' : '1px' }
-        const circleCoords = {
-            cx: noWidth ? lineCoords.x2 : Math.abs(lineCoords.x2 - toCoords.radius),
-            cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),
-            r: toCoords.radius / 5
+        const isActive = (get || set || active)
+        const lineStyle: React.CSSProperties = {
+            stroke: get ? '#23D160' : set ? '#A663CC' : 'white',
+            strokeWidth: isActive ? '3px' : '1px',
+            strokeDasharray: '1000',
+            strokeDashoffset: isActive ? '0' : '1000',
+            transition: 'stroke-dashoffset 2s',
+            fill: 'transparent'
+
         }
-        let path: any;
-        path = {}
-        // circleCoords.cy += toCoords.radius - 1
-        // circleCoords.cx -= toCoords.radius
+
+        const path: path = {};
+
         if (noHeight) {
-            circleCoords.cy = lineCoords.y2 + toCoords.radius
-            circleCoords.cx = lineCoords.x2
+
             path.pointA = {
                 x: lineCoords.x1,
                 y: lineCoords.y1 + fromCoords.radius - 1
@@ -82,8 +109,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
                 y: height
             }
         } else if (noWidth) {
-            circleCoords.cx = lineCoords.x2 + toCoords.radius
-            circleCoords.cy = lineCoords.y2
+
             path.pointA = {
                 x: lineCoords.x1 + fromCoords.radius - 1,
                 y: lineCoords.y1
@@ -97,8 +123,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
                 y: height / 2
             }
         } else {
-            circleCoords.cx = lineCoords.x2 + toCoords.radius
-            circleCoords.cy = lineCoords.y2
+
             path.pointA = {
                 x: lineCoords.x1,
                 y: lineCoords.y1
@@ -112,36 +137,15 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
                 y: shiftTop ? height : 0
             }
         }
-
+        let d: string;
+        if (path.pointA) {
+            d = `M ${path.pointA.x} ${path.pointA.y} Q ${path.control.x} ${path.control.y} ${path.pointB.x} ${path.pointB.y}`
+        }
         return (
             <div>
-
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-
-                    {/* {(active) && <text x={width / 2} y={height / 2}
-                        fill={'yellow'} fontSize={10} fontWeight={'bold'}
-                        dominantBaseline="middle" textAnchor="middle"
-                        style={{
-                            position: 'relative',
-                            zIndex: 6,
-
-                        }}
-                    >
-
-                        {prop}
-                    </text>} */}
-                    {/* <Tooltip overlay={() => (
-                        <div className="has-text-weight-bold">
-                            {prop}
-                        </div >)}
-                        placement={shiftTop && shiftLeft ? 'bottomRight' : shiftTop ? 'topRight' : shiftLeft ? 'topRight' : 'topLeft'}
-                        trigger={['hover']} visible={active} defaultVisible={false} > */}
-                    {path && <path d={`M ${path.pointA.x} ${path.pointA.y} Q ${path.control.x} ${path.control.y} ${path.pointB.x} ${path.pointB.y}`} style={lineStyle} fill="transparent" />}
-                    {/* </Tooltip> */}
-
-                    {/* <circle {...circleCoords} fill={lineStyle.stroke} /> */}
-
-
+                    {d && <path d={d} stroke="white" strokeWidth={1} fill="transparent" />}
+                    {d && <path d={d} style={lineStyle} />}
                 </svg>
                 {children}
             </div>
