@@ -15,52 +15,7 @@ function virtualize(object) {
     if (this.proxies.has(object)) {
         return this.proxies.get(object)[0]
     }
-    const proxy = new Proxy(object, {
-        get(target, prop) {
-            if (!(prop in target)) return undefined
-            const val = target[prop]
-
-            if (isVirtualProperty(target, prop))
-                runner.__(val, {
-                    type: TYPES.GET,
-                    object,
-                    access: [convert(prop)]
-                })
-            return val
-        },
-        set(target, prop, value) {
-            target[prop] = runner.virtualize(value)
-            if (isVirtualProperty(target, prop))
-                runner.__(target[prop], {
-                    type: TYPES.SET,
-                    object,
-                    access: [convert(prop)]
-                })
-            return true
-        },
-        deleteProperty(target, prop) {
-            if (!isVirtualProperty(target, prop)) return delete target[prop]
-            return runner.__(delete target[prop], {
-                type: TYPES.DELETE,
-                object,
-                access: [convert(prop)]
-            })
-        },
-        defineProperty(target, prop, descriptor) {
-            const defined = Reflect.defineProperty(target, prop, descriptor)
-            if (defined) {
-                const definition = Reflect.getOwnPropertyDescriptor(target, prop)
-                if (definition.enumerable && typeof prop !== 'symbol') {
-                    runner.__(target[prop], {
-                        type: TYPES.SET,
-                        object,
-                        access: [convert(prop)]
-                    })
-                }
-            }
-            return defined
-        }
-    })
+    const proxy = Array.isArray(object) ? virtualizeArray(object, runner) : virtualizeObject(object, runner)
     this.proxies.set(object, [proxy, false])
     this.proxies.set(proxy, [proxy, true])
     if (this.map.has(object)) {
@@ -79,12 +34,6 @@ function virtualize(object) {
 
 function isVirtualProperty(object, property) {
     const definition = Reflect.getOwnPropertyDescriptor(object, property)
-    if (Array.isArray(object)) {
-        const prop = convert(property)
-        if (typeof prop === 'number') {
-            if (prop > -1 && prop < object.length) return true
-        }
-    }
     return !!definition && typeof property !== 'symbol'
 }
 function convert(val) {
@@ -94,7 +43,117 @@ function convert(val) {
 }
 
 
+function virtualizeObject(object, runner) {
+    return new Proxy(object, {
+        get(target, prop) {
+            if (!(prop in target)) return undefined
+            const val = target[prop]
 
+            if (isVirtualProperty(target, prop))
+                runner.__(val, {
+                    type: TYPES.GET,
+                    object,
+                    access: [prop]
+                })
+            return val
+        },
+        set(target, prop, value) {
+            target[prop] = runner.virtualize(value)
+            if (isVirtualProperty(target, prop))
+                runner.__(target[prop], {
+                    type: TYPES.SET,
+                    object,
+                    access: [prop]
+                })
+            return true
+        },
+        deleteProperty(target, prop) {
+            if (!isVirtualProperty(target, prop)) return delete target[prop]
+            return runner.__(delete target[prop], {
+                type: TYPES.DELETE,
+                object,
+                access: [prop]
+            })
+        },
+        defineProperty(target, prop, descriptor) {
+            descriptor.value = runner.virtualize(descriptor.value)
+            const defined = Reflect.defineProperty(target, prop, descriptor)
+            if (defined) {
+                const definition = Reflect.getOwnPropertyDescriptor(target, prop)
+                if (definition.enumerable && typeof prop !== 'symbol') {
+                    runner.__(target[prop], {
+                        type: TYPES.SET,
+                        object,
+                        access: [prop]
+                    })
+                }
+            }
+            return defined
+        }
+    })
+}
+
+function virtualizeArray(object, runner) {
+    return new Proxy(object, {
+        get(target, prop) {
+            prop = convert(prop)
+            if (prop === 'last') {
+                prop = target.length - 1
+            }
+            const val = target[prop]
+            const isVirtual = typeof prop === 'number' && prop >= 0 && prop < target.length
+            if (isVirtual) {
+                runner.__(val, {
+                    type: TYPES.GET,
+                    object,
+                    access: [prop]
+                })
+            }
+            return val
+        },
+        set(target, prop, value) {
+            prop = convert(prop)
+            if (prop === 'last') {
+                prop = target.length - 1
+            }
+            target[prop] = runner.virtualize(value)
+            const isVirtual = (typeof prop === 'number' && prop >= 0 && prop < target.length) || prop === 'length'
+            if (isVirtual)
+                runner.__(target[prop], {
+                    type: TYPES.SET,
+                    object,
+                    access: [prop]
+                })
+            return true
+        },
+        deleteProperty(target, prop) {
+            prop = convert(prop)
+            const isVirtual = typeof prop === 'number' && prop >= 0 && prop < target.length
+            if (!isVirtual) return delete target[prop]
+            return runner.__(delete target[prop], {
+                type: TYPES.DELETE,
+                object,
+                access: [prop]
+            })
+        },
+        defineProperty(target, prop, descriptor) {
+            prop = convert(prop)
+            descriptor.value = runner.virtualize(descriptor.value)
+            const defined = Reflect.defineProperty(target, prop, descriptor)
+            if (defined) {
+                const definition = Reflect.getOwnPropertyDescriptor(target, prop)
+                if (definition.enumerable && typeof prop === 'number') {
+                    runner.__(target[prop], {
+                        type: TYPES.SET,
+                        object,
+                        access: [convert(prop)]
+                    })
+                }
+            }
+            return defined
+        }
+    })
+}
 
 
 module.exports = virtualize

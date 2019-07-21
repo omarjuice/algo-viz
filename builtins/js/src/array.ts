@@ -46,7 +46,7 @@ const array = {
                 }
             }
         }
-        arr.splice(last, arr.length - last)
+        arr.length = last
         return arr
     },
     matrix: (rows: number, cols: number, callback?: (row: number, col: number, matrix?: any[][]) => any) => {
