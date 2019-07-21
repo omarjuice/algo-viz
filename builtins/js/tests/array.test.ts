@@ -1,6 +1,8 @@
 import 'mocha'
-import Viz from '../src'
 import expect from 'expect'
+import instantiateViz from '../src/index';
+const Viz = instantiateViz()
+
 
 describe('Viz.Array', () => {
     describe('sortedInts', () => {

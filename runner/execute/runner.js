@@ -55,11 +55,16 @@ class Runner {
         this.map.set('Infinity', infinity)
         this.types[infinity] = 'Infinity'
 
+
+        this._ignore = false
+        this.ignore = (bool) => this._ignore = bool
+
     }
 
 
     __(val, info) {
         // main
+        if (this._ignore) return val
         if (info.type === TYPES.THIS) {
             return this.virtualize(val)
         }
@@ -77,6 +82,7 @@ class Runner {
         }
 
         if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
+
             if (this.constructors.has(info.object)) {
                 const [allow] = this.constructors.get(info.object)
                 info.object = this.stringify(info.object)

@@ -1,7 +1,7 @@
-import Viz from '../src'
 import expect from 'expect'
 import SLL from '../src/sll';
-
+import instantiateViz from '../src';
+const Viz = instantiateViz()
 
 describe('Singly Linked List', () => {
     describe('create', () => {
@@ -9,7 +9,7 @@ describe('Singly Linked List', () => {
             const arr = [1, 2, 3, 4, 5]
             const list = Viz.SLL.create(arr)
             let i = 0
-            let current: SLL | null = list
+            let current: any = list
             while (current) {
                 expect(current.value).toBe(arr[i])
                 i++

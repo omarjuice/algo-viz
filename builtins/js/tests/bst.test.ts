@@ -1,7 +1,7 @@
 import 'mocha'
-import Viz from '../src'
+import instantiateViz from '../src'
 import expect from 'expect'
-
+const Viz = instantiateViz()
 
 describe('BST', () => {
     describe('create', () => {

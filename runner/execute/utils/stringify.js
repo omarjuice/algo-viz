@@ -1,7 +1,6 @@
 const randomString = require('./randomString')
 const isNative = require('./isNative')
 const checkTypedArray = require('./checkTypedArray')
-const { default: Viz } = require('../../../builtins/js/dist')
 // the values are specific to the Runner instance
 module.exports = function (obj) {
     // these are functions that change instance methods on their respective object tyes
@@ -76,7 +75,7 @@ module.exports = function (obj) {
             this.objects[newId] = copy
         }
         let type = obj.constructor.name
-        if (Viz[type] && Viz[type] === obj.constructor) type = 'Viz.' + type
+        if (this.Viz && this.Viz[type] && this.Viz[type] === obj.constructor) type = 'Viz.' + type
         this.types[newId] = type
         return newId
     } else {

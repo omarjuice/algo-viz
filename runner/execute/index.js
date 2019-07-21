@@ -1,6 +1,7 @@
-const { default: Viz } = require('../../builtins/js/dist/index')
+const { default: instantiateViz } = require('../../builtins/js/dist/index')
 module.exports = async function (___code) {
     let ___name;
+    let Viz;
     eval(await (async function (func) {
         const stepify = require('./stepify')
         const babel = require('@babel/core')
@@ -24,6 +25,7 @@ module.exports = async function (___code) {
         })
         const { _name } = input
         global[_name] = new (require('./runner'))(_name, func)
+        Viz = instantiateViz(global[_name])
         fs.writeFile('transpiled.js', code, () => { })
         return code + `\n___name = '${_name}';`
     })(___code))

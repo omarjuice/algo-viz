@@ -64,11 +64,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         if (idx) { }//For rerendered
         if (elem) {
             console.log('UPDATE');
-            if (!node) {
-                setImmediate(() => {
-                    setNode(elem)
-                })
-            }
+            if (!node) setNode(elem)
         }
     }, [node, idx])
     const pos = store.structs.positions[objectId]

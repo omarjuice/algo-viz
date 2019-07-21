@@ -1,6 +1,8 @@
 import 'mocha'
-import Viz from '../src'
 import expect from 'expect'
+import instantiateViz from '../src';
+
+const Viz = instantiateViz()
 
 describe('Doubly Linked List', () => {
     describe('create', () => {
