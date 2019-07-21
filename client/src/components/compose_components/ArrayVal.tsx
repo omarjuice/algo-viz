@@ -115,8 +115,8 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
         <div
             onMouseEnter={() => {
                 toggle(true)
-                store.structs.switchOff(info, 'get', objectId)
-                store.structs.switchOff(info, 'set', objectId)
+                store.structs.switchOff(info, 'get')
+                store.structs.switchOff(info, 'set')
             }}
             onMouseLeave={() => {
                 toggle(false)

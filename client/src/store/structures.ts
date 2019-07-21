@@ -213,8 +213,8 @@ class Structures {
             }
             if (this.sets[object]) {
                 const prop = this.sets[object]
-                this.switchOff(prop, 'get', object)
-                this.switchOff(prop, 'set', object)
+                this.switchOff(prop, 'get')
+                this.switchOff(prop, 'set')
             }
             if (this.root.viz.types[object] === 'Array' && typeof key === 'number') {
                 if (key >= this.objects[object]['length'].value) {
@@ -241,7 +241,7 @@ class Structures {
                         this.sets[object].set = false
                     }
                     this.objects[object][key].set = true
-                    this.switchOff(this.objects[object][key], 'get', object)
+                    this.switchOff(this.objects[object][key], 'get')
                 }
 
                 this.sets[object] = this.objects[object][key]
@@ -280,15 +280,15 @@ class Structures {
             const [key] = access
             if (this.gets[object]) {
                 const prop = this.gets[object]
-                this.switchOff(prop, 'get', object)
-                this.switchOff(prop, 'set', object)
+                this.switchOff(prop, 'get')
+                this.switchOff(prop, 'set')
             }
             if (allowRender) {
                 if (this.gets[object] === this.objects[object][key]) {
                     this.gets[object].get = false
                 }
                 this.objects[object][key].get = true
-                this.switchOff(this.objects[object][key], 'set', object)
+                this.switchOff(this.objects[object][key], 'set')
             }
 
             this.gets[object] = this.objects[object][key]
@@ -349,21 +349,17 @@ class Structures {
         }
 
     }
-    @action async reset() {
-        const promises = []
+    @action reset() {
         for (const key in this.gets) {
-            promises.push(
-                this.switchOff(this.gets[key], 'get', key),
-                this.switchOff(this.gets[key], 'set', key)
-            )
+            this.switchOff(this.gets[key], 'get')
+            this.switchOff(this.gets[key], 'set')
+
         }
         for (const key in this.sets) {
-            promises.push(
-                this.switchOff(this.sets[key], 'get', key),
-                this.switchOff(this.sets[key], 'set', key)
-            )
+            this.switchOff(this.sets[key], 'get')
+            this.switchOff(this.sets[key], 'set')
+
         }
-        await Promise.all(promises)
     }
     @action resetPositions = () => {
         for (const key in this.positions) {
@@ -371,18 +367,8 @@ class Structures {
         }
         this.setBindings()
     };
-    @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set', object: string) {
-        if (prop[key] instanceof Promise) {
-            await prop[key].then(() => {
-                const ref: 'gets' | 'sets' = (key + 's') as 'gets' | 'sets'
-                if (this[ref][object] === prop) {
-                    // if (this.root.iterator.iterating) return
-                };
-                prop[key] = false
-            })
-        } else {
-            prop[key] = false
-        }
+    @action async switchOff(prop: Viz.StructProp, key: 'get' | 'set') {
+        prop[key] = false
     }
     @action setPosition(id: string, e: HTMLDivElement, renderId: string) {
         const { top, left, width, height } = e.getBoundingClientRect()

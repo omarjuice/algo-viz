@@ -71,7 +71,8 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
         linear-gradient(${color}, ${color}),
         linear-gradient(${color}, ${color}),
         linear-gradient(${color}, ${color})`,
-        backgroundSize: `4px ${bkgExtend}, ${bkgExtend} 4px, 4px ${bkgExtend}, ${bkgExtend} 4px`
+        backgroundSize: `4px ${bkgExtend}, ${bkgExtend} 4px, 4px ${bkgExtend}, ${bkgExtend} 4px`,
+        transition: `background-size 1s`
     }
 
 

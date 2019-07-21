@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
 // import Tooltip from 'rc-tooltip';
@@ -15,6 +15,18 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
     const fromCoords = store.structs.positions[from]
     const toCoords = store.structs.positions[to]
 
+    const active = store.structs.activePointers[from]
+
+    useEffect(() => {
+        if (active) {
+            setTimeout(() => {
+                store.structs.activePointers[to] = true
+            }, 500)
+        } else {
+            store.structs.activePointers[to] = false
+        }
+    }, [active])
+
     if (!fromCoords || !toCoords) {
         return (
             <>
@@ -22,7 +34,7 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
             </>
         );
     } else {
-        const active = store.structs.activePointers[from]
+
 
         let width = Math.abs(fromCoords.x - toCoords.x)
         let height = Math.abs(fromCoords.y - toCoords.y)
@@ -55,29 +67,22 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
             lineCoords.x1 = 2.5
             lineCoords.x2 = 2.5
         }
+        const isActive = (get || set || active)
+        const lineStyle: React.CSSProperties = {
+            stroke: get ? 'green' : set ? 'purple' : 'white',
+            strokeWidth: isActive ? '5px' : '1px',
+            strokeDasharray: '1000',
+            strokeDashoffset: isActive ? '0' : '1000',
+            transition: 'stroke-dashoffset 2s, stroke-width .5s'
 
-        const lineStyle = { stroke: get ? 'green' : set ? 'purple' : 'white', strokeWidth: (get || set || active) ? '3px' : '1px' }
-        // const circleCoords = {
-        //     cx: noWidth ? lineCoords.x2 : Math.abs(lineCoords.x2 - toCoords.radius),
-        //     cy: noHeight ? lineCoords.y2 : Math.abs(lineCoords.y2 - toCoords.radius),
-        //     r: toCoords.radius / 5
-        // }
-
-
+        }
 
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-
-                    {/* <Tooltip overlay={() => (
-                        <div className="has-text-weight-bold">
-                            {prop}
-                        </div >)}
-                        placement={shiftTop && shiftLeft ? 'bottomRight' : shiftTop ? 'topRight' : shiftLeft ? 'topRight' : 'bottom'}
-                        trigger={['hover']} visible={active} defaultVisible={false} > */}
+                    <line {...lineCoords} stroke="white" strokeWidth={1} ></line>
                     <line {...lineCoords} style={lineStyle}></line>
-                    {/* </Tooltip> */}
-                    {/* <circle {...circleCoords} fill={lineStyle.stroke} /> */}
+
                 </svg>
                 {children}
             </div>

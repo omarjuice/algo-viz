@@ -1,6 +1,5 @@
-import React, { useRef, useEffect, useMemo, ReactNode } from 'react';
+import React, { useRef, useMemo, ReactNode } from 'react';
 import store from '../../store';
-import anime from 'animejs'
 import { observer } from 'mobx-react';
 import genId from '../../utils/genId';
 
@@ -17,43 +16,13 @@ type DisplayProps = {
 
 const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay, textColor, highlight }) => {
     const ref = useRef(null)
-    useEffect(() => {
-        if (ref.current) {
-            if (anim[0] && !(anim[0] as boolean | Promise<void> instanceof Promise)) {
-                const animation = anime({
-                    targets: ref.current,
-                    translateY: [0],
-                    scale: [1, 1.75, 1],
-                    duration: store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed,
-                    easing: 'easeInCubic'
-                }).finished
-                if (store.structs.gets[objectId]) {
-                    store.structs.gets[objectId].get = animation
-                }
-            }
-            if (anim[1] && !(anim[1] as boolean | Promise<void> instanceof Promise)) {
-
-                const animation = anime({
-                    targets: ref.current,
-                    translateY: [-1 * size, size / 2, 0],
-                    scale: [1],
-                    duration: store.iterator.baseTime * store.settings.speeds['SET'] / store.iterator.speed,
-                    elasticity: 500,
-                    easing: 'easeInCubic'
-                }).finished
-                if (store.structs.sets[objectId]) {
-                    store.structs.sets[objectId].set = animation
-                }
-            }
-        }
-    })
     const gradId = useMemo(() => genId(7), [])
     return <svg
-
         className="val-display" style={{
-            transform: `scale(${highlight ? String((1 / (size / 30))) : '1'})`,
+            transform: anim[1] ? `translateY(${(-size)}px)` : anim[0] ? `scale(${1.5})` : `scale(${highlight ? String((1.1 / (size / 30))) : '1'})`,
             position: 'relative',
-            zIndex: highlight ? 5 : 3
+            zIndex: highlight ? 5 : 3,
+            transition: `transform ${store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed}ms`
         }} ref={ref} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
