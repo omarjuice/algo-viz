@@ -73,7 +73,7 @@ class StructSettings extends Component<Props> {
         const { order } = this.state
         const newKeys = { ...order }
         delete newKeys[name]
-        this.setState({ keys: newKeys, numKeys: this.state.numKeys - 1 })
+        this.setState({ order: newKeys, numKeys: this.state.numKeys - 1 })
     }
     changePos = (name: string, pos: number) => {
         const { order } = this.state
@@ -149,15 +149,16 @@ class StructSettings extends Component<Props> {
         const { settings } = store
         const { structColors } = settings
         const style: React.CSSProperties = {
-            backgroundColor: structColors[name],
-            color: invertColor(structColors[name])
+            border: `5px solid ${structColors[name]}`,
+            color: "white",
+
         }
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
         const specifiedChildren = this.state.numChildren !== null
         const isBuiltin = /Viz\./g.test(name) || ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
-            <div className="box" style={style}>
+            <div className="box has-background-dark" style={style}>
 
                 <div className="columns">
                     <div className="column has-text-left">
@@ -186,11 +187,13 @@ class StructSettings extends Component<Props> {
                                     <li key={key} className="list-item">
                                         <div className="columns">
                                             <div className="column">
-                                                <select onChange={(e) => this.changeType(key, e.target.value as childType)}
-                                                    value={this.state.order[key].isMultiple ? "children" : 'child'} className="select">
-                                                    <option value={'child'}>child</option>
-                                                    <option value={'children'}>children</option>
-                                                </select>
+                                                <div className="select">
+                                                    <select onChange={(e) => this.changeType(key, e.target.value as childType)}
+                                                        value={this.state.order[key].isMultiple ? "children" : 'child'}>
+                                                        <option value={'child'}>child</option>
+                                                        <option value={'children'}>children</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div className="column has-text-centered">
                                                 {key}
@@ -228,7 +231,7 @@ class StructSettings extends Component<Props> {
                             {pointers.map(key => {
                                 return (
                                     <li key={key} className="list-item">
-                                        <div className="columns">
+                                        <div className="columns ">
                                             <div className="column">
                                                 <select onChange={(e) => this.configPointer(key, e.target.value as pointerType)}
                                                     value={this.state.pointers[key] ? "multiple" : "single"} className="select">
@@ -266,7 +269,7 @@ class StructSettings extends Component<Props> {
                             <h1 className="title is-5">
                                 Potential Number of Chilren
                             </h1>
-                            <button onClick={() => this.toggleNumChildren()} className="button is-text">
+                            <button onClick={() => this.toggleNumChildren()} className="button is-text has-text-white is-dark">
                                 {!specifiedChildren ? 'Specify Potential Number of Children' : 'Unspecify Number of Chilren'}
                             </button>
                             {specifiedChildren && (
