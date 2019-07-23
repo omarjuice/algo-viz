@@ -239,7 +239,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
             }
         }
     }
-    const anim: Viz.anim = [main && main.get, main && main.set]
+    const get = main && main.get
+    const set = main && main.set
+    const anim: Viz.anim = useMemo(() => [get, set], [get, set])
     const size = Math.min(30, Math.max(width - 1, 1))
     const displayProps: DisplayProps = {
         objectId,

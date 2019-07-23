@@ -24,11 +24,9 @@ class ArrayChild extends Component<Props> {
         }
     }
     render() {
-        const { className, anim, objectId, ratio } = this.props
+        const { anim, objectId, ratio } = this.props
         return (
-            <div className={`array-line ${className}`}>
-                <ArrayStruct renderId={this.renderId} pointed={!!anim[0]} objectId={objectId} structure={store.structs.objects[objectId]} ratio={(.9) * ratio} />
-            </div>
+            <ArrayStruct renderId={this.renderId} pointed={!!anim[0]} objectId={objectId} structure={store.structs.objects[objectId]} ratio={(.9) * ratio} />
         );
     }
 }

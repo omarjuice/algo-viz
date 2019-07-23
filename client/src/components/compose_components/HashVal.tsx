@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { getVal } from './getVal';
 import { observer } from 'mobx-react';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
-import ArrayStruct from './ArrayStruct';
 import Pointer from './Pointer';
 import ValDisplay from './ValDisplay';
+import ArrayChild from './ArrayChild';
 type ValProps = {
     object: Viz.Structure
     prop: string
@@ -70,7 +70,8 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
     const info = object[prop]
     let value = info.value
     const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
-    const anim: Viz.anim = [info.get, info.set]
+    const { get, set } = info
+    const anim: Viz.anim = useMemo(() => [get, set], [get, set])
     const type = store.viz.types[objectId]
     const displayProps: DisplayProps = {
         objectId,
@@ -100,15 +101,15 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         if (!flag) {
             return (
                 <div className="columns is-paddingless is-multiline">
-                    {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
+                    {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
                             {type === 'Map' && prop in store.structs.objects ?
                                 <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
                                 : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
                         </p>
                     </div>}
-                    <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
-                        <ArrayStruct pointed={!!anim[0]} objectId={value} structure={store.structs.objects[value]} ratio={(.5) * ratio} />
+                    <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
+                        <ArrayChild className={className} objectId={value} ratio={ratio * .5} anim={anim} />
                     </div>
                 </div>
 

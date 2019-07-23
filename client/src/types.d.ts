@@ -3,8 +3,8 @@ declare namespace Viz {
     type name = [number, number]
     type pointers = Map<string, (string | number)[]>
     type StructProp = {
-        get: boolean | Promise,
-        set: boolean | Promise
+        get: boolean,
+        set: boolean
         value: any
     }
     type RenderMap = { [childId: string]: string }
@@ -51,7 +51,7 @@ declare namespace Viz {
     }
 
 
-    type anim = [boolean | Promise<void>, boolean | Promise<void>]
+    type anim = [boolean, boolean]
     type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 
     declare namespace Step {

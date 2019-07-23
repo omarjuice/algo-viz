@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { getVal } from './getVal';
 import { observer } from 'mobx-react';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
-import ArrayStruct from './ArrayStruct';
 import Pointer from './Pointer';
 import ValDisplay from './ValDisplay';
 import ArrayChild from './ArrayChild';
@@ -72,8 +71,9 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
         set: false,
     }
     let value = info.value
+    const { get, set } = info;
     const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
-    const anim: Viz.anim = [info.get, info.set]
+    const anim: Viz.anim = useMemo(() => [get, set], [get, set])
     const displayProps: DisplayProps = {
         objectId,
         color: store.settings.valueColors.other,
@@ -101,7 +101,9 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
         }
         if (!flag) {
             return (
-                <ArrayChild className={className} objectId={value} ratio={ratio} anim={anim} />
+                <div className={`array-line ${className}`}>
+                    <ArrayChild className={className} objectId={value} ratio={ratio} anim={anim} />
+                </div>
             )
         }
 

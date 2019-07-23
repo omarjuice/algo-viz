@@ -125,3 +125,18 @@ body, html, #root, .app{
     
 }
 
+.val-display{
+    animation: pop-in 250ms
+}
+
+@keyframes pop-in{
+    0%{
+        transform: scale(0)
+    }
+    90%{
+        transform: scale(1.1)
+    }
+    100%{
+        transform: scale(1)
+    }
+}

@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import store from '../../store';
 import HashVal from './HashVal';
 import genId from '../../utils/genId';
-import invertColor from '../../utils/invertColor';
 
 type Props = {
     structure: Viz.Structure,
@@ -15,8 +14,7 @@ type Props = {
 
 const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, orientation }) => {
     const obj: React.ReactElement[] = [];
-    // const maxWidth = store.windowWidth * .3 * ratio
-    const windowWidth = store.windowWidth
+    if (store.windowWidth) { }// to rerender on resize
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
         if (node) {
@@ -24,10 +22,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         }
     }, [])
     const renderId = useMemo(() => genId(objectId.length), [objectId])
-    // const pos = store.structs.positions[objectId]
-    // if (pos && pos.renderId && pos.renderId !== renderId) {
-    //     return null
-    // }
+
 
 
     useEffect(() => {
@@ -44,7 +39,6 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         )
     }
 
-    // const size = Math.max(Math.round(ratio * 5), 3)
     const styles: React.CSSProperties = {
         // maxHeight: '100%',
         // overflowY: 'scroll'

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, ReactNode } from 'react';
+import React, { useRef, useMemo, ReactNode, useState, useEffect } from 'react';
 import store from '../../store';
 import { observer } from 'mobx-react';
 import genId from '../../utils/genId';
@@ -15,15 +15,29 @@ type DisplayProps = {
 }
 
 const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay, textColor, highlight }) => {
-    const ref = useRef(null)
+    const [state, setState] = useState([false, false])
+    const animation = useRef(null)
+    const timeout = useRef(null)
     const gradId = useMemo(() => genId(7), [])
+
+    useEffect(() => {
+
+        if (anim !== animation.current) {
+            animation.current = anim
+            setState(anim)
+            clearTimeout(timeout.current)
+            timeout.current = setTimeout(() => {
+                setState([false, false])
+            }, store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed)
+        }
+    }, [anim])
     return <svg
         className="val-display" style={{
-            transform: anim[1] ? `translateY(${(-size)}px)` : anim[0] ? `scale(${1.5})` : `scale(${highlight ? String((1.1 / (size / 30))) : '1'})`,
+            transform: state[1] ? `translateY(${(-size)}px)` : state[0] ? `scale(${1.5})` : `scale(${highlight ? String((1.1 / (size / 30))) : '1'})`,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
             transition: `transform ${store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed}ms`
-        }} ref={ref} height={size} width={size} viewBox="0 0 100 100" >
+        }} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                 <stop offset="80%" style={{ stopColor: `${color}`, stopOpacity: 1 }} />
