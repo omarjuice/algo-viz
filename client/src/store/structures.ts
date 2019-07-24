@@ -112,12 +112,14 @@ class Structures {
     }
     @action addPointers(id: string, parent: string, key: string | number) {
         if (id !== parent) {
+            let changed = false
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
             if (!this.children[id]) this.children[id] = new Set()
             if (!this.parents[id]) this.parents[id] = new Set()
             const parents = this.pointers.get(id)
+            let refs;
             if (parents) {
-                let refs = parents.get(parent)
+                refs = parents.get(parent)
                 if (refs) {
                     refs.push(key)
                 } else {
@@ -145,33 +147,42 @@ class Structures {
                         this.children[parent].add(id)
                     } else {
                         if (!currentParents.size) {
+                            changed = true
                             currentParents.add(parent)
                             this.children[parent].add(id)
                         } else {
-                            const entries = currentParents.entries()
+                            const entries = currentParents.values()
                             const first = entries.next().value
-                            if (affinity > this.getAffinity(first[0], id)) {
-                                currentParents.delete(first[0])
+                            if (affinity > this.getAffinity(first, id)) {
+                                changed = true
+                                currentParents.delete(first)
                                 currentParents.add(parent)
-                                this.children[first[0]].delete(id)
+                                this.children[first].delete(id)
                                 this.children[parent].add(id)
+                            } else if (first === parent) {
+                                if (key !== refs[0]) {
+                                    changed = true
+                                }
                             }
                         }
                     }
                 }
 
             }
+            if (changed) delete this.positions[id]
         }
-        delete this.positions[id]
+
     }
     @action removePointers(id: string, parent: string, ref: string | number) {
         const parents = this.pointers.get(id)
+        let changed = false
         if (parents) {
             const refs = parents.get(parent)
             if (refs) {
+                const curr = refs[0]
                 for (let i = 0; i < refs.length; i++) {
                     if (refs[i] === ref) {
-                        refs.splice(i, 1)
+                        if (refs.splice(i, 1)[0] === curr) changed = true
                     }
                 }
                 if (!refs.length) {
@@ -180,7 +191,7 @@ class Structures {
                     this.parents[id].delete(parent)
                     if (!this.parents[id].size) {
                         let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
-                        parents.forEach((_, objectId) => {
+                        parents.forEach((keys, objectId) => {
                             const affinity = this.getAffinity(objectId, id)
                             if (affinity > bestParent.affinity) {
                                 bestParent = {
@@ -196,7 +207,8 @@ class Structures {
                 }
             }
         }
-        delete this.positions[id]
+        if (changed) delete this.positions[id]
+
     }
 
     @action next(step: Viz.Step.Any) {
