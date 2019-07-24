@@ -2,6 +2,10 @@
 
 ## _Work In Progress_
 
+## How to run
+
+`npm install` then `npm run dev`
+
 ### The application will take user code and execute it to transform it into a visualization of the involved data structures and expressions. 
 
 ## EXAMPLES
