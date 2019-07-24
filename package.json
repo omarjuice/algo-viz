@@ -7,6 +7,7 @@
     "server": "npm start --prefix runner",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "postinstall": "npm install --prefix client && npm install --prefix runner && npm install --prefix builtins/js && npm run compile --prefix builtins/js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
