@@ -30,11 +30,11 @@ const Structs: React.FC = observer(() => {
             )
         }
     })
-    const ratio = 1 / (Math.min(objects.length, 1) + Math.min(arrays.length, 1) + Math.min(data.length, 1))
+    // const ratio = 1 / (Math.min(objects.length, 1) + Math.min(arrays.length, 1) + Math.min(data.length, 1))
     store.setWidths({
-        array: arrays.length ? ratio : 1,
-        object: objects.length ? ratio : 1,
-        data: data.length ? ratio : 1
+        array: objects.length ? .5 : 1,
+        object: arrays.length ? .5 : 1,
+        data: 1
     })
 
     return (

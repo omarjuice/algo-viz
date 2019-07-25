@@ -55,7 +55,6 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
         }
         if (noHeight) {
             height = 5
-
             top -= 2.5
         }
         const lineCoords = {
@@ -77,7 +76,7 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
             stroke: get ? '#23D160' : set ? '#A663CC' : 'white',
             strokeWidth: isActive ? '5px' : '1px',
             strokeDasharray: '1000',
-            strokeDashoffset: isActive ? '0' : '1000',
+            strokeDashoffset: isActive ? toCoords.radius : '1000',
             transition: 'stroke-dashoffset 2s'
 
         }

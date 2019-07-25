@@ -49,8 +49,8 @@ class CodeStore {
             }
             this.expression = this.root.viz.code.slice(start, end)
         } else {
-            this.start = undefined
-            this.end = undefined
+            // this.start = undefined
+            // this.end = undefined
         }
     }
 }

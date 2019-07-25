@@ -66,10 +66,14 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const settings = store.settings.structSettings[type]
 
     isList = isList && settings.numChildren === 1
+
+    const pos = store.structs.positions[objectId]
+    renderId = useMemo(() => {
+        return renderId || genId(objectId.length + 3)
+    }, [objectId, renderId])
     const ref = useCallback((elem) => {
         if (idx) { }//For rerendered
         if (elem) {
-            console.log('UPDATE');
             if (!node) {
                 if (!isList) {
                     setNode(elem)
@@ -79,11 +83,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
             }
         }
     }, [node, idx, isList])
-    const pos = store.structs.positions[objectId]
-    renderId = useMemo(() => {
-        return renderId || genId(objectId.length)
-    }, [objectId, renderId])
-
 
     useEffect(() => {
         if (node) {
@@ -91,7 +90,10 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
         }
     })
-
+    const main = structure[settings.main]
+    const get = main && main.get
+    const set = main && main.set
+    const anim: Viz.anim = useMemo(() => [get, set], [get, set])
     if (pos && pos.renderId && pos.renderId !== renderId) {
         return null
     }
@@ -202,7 +204,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         }
     }
 
-    const main = structure[settings.main]
+
 
     if (settings.numChildren === null) {
         children.sort((a, b) => {
@@ -239,9 +241,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
             }
         }
     }
-    const get = main && main.get
-    const set = main && main.set
-    const anim: Viz.anim = useMemo(() => [get, set], [get, set])
+
     const size = Math.min(30, Math.max(width - 1, 1))
     const displayProps: DisplayProps = {
         objectId,
