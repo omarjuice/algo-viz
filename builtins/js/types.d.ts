@@ -1,30 +1,51 @@
 declare class Viz {
     array: array
     SLL: SLL
+    DLL: DLL
+    BTree: BTree
+    BST: BST
 }
 
 declare class SLL {
     next: null | SLL
     value: any
+    static create: (vals: any[]) => SLL
+    static reverse: (list: SLL) => SLL
+    static forEach: (list: SLL, callback: (v: any) => void) => void
+    static toArray: (list: SLL) => any[]
 }
 declare class DLL {
     next: null | DLL
     prev: null | DLL
     value: any
+    static create: (vals: any[]) => DLL
+    static reverse: (list: DLL) => DLL
+    static forEach: (list: DLL, callback: (v: any) => void) => void
+    static toArray: (list: DLL) => any[]
 }
 declare type array = {
-    sortedInts: (length: number) => number[]
+    sortedInts: (length: number, randomize: boolean = false) => number[]
+    randomints: (length: number, allowNegative: boolean = true) => number[]
+    filterDuplicates: (array: any[], mutate: boolean = true) => any[]
+    matrix: (rows: number, cols: number, callbackOrVal: ((i: number, j: number) => any) | any) => any[][]
 }
+
+type treeTraversalMethod = 'inOrder' | 'postOrder' | 'preOrder' | 'breadthFirst'
+type binaryTreeInsertionMethod = 'inOrder' | 'binary'
 declare class BTree {
     left: BTree | null
     right: BTree | null
     value: any
-    traverse: (callback: (v: number) => void, order: 'inOrder' | 'postOrder' | 'preOrder' | 'breadthFirst')
+    static create: (vals: number[], method: binaryTreeInsertionMethod) => BTree
+    traverse: (callback: (v: number) => void, order: treeTraversalMethod) => void
 }
+
 declare class BST {
     left: BST | null
     right: BST | null
+    static create: (vals: number[], method: binaryTreeInsertionMethod) => BST
     insert: (v: number) => BST
+    insertMany: (vals: number[], method: binaryTreeInsertionMethod) => BST
     remove: (v: number) => BST
-
+    traverse: (callback: (v: number) => any, method: treeTraversalMethod) => BST
 }

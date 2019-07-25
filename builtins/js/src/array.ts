@@ -3,7 +3,7 @@ const check = (length: number) => {
     if (length > 1000) throw new Error('Requested length is too high. length < 1000')
 }
 const array = {
-    sortedInts: (length: number = 10, random: boolean = true) => {
+    sortedInts: (length: number = 10, random: boolean = false) => {
         check(length)
         const arr = []
         for (let i = 0; i < length; i++) {

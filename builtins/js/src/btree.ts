@@ -11,14 +11,14 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
             this.right = null
             this.left = null
         }
-        static create(elems: any[], method: 'breadth' | 'binary') {
+        static create(elems: any[], method: 'inOrder' | 'binary') {
             if (!Array.isArray(elems)) throw new Error('elems must be an array')
             if (!elems.length) throw new Error('elems must have a length of at least 1')
-            if (method !== 'breadth' && method !== 'binary') throw new Error(`Method must be "breadth" or "binary". Received ${method}`)
+            if (method !== 'inOrder' && method !== 'binary') throw new Error(`Method must be "inOrder" or "binary". Received ${method}`)
             runner.ignore(true)
             elems = [...elems]
             runner.ignore(false)
-            if (method === 'breadth') {
+            if (method === 'inOrder') {
                 const btree = new BTree(elems[0])
                 const queue = [btree]
                 for (let i = 1; i < elems.length; i += 2) {
