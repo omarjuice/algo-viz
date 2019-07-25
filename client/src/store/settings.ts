@@ -96,7 +96,6 @@ class Settings {
         const settings = window.localStorage.getItem('settings')
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
-            console.log(all);
             this.background = all.background
             this.valueColors = all.valueColors
             this.speeds = all.speeds
@@ -127,11 +126,6 @@ class Settings {
             numChildren: null,
             pointers: {}
         }
-        // for (let structType of ['Object', 'Array', 'Map', 'Set']) {
-        //     if (!(structType in this.structColors)) {
-        //         this.setColor(structType)
-        //     }
-        // }
 
         for (const name in structInfo) {
             const newName = 'Viz.' + name
