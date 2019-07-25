@@ -54,7 +54,6 @@ class DataChild extends React.Component<Props>{
         } else {
             element = null
         }
-        console.log(pointerProps)
         return !arc ? (
             <LinePointer {...pointerProps}>
                 {element}

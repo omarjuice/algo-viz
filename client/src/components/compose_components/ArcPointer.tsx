@@ -133,8 +133,8 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
                 y: lineCoords.y2
             }
             path.control = {
-                x: shiftLeft ? width : 0,
-                y: shiftTop ? height : 0
+                x: !shiftLeft ? width : 0,
+                y: !shiftTop ? height : 0
             }
         }
         let d: string;

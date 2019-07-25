@@ -113,6 +113,9 @@ class Structures {
     @action addPointers(id: string, parent: string, key: string | number) {
         if (id !== parent) {
             let changed = false
+            const parentType = this.root.viz.types[parent]
+            const isChild = key in this.root.settings.structSettings[parentType].order
+            if (!isChild && !['Object', 'Map', 'Array'].includes(parentType)) return
             if (!this.pointers.has(id)) this.pointers.set(id, new Map())
             if (!this.children[id]) this.children[id] = new Set()
             if (!this.parents[id]) this.parents[id] = new Set()
@@ -126,53 +129,49 @@ class Structures {
                     parents.set(parent, [key])
                 }
             }
-            const parentType = this.root.viz.types[parent]
-            const isChild = key in this.root.settings.structSettings[parentType].order
-            if (isChild || ['Object', 'Map', 'Array'].includes(parentType)) {
-                const currentParents = this.parents[id]
-                const affinity = this.getAffinity(parent, id)
-                if (affinity > 0) {
-                    if (affinity === 5) { // TEMPORARY STOP ON MULTIPLE PARENTS
-                        const deletes: string[] = []
-                        currentParents.forEach(objectId => {
-                            if (this.getAffinity(objectId, id) < 4) {
-                                deletes.push(objectId)
-                            }
-                        })
-                        deletes.forEach(objectId => {
-                            currentParents.delete(objectId)
-                            this.children[objectId].delete(id)
-                        })
+            const currentParents = this.parents[id]
+            const affinity = this.getAffinity(parent, id)
+            if (affinity > 0) {
+                if (affinity === 5) { // TEMPORARY STOP ON MULTIPLE PARENTS
+                    const deletes: string[] = []
+                    currentParents.forEach(objectId => {
+                        if (this.getAffinity(objectId, id) < 4) {
+                            deletes.push(objectId)
+                        }
+                    })
+                    deletes.forEach(objectId => {
+                        currentParents.delete(objectId)
+                        this.children[objectId].delete(id)
+                    })
+                    currentParents.add(parent)
+                    this.children[parent].add(id)
+                } else {
+                    if (!currentParents.size) {
+                        changed = true
                         currentParents.add(parent)
                         this.children[parent].add(id)
                     } else {
-                        if (!currentParents.size) {
+                        const entries = currentParents.values()
+                        const first = entries.next().value
+                        if (affinity > this.getAffinity(first, id)) {
                             changed = true
+                            currentParents.delete(first)
                             currentParents.add(parent)
+                            this.children[first].delete(id)
                             this.children[parent].add(id)
-                        } else {
-                            const entries = currentParents.values()
-                            const first = entries.next().value
-                            if (affinity > this.getAffinity(first, id)) {
+                        } else if (first === parent) {
+                            if (key !== refs[0]) {
                                 changed = true
-                                currentParents.delete(first)
-                                currentParents.add(parent)
-                                this.children[first].delete(id)
-                                this.children[parent].add(id)
-                            } else if (first === parent) {
-                                if (key !== refs[0]) {
-                                    changed = true
-                                }
                             }
                         }
                     }
                 }
-
             }
+
             if (changed) delete this.positions[id]
         }
-
     }
+
     @action removePointers(id: string, parent: string, ref: string | number) {
         const parents = this.pointers.get(id)
         let changed = false

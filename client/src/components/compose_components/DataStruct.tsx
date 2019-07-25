@@ -74,7 +74,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const ref = useCallback((elem) => {
         if (idx) { }//For rerendered
         if (elem) {
-            console.log('UPDATE', renderId, !!node);
             if (!node) {
                 if (!isList) {
                     setNode(elem)
@@ -83,7 +82,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 }
             }
         }
-    }, [node, idx, isList, renderId])
+    }, [node, idx, isList])
 
     useEffect(() => {
         if (node) {
