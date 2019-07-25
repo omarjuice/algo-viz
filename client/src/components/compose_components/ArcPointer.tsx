@@ -30,7 +30,11 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
     useEffect(() => {
         if (willRender) {
             if (active) {
+                console.log(
+                    store.structs.objects[from].value.value, '>',
+                    store.structs.objects[to].value.value
 
+                );
                 timeout.current = setTimeout(() => {
                     store.structs.activePointers[to] = true
                 }, 300)
@@ -54,7 +58,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
         let height = Math.abs(fromCoords.y - toCoords.y)
         const noWidth = width < 1
         const noHeight = height < 1
-        let shiftLeft = fromCoords.x < toCoords.x
+        let shiftLeft = fromCoords.x > toCoords.x
         let shiftTop = fromCoords.y < toCoords.y
         if (noHeight) {
             if (toCoords.x > fromCoords.x) {
@@ -63,17 +67,16 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
             } else {
                 shiftTop = false
             }
-            height = width
+            height = width / 2
 
         }
         if (noWidth) {
             if (toCoords.y > fromCoords.y) {
                 shiftLeft = true
-
             } else {
                 shiftLeft = false
             }
-            width = height
+            width = height / 2
         }
 
         let left = shiftLeft ? fromCoords.x - width : fromCoords.x

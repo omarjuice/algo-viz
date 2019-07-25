@@ -33,7 +33,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
     }, [anim])
     return <svg
         className="val-display" style={{
-            transform: state[1] ? `translateY(${(-size)}px)` : state[0] ? `scale(${1.5})` : `scale(${highlight ? String((1.1 / (size / 30))) : '1'})`,
+            transform: state[1] ? `translateY(${(-size)}px)` : state[0] ? `scale(${1.5})` : highlight ? `scale(1.1)` : `scale(1)`,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
             transition: `transform ${store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed}ms`
