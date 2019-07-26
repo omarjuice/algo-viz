@@ -10,6 +10,7 @@ export default class VizStore {
     constructor(store: RootStore, data: Viz.Data) {
         this.root = store
         this.steps = data.steps
+        console.log(data.steps[data.steps.length - 1]);
         this.code = data.code
         this.objects = data.objects
         this.types = data.types

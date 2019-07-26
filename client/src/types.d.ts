@@ -119,7 +119,10 @@ declare namespace Viz {
         interface CLEAR extends ObjectType {
             type: 'CLEAR'
         }
-
+        interface ERROR extends Generic {
+            type: 'ERROR',
+            error: string
+        }
         type Any = (PROGRAM |
             BLOCK |
             EXPRESSION |
@@ -132,7 +135,8 @@ declare namespace Viz {
             GET |
             SET |
             DELETE |
-            CLEAR
+            CLEAR |
+            ERROR
         )
     }
 

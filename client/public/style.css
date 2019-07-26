@@ -49,7 +49,7 @@ body, html, #root, .app{
     height: 10%;
     margin-bottom: 10%;
     position: relative;
-    z-index: 0;
+    z-index: 5;
 }
 
 .structs > .column{

@@ -149,7 +149,11 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
                 <div className="columns is-paddingless is-multiline">
                     {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : 'half'}`}>
-                        < p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
+                        < p style={{
+                            color: (displayProps.anim[0] || displayProps.anim[1]) ? 'white' : store.settings.structColors[type],
+                            fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
+                        }}
+                            className={`is-size-6 $`}>
                             {type === 'Map' && prop in store.viz.types ? getVal(prop) : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
                         </p>
                     </div>}

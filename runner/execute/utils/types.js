@@ -13,4 +13,5 @@ module.exports = {
     GET: 'GET',
     SET: 'SET',
     CLEAR: 'CLEAR',
+    ERROR: 'ERROR'
 }

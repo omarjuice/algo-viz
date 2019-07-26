@@ -42,9 +42,15 @@ const IteratorContol: React.FC = observer(() => {
                 onBeforeChange={() => { iterator.beforeChange() }}
                 onChange={(e) => iterator.change(e)}
                 onAfterChange={() => { iterator.afterChange() }}
-                trackStyle={{ backgroundColor: '#A663CC', height: 10 }}
+                trackStyle={{
+                    backgroundColor: store.viz.steps[store.viz.steps.length - 1].type === 'ERROR' ? '#FF0000' : '#A663CC',
+                    height: 10
+                }}
                 handle={handle}
-                railStyle={{ backgroundColor: '#C2BBF0', height: 10 }}
+                railStyle={{
+                    backgroundColor: store.viz.steps[store.viz.steps.length - 1].type === 'ERROR' ? '#FF8080' : '#C2BBF0',
+                    height: 10
+                }}
             />
             <br />
 
