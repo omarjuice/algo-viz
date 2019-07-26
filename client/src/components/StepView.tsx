@@ -20,7 +20,7 @@ const StepView: React.FC = observer(() => {
                         </span>
                         {' '}={' '}
                         <span className="has-text-primary is-size-5">
-                            {getVal(store.iterator.step.value)}
+                            {getVal(store.code.value)}
                         </span>
                     </>
                 ) : (store.iterator.step.access && <span>{store.iterator.step.access[0]}</span>)}

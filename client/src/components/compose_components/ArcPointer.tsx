@@ -30,11 +30,6 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
     useEffect(() => {
         if (willRender) {
             if (active) {
-                console.log(
-                    store.structs.objects[from].value.value, '>',
-                    store.structs.objects[to].value.value
-
-                );
                 timeout.current = setTimeout(() => {
                     store.structs.activePointers[to] = true
                 }, 300)
