@@ -12,9 +12,9 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
             this.left = null
         }
         static create(elems: any[], method: 'inOrder' | 'binary') {
-            if (!Array.isArray(elems)) throw new Error('elems must be an array')
-            if (!elems.length) throw new Error('elems must have a length of at least 1')
-            if (method !== 'inOrder' && method !== 'binary') throw new Error(`Method must be "inOrder" or "binary". Received ${method}`)
+            if (!Array.isArray(elems)) throw new Error('Viz.BTree.create: elems must be an array')
+            if (!elems.length) throw new Error('Viz.BTree.create: elems must have a length of at least 1')
+            if (method !== 'inOrder' && method !== 'binary') throw new Error(`Viz.BTree.create: Method must be "inOrder" or "binary". Received ${method}`)
             runner.ignore(true)
             elems = [...elems]
             runner.ignore(false)
@@ -61,16 +61,16 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
         }
         traverse(callback: (val: any) => any, order: 'inOrder' | 'postOrder' | 'preOrder' | 'breadthFirst', seen?: any) {
             if (!BTree.traversalTypes.includes(order)) {
-                throw new Error('traversal order must be one of ' + BTree.traversalTypes.join(', '))
+                throw new Error('Viz.BTree.traverse: traversal order must be one of ' + BTree.traversalTypes.join(', '))
             }
             if (typeof callback !== 'function') {
-                throw new Error('Callback must be a function')
+                throw new Error('Viz.BTree.traverse: Callback must be a function')
             }
             if (!seen || !(seen instanceof Set)) {
                 seen = new Set()
             }
             if (seen.has(this)) {
-                throw new Error('Cannot traverse cyclic trees')
+                throw new Error('Viz.BTree.traverse: Cannot traverse cyclic trees')
             }
             seen.add(this)
             if (order === 'inOrder') {
@@ -89,7 +89,7 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
                 const queue: BTree[] = [this]
                 while (queue.length) {
                     const current = queue.shift()
-                    if (seen.has(current) && current !== this) throw new Error('Cannot traverse cyclic trees')
+                    if (seen.has(current) && current !== this) throw new Error('Viz.BTree.traverse: Cannot traverse cyclic trees')
                     seen.add(current)
                     callback(current.value)
                     if (current.left && current.left instanceof this.constructor) queue.push(current.left)

@@ -9,8 +9,8 @@ export default function instantiateSLL(runner: Runner) {
             this.next = null
         }
         static create(elems: any[]): SLL {
-            if (!Array.isArray(elems)) throw new Error('SLL elements must be given in array form')
-            if (!elems.length) throw new Error('Elements must have a length of at least 1')
+            if (!Array.isArray(elems)) throw new Error('Viz.SLL.create: SLL elements must be given in array form')
+            if (!elems.length) throw new Error('Viz.SLL.create: Elements must have a length of at least 1')
             runner.ignore(true)
             const list = new SLL(elems[0])
             let current = list
@@ -26,7 +26,7 @@ export default function instantiateSLL(runner: Runner) {
             let prev = null
             const seen: Set<SLL> = new Set()
             while (current) {
-                if (seen.has(current)) throw new Error('Cannot reverse cyclic list')
+                if (seen.has(current)) throw new Error('Viz.SLL.reverse: Cannot reverse cyclic list')
                 const next: SLL | null = current.next
                 current.next = prev
                 prev = current
@@ -44,13 +44,13 @@ export default function instantiateSLL(runner: Runner) {
             this.assert(list)
             const seen: Set<SLL> = new Set()
             for (let current: SLL | null = list; !!current; current = current.next) {
-                if (seen.has(current)) throw new Error('Cannot convert a cyclic list to array')
+                if (seen.has(current)) throw new Error('Viz.SLL.forEach: Cannot traverse a cyclic list')
                 callback(current.value)
                 seen.add(current)
             }
         }
         private static assert(list: SLL) {
-            if (!('next' in list) || !('value' in list)) throw new Error('List must have properties "next" and "value"');
+            if (!('next' in list) || !('value' in list)) throw new Error('Viz.SLL: List must have properties "next" and "value"');
         }
 
 

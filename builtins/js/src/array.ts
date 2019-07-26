@@ -1,10 +1,10 @@
-const check = (length: number) => {
-    if (typeof length !== 'number') throw new Error('length must be a number')
-    if (length > 1000) throw new Error('Requested length is too high. length < 1000')
+const check = (length: number, name: string) => {
+    if (typeof length !== 'number') throw new Error(`Viz.array.${name}: length must be a number`)
+    if (length > 1000) throw new Error(`Viz.array.${name}: Requested length is too high. length < 1000`)
 }
 const array = {
     sortedInts: (length: number = 10, random: boolean = false) => {
-        check(length)
+        check(length, 'sortedInts')
         const arr = []
         for (let i = 0; i < length; i++) {
             arr.push(random ? Math.round(Math.random() * length) : i + 1)
@@ -13,7 +13,7 @@ const array = {
 
     },
     randomInts: (length: number = 10, allowNegative: boolean = true) => {
-        check(length)
+        check(length, 'randomInts')
         const len = allowNegative ? Math.floor(length / 2) : length
         const arr = []
         for (let i = 0; i < length; i++) {
@@ -23,7 +23,7 @@ const array = {
         return arr
     },
     filterDuplicates: (arr: any[], mutate: boolean = true) => {
-        if (!Array.isArray(arr)) throw new Error('Input must be an array')
+        if (!Array.isArray(arr)) throw new Error('Viz.array.filterDuplicates: Input must be an array')
         if (!mutate) return [...new Set(arr)]
         const set = new Set()
         let last: number = 0
@@ -50,8 +50,8 @@ const array = {
         return arr
     },
     matrix: (rows: number, cols: number, callbackOrVal?: (row: number, col: number, matrix?: any[][]) => any) => {
-        if (typeof rows !== 'number') throw new Error('rows must be a number')
-        if (typeof cols !== 'number') throw new Error('cols must be a number')
+        if (typeof rows !== 'number') throw new Error('Viz.array.matrix: rows must be a number')
+        if (typeof cols !== 'number') throw new Error('Viz.array.matrix: cols must be a number')
         const cb =
             typeof callbackOrVal === 'function' ?
                 callbackOrVal :

@@ -12,15 +12,15 @@ export default function instantiateBST(runner: Runner) {
             this.value = val
             this.left = this.right = null
         }
-        private static checkElems(elems: any[]) {
-            if (!Array.isArray(elems)) throw new Error('elems must be an array')
-            if (!elems.length) throw new Error('elems must have a length of at least 1')
+        private static checkElems(elems: any[], name: string) {
+            if (!Array.isArray(elems)) throw new Error(`Viz.BST.${name}: elems must be an array`)
+            if (!elems.length) throw new Error(`Viz.BST.${name}: elems must have a length of at least 1`)
         }
         static create(elems: any[], method: 'inOrder' | 'binary') {
+            BST.checkElems(elems, 'create')
             runner.ignore(true)
             elems = [...elems]
             runner.ignore(false)
-            BST.checkElems(elems)
             if (method === 'inOrder') {
                 const bst = new BST(elems.shift())
                 bst.insertMany(elems, method)
@@ -32,11 +32,11 @@ export default function instantiateBST(runner: Runner) {
                 bst.insertMany(elems, method)
                 return bst
             } else {
-                throw new Error('Method must be "inOrder" or "binary"')
+                throw new Error('Viz.BST.create: Method must be "inOrder" or "binary"')
             }
         }
         insertMany(elems: any[], method: 'inOrder' | 'binary') {
-
+            BST.checkElems(elems, 'insertMany')
             const bst = this
             if (method === 'inOrder') {
                 for (let i = 1; i < elems.length; i++) {

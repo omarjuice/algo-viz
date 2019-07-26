@@ -49,7 +49,7 @@ body, html, #root, .app{
     height: 10%;
     margin-bottom: 10%;
     position: relative;
-    z-index: 5;
+    z-index: 1;
 }
 
 .structs > .column{
@@ -128,7 +128,9 @@ body, html, #root, .app{
 .val-display{
     animation: pop-in 250ms
 }
-
+.structs{
+    z-index: 2;
+}
 @keyframes pop-in{
     0%{
         transform: scale(0)
