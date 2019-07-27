@@ -154,7 +154,10 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                             fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
                         }}
                             className={`is-size-6 $`}>
-                            {type === 'Map' && prop in store.viz.types ? getVal(prop) : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
+                            {type === 'Map' &&
+                                prop in store.viz.types ?
+                                getVal(prop) :
+                                <span>{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}
                     <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>

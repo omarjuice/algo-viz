@@ -1,6 +1,6 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
-
+import length from '../utils/length';
 
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
@@ -46,6 +46,7 @@ class Structures {
                     value: obj['length']
                 }
             } else {
+                let count = 0
                 for (const key in obj) {
                     const val = obj[key]
                     cloned[key] = {
@@ -56,6 +57,12 @@ class Structures {
                     if (val in objs) {
                         this.addPointers(val, id, key)
                     }
+                    count++;
+                }
+                cloned[length] = {
+                    get: false,
+                    set: false,
+                    value: count
                 }
             }
 
@@ -245,6 +252,7 @@ class Structures {
                     set: true,
                     value
                 }
+                if (this.root.viz.types[object] !== 'Array') this.objects[object][length].value++
                 this.sets[object] = this.objects[object][key]
             } else {
                 if (allowRender) {
@@ -262,8 +270,8 @@ class Structures {
                 this.addPointers(value, object, key)
             }
 
-            const element = document.querySelector(`.set.${object}`)
-            if (element) element.scrollIntoView()
+            // const element = document.querySelector(`.set.${object}`)
+            // if (element) element.scrollIntoView()
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
@@ -273,6 +281,7 @@ class Structures {
                 step.prev = original
                 if (this.root.viz.types[object] !== 'Array') {
                     delete this.objects[object][key]
+                    this.objects[object][length].value--
                 } else {
                     this.objects[object][key].value = null
                 }
@@ -303,8 +312,8 @@ class Structures {
             }
 
             this.gets[object] = this.objects[object][key]
-            const element = document.querySelector(`.get.${object}`)
-            if (element) element.scrollIntoView()
+            // const element = document.querySelector(`.get.${object}`)
+            // if (element) element.scrollIntoView()
         }
         if (allowRender) this.setBindings()
     }
@@ -327,6 +336,7 @@ class Structures {
                 }
             } else {
                 delete this.objects[object][key]
+                this.objects[object][length].value--
             }
 
         }
@@ -339,6 +349,7 @@ class Structures {
                     set: true,
                     value: step.prev
                 }
+                if (this.root.viz.types[object] !== 'Array') this.objects[object][length].value++
                 if (step.prev in this.objects) {
                     this.addPointers(step.prev, object, key)
                 }
