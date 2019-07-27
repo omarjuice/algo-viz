@@ -92,7 +92,7 @@ function reassignMutative() {
             value: function (key) {
                 const result = has.call(this, key)
                 if (result) {
-                    return runner.__(key, {
+                    return runner.__(result, {
                         type: TYPES.GET,
                         object: runner.stringify(this),
                         access: [runner.stringify(key)]
