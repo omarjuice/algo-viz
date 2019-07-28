@@ -19,7 +19,8 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "vm2": "^3.8.2"
   },
   "devDependencies": {
     "expect": "^24.8.0",

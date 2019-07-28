@@ -84,7 +84,7 @@ module.exports = function (input) {
                         } else if (t.isCallExpression(path.parent)) {
                             if (t.isMemberExpression(path.parent.callee)) {
                                 const { object, props } = computeAccessor(path, path.parent.callee)
-                                if (!isBarredObject(object.name)) {
+                                if (!isBarredObject(object.name, false)) {
                                     funcName = t.binaryExpression('+', t.stringLiteral(object.name), t.stringLiteral('.'))
                                     for (const p of props) {
                                         // funcName += '.' + (t.isIdentifier(p) ? p.name : p.value)
