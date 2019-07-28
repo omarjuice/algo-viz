@@ -1,32 +1,15 @@
-const babel = require('@babel/core')
 const _ = require('lodash')
-const stepify = require('../stepify')
 const expect = require('expect')
 const reconstructor = require('../reconstructor')
 const funcs = require('./funcs')
-
+const transpile = require('../../transpile')
 
 const print = v => (console.log(v), v)
 describe('RECONSTRUCT', () => {
     async function main(program) {
 
         const input = { _name: null, references: {} }
-        const { code } = await babel.transformAsync(program, {
-            plugins: [
-                ['@babel/plugin-transform-destructuring', { loose: true }],
-                ['@babel/plugin-transform-parameters', { loose: true }],
-                'babel-plugin-transform-remove-console',
-                [stepify(input), {
-                    disallow: {
-                        async: true,
-                        generator: true
-                    },
-                }]
-            ],
-            parserOpts: {
-                strictMode: true
-            }
-        })
+        const code = await transpile(program, input)
         const { _name } = input
 
         global[_name] = new (require('../runner'))(_name, program)
@@ -208,24 +191,11 @@ describe('RECONSTRUCT', () => {
 describe('DECONSTRUCT(reverse)', () => {
     async function main(program, copies) {
 
+
         const input = { _name: null, references: {} }
-        const { code } = await babel.transformAsync(program, {
-            plugins: [
-                ['@babel/plugin-transform-destructuring', { loose: true }],
-                ['@babel/plugin-transform-parameters', { loose: true }],
-                'babel-plugin-transform-remove-console',
-                [stepify(input), {
-                    disallow: {
-                        async: true,
-                        generator: true
-                    },
-                }]
-            ],
-            parserOpts: {
-                strictMode: true
-            }
-        })
+        const code = await transpile(program, input)
         const { _name } = input
+
 
         global[_name] = new (require('../runner'))(_name, program)
         let object = copies.transpiled

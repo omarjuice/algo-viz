@@ -1,32 +1,13 @@
-const stepify = require('../stepify')
-const babel = require('@babel/core')
 const funcs = require('./funcs')
 const expect = require('expect')
-
+const transpile = require('../../transpile')
 
 
 
 async function testRunner(funcString) {
 
     const input = { _name: null, references: {} }
-    const { code } = await babel.transformAsync(funcString, {
-        plugins: [
-            ['@babel/plugin-transform-destructuring', { loose: true }],
-            '@babel/plugin-transform-parameters',
-            'babel-plugin-transform-remove-console',
-            [stepify(input), {
-                disallow: {
-                    async: true,
-                    generator: true
-                },
-            }]
-        ],
-        parserOpts: {
-            plugins: [
-                "objectRestSpread",
-            ]
-        }
-    })
+    const code = await transpile(funcString, input)
     const { _name } = input
     global[_name] = {
         __: function (val) {

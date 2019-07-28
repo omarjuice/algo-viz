@@ -3,7 +3,7 @@
 // const { CodeGenerator } = require('@babel/generator')
 const ASThelpers = require('./ast-helpers')
 const t = require('@babel/types')
-const TYPES = require('./utils/types')
+const TYPES = require('../execute/utils/types')
 
 module.exports = function (input) {
     return function () {

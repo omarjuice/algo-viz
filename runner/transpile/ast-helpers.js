@@ -1,7 +1,7 @@
 const types = require('@babel/types')
 const _ = require('lodash')
-const randomString = require('./utils/randomString')
-const TYPES = require('./utils/types')
+const randomString = require('../execute/utils/randomString')
+const TYPES = require('../execute/utils/types')
 module.exports = function ({ t = types, input, code, Node }) {
 
     const createId = (l = 3, num_ = 2) => {

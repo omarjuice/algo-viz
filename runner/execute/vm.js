@@ -2,29 +2,13 @@ const { VM } = require('vm2')
 const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 
-const stepify = require('./stepify')
-const babel = require('@babel/core')
+const transpile = require('../transpile')
 const fs = require('fs')
 
 
 module.exports = async function (code) {
     const input = { _name: null, references: {} }
-    const { code: transpiled } = await babel.transformAsync(code, {
-        plugins: [
-            ['@babel/plugin-transform-destructuring', { loose: true }],
-            ['@babel/plugin-transform-parameters', { loose: true }],
-            'babel-plugin-transform-remove-console',
-            [stepify(input), {
-                disallow: {
-                    async: true,
-                    generator: true
-                },
-            }]
-        ],
-        parserOpts: {
-            strictMode: true
-        }
-    })
+    const transpiled = await transpile(code, input)
     fs.writeFile('transpiled.js', transpiled, () => { })
     const { _name } = input
     const runner = new Runner(_name, code)

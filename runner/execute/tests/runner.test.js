@@ -1,40 +1,22 @@
-
 const stepIterator = require('../stepIterator')
-const babel = require('@babel/core')
 const funcs = require('./funcs')
-const stepify = require('../stepify')
 const expect = require('expect')
+const transpile = require('../../transpile')
 const print = (val) => {
     // console.log(val)
     return val
 }
 async function main(program) {
 
-
-
     const input = { _name: null, references: {} }
-    const { code } = await babel.transformAsync(program, {
-        plugins: [
-            ['@babel/plugin-transform-destructuring', { loose: true }],
-            ['@babel/plugin-transform-parameters', { loose: true }],
-            'babel-plugin-transform-remove-console',
-            [stepify(input), {
-                disallow: {
-                    async: true,
-                    generator: true
-                },
-            }]
-        ],
-        parserOpts: {
-            strictMode: true
-        }
-    })
+    const code = await transpile(program, input)
     const { _name } = input
 
     global[_name] = new (require('../runner'))(_name, program)
 
     const transpiledResult = eval(code)
     const normalResult = eval(program)
+    console.log(normalResult)
     const { steps, objects, types } = global[_name]
 
     delete global[_name]
@@ -62,7 +44,7 @@ async function testRunner(func) {
 
 }
 describe('RUNNER', () => {
-    for (let func in funcs) {
+    for (const func in funcs) {
         it(func, async () => {
             await testRunner(funcs[func])
         })

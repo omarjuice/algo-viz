@@ -4,26 +4,9 @@ module.exports = async function (___code) {
     let Viz;
     try {
         eval(await (async function (func) {
-            const stepify = require('./stepify')
-            const babel = require('@babel/core')
             const fs = require('fs')
             const input = { _name: null, references: {} }
-            const { code } = await babel.transformAsync(func, {
-                plugins: [
-                    ['@babel/plugin-transform-destructuring', { loose: true }],
-                    ['@babel/plugin-transform-parameters', { loose: true }],
-                    'babel-plugin-transform-remove-console',
-                    [stepify(input), {
-                        disallow: {
-                            async: true,
-                            generator: true
-                        },
-                    }]
-                ],
-                parserOpts: {
-                    strictMode: true
-                }
-            })
+            const code = await require('../transpile')(func, input)
             const { _name } = input
             global[_name] = new (require('./runner'))(_name, func)
             Viz = instantiateViz(global[_name])
@@ -33,7 +16,7 @@ module.exports = async function (___code) {
             return code
         })(___code))
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         global[require('./utils/key')]()
         if (global[___name]) {
 
