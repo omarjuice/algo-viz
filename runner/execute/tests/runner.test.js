@@ -16,7 +16,6 @@ async function main(program) {
 
     const transpiledResult = eval(code)
     const normalResult = eval(program)
-    console.log(normalResult)
     const { steps, objects, types } = global[_name]
 
     delete global[_name]

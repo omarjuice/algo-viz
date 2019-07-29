@@ -1,9 +1,9 @@
 const expect = require('expect')
-const execute = require('../../execute/vm')
+const execute = require('../../execute')
 
 describe('VM code execution', () => {
     it('Should run code in a VM', async () => {
-        const body = await execute(`  function twoNumberSum(array, targetSum) {
+        let body = await execute(`  function twoNumberSum(array, targetSum) {
             const hash = {}
             for(let number of array){
                 if(hash[number]){
@@ -14,18 +14,41 @@ describe('VM code execution', () => {
             return []
         }
         twoNumberSum([1,2,3,4,5], 5)`)
+        body = JSON.parse(body)
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
     })
     it('Can access custom builtins', async () => {
-        const body = await execute(`const result = Viz.SLL.create([1,2,3,4,5]);`)
+        let body = await execute(`const result = Viz.SLL.create([1,2,3,4,5]);`)
+        body = JSON.parse(body)
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
     })
     it('Can cannot access restricted objects', async () => {
-        const body = await execute(`const result = process;`)
+        let body = await execute(`const result = process;`)
+        body = JSON.parse(body)
+        expect(Array.isArray(body.steps)).toBe(true)
+        expect(typeof body.objects).toBe('object')
+        expect(typeof body.types).toBe('object')
+        expect(body.steps[body.steps.length - 1].type).toBe('ERROR')
+    })
+    it('respects timeouts', async () => {
+        let body = await execute(`while(true){}`)
+        body = JSON.parse(body)
+        expect(Array.isArray(body.steps)).toBe(true)
+        expect(typeof body.objects).toBe('object')
+        expect(typeof body.types).toBe('object')
+        expect(body.steps[body.steps.length - 1].type).toBe('ERROR')
+    })
+    it('restricted objects cannot be accessed from callbacks', async () => {
+        let body = await execute(`
+            const matrix = Viz.array.matrix(5,5, () => {
+                return require('fs')
+            })
+        `)
+        body = JSON.parse(body)
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')

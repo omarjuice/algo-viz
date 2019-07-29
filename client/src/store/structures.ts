@@ -336,7 +336,7 @@ class Structures {
                 }
             } else {
                 delete this.objects[object][key]
-                this.objects[object][length].value--
+                if (this.root.viz.types[object] !== 'Array') this.objects[object][length].value--
             }
 
         }

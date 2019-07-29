@@ -17,8 +17,7 @@ async function testRunner(funcString) {
     const normalResult = eval(funcString)
     const transpiledResult = eval(code)
 
-    // console.log(normalResult)
-    // console.log(transpiledResult)
+
     expect(normalResult).toEqual(transpiledResult)
     global[_name] = undefined
 }

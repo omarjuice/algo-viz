@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const runner = require('../execute');
+const execute = require('../execute');
 
 const app = express();
 const PORT = process.env.PORT || process.env.NODE_ENV === 'test' ? 8080 : 3001
@@ -20,9 +20,9 @@ app.get('/', (req, res) => {
 
 app.post('/', async (req, res, next) => {
     const { code } = req.body;
-    runner(code)
+    execute(code)
         .then(result => {
-            res.send({ ...result, code })
+            res.json(result)
         })
         .catch(e => next(e))
 })
@@ -35,3 +35,5 @@ app.listen(PORT, () => {
     console.log('LISTENING ON PORT ' + PORT);
 })
 module.exports = app
+
+process.on('uncaughtException', (e) => console.log(e))
