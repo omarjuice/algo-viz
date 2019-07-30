@@ -91,8 +91,8 @@ class Runner {
         }
         info.value = this.stringify(val)
         this.steps.push(info)
-        if (this.steps.length > 30000) throw new Error('Timeout exceeded')
-
+        if (this.steps.length > 30000) throw new Error('Step limit of 30000 exceeded')
+        if (this.callStack.length > 500) throw new Error('Maximum callstack size of 500 exceeded')
         return this.virtualize(val)
     }
 

@@ -30,6 +30,8 @@ body, html, #root, .app{
     bottom: 1rem;
     right: 1rem;
 }
+
+
 ::-webkit-scrollbar {
     width: 0px;
     background: transparent; /* make scrollbar transparent */
@@ -125,7 +127,7 @@ body, html, #root, .app{
     
 }
 
-.val-display{
+/* .val-display{
     animation: pop-in 250ms
 }
 .structs{
@@ -141,4 +143,4 @@ body, html, #root, .app{
     100%{
         transform: scale(1)
     }
-}
+} */
