@@ -37,10 +37,9 @@ class ApiStore {
             this.loading = true
             const res = await axios.post('/', { code })
             this.loading = false
-            const response: string = res.data
-            const data: Viz.Data = JSON.parse(response)
+            const data: Viz.Data = res.data
             this.root.initialize(data)
-            window.localStorage.setItem('data', response)
+            window.localStorage.setItem('data', JSON.stringify(data))
             this.error = null
             this.ok = true
             this.root.editor.active = false
