@@ -23,10 +23,18 @@ app.get('/', (req, res) => {
 let execute;
 if (version >= 11) {
     execute = require('../execute')
-    console.log('NODE version >= 11 or greater detected. Defaulting to concurrent sandbox execution.')
+    console.log(`
+    ****************************************
+    NODE version >= 11 or greater detected. Defaulting to concurrent sandbox execution.
+    ****************************************
+    `)
 } else {
     execute = require('../execute/execSync')
-    console.log('NODE version < 11 detected. Defaulting to single threaded execution without sandboxing.')
+    console.log(`
+    ****************************************
+    NODE version < 11 detected. Defaulting to single threaded execution without sandboxing.
+    ****************************************
+    `)
 }
 
 
