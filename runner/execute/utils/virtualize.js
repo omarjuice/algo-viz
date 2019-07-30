@@ -8,7 +8,9 @@ function virtualize(object) {
         object instanceof Set ||
         object instanceof String ||
         object instanceof RegExp ||
-        object instanceof Date) {
+        object instanceof Date ||
+        object instanceof Error
+    ) {
         return object
     }
 

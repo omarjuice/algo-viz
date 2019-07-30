@@ -16,9 +16,10 @@ const vm = new VM({
 try {
     vm.run(code)
 } catch (error) {
+    runner.ignore(true)
     runner.steps.push({
         type: 'ERROR',
-        error: error.message
+        error: error.message || JSON.stringify(error)
     })
 }
 const { steps, objects, types } = runner

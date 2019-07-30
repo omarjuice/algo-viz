@@ -19,10 +19,10 @@ module.exports = async function (___code) {
         console.log(error);
         global[require('./utils/key')]()
         if (global[___name]) {
-
+            global[___name].ignore(true)
             global[___name].steps.push({
                 type: 'ERROR',
-                error: error.message
+                error: error.message || JSON.stringify(error)
             })
         } else {
             throw error

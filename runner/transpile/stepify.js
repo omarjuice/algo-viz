@@ -81,7 +81,7 @@ module.exports = function (input) {
                         } else if (t.isObjectProperty(path.parent) && !path.parent.computed) {
                             if (path.parent.key.name[0] === '_') return path.skip()
                             funcName = 'method:' + path.parent.key.name
-                        } else if (t.isCallExpression(path.parent)) {
+                        } else if (t.isCallExpression(path.parent) || t.isNewExpression(path.parent)) {
                             if (t.isMemberExpression(path.parent.callee)) {
                                 const { object, props } = computeAccessor(path, path.parent.callee)
                                 if (!isBarredObject(object.name, false)) {
