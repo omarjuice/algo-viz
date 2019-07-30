@@ -1,8 +1,8 @@
 const expect = require('expect')
 const request = require('supertest')
 const app = require('../')
-
 const funcs = require('../../execute/tests/funcs')
+const execSync = require('../../execute/execSync')
 
 describe('SERVER', function () {
     this.timeout(5000)
@@ -26,12 +26,9 @@ describe('SERVER', function () {
             `})
             .expect(200)
             .expect(({ body }) => {
-                // const body = JSON.parse(JSON.parse(text))
-
                 expect(Array.isArray(body.steps)).toBe(true)
                 expect(typeof body.objects).toBe('object')
                 expect(typeof body.types).toBe('object')
-                console.log(body.types)
             })
             .end(done)
     })
@@ -59,7 +56,25 @@ describe('SERVER', function () {
             expect(typeof body.objects).toBe('object')
             expect(typeof body.types).toBe('object')
         }
-
-
+    })
+    it('execSync can execute code in the main thread', async () => {
+        const code = `
+            function twoNumberSum(array, targetSum) {
+                const hash = {}
+                for(let number of array){
+                    if(hash[number]){
+                        return number > hash[number] ? [hash[number], number] : [number, hash[number]]
+                    }
+                    hash[targetSum - number] = number;
+                }
+                return []
+            }
+            twoNumberSum([1,2,3,4,5], 5)
+        `
+        const result = await execSync(code)
+        expect(Array.isArray(result.steps)).toBe(true)
+        expect(result.steps.length > 0).toBe(true)
+        expect(typeof result.objects).toBe('object')
+        expect(typeof result.types).toBe('object')
     })
 })

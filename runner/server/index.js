@@ -1,6 +1,8 @@
+const version = parseInt(process.versions.node.split('.')[0])
+
+
 const express = require('express')
 const cors = require('cors')
-const execute = require('../execute');
 
 const app = express();
 const PORT = process.env.PORT || process.env.NODE_ENV === 'test' ? 8080 : 3001
@@ -17,6 +19,16 @@ app.use(express.urlencoded({ extended: true }))
 app.get('/', (req, res) => {
     res.send('OK')
 })
+
+let execute;
+if (version >= 11) {
+    execute = require('../execute')
+    console.log('NODE version >= 11 or greater detected. Defaulting to concurrent sandbox execution.')
+} else {
+    execute = require('../execute/execSync')
+    console.log('NODE version < 11 detected. Defaulting to single threaded execution without sandboxing.')
+}
+
 
 app.post('/', async (req, res, next) => {
     const { code } = req.body;
