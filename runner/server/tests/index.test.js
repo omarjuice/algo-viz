@@ -12,60 +12,17 @@ describe('SERVER', function () {
             .expect(200)
             .end(done)
     })
-    it.only('Posting code returns results', done => {
+    it('Posting code returns results', done => {
         request(app)
             .post('/')
             .send({
                 code: `
-                class Trie {
-
-                    constructor(letter = '') {
-                        this.value = letter;
-                        this.children = {};
-                        this.isWord = false;
+                class MyClass{
+                    constructor(){
+                        this.value = 5
                     }
-                
-                    add(word, node = this) {
-                        for (const letter of word) {
-                            if (node.children[letter]) {
-                                node = node.children[letter];
-                            } else {
-                
-                                node.children[letter] = new Trie(letter);
-                                node = node.children[letter];
-                            }
-                        }
-                        node.isWord = true;
-                    };
-                    find(word, node = this) {
-                        let value = ''
-                
-                        for (const letter of word) {
-                            if (node.children[letter]) {
-                                node = node.children[letter];
-                                value += letter;
-                            }
-                        }
-                        return value === word ? node : null;
-                    };
-                    findWords(value = '', words = [], node = this.find(value), ) {
-                        if (node) {
-                            if (node.isWord) words.push(value)
-                            for (const letter in node.children) {
-                                const child = node.children[letter]
-                                child.findWords(value + child.value, words, child);
-                            };
-                        }
-                
-                        return words;
-                    };
-                }
-                const trie = new Trie()
-                const _ls =
-                    ["lab",
-                  
-                        "long"];
-                _ls.forEach(w => trie.add(w))                
+                }   
+                const result = new MyClass();         
             `})
             .expect(200)
             .expect(({ body }) => {
@@ -74,6 +31,7 @@ describe('SERVER', function () {
                 expect(Array.isArray(body.steps)).toBe(true)
                 expect(typeof body.objects).toBe('object')
                 expect(typeof body.types).toBe('object')
+                console.log(body.types)
             })
             .end(done)
     })

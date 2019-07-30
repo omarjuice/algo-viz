@@ -1,5 +1,5 @@
 const { parentPort, workerData, } = require('worker_threads')
-const { VM } = require('vm2')
+const { VM } = require('../../../vm2')
 const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 
@@ -11,7 +11,7 @@ const vm = new VM({
         [_name]: runner,
         Viz: instantiateViz(runner)
     },
-    timeout: 500
+    timeout: 500,
 })
 try {
     vm.run(code)
