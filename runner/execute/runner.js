@@ -18,7 +18,6 @@ class Runner {
         this.types = {}
         // callStack for determining the type of function we are currently in
         this.callStack = []
-        // a unique signature solely for preventing Object.defineProperty from throwing an error if it was called by the Runner or stringify()
         // a wrapper for Object.defineProperty that gives it the signature
 
         this.virtualize = virtualize
@@ -93,6 +92,7 @@ class Runner {
         info.value = this.stringify(val)
         this.steps.push(info)
         if (this.steps.length > 30000) throw new Error('Timeout exceeded')
+
         return this.virtualize(val)
     }
 

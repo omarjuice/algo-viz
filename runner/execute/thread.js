@@ -28,4 +28,4 @@ const data = JSON.stringify({
 parentPort.postMessage(data)
 
 
-process.exit()
+process.exit(1)

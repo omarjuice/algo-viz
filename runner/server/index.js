@@ -22,9 +22,11 @@ app.post('/', async (req, res, next) => {
     const { code } = req.body;
     execute(code)
         .then(result => {
-            res.json(result)
+            res.send(JSON.parse(result))
         })
-        .catch(e => next(e))
+        .catch(e => {
+            next(e)
+        })
 })
 app.use((err, req, res, next) => {
     console.log(err);

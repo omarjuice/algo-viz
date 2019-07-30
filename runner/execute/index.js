@@ -17,7 +17,11 @@ module.exports = async function (code) {
         worker.on('message', data => {
             fs.writeFile('executed.json', data, () => { })
             resolve(data)
+            worker.terminate()
         })
-        worker.on('error', reject)
+        worker.on('error', error => {
+            worker.terminate();
+            reject(error)
+        })
     })
 }
