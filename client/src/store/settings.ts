@@ -150,8 +150,7 @@ class Settings {
     @action stopEdit() {
         this.editing = false
     }
-    @action changeSpeed(type: string, value: string) {
-        const val = Number(value)
+    @action changeSpeed(type: string, val: number) {
         if (type in this.speeds) {
             if (val >= 0) {
                 this.speeds[type as Viz.configurable] = val
@@ -178,6 +177,7 @@ class Settings {
     @action setColor(structType: string, color?: string) {
         if (!color) color = '#' + (Math.floor(Math.random() * (255 ** 3))).toString(16)
         this.structColors[structType] = color
+        console.log(color)
     }
     @action deleteStruct(structType: string) {
         delete this.structColors[structType]

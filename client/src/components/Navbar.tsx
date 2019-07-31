@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import store from '../store';
 import { observer } from 'mobx-react';
+import Slider from 'rc-slider'
 import SlowArrow from './icons/SlowArrow';
 import FastArrow from './icons/FastArrow';
 
@@ -56,19 +57,7 @@ const Navbar: React.FC = observer(() => {
 
                         </>
                     )}
-                    {/* <div className="navbar-item">
-                        <button onClick={() => {
-                            store.editor.active = !store.editor.active
-                            store.api.error = null
-                        }} className={`button is-small ${store.editor.active && 'is-text'}`}>
-                            {store.editor.active ?
-                                <a href="#/" className='delete'></a> :
-                                <figure style={{ marginTop: '-3px' }} className="image is-4by4">
-                                    <img src={process.env.PUBLIC_URL + '/baseline-code-24px.svg'} alt="" />
-                                </figure>}
 
-                        </button>
-                    </div> */}
                     <div className="navbar-item">
                         {!store.editor.active ? (
                             <button onClick={() => {
@@ -109,15 +98,18 @@ const Navbar: React.FC = observer(() => {
                                     </a>
                                     <div className="navbar-dropdown has-background-dark">
                                         <div className="select">
-                                            <select className="select" value={type} onChange={(e) => setType(e.target.value)}>
+                                            <select className="select has-background-dark has-text-white" value={type} onChange={(e) => setType(e.target.value)}>
                                                 {Object.keys(store.settings.speeds).map(type => {
                                                     return <option key={type} value={type}>{type}</option>
                                                 })}
                                             </select>
                                         </div>
-                                        <input className="input" value={store.settings.speeds[type as Viz.configurable] || 0} type="number" min={0} step={1} onChange={(e) => {
-                                            store.settings.changeSpeed(type, e.target.value)
-                                        }} />
+                                        <Slider
+                                            min={0}
+                                            max={10}
+                                            value={store.settings.speeds[type as Viz.configurable] || 0}
+                                            onChange={(v) => { store.settings.changeSpeed(type, v) }}
+                                        />
                                     </div>
 
                                 </div>

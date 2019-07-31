@@ -2,6 +2,7 @@ import React from 'react'
 import store from '../store'
 import { observer } from 'mobx-react';
 import { Transition } from 'react-spring/renderprops';
+import Tooltip from 'rc-tooltip';
 
 
 type stackItem = [number, string | void]
@@ -62,17 +63,28 @@ const CallStack: React.FC = observer(() => {
         return (
             <div className="call-stack">
                 <ul >
-                    <Transition items={stack}
+                    <Transition
+                        config={{ duration: (store.iterator.baseTime / store.iterator.speed) * 3 }}
+                        items={stack}
                         from={{ transform: `translateY(-40px)`, opacity: 0 }}
                         enter={{ transform: `translateY(0px)`, opacity: 1 }}
-                        leave={len <= 100 ? { transform: `translateY(-40px)`, height, opacity: 0 } : {}}
+                        leave={len <= 100 ? { transform: `translateY(-40px)`, height, opacity: 0, borderTopLeftRadius: '50%', borderTopRightRadius: '50%' } : {}}
                     >
                         {([i, name]) => (props: React.CSSProperties) => {
                             if (i === stack.length - 1) {
-                                props.borderTopLeftRadius = props.borderTopRightRadius = '40%'
+                                props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
                             }
                             return (
-                                renderItem([i as number, name as any], height, props)
+                                <Tooltip
+                                    overlay={() => (
+                                        <div className="has-text-weight-bold">
+                                            <span style={{ fontSize: 9 }}>{i}: {name}</span>
+                                        </div >)}
+                                    placement={'left'}
+                                    trigger={['hover']} defaultVisible={false} >
+
+                                    {renderItem([i as number, name as any], height, props)}
+                                </Tooltip>
                             )
                         }}
                     </Transition>
