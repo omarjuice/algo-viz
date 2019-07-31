@@ -5,6 +5,11 @@ body, html, #root, .app{
     overflow: hidden
 }
 
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
 
 .user-code{
     font-family: 'Source Code Pro', monospace;
@@ -20,7 +25,6 @@ body, html, #root, .app{
     box-shadow: 0px 1px 0px  gray
 }
 .tab{
-
     padding-left:10px;
     padding-right:10px; 
 }
@@ -34,10 +38,6 @@ body, html, #root, .app{
 }
 
 
-::-webkit-scrollbar {
-    width: 0px;
-    background: transparent; /* make scrollbar transparent */
-}
 .iterator-control{
     height: 5vh;
     margin-left: 5px;

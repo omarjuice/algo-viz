@@ -177,7 +177,6 @@ class Settings {
     @action setColor(structType: string, color?: string) {
         if (!color) color = '#' + (Math.floor(Math.random() * (255 ** 3))).toString(16)
         this.structColors[structType] = color
-        console.log(color)
     }
     @action deleteStruct(structType: string) {
         delete this.structColors[structType]

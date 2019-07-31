@@ -6,7 +6,8 @@
   "scripts": {
     "test": "export NODE_ENV=test && mocha **/*.test.js",
     "test-reconstruct": "mocha tests/reconstruct.test.js",
-    "start": "export NODE_ENV=development && node server"
+    "dev": "export NODE_ENV=development && node server",
+    "start": "export NODE_ENV=production && node server"
   },
   "author": "",
   "license": "ISC",

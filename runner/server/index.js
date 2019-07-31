@@ -1,9 +1,8 @@
 const version = parseInt(process.versions.node.split('.')[0])
-
 process.env.VERSION = version
 const express = require('express')
 const cors = require('cors')
-
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || process.env.NODE_ENV === 'test' ? 8080 : 3001
 
@@ -15,10 +14,9 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, "..", "..", "client/build")));
 
-app.get('/', (req, res) => {
-    res.send('OK')
-})
+
 
 let execute;
 if (version >= 11) {
@@ -48,6 +46,19 @@ app.post('/', async (req, res, next) => {
             next(e)
         })
 })
+if (process.env.NODE_ENV === 'production') {
+    // app.use((req, res, next) => {
+    //     if (req.secure) {
+    //         next();
+    //     } else {
+    //         res.redirect("https://" + req.headers.host + req.url);
+    //     }
+    // });
+    app.get("/", (req, res, next) => {
+
+        res.sendFile(path.join(__dirname, "..", "..", "client/build/index.html"));
+    });
+}
 app.use((err, req, res, next) => {
     console.log(err);
     res.status(500).send(err.message)
