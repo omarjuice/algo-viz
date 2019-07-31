@@ -293,7 +293,13 @@ class Structures {
         if (step.type === 'CLEAR') {
             const { object } = step
             step.prev = this.objects[object]
-            this.objects[object] = {}
+            this.objects[object] = {
+                [length]: {
+                    get: false,
+                    set: false,
+                    value: 0
+                }
+            }
         }
         if (step.type === 'GET') {
             const { object, access } = step

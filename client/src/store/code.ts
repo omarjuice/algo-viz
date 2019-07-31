@@ -51,8 +51,10 @@ class CodeStore {
             this.expression = this.root.viz.code.slice(start, end)
             this.value = this.root.iterator.step.value
         } else {
-            // this.start = undefined
-            // this.end = undefined
+            if (this.root.iterator.index === 0) {
+                this.start = undefined
+                this.end = undefined
+            }
         }
     }
 }

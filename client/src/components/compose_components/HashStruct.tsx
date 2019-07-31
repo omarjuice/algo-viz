@@ -32,7 +32,6 @@ const iterate = (structure: Viz.Structure, len: number, objectId: string, ratio:
 
 const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, orientation }) => {
 
-    if (store.windowWidth) { }// to rerender on resize
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
         if (node) {
@@ -70,7 +69,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     const active = pointed || store.structs.activePointers[objectId]
     const rotation = orientation === 'column' ? 90 : 0
 
-    const braceStyle: React.CSSProperties = { transform: `rotate(${rotation}deg)`, color, zIndex: 5, transition: `transform .5s` }
+    const braceStyle: React.CSSProperties = { transform: `rotate(${rotation}deg)`, color, position: "relative", zIndex: 5, transition: `transform .5s` }
     if (active) {
         braceStyle.transform += ' scale(2)'
     }

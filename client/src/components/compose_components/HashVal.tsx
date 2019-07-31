@@ -66,12 +66,13 @@ const getHashVal = (value: any, displayProps: DisplayProps) => {
 
 const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio, orientation }) => {
     const [hovered, toggle] = useState(false)
-    if (!(prop in object)) return null;
-    const info = object[prop]
+    const willRender = prop in object
+    const info = willRender ? object[prop] : { get: false, set: false, value: null }
     let value = info.value
-    const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
     const { get, set } = info
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
+    if (!willRender) return null;
+    const className = `${get && 'get'} ${set && 'set'} ${objectId}`
     const type = store.viz.types[objectId]
     const displayProps: DisplayProps = {
         objectId,
