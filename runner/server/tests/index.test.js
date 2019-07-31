@@ -32,31 +32,30 @@ describe('SERVER', function () {
             })
             .end(done)
     })
-    it('can handle multiple concurrent requests', async () => {
-        const responses = []
-        for (const name in funcs) {
-            responses.push(request(app)
-                .post('/')
-                .send({
-                    code: funcs[name]
-                })
-            )
-        }
-        responses.push(request(app)
-            .post('/')
-            .send({
-                code: `while(true){}`
-            })
-        )
+    if (process.env.VERSION >= 11) {
+        it('can handle multiple concurrent requests', async () => {
+            const responses = []
+            const start = Date.now()
+            for (const name in funcs) {
+                responses.push(request(app)
+                    .post('/')
+                    .send({
+                        code: funcs[name]
+                    })
+                )
+            }
 
-        const results = await Promise.all(responses)
-        for (const res of results) {
-            const { body } = res
-            expect(Array.isArray(body.steps)).toBe(true)
-            expect(typeof body.objects).toBe('object')
-            expect(typeof body.types).toBe('object')
-        }
-    })
+            const results = await Promise.all(responses)
+            const end = Date.now()
+            for (const res of results) {
+                const { body } = res
+                expect(Array.isArray(body.steps)).toBe(true)
+                expect(typeof body.objects).toBe('object')
+                expect(typeof body.types).toBe('object')
+            }
+            // console.log(results.reduce((a, v) => a + v.body.steps.length, 0) / results.length, (end - start) / results.length);
+        })
+    }
     it('execSync can execute code in the main thread', async () => {
         const code = `
             function twoNumberSum(array, targetSum) {

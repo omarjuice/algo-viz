@@ -17,7 +17,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
             height: `${height}px`,
             width: store.windowWidth / 7,
             fontSize: `${Math.min(height / 2, 100 / (name ? (name as string).length : 1))}px`,
-            marginBottom: `-${height / 4}px`,
+            marginBottom: i === 0 ? '0px' : `-${height / 4}px`,
             background: 'orange',
             borderBottomLeftRadius: '50%',
             borderBottomRightRadius: '50%',
@@ -67,7 +67,10 @@ const CallStack: React.FC = observer(() => {
                         enter={{ transform: `translateY(0px)`, opacity: 1 }}
                         leave={len <= 100 ? { transform: `translateY(-40px)`, height, opacity: 0 } : {}}
                     >
-                        {([i, name]) => props => {
+                        {([i, name]) => (props: React.CSSProperties) => {
+                            if (i === stack.length - 1) {
+                                props.borderTopLeftRadius = props.borderTopRightRadius = '40%'
+                            }
                             return (
                                 renderItem([i as number, name as any], height, props)
                             )
@@ -79,7 +82,13 @@ const CallStack: React.FC = observer(() => {
     } else {
         return <div className="call-stack">
             <ul>
-                {stack.map(([i, name]) => renderItem([i, name], height, {}))}
+                {stack.map(([i, name]) => {
+                    const props: React.CSSProperties = {}
+                    if (i === stack.length - 1) {
+                        props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
+                    }
+                    return renderItem([i, name], height, props)
+                })}
             </ul>
         </div>
     }

@@ -5,6 +5,7 @@ type handler = {
     value: number
     allow: boolean
     changing: boolean
+    wasPlaying: boolean
 
 }
 
@@ -16,7 +17,7 @@ class IteratorStore {
     @observable direction: boolean = true
     @observable speed: number = 1
     @observable handling: boolean = false
-    @observable handler: handler = { value: 0, allow: true, changing: false }
+    @observable handler: handler = { value: 0, allow: true, changing: false, wasPlaying: false }
     baseTime: number = 100
     timer: any = null
     maxSpeed: number = 32
@@ -102,6 +103,7 @@ class IteratorStore {
         if (this.handler.allow && !this.handler.changing) {
             clearTimeout(this.timer)
             this.handling = true
+            this.handler.wasPlaying = this.iterating
             this.pause()
             this.handler.value = this.index
         }
@@ -116,7 +118,7 @@ class IteratorStore {
     @action async afterChange() {
         if (this.handler.allow && this.handling) {
             const t1 = Date.now()
-            const { iterating } = this
+            const iterating = this.handler.wasPlaying
             this.handling = false
             this.handler.allow = false
             if (this.handler.value > this.index) {

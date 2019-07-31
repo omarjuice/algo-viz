@@ -1,6 +1,6 @@
 const version = parseInt(process.versions.node.split('.')[0])
 
-
+process.env.VERSION = version
 const express = require('express')
 const cors = require('cors')
 
