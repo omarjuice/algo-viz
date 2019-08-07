@@ -2,7 +2,6 @@
   "name": "algo-viz",
   "version": "1.0.0",
   "description": "## _Work In Progress_",
-  "main": "stats.js",
   "scripts": {
     "server": "npm run dev --prefix runner",
     "client": "npm start --prefix client",

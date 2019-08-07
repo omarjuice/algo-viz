@@ -78,6 +78,7 @@ class IteratorStore {
             this.handler.allow = true
             this.handler.value = 0
             this.handling = true
+            this.handler.wasPlaying = true
             return this.afterChange()
         }
         this.begin()

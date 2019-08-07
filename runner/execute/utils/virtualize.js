@@ -13,7 +13,6 @@ function virtualize(object) {
     ) {
         return object
     }
-
     if (this.proxies.has(object)) {
         return this.proxies.get(object)[0]
     }
@@ -49,6 +48,9 @@ function virtualizeObject(object, runner) {
     return new Proxy(object, {
         get(target, prop) {
             if (!(prop in target)) return undefined
+            if (prop === Symbol.iterator) {
+                return target[Symbol.iterator].bind(target);
+            }
             const val = target[prop]
 
             if (isVirtualProperty(target, prop))

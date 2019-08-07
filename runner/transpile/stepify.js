@@ -51,9 +51,9 @@ module.exports = function (input) {
                 },
                 Function: {
                     enter(path, { opts }) {
-                        if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.isVariableDeclarator(path.parent)) {
-                            return path.skip()
-                        }
+                        // if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.isVariableDeclarator(path.parent)) {
+                        //     return path.skip()
+                        // }
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
                         if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
 

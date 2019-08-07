@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import store from '../store';
-
+import DraggableList from './DraggableList'
 
 type Props = {
     name: string
@@ -10,13 +10,7 @@ type State = {
     editing: boolean
     newKeyName: string
     newPointerName: string
-    order: {
-        [name: string]: {
-            pos: number
-            isMultiple: boolean// alpha & numeric ordering
-
-        }
-    },
+    order: { [key: string]: Viz.order }
     main: string
     numChildren: number
     numKeys: number
@@ -180,40 +174,8 @@ class StructSettings extends Component<Props> {
                         <h1 className="title is-5">
                             Children
                         </h1>
-                        <ul className="list">
-                            {keys.map(key => {
-                                return (
-                                    <li key={key} className="list-item">
-                                        <div className="columns">
-                                            <div className="column">
-                                                <div className="select">
-                                                    <select onChange={(e) => this.changeType(key, e.target.value as childType)}
-                                                        value={this.state.order[key].isMultiple ? "children" : 'child'}>
-                                                        <option value={'child'}>child</option>
-                                                        <option value={'children'}>children</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div className="column has-text-centered">
-                                                {key}
-                                            </div>
-                                            <div className="column has-text-centered">
-                                                <button onClick={() => this.changePos(key, this.state.order[key].pos - 1)} className="button is-small">Down</button>
-                                                {this.state.order[key].pos}
-                                                <button onClick={() => this.changePos(key, this.state.order[key].pos + 1)} className="button is-small">Up</button>
+                        <DraggableList changeType={this.changeType} removeKey={this.removeKey} items={keys.map(key => ({ ...this.state.order[key], key }))} />
 
-                                                {/* <input type="number" min={1} onChange={(e) => this.changePos(key, e.target.value)}
-                                                    className="input" /> */}
-                                            </div>
-
-                                            <div className="column has-text-right">
-                                                <button className="delete" onClick={() => this.removeKey(key)} />
-                                            </div>
-                                        </div>
-                                    </li>
-                                )
-                            })}
-                        </ul>
                         <hr />
                         <div className="columns">
                             <div className="column">
