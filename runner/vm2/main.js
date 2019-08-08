@@ -5,7 +5,7 @@
 const fs = require('fs');
 const vm = require('vm');
 const pa = require('path');
-const {EventEmitter} = require('events');
+const { EventEmitter } = require('events');
 
 const sb = fs.readFileSync(`${__dirname}/sandbox.js`, 'utf8');
 const cf = fs.readFileSync(`${__dirname}/contextify.js`, 'utf8');
@@ -19,7 +19,7 @@ const _compileToJS = function compileToJS(code, compiler, filename) {
 		case 'cs':
 		case 'text/coffeescript':
 			try {
-				return require('coffee-script').compile(code, {header: false, bare: true});
+				return require('coffee-script').compile(code, { header: false, bare: true });
 			} catch (ex) {
 				throw new VMError('Coffee-Script compiler is not installed.');
 			}
@@ -147,6 +147,10 @@ class VM extends EventEmitter {
 				wasm: this.options.wasm
 			}
 		});
+		host.Function.prototype.toString = function () {
+			const name = this.name && this.name[0] !== '_' ? this.name : 'function'
+			return `[Function: ${name}]`
+		}
 
 		Reflect.defineProperty(this, '_internal', {
 			value: vm.runInContext(`(function(require, host) { ${cf} \n})`, this._context, {

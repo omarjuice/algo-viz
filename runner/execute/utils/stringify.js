@@ -6,6 +6,8 @@ module.exports = function (obj) {
     // these are functions that change instance methods on their respective object tyes
     if (obj && typeof obj === 'object') {
         // we want to ignore native objects
+
+
         if (this.map.has(obj)) {
             return this.map.get(obj)
         }
@@ -17,7 +19,13 @@ module.exports = function (obj) {
             return native
         }
         if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
-
+        const objString = obj.toString()
+        if (objString.includes('Iterator')) {
+            const id = this.genId(5, 2)
+            this.map.set(obj, id)
+            this.types[id] = objString
+            return id
+        }
         let newId = this.genId(5, 3)
         if (this.constructors.has(obj)) {
             const [flag, id] = this.constructors.get(obj)
@@ -96,7 +104,7 @@ module.exports = function (obj) {
             const name = obj.name && obj.name[0] !== '_' ? obj.name : 'function'
             let id;
             while (!id || (id in this.objects)) {
-                id = '__' + randomString(5)
+                id = this.genId(5, 2)
             }
             this.types[id] = `[Function: ${name}]`
             this.map.set(obj, id)

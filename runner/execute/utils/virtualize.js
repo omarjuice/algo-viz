@@ -13,6 +13,8 @@ function virtualize(object) {
     ) {
         return object
     }
+    const objString = object.toString()
+    if (objString.includes('Iterator')) return object
     if (this.proxies.has(object)) {
         return this.proxies.get(object)[0]
     }
