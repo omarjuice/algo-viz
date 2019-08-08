@@ -1,23 +1,25 @@
 import React from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 
-type childType = 'child' | 'children'
+type childType = 'single' | 'multiple'
 type item = { key: string } & Viz.order
 type Props = {
     items: item[]
     changeType: (key: string, type: childType) => void
     removeKey: (key: string) => void
+    updatePositions: (names: string[]) => void
 }
 
-
+type State = {
+    items: item[]
+}
 const reorder = (list: item[], startIndex: number, endIndex: number) => {
-    const result = Array.from(list);
+    const result = [...list];
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
     return result;
 };
 
-const grid = 8;
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
     userSelect: "none",
@@ -31,11 +33,9 @@ const getListStyle = (isDraggingOver: boolean) => ({
 });
 
 class DraggableList extends React.Component<Props> {
-    state: {
-        items: item[]
-    } = {
-            items: this.props.items
-        };
+    state: State = {
+        items: this.props.items
+    };
     componentDidUpdate(prev: Props) {
         if (prev.items !== this.props.items) {
             this.setState({
@@ -52,10 +52,7 @@ class DraggableList extends React.Component<Props> {
             result.source.index,
             result.destination.index
         );
-
-        this.setState({
-            items
-        });
+        this.props.updatePositions(items.map(item => item.key))
     }
 
     render() {
@@ -80,11 +77,11 @@ class DraggableList extends React.Component<Props> {
                                                 provided.draggableProps.style
                                             )} className="columns is-paddingless draggable-item list-item has-background-gray">
                                             <div className="column is-paddingless">
-                                                <div className="select">
+                                                <div className="select is-small">
                                                     <select onChange={(e) => this.props.changeType(item.key, e.target.value as childType)}
-                                                        value={item.isMultiple ? "children" : 'child'}>
-                                                        <option value={'child'}>child</option>
-                                                        <option value={'children'}>children</option>
+                                                        value={item.isMultiple ? 'multiple' : 'single'}>
+                                                        <option value={'single'}>single</option>
+                                                        <option value={'multiple'}>multiple</option>
                                                     </select>
                                                 </div>
                                             </div>

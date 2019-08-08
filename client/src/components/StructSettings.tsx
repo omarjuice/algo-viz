@@ -16,8 +16,8 @@ type State = {
     numKeys: number
     pointers: { [key: string]: boolean }
 }
-type childType = 'child' | 'children'
-type pointerType = 'single' | 'multiple'
+type childType = 'single' | 'multiple'
+type pointerType = childType
 
 @observer
 class StructSettings extends Component<Props> {
@@ -76,10 +76,19 @@ class StructSettings extends Component<Props> {
             order: newKeys
         })
     }
+    updatePositions = (items: string[]) => {
+        const { order } = this.state
+        const newKeys = { ...order }
+        items.forEach((k, i) => newKeys[k].pos = Math.max(1, Math.min(i + 1, this.state.numKeys)))
+        console.log(newKeys)
+        this.setState({
+            order: newKeys
+        })
+    }
     changeType = (name: string, type: childType) => {
         const { order } = this.state
         const newKeys = { ...order }
-        newKeys[name].isMultiple = type === 'children'
+        newKeys[name].isMultiple = type === 'multiple'
         this.setState({ order: newKeys })
     }
     addPointer = () => {
@@ -174,7 +183,16 @@ class StructSettings extends Component<Props> {
                         <h1 className="title is-5">
                             Children
                         </h1>
-                        <DraggableList changeType={this.changeType} removeKey={this.removeKey} items={keys.map(key => ({ ...this.state.order[key], key }))} />
+                        <DraggableList
+                            updatePositions={this.updatePositions}
+                            changeType={this.changeType}
+                            removeKey={this.removeKey}
+                            items={
+                                keys
+                                    .map(key => ({ ...this.state.order[key], key }))
+                                    .sort((a, b) => a.pos - b.pos)
+                            } />
+
 
                         <hr />
                         <div className="columns">
