@@ -106,7 +106,17 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
                             {type === 'Map' && prop in store.structs.objects ?
                                 <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
-                                : prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}
+                                :
+                                <Tooltip overlay={() => (
+                                    <div className="has-text-weight-bold">
+                                        {type !== 'Set' && <span style={{ fontSize: 9 }}>
+                                            {type === 'Map' && prop in store.structs.objects ? store.viz.types[prop] : prop}:{' '}
+                                        </span>}
+                                        {getVal(prop, true)}
+                                    </div >
+                                )}>
+                                    <span className="prop-name"> {prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}</span>
+                                </Tooltip>}
                         </p>
                     </div>}
                     <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
@@ -158,7 +168,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                             {type === 'Map' &&
                                 prop in store.viz.types ?
                                 getVal(prop) :
-                                <span>{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
+                                <span className="prop-name">{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}
                     <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>

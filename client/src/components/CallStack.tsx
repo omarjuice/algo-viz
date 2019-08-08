@@ -11,31 +11,40 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
 
     const [i, name] = item
     return (
-        <li style={{
-            ...props,
-            position: 'relative',
-            zIndex: i as number,
-            height: `${height}px`,
-            width: store.windowWidth / 7,
-            fontSize: `${Math.min(height / 2, 100 / (name ? (name as string).length : 1))}px`,
-            marginBottom: i === 0 ? '0px' : `-${height / 4}px`,
-            background: 'orange',
-            borderBottomLeftRadius: '50%',
-            borderBottomRightRadius: '50%',
-            borderColor: 'black',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        }}
-            key={i} className="list-item has-text-centered">
-            <span style={{ marginTop: `${height / 4}px` }} >
-                {
-                    `${name ? (name as string)[0] === '_' ? 'anonymous' : name : ''}`
-                }
-            </span>
-        </li>
+        <Tooltip
+            overlay={() => (
+                <div className="has-text-weight-bold">
+                    <span style={{ fontSize: 9 }}>{i}: {name}</span>
+                </div >)}
+            placement={'left'}
+            trigger={['hover']} defaultVisible={false} >
+            <li style={{
+                ...props,
+                position: 'relative',
+                zIndex: i as number,
+                height: `${height}px`,
+                width: store.windowWidth / 7,
+                fontSize: `${Math.min(height / 2, 100 / (name ? (name as string).length : 1))}px`,
+                marginBottom: i === 0 ? '0px' : `-${height / 4}px`,
+                background: 'orange',
+                borderBottomLeftRadius: '50%',
+                borderBottomRightRadius: '50%',
+                borderColor: 'black',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}
+                key={i} className="list-item has-text-centered">
+                <span style={{ marginTop: `${height / 4}px` }} >
+                    {
+                        `${name ? (name as string)[0] === '_' ? 'anonymous' : name : ''}`
+                    }
+                </span>
+
+            </li>
+        </Tooltip>
 
     )
 }
@@ -75,16 +84,7 @@ const CallStack: React.FC = observer(() => {
                                 props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
                             }
                             return (
-                                <Tooltip
-                                    overlay={() => (
-                                        <div className="has-text-weight-bold">
-                                            <span style={{ fontSize: 9 }}>{i}: {name}</span>
-                                        </div >)}
-                                    placement={'left'}
-                                    trigger={['hover']} defaultVisible={false} >
-
-                                    {renderItem([i as number, name as any], height, props)}
-                                </Tooltip>
+                                renderItem([i as number, name as any], height, props)
                             )
                         }}
                     </Transition>
