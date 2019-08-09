@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, toJS } from "mobx";
 import { RootStore } from ".";
 
 
@@ -21,7 +21,7 @@ class StateStore {
 
     @action next(step: Viz.Step.Any) {
         while (this.queue.length) {
-            this.next(this.queue.shift())
+            this.next(this.queue.pop())
         }
         if (step.scope) {
             const [parent, scope] = step.scope;
@@ -32,6 +32,7 @@ class StateStore {
                 this.scopeChain[scope] = { parent, children: [] }
                 if (typeof parent === 'number') {
                     this.scopeChain[parent].children.push(scope)
+
                 }
             }
             const s = this.scopeStack

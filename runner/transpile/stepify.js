@@ -409,6 +409,9 @@ module.exports = function (input) {
                             const details = {
                                 scope: getScope(path)
                             }
+                            // if (t.isSequenceExpression(path.node)) {
+                            //     console.log(path.parent);
+                            // }
                             details.type = TYPES.EXPRESSION
                             const node = proxy(path.node, details)
                             path.replaceWith(node)
