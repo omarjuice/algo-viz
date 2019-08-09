@@ -13,12 +13,15 @@ function virtualize(object) {
     ) {
         return object
     }
-    const objString = object.toString()
-    if (objString.includes('Iterator')) return object
     if (this.proxies.has(object)) {
         return this.proxies.get(object)[0]
     }
-    const proxy = Array.isArray(object) ? virtualizeArray(object, runner) : virtualizeObject(object, runner)
+    const isArray = Array.isArray(object)
+    if (!isArray) {
+        const objString = object.toString()
+        if (objString.includes('Iterator')) return object
+    }
+    const proxy = isArray ? virtualizeArray(object, runner) : virtualizeObject(object, runner)
     this.proxies.set(object, [proxy, false])
     this.proxies.set(proxy, [proxy, true])
     if (this.map.has(object)) {

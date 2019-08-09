@@ -19,12 +19,14 @@ module.exports = function (obj) {
             return native
         }
         if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
-        const objString = obj.toString()
-        if (objString.includes('Iterator')) {
-            const id = this.genId(5, 2)
-            this.map.set(obj, id)
-            this.types[id] = objString
-            return id
+        if (!Array.isArray(obj)) {
+            const objString = obj.toString()
+            if (objString.includes('Iterator')) {
+                const id = this.genId(5, 2)
+                this.map.set(obj, id)
+                this.types[id] = objString
+                return id
+            }
         }
         let newId = this.genId(5, 3)
         if (this.constructors.has(obj)) {
