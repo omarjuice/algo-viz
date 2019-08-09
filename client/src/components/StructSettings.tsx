@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { observer } from 'mobx-react';
 import store from '../store';
 import DraggableList from './DraggableList'
-
+import Slider from 'rc-slider'
 type Props = {
     name: string
 }
@@ -194,7 +194,6 @@ class StructSettings extends Component<Props> {
                             } />
 
 
-                        <hr />
                         <div className="columns">
                             <div className="column">
                                 <input type="text" className="input" onChange={(e) => this.setState({ newKeyName: e.target.value })} value={this.state.newKeyName} />
@@ -203,6 +202,7 @@ class StructSettings extends Component<Props> {
                                 <button className="button is-primary" disabled={!this.state.newKeyName} onClick={this.addKey}>Add Child</button>
                             </div>
                         </div>
+                        <hr />
                         <h1 className="title is-5">
                             Pointers
                         </h1>
@@ -229,7 +229,7 @@ class StructSettings extends Component<Props> {
                                 )
                             })}
                         </ul>
-                        <hr />
+
                         <div className="columns">
                             <div className="column">
                                 <input type="text" className="input" onChange={(e) => this.setState({ newPointerName: e.target.value })} value={this.state.newPointerName} />
@@ -238,27 +238,37 @@ class StructSettings extends Component<Props> {
                                 <button className="button is-primary" disabled={!this.state.newPointerName} onClick={this.addPointer}>Add Pointer</button>
                             </div>
                         </div>
+                        <hr />
                         <div>
                             <h1 className="title is-5">
-                                Main Value
+                                Display Key
                             </h1>
                             <input className="input" type="text" value={this.state.main} onChange={(e) => this.changeMain(e.target.value)} />
                         </div>
+                        <hr />
                         <div>
                             <h1 className="title is-5">
-                                Potential Number of Chilren
+                                Number of Chilren
                             </h1>
-                            <button onClick={() => this.toggleNumChildren()} className="button is-text has-text-white is-dark">
-                                {!specifiedChildren ? 'Specify Potential Number of Children' : 'Unspecify Number of Chilren'}
-                            </button>
-                            {specifiedChildren && (
-                                <input className="input" type="number" min={1} max={1000} value={this.state.numChildren} onChange={(e) => {
-                                    this.setState({
-                                        numChildren: Number(e.target.value)
-                                    })
-                                }} />
-                            )}
+
+                            <Slider
+                                min={0}
+                                max={12}
+                                marks={
+                                    new Array(13).fill(1).reduce((a, _, i) => {
+                                        if (i === 0) {
+                                            a[i] = <span style={{ textOrientation: 'sideways', writingMode: 'vertical-rl', color: 'white' }}>unspecified</span>
+                                        } else {
+                                            a[i] = String(i)
+                                        }
+                                        return a
+                                    }, {} as { [key: string]: ReactNode })
+                                }
+                                value={Number(this.state.numChildren)}
+                                onChange={(v) => v === 0 ? this.toggleNumChildren() : this.setState({ numChildren: v })}
+                            />
                         </div>
+                        <br />
                         <div className="has-text-centered">
                             <button onClick={this.submit} className="button is-link">
                                 Finished Editing {name}
