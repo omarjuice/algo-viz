@@ -90,7 +90,16 @@ class Runner {
             info.object = this.stringify(info.object)
         }
         info.value = this.stringify(val)
-        this.steps.push(info)
+        if ([TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN].includes(info.type)) {
+            const prev = this.steps[this.steps.length - 1];
+            if (!('batch' in prev)) {
+                prev.batch = [info]
+            } else {
+                prev.batch.push(info)
+            }
+        } else {
+            this.steps.push(info)
+        }
         if (this.steps.length > 30000) throw new Error('Step limit of 30000 exceeded')
         if (this.callStack.length > 500) throw new Error('Maximum callstack size of 500 exceeded')
         return this.virtualize(val)

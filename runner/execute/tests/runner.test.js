@@ -1,4 +1,3 @@
-const stepIterator = require('../stepIterator')
 const funcs = require('./funcs')
 const expect = require('expect')
 const transpile = require('../../transpile')
@@ -37,7 +36,6 @@ async function testRunner(func) {
     const identifiers = {}
     const funcScopes = {}
     const calls = {}
-    stepIterator(steps, { scopeChain, scopeStack, callStack, identifiers, funcScopes, calls, code: func })
     expect(transpiledResult).toEqual(normalResult)
 
 

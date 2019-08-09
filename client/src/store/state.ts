@@ -20,7 +20,6 @@ class StateStore {
     }
 
     @action next(step: Viz.Step.Any) {
-        // console.log(step.type, this.root.iterator.direction);
 
         if (step.scope) {
             const [parent, scope] = step.scope;
@@ -126,9 +125,19 @@ class StateStore {
                 step.prevVals = prevVals;
             }
         }
+        if ('batch' in step) {
+            step.batch.forEach((s) => {
+                this.next(s)
+            })
+        }
         // console.log(step.type, toJS(this.scopeStack))
     }
     @action prev(step: Viz.Step.Any) {
+        if ('batch' in step) {
+            for (let i = step.batch.length - 1; i >= 0; i--) {
+                this.prev(step.batch[i])
+            }
+        }
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }

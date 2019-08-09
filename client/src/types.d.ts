@@ -60,6 +60,7 @@ declare namespace Viz {
             scope?: scope
             value?: any
             [key: string]: any
+            batch?: (FUNC | METHOD | RETURN | BLOCK)[]
         }
         interface ObjectType extends Generic {
             object: string
