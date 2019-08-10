@@ -22,10 +22,12 @@ module.exports = function ({ t = types, input, code, Node }) {
         if (!details.name && node.start) {
             details.name = t.arrayExpression([t.numericLiteral(node.start), t.numericLiteral(node.end)])
         }
-        return t.callExpression(
+        const p = t.callExpression(
             t.memberExpression(_wrapper_id, t.identifier('__')),
             [node, construct(details) || t.nullLiteral()]
         )
+        p._isProxy = true
+        return p
     }
     // creates an outer variable declaration to assign expressions within properties
     const proxyAssignment = node => {

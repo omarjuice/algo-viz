@@ -31,6 +31,10 @@ class StateStore {
             if (!(scope in this.scopeChain)) {
                 this.scopeChain[scope] = { parent, children: [] }
                 if (typeof parent === 'number') {
+                    // if(!this.scopeChain[parent]){
+                    //     console.log('FILLING IN SCOPE PARENT: ' + parent );
+                    //     this.scopeChain[parent] = 
+                    // }
                     this.scopeChain[parent].children.push(scope)
 
                 }

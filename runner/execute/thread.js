@@ -7,6 +7,7 @@ const Runner = require('./runner')
 const { code, _name, original } = workerData
 const runner = new Runner(_name, original)
 const vm = new VM({
+
     sandbox: {
         [_name]: runner,
         Viz: instantiateViz(runner)

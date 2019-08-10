@@ -19,7 +19,7 @@ function virtualize(object) {
     const isArray = Array.isArray(object)
     if (!isArray) {
         const objString = object.toString()
-        if (objString.includes('Iterator')) return object
+        if (objString.includes(' Iterator')) return object
     }
     const proxy = isArray ? virtualizeArray(object, runner) : virtualizeObject(object, runner)
     this.proxies.set(object, [proxy, false])
@@ -67,6 +67,7 @@ function virtualizeObject(object, runner) {
             return val
         },
         set(target, prop, value) {
+
             target[prop] = runner.virtualize(value)
             if (isVirtualProperty(target, prop))
                 runner.__(target[prop], {
@@ -125,6 +126,7 @@ function virtualizeArray(object, runner) {
             if (prop === 'last') {
                 prop = target.length - 1
             }
+
             target[prop] = runner.virtualize(value)
             const isVirtual = (typeof prop === 'number' && prop >= 0 && prop < target.length) || prop === 'length'
             if (isVirtual)

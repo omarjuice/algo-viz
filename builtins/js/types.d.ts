@@ -49,3 +49,19 @@ declare class BST {
     remove: (v: number) => BST
     traverse: (callback: (v: number) => any, method: treeTraversalMethod) => BST
 }
+
+declare class Node {
+    value: any
+    prev: Node
+    next: Node
+}
+
+declare class Queue {
+    private front: Node
+    private end: Node
+    public length: number
+    push: (...values) => number
+    unshift: (...values) => number
+    shift: () => any
+    pop: () => any
+}

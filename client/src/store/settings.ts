@@ -61,6 +61,32 @@ export const structInfo: Viz.structSettings = {
             parent: false,
             root: false
         }
+    },
+    Queue: {
+        order: {
+            front: {
+                pos: 1,
+                isMultiple: false
+            }
+        },
+        main: 'length',
+        numChildren: 1,
+        pointers: {
+            end: false
+        }
+    },
+    Node: {
+        order: {
+            next: {
+                pos: 1,
+                isMultiple: false
+            }
+        },
+        main: 'value',
+        numChildren: 1,
+        pointers: {
+            prev: false
+        }
     }
 }
 

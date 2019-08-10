@@ -238,26 +238,17 @@ module.exports = function (input) {
                     }
 
                 },
-                "For|While|DoWhileStatement"(path) {
-                    if (!t.isBlockStatement(path.node.body)) {
-                        //we need to put things into the bodies so we need a block statement
-                        path.node.body = t.blockStatement([path.node.body])
-                    }
-                    if (t.isFor(path.node)) {
-                        const { init, test, update } = path.node
-                        //since the parenthesized part of a `for` has its own scope
-                        if (!t.isExpression(init) && !t.isExpression(update)) {
-                            if (t.isIdentifier(test) || t.isMemberExpression(test)) {
-                                path.node.test = proxy(path.node.test, {
-                                    type: TYPES.BLOCK,
-                                    scope: getScope(path)
-                                })
-                            }
+                "For|While|DoWhileStatement": {
+                    enter(path) {
+                        if (!t.isBlockStatement(path.node.body)) {
+                            //we need to put things into the bodies so we need a block statement
+                            path.node.body = t.blockStatement([path.node.body])
                         }
-                    }
-                    if (t.isWhile(path.node)) {
-                        const { test } = path.node
-                        if (t.isIdentifier(test) || t.isMemberExpression(path.node.test) || t.isLiteral(path.node.test)) {
+
+
+                    },
+                    exit(path) {
+                        if (path.node.test && !path.node.test._isProxy) {
                             path.node.test = proxy(path.node.test, {
                                 type: TYPES.BLOCK,
                                 scope: getScope(path)
@@ -270,12 +261,11 @@ module.exports = function (input) {
                     if (!t.isBlockStatement(path.node.consequent)) {
                         path.node.consequent = t.blockStatement([path.node.consequent])
                     }
-                    if (!t.isExpression(path.node.test) || t.isIdentifier(path.node.test) || t.isMemberExpression(path.node.test) || t.isLiteral(path.node.test)) {
-                        path.node.test = proxy(path.node.test, {
-                            type: TYPES.BLOCK,
-                            scope: getScope(path)
-                        })
-                    }
+                    path.node.test = proxy(path.node.test, {
+                        type: TYPES.BLOCK,
+                        scope: getScope(path)
+                    })
+
                 },
                 MemberExpression: {
                     exit(path) {
