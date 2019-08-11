@@ -93,6 +93,15 @@ class IteratorStore {
             this.speed = this.maxSpeed
         }
     }
+    @action exec(bool: boolean) {
+        this.iterating = true
+        const dir = this.direction
+        this.direction = bool;
+        this.next()
+        this.direction = dir
+        this.iterating = false
+    }
+
     @action slower() {
         this.speed /= 2
         if (this.speed < this.minSpeed) {

@@ -24,22 +24,34 @@ const Navbar: React.FC = observer(() => {
                                     </figure>}
                                 </button>
                             </div>
-                            <div className="navbar-item ">
-                                <button
-                                    className="button is-small "
-                                    onClick={() => iterator.faster()}
-                                    disabled={store.iterator.speed === store.iterator.maxSpeed}
-                                >
-                                    <FastArrow />
-                                </button>
-                            </div>
                             <div className="navbar-item">
                                 <button
                                     className="button is-small "
-                                    onClick={() => iterator.slower()}
-                                    disabled={store.iterator.speed === store.iterator.minSpeed}
+                                    onClick={() => iterator.iterating ? iterator.slower() : iterator.exec(false)}
+                                    disabled={iterator.iterating ? store.iterator.speed === store.iterator.minSpeed : store.iterator.index <= 0}
                                 >
-                                    < SlowArrow />
+                                    {iterator.iterating ?
+                                        < SlowArrow />
+                                        :
+                                        <figure style={{ marginTop: '-3px' }} className="image is-4by4">
+                                            <img src={process.env.PUBLIC_URL + '/baseline-skip_previous-24px.svg'} alt="" />
+                                        </figure>
+                                    }
+                                </button>
+                            </div>
+                            <div className="navbar-item ">
+                                <button
+                                    className="button is-small "
+                                    onClick={() => iterator.iterating ? iterator.faster() : iterator.exec(true)}
+                                    disabled={iterator.iterating ? store.iterator.speed === store.iterator.maxSpeed : store.iterator.index >= store.viz.steps.length - 1}
+                                >
+                                    {iterator.iterating ?
+                                        < FastArrow />
+                                        :
+                                        <figure style={{ marginTop: '-3px' }} className="image is-4by4">
+                                            <img src={process.env.PUBLIC_URL + '/baseline-skip_next-24px.svg'} alt="" />
+                                        </figure>
+                                    }
                                 </button>
                             </div>
                         </>
