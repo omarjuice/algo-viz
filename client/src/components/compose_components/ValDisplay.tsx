@@ -16,6 +16,7 @@ type DisplayProps = {
 
 const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay, textColor, highlight }) => {
     const [state, setState] = useState([false, false])
+    const [text, setText] = useState(null)
     const animation = useRef(null)
     const timeout = useRef(null)
     const gradId = useMemo(() => genId(7), [])
@@ -29,11 +30,23 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
             timeout.current = setTimeout(() => {
                 setState([false, false])
             }, store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed)
+
         }
-    }, [anim])
+        if (textDisplay !== text) {
+            setTimeout(() => {
+                setText(textDisplay)
+            }, text === null ? 0 : store.iterator.baseTime * store.settings.speeds['SET'] / store.iterator.speed)
+        }
+    }, [anim, textDisplay])
     return <svg
         className="val-display" style={{
-            transform: state[1] ? `translateY(${(-size)}px)` : state[0] ? `scale(${1.5})` : highlight ? `scale(1.1)` : `scale(1)`,
+            transform:
+                state[1] ?
+                    `rotateX(180deg)`
+                    : state[0] ? `scale(${1.5})`
+                        : highlight ?
+                            `scale(1.1)` :
+                            `scale(1)`,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
             transition: `transform ${store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed}ms`
@@ -48,7 +61,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
         <text x={50} y={50}
             fill={textColor || store.settings.background} fontSize={50} fontWeight={'bold'}
             dominantBaseline="middle" textAnchor="middle" >
-            {textDisplay}
+            {text}
         </text>
     </svg>
 })
