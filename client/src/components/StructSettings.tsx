@@ -157,7 +157,6 @@ class StructSettings extends Component<Props> {
         }
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
-        const specifiedChildren = this.state.numChildren !== null
         const isBuiltin = /Viz\./g.test(name) || ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
             <div className="box has-background-dark" style={style}>

@@ -1,4 +1,4 @@
-import { observable, action, computed, toJS } from "mobx";
+import { observable, action, computed } from "mobx";
 import { RootStore } from ".";
 
 
@@ -140,7 +140,6 @@ class StateStore {
         // console.log(step.type, toJS(this.scopeStack))
     }
     @action prev(step: Viz.Step.Any) {
-        if (this.queue.length) this.queue = [];
         if ('batch' in step) {
             for (let i = step.batch.length - 1; i >= 0; i--) {
                 this.prev(step.batch[i])
@@ -194,7 +193,9 @@ class StateStore {
                                     console.log('NO SCOPE', scope);
                                 }
                             } else {
-                                ids[id].push(step.prevVals[scope][id])
+                                if (step.prevVals)
+                                    ids[id].push(step.prevVals[scope][id])
+
                             }
                         }
                         const { children } = this.scopeChain[scope]

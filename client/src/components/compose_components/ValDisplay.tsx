@@ -29,15 +29,15 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
             clearTimeout(timeout.current)
             timeout.current = setTimeout(() => {
                 setState([false, false])
-            }, store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed)
+            }, store.iterator.getSpeed('GET'))
 
         }
         if (textDisplay !== text) {
             setTimeout(() => {
                 setText(textDisplay)
-            }, text === null ? 0 : store.iterator.baseTime * store.settings.speeds['SET'] / store.iterator.speed)
+            }, text === null ? 0 : store.iterator.getSpeed('SET'))
         }
-    }, [anim, textDisplay])
+    }, [anim, textDisplay, text])
     return <svg
         className="val-display" style={{
             transform:
@@ -49,7 +49,7 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, object
                             `scale(1)`,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
-            transition: `transform ${store.iterator.baseTime * store.settings.speeds['GET'] / store.iterator.speed}ms`
+            transition: `transform ${store.iterator.getSpeed('GET')}ms`
         }} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">

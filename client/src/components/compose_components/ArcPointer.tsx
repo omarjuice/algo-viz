@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import store from '../../store';
-import { toJS } from 'mobx';
 // import Tooltip from 'rc-tooltip';
 
 type Props = {

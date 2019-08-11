@@ -73,6 +73,7 @@ class IteratorStore {
     }
     @action play() {
         this.iterating = true
+        this.direction = true;
         if (this.index >= this.root.viz.steps.length - 1) {
             clearTimeout(this.timer)
             this.handler.allow = true
@@ -94,14 +95,22 @@ class IteratorStore {
         }
     }
     @action exec(bool: boolean) {
-        this.iterating = true
-        const dir = this.direction
+        const newIdx = bool ? this.index + 1 : this.index - 1
+        if (newIdx < this.index) this.index++;
         this.direction = bool;
-        this.next()
-        this.direction = dir
+        while (this.index !== newIdx) {
+            this.iterating = true
+            this.next()
+        }
+        this.direction = true
+        if (!bool) {
+            this.index--
+            this.next()
+        }
         this.iterating = false
-    }
 
+
+    }
     @action slower() {
         this.speed /= 2
         if (this.speed < this.minSpeed) {
@@ -127,7 +136,7 @@ class IteratorStore {
     }
     @action async afterChange() {
         if (this.handler.allow && this.handling) {
-            const t1 = Date.now()
+            // const t1 = Date.now()
             const iterating = this.handler.wasPlaying
             this.handling = false
             this.handler.allow = false
@@ -137,7 +146,7 @@ class IteratorStore {
                 this.index++
                 this.direction = false
             }
-            this.root.allowRender = false
+            this.root.allowRender = !iterating
             while (this.index !== this.handler.value) {
                 this.iterating = true
                 this.next()
@@ -153,15 +162,20 @@ class IteratorStore {
             this.handler.changing = false
             setTimeout(() => {
                 this.handler.allow = true
-
             }, 500)
             //remove highlights and flashes
             await this.root.structs.reset()
             this.root.structs.resetPositions()
             this.root.allowRender = true
             if (iterating) this.play()
-            console.log('SKIP PERFORMANCE: ', Date.now() - t1)
+            // console.log('SKIP PERFORMANCE: ', Date.now() - t1)
         }
+    }
+    getSpeed(type: Viz.configurable) {
+        if (!this.iterating) {
+            return 300
+        }
+        return this.baseTime * this.root.settings.speeds[type] / this.speed
     }
 }
 export default IteratorStore

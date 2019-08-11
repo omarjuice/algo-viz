@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState, useCallback, ReactNode } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import store from '../../store';
 import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
 import { observer } from 'mobx-react';
-import invertColor from '../../utils/invertColor';
 import { getVal } from './getVal';
 import Tooltip from 'rc-tooltip';
 import genId from '../../utils/genId';

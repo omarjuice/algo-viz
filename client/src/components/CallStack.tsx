@@ -66,14 +66,13 @@ const CallStack: React.FC = observer(() => {
 
 
 
-    // return null
     const height = Math.min(store.windowHeight / stack.length, 40)
-    if (store.iterator.speed < 8) {
+    if (!store.iterator.iterating || store.iterator.speed < 8) {
         return (
             <div className="call-stack">
                 <ul >
                     <Transition
-                        config={{ duration: (store.iterator.baseTime / store.iterator.speed) * 3 }}
+                        config={{ duration: (store.iterator.baseTime / (store.iterator.iterating ? store.iterator.speed : 2)) * 3 }}
                         items={stack}
                         from={{ transform: `translateY(-40px)`, opacity: 0 }}
                         enter={{ transform: `translateY(0px)`, opacity: 1 }}
