@@ -131,7 +131,6 @@ function reassignMutative() {
                 if (result) {
                     runner.__(result, {
                         type: TYPES.DELETE,
-
                         object: runner.stringify(this),
                         access: [runner.stringify(key)]
                     })

@@ -11,7 +11,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
 
     const [i, name] = item
     return (
-        <Tooltip
+        <Tooltip key={i}
             overlay={() => (
                 <div className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}>{i}: {name}</span>
@@ -36,7 +36,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
                 alignItems: 'center',
                 justifyContent: 'center'
             }}
-                key={i} className="list-item has-text-centered">
+                className="list-item has-text-centered">
                 <span style={{ marginTop: `${height / 4}px` }} >
                     {
                         `${name ? (name as string)[0] === '_' ? 'anonymous' : name : ''}`

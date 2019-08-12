@@ -20,7 +20,8 @@
     "strictPropertyInitialization": false,
     "noEmit": true,
     "jsx": "preserve",
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "downlevelIteration": true
   },
   "include": [
     "src"

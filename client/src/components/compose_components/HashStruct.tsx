@@ -3,9 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../../store';
 import HashVal from './HashVal';
 import genId from '../../utils/genId';
-import length from '../../utils/length';
 
-type orientation = 'row' | 'column'
 type Props = {
     structure: Viz.Structure,
     objectId: string,
@@ -16,17 +14,17 @@ type Props = {
 
 const iterate = (structure: Viz.Structure, len: number, objectId: string, ratio: number, willRender: boolean, maxWidth: number): ReactNode[] => {
     const obj: ReactNode[] = []
-    if (!willRender || !len) return obj;
+    if (!willRender) return obj;
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, 12.5)
     // const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
-    for (const key in structure) {
-        if (key === length) continue;
+    for (const key of structure.keys()) {
         obj.push(
             <div key={key}>
                 <HashVal prop={key} objectId={objectId} ratio={ratio} size={valSize} object={structure} />
             </div>
         )
     }
+
     return obj
 }
 
@@ -49,7 +47,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     })
     const pos = store.structs.positions[objectId]
     const willRender: boolean = !(pos && pos.renderId && pos.renderId !== renderId)
-    const len = store.structs.objects[objectId][length].value
+    const len = structure.size
     const maxWidth = store.windowWidth * .5 * store.widths.object * ratio
     const maxHeight = store.windowHeight * .5 * store.widths.object * ratio
     const obj: ReactNode[] = useMemo(
@@ -60,6 +58,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     if (!willRender) return null
     const styles: React.CSSProperties = {
+        minWidth: ratio * 150,
         maxHeight,
         overflowY: 'scroll',
         flexDirection: orientation

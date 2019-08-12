@@ -30,12 +30,7 @@ async function testRunner(func) {
     expect(Array.isArray(steps) && steps.length > 0).toBe(true)
     expect(typeof objects).toBe('object')
     expect(typeof types).toBe('object')
-    const scopeStack = [null]
-    const callStack = []
-    const scopeChain = {}
-    const identifiers = {}
-    const funcScopes = {}
-    const calls = {}
+
     expect(transpiledResult).toEqual(normalResult)
 
 

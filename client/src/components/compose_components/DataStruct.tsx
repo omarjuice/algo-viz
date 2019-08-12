@@ -81,7 +81,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
         }
     })
-    const main = structure[settings.main]
+    const main = structure.get(settings.main)
     const get = main && main.get
     const set = main && main.set
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
@@ -114,25 +114,25 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         parent: Viz.Structure
     })[] = []
 
-    for (const key in structure) {
-        const value = structure[key].value
-
+    for (const [key, prop] of structure.entries()) {
+        const { value } = prop
         if (typeof value === 'string' && value in store.structs.objects && value !== objectId && (key in settings.pointers || key in settings.order)) {
             if (key in settings.pointers) {
                 const pointer: boolean = settings.pointers[key]
+                const info = structure.get(key)
                 if (!pointer) {
                     pointers.push(
-                        <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                        <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!info.get} set={!!info.set}>
                             {null}
                         </ArcPointer >
                     )
                 } else {
                     const object = store.structs.objects[value]
-                    for (const key in object) {
-                        const info = object[key]
+                    for (const key of object.keys()) {
+                        const info = object.get(key)
                         if (typeof info.value === 'string' && info.value in store.structs.objects) {
                             pointers.push(
-                                <ArcPointer prop={key} key={value + key} from={objectId} to={info.value} get={!!object[key].get} set={!!object[key].set}>
+                                <ArcPointer prop={key} key={value + key} from={objectId} to={info.value} get={!!info.get} set={!!info.set}>
                                     {null}
                                 </ArcPointer >
                             )
@@ -144,9 +144,10 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 if (parents) {
                     if (!parents.has(objectId)) {
                         const firstParent = parents.values().next().value
+                        const info = structure.get(key)
                         if (store.structs.bindings.has(firstParent)) {
                             pointers.push(
-                                <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!structure[key].get} set={!!structure[key].set}>
+                                <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!info.get} set={!!info.set}>
                                     {null}
                                 </ArcPointer >
                             )
@@ -160,8 +161,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                     const object = store.structs.objects[value]
                     const type = store.viz.types[value]
                     if (['Object', 'Array', 'Map'].includes(type))
-                        for (const key in object) {
-                            const info = object[key]
+                        for (const key of object.keys()) {
+                            const info = object.get(key)
                             if (typeof info.value === 'string' && info.value in store.structs.objects) {
                                 children.push({
                                     order,

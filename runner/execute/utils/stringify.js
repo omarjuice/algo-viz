@@ -36,25 +36,18 @@ module.exports = function (obj) {
 
             // Map & Set virtualization needs a refactor
             const copy = {}
-            for (const entry of obj.entries()) {
-                const [key, val] = entry
-                let newKey = key
-                if (key && typeof key === 'object' && !(key instanceof RegExp || key instanceof String)) {
-                    newKey = this.stringify(key)
-                }
-                let newVal = this.stringify(val)
-                copy[newKey] = newVal
+            let i = 0;
+            for (const [key, val] of obj.entries()) {
+                copy[i++] = [this.stringify(key), this.stringify(val)]
             }
             this.reassignMapMethods(obj)
             this.objects[newId] = copy
         } else if (obj instanceof Set) {
             // same for sets
             const copy = {}
-            for (let value of obj.values()) {
-                if (value && typeof value === 'object' && !(value instanceof RegExp || value instanceof String)) {
-                    value = this.stringify(value)
-                }
-                copy[value] = value
+            let i = 0
+            for (const value of obj.values()) {
+                copy[i++] = this.stringify(value)
             }
             this.reassignSetMethods(obj)
             this.objects[newId] = copy
@@ -86,15 +79,8 @@ module.exports = function (obj) {
         return newId
     } else {
         // these falsy primitives must be encoded because they all become `null` in JSON
-        if (obj === undefined) {
-            return this.map.get('undefined')
-        } else if (obj === null) {
-            return this.map.get('null')
-        } else if (Number.isNaN(obj)) {
-            return this.map.get('NaN')
-        } else if (obj === Infinity) {
-            return this.map.get('Infinity')
-        } else if (typeof obj === 'function') {
+        if (this.map.has(obj)) return this.map.get(obj)
+        if (typeof obj === 'function') {
             if (this.map.has(obj)) return this.map.get(obj)
             const native = isNative(obj)
             if (native) return native

@@ -55,8 +55,8 @@ const getHashVal = (value: any, displayProps: DisplayProps) => {
 
 const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
-    const willRender = prop in object
-    const info = willRender ? object[prop] : { get: false, set: false, value: null }
+    const willRender = object.has(prop)
+    const info = willRender ? object.get(prop) : { get: false, set: false, value: null }
     let value = info.value
     const { get, set } = info
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
@@ -139,7 +139,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                        {type === 'Map' && prop in store.structs.objects ? store.viz.types[prop] : prop}:{' '}
+                        {type === 'Map' && (getVal(prop, true,))}:{' '}
                     </span>}
                     {getVal(value, true)}
                 </div >
@@ -153,9 +153,8 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                             fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
                         }}
                             className={`is-size-6 $`}>
-                            {type === 'Map' &&
-                                prop in store.viz.types ?
-                                getVal(prop) :
+                            {type === 'Map' ?
+                                getHashVal(prop, { ...displayProps }) :
                                 <span className="prop-name" style={{}}>{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}

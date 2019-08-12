@@ -14,7 +14,7 @@ type DisplayProps = {
     highlight?: boolean
 }
 
-const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, objectId, textDisplay, textColor, highlight }) => {
+const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, textDisplay, textColor, highlight }) => {
     const [state, setState] = useState([false, false])
     const [text, setText] = useState(null)
     const animation = useRef(null)

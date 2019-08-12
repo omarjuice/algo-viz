@@ -9,10 +9,7 @@ declare namespace Viz {
     }
     type RenderMap = { [childId: string]: string }
 
-    type Structure = {
-        [prop: string]: StructProp
-
-    }
+    type Structure = Map<any, StructProp>
     type colors = {
         special: string
         number: string

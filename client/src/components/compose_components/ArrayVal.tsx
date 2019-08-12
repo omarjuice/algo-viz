@@ -56,7 +56,7 @@ const getArrayVal = (value: any, displayProps: Viz.DisplayProps) => {
 
 const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
-    const info = array[index] || {
+    const info = array.get(index) || {
         value: null,
         get: false,
         set: false,

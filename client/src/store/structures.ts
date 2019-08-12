@@ -1,6 +1,5 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
-import length from '../utils/length';
 
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
@@ -22,7 +21,7 @@ class Structures {
             if (!this.children[id]) this.children[id] = new Set()
             if (!this.parents[id]) this.parents[id] = new Set()
             const obj: { [key: string]: any } = objs[id]
-            const cloned: Viz.Structure = {}
+            const cloned: Viz.Structure = new Map()
             const type = this.root.viz.types[id]
             if (!type) return
             if (!this.root.settings.structColors[type] || !this.root.settings.structSettings[type]) {
@@ -31,38 +30,54 @@ class Structures {
             if (type === 'Array') {
                 for (let i = 0; i < obj['length']; i++) {
                     const val = obj[i]
-                    cloned[i] = {
+                    cloned.set(i, {
                         get: false,
                         set: false,
                         value: val
-                    }
+                    });
                     if (val in objs) {
                         this.addPointers(val, id, i)
                     }
                 }
-                cloned['length'] = {
+                cloned.set('length', {
                     get: false,
                     set: false,
                     value: obj['length']
-                }
-            } else {
-                let count = 0
-                for (const key in obj) {
-                    const val = obj[key]
-                    cloned[key] = {
+                })
+            } else if (type === 'Map') {
+                let count = 0;
+                while (count in obj) {
+                    const [key, value] = obj[count++];
+                    cloned.set(key, {
                         get: false,
                         set: false,
-                        value: val
+                        value,
+                    })
+                    if (value in objs) {
+                        this.addPointers(value, id, key)
                     }
-                    if (val in objs) {
-                        this.addPointers(val, id, key)
-                    }
-                    count++;
                 }
-                cloned[length] = {
-                    get: false,
-                    set: false,
-                    value: count
+            } else if (type === 'Set') {
+                let count = 0;
+                while (count in obj) {
+                    const value = obj[count++];
+                    cloned.set(value, {
+                        get: false,
+                        set: false,
+                        value,
+                    })
+                }
+            } else {
+                for (const key in obj) {
+                    const value = obj[key]
+                    cloned.set(key, {
+                        get: false,
+                        set: false,
+                        value
+                    })
+                    if (value in objs) {
+                        this.addPointers(value, id, key)
+                    }
                 }
             }
 
@@ -139,40 +154,27 @@ class Structures {
             const currentParents = this.parents[id]
             const affinity = this.getAffinity(parent, id)
             if (affinity > 0) {
-                if (affinity === 5) { // TEMPORARY STOP ON MULTIPLE PARENTS
-                    const deletes: string[] = []
-                    currentParents.forEach(objectId => {
-                        if (this.getAffinity(objectId, id) < 4) {
-                            deletes.push(objectId)
-                        }
-                    })
-                    deletes.forEach(objectId => {
-                        currentParents.delete(objectId)
-                        this.children[objectId].delete(id)
-                    })
+
+                if (!currentParents.size) {
+                    changed = true
                     currentParents.add(parent)
                     this.children[parent].add(id)
                 } else {
-                    if (!currentParents.size) {
+                    const entries = currentParents.values()
+                    const first = entries.next().value
+                    if (affinity > this.getAffinity(first, id)) {
                         changed = true
+                        currentParents.delete(first)
                         currentParents.add(parent)
+                        this.children[first].delete(id)
                         this.children[parent].add(id)
-                    } else {
-                        const entries = currentParents.values()
-                        const first = entries.next().value
-                        if (affinity > this.getAffinity(first, id)) {
+                    } else if (first === parent) {
+                        if (key !== refs[0]) {
                             changed = true
-                            currentParents.delete(first)
-                            currentParents.add(parent)
-                            this.children[first].delete(id)
-                            this.children[parent].add(id)
-                        } else if (first === parent) {
-                            if (key !== refs[0]) {
-                                changed = true
-                            }
                         }
                     }
                 }
+
             }
 
             if (changed) delete this.positions[id]
@@ -222,8 +224,8 @@ class Structures {
         if (step.type === 'SET') {
             const { object, access, value } = step
             const [key] = access
-            if (key in this.objects[object]) {
-                step.prev = this.objects[object][key].value
+            if (this.objects[object].has(key)) {
+                step.prev = this.objects[object].get(key).value
                 if (step.prev in this.objects) {
                     this.removePointers(step.prev, object, key)
                 }
@@ -235,36 +237,36 @@ class Structures {
                 this.switchOff(prop, 'set')
             }
             if (this.root.viz.types[object] === 'Array' && typeof key === 'number') {
-                if (key >= this.objects[object]['length'].value) {
-                    for (let i = this.objects[object]['length'].value; i < key; i++) {
-                        this.objects[object][i] = {
+                const len = this.objects[object].get('length');
+                if (key >= len.value) {
+                    for (let i = len.value; i < key; i++) {
+                        this.objects[object].set(i, {
                             value: null,
                             get: false,
                             set: false
-                        }
+                        })
                     }
-                    this.objects[object]['length'].value = key + 1
+                    len.value = key + 1
                 }
             }
-            if (!(key in this.objects[object])) {
-                this.objects[object][key] = {
+            if (!this.objects[object].has(key)) {
+                this.objects[object].set(key, {
                     get: false,
                     set: true,
                     value
-                }
-                if (this.root.viz.types[object] !== 'Array') this.objects[object][length].value++
-                this.sets[object] = this.objects[object][key]
+                })
+                this.sets[object] = this.objects[object].get(key)
             } else {
                 if (allowRender) {
-                    if (this.sets[object] === this.objects[object][key]) {
+                    if (this.sets[object] === this.objects[object].get(key)) {
                         this.sets[object].set = false
                     }
-                    this.objects[object][key].set = true
-                    this.switchOff(this.objects[object][key], 'get')
+                    this.objects[object].get(key).set = true
+                    this.switchOff(this.objects[object].get(key), 'get')
                 }
 
-                this.sets[object] = this.objects[object][key]
-                this.objects[object][key].value = value
+                this.sets[object] = this.objects[object].get(key)
+                this.objects[object].get(key).value = value
             }
             if (value in this.objects) {
                 this.addPointers(value, object, key)
@@ -277,13 +279,12 @@ class Structures {
             const { object, access, value } = step
             const [key] = access
             if (value) {
-                const original = this.objects[object][key].value
+                const original = this.objects[object].get(key).value
                 step.prev = original
                 if (this.root.viz.types[object] !== 'Array') {
-                    delete this.objects[object][key]
-                    this.objects[object][length].value--
+                    this.objects[object].delete(key)
                 } else {
-                    this.objects[object][key].value = null
+                    this.objects[object].get(key).value = null
                 }
                 if (step.prev in this.objects) {
                     this.removePointers(step.prev, object, key)
@@ -293,13 +294,7 @@ class Structures {
         if (step.type === 'CLEAR') {
             const { object } = step
             step.prev = this.objects[object]
-            this.objects[object] = {
-                [length]: {
-                    get: false,
-                    set: false,
-                    value: 0
-                }
-            }
+            this.objects[object].clear()
         }
         if (step.type === 'GET') {
             const { object, access } = step
@@ -310,14 +305,15 @@ class Structures {
                 this.switchOff(prop, 'set')
             }
             if (allowRender) {
-                if (this.gets[object] === this.objects[object][key]) {
+                const prop = this.objects[object].get(key)
+                if (this.gets[object] === prop) {
                     this.gets[object].get = false
                 }
-                this.objects[object][key].get = true
-                this.switchOff(this.objects[object][key], 'set')
+                prop.get = true
+                this.switchOff(prop, 'set')
             }
 
-            this.gets[object] = this.objects[object][key]
+            this.gets[object] = this.objects[object].get(key)
             // const element = document.querySelector(`.get.${object}`)
             // if (element) element.scrollIntoView()
         }
@@ -327,22 +323,21 @@ class Structures {
         if (step.type === 'SET') {
             const { object, access } = step
             const [key] = access
-            const info = this.objects[object][key]
+            const info = this.objects[object].get(key)
             if (info && typeof info.value === 'string' && info.value in this.objects) {
                 this.removePointers(info.value, object, key)
             }
             if ('prev' in step) {
-                this.objects[object][key] = {
+                this.objects[object].set(key, {
                     get: false,
                     set: false,
                     value: step.prev
-                }
+                })
                 if (typeof step.prev === 'string' && step.prev in this.objects) {
                     this.addPointers(step.prev, object, key)
                 }
             } else {
-                delete this.objects[object][key]
-                if (this.root.viz.types[object] !== 'Array') this.objects[object][length].value--
+                this.objects[object].delete(key)
             }
 
         }
@@ -350,12 +345,11 @@ class Structures {
             const { object, access, value } = step
             const [key] = access
             if (value) {
-                this.objects[object][key] = {
+                this.objects[object].set(key, {
                     get: false,
                     set: true,
                     value: step.prev
-                }
-                if (this.root.viz.types[object] !== 'Array') this.objects[object][length].value++
+                })
                 if (step.prev in this.objects) {
                     this.addPointers(step.prev, object, key)
                 }
@@ -368,11 +362,11 @@ class Structures {
         if (step.type === 'GET') {
             const { object, access, value } = step;
             const [key] = access
-            this.objects[object][key] = {
+            this.objects[object].set(key, {
                 get: false,
                 set: false,
                 value
-            }
+            })
 
         }
 

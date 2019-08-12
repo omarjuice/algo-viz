@@ -33,7 +33,7 @@ class DataChild extends React.Component<Props>{
         const { objectId, ratio, prop, parent, parentId, isList, idx } = this.props
         const pos = store.structs.positions[objectId]
 
-        const info = parent[prop]
+        const info = parent.get(prop)
         const type = store.viz.types[objectId]
         const arc = pos ? this.renderId !== pos.renderId : false
         const pointerProps = {

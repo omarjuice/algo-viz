@@ -42,17 +42,20 @@ class Runner {
 
         // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
         const undefLiteral = this.genId(5, 1)
-        this.map.set('undefined', undefLiteral)
+        this.map.set(undefined, undefLiteral)
         this.types[undefLiteral] = 'undefined'
         const nullLiteral = this.genId(5, 1)
-        this.map.set('null', nullLiteral)
+        this.map.set(null, nullLiteral)
         this.types[nullLiteral] = 'null'
         const nanLiteral = this.genId(5, 1)
-        this.map.set('NaN', nanLiteral)
+        this.map.set(NaN, nanLiteral)
         this.types[nanLiteral] = 'NaN'
         const infinity = this.genId(5, 1)
-        this.map.set('Infinity', infinity)
+        this.map.set(Infinity, infinity)
         this.types[infinity] = 'Infinity'
+        const negInfinity = this.genId(5, 1)
+        this.map.set(-Infinity, negInfinity)
+        this.types[negInfinity] = '-Infinity'
 
 
         this._ignore = false

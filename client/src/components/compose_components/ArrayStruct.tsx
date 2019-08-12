@@ -43,7 +43,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
 
 
     const maxWidth = store.windowWidth * .5 * store.widths.array
-    const len = structure['length'].value
+    const len = structure.get('length').value
 
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
