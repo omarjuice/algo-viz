@@ -22,7 +22,7 @@ const Structs: React.FC = observer(() => {
 
         } else if (['Object', 'Map', 'Set'].includes(store.viz.types[id])) {
             objects.push(
-                <HashStruct orientation={'column'} key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
+                <HashStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
             )
         } else {
             data.push(

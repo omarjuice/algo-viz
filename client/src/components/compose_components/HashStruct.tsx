@@ -11,26 +11,26 @@ type Props = {
     objectId: string,
     ratio: number,
     pointed: boolean
-    orientation: orientation
-
+    renderId?: string
 }
 
-const iterate = (structure: Viz.Structure, len: number, objectId: string, ratio: number, orientation: orientation, willRender: boolean, maxWidth: number): ReactNode[] => {
+const iterate = (structure: Viz.Structure, len: number, objectId: string, ratio: number, willRender: boolean, maxWidth: number): ReactNode[] => {
     const obj: ReactNode[] = []
     if (!willRender || !len) return obj;
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, 12.5)
+    // const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     for (const key in structure) {
         if (key === length) continue;
         obj.push(
             <div key={key}>
-                <HashVal orientation={orientation} prop={key} objectId={objectId} ratio={ratio} size={valSize} object={structure} />
+                <HashVal prop={key} objectId={objectId} ratio={ratio} size={valSize} object={structure} />
             </div>
         )
     }
     return obj
 }
 
-const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, orientation }) => {
+const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, renderId }) => {
 
     const [node, setNode] = useState(null)
     const ref = useCallback((node) => {
@@ -38,9 +38,9 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
             setNode(node)
         }
     }, [])
-    const renderId = useMemo(() => genId(objectId.length), [objectId])
+    renderId = useMemo(() => renderId || genId(objectId.length), [objectId, renderId])
 
-
+    const orientation = 'column'
 
     useEffect(() => {
         if (node) {
@@ -50,33 +50,37 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     const pos = store.structs.positions[objectId]
     const willRender: boolean = !(pos && pos.renderId && pos.renderId !== renderId)
     const len = store.structs.objects[objectId][length].value
-    const maxWidth = store.windowWidth * .5 * store.widths.object
+    const maxWidth = store.windowWidth * .5 * store.widths.object * ratio
+    const maxHeight = store.windowHeight * .5 * store.widths.object * ratio
     const obj: ReactNode[] = useMemo(
-        () => iterate(structure, len, objectId, ratio, orientation, willRender, maxWidth),
-        [structure, len, objectId, ratio, orientation, willRender, maxWidth]
+        () => iterate(structure, len, objectId, ratio, willRender, maxWidth),
+        [structure, len, objectId, ratio, willRender, maxWidth]
     );
 
 
     if (!willRender) return null
     const styles: React.CSSProperties = {
-        // maxHeight: '100%',
-        // overflowY: 'scroll'
+        maxHeight,
+        overflowY: 'scroll',
         flexDirection: orientation
     }
+
     const type = store.viz.types[objectId]
     const color = store.settings.structColors[type] || 'white'
 
     const active = pointed || store.structs.activePointers[objectId]
-    const rotation = orientation === 'column' ? 90 : 0
+    const rotation = 90
 
     const braceStyle: React.CSSProperties = { transform: `rotate(${rotation}deg)`, color, position: "relative", zIndex: 5, transition: `transform .5s` }
     if (active) {
         braceStyle.transform += ' scale(2)'
     }
     return (
-        <div style={styles} ref={ref} className={`hash-struct`}>
+        <div style={styles} className={`hash-struct`}>
             <div className="is-size-1" style={braceStyle}>{`{`}</div>
-            {obj}
+            <div ref={ref}>
+                {obj}
+            </div>
             <div className="is-size-1" style={braceStyle}>{'}'}</div>
         </div>
     );

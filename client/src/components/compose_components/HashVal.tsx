@@ -13,11 +13,10 @@ type ValProps = {
     objectId: string
     size: number
     ratio: number
-    orientation: 'row' | 'column'
 }
 
 
-type DisplayProps = Viz.DisplayProps & { orientation: 'row' | 'column', type: string }
+type DisplayProps = Viz.DisplayProps & { type: string }
 
 const getHashVal = (value: any, displayProps: DisplayProps) => {
 
@@ -54,7 +53,7 @@ const getHashVal = (value: any, displayProps: DisplayProps) => {
     )
 }
 
-const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio, orientation }) => {
+const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
     const willRender = prop in object
     const info = willRender ? object[prop] : { get: false, set: false, value: null }
@@ -70,7 +69,6 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         size,
         anim,
         textDisplay: "",
-        orientation,
         type
     }
     if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
@@ -92,7 +90,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         if (!flag) {
             return (
                 <div className="columns is-paddingless is-multiline">
-                    {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
+                    {type !== 'Set' && <div className={`column`}>
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
                             {type === 'Map' && prop in store.structs.objects ?
                                 <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
@@ -105,11 +103,11 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                                         {getVal(prop, true)}
                                     </div >
                                 )}>
-                                    <span className="prop-name"> {prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}</span>
+                                    <span className="prop-name" style={{ fontSize: 12 * ratio }}> {prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}</span>
                                 </Tooltip>}
                         </p>
                     </div>}
-                    <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
+                    <div className={`column`}>
                         <ArrayChild className={className} objectId={value} ratio={ratio * .5} anim={anim} />
                     </div>
                 </div>
@@ -149,7 +147,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 placement={'right'}
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
                 <div className="columns is-paddingless is-multiline">
-                    {type !== 'Set' && <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
+                    {type !== 'Set' && <div className={`column`}>
                         < p style={{
                             color: (displayProps.anim[0] || displayProps.anim[1]) ? 'white' : store.settings.structColors[type],
                             fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
@@ -158,10 +156,10 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                             {type === 'Map' &&
                                 prop in store.viz.types ?
                                 getVal(prop) :
-                                <span className="prop-name">{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
+                                <span className="prop-name" style={{}}>{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}
-                    <div className={`column is-${orientation === 'row' ? 'full is-narrow has-text-centered' : ''}`}>
+                    <div className={`column`}>
                         {getHashVal(value, displayProps)}
                     </div>
                 </div>
