@@ -87,6 +87,19 @@ export const structInfo: Viz.structSettings = {
         pointers: {
             prev: false
         }
+    },
+    PQ: {
+        order: {
+            heap: {
+                pos: 1,
+                isMultiple: false
+            }
+        },
+        main: 'display',
+        numChildren: 1,
+        pointers: {
+
+        }
     }
 }
 

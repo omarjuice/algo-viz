@@ -44,12 +44,13 @@ class DataChild extends React.Component<Props>{
             to: objectId,
             prop
         }
+        console.log(this.renderId);
 
         let element;
         if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
             element = <DataStruct idx={idx} isList={isList} renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
         } else if (type === 'Array') {
-            element = <ArrayStruct objectId={objectId} ratio={ratio * 1.5} pointed={false} structure={store.structs.objects[objectId]} />
+            element = <ArrayStruct renderId={this.renderId} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else if (type === 'Object') {
             element = <HashStruct orientation={'row'} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else {

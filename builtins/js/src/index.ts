@@ -4,6 +4,7 @@ import instantiateDLL from './dll'
 import instantiateBTree from './btree'
 import instantiateBST from './bst';
 import instantiateQueue from './queue';
+import instantiatePQ from './pq';
 import Node from './node';
 export type Runner = {
     [key: string]: any
@@ -18,6 +19,7 @@ export default function instantiateViz(runner: Runner = { ignore: () => { } }) {
         static BTree = instantiateBTree(runner)
         static BST = instantiateBST(runner)
         static Queue = instantiateQueue(runner)
+        static PQ = instantiatePQ(runner)
         static Node = Node
     }
 

@@ -66,3 +66,12 @@ declare class Queue {
     pop: () => any
     values: () => IterableIterator<any>
 }
+
+declare class PQ {
+    private _compare: (a: any, b: any) => boolean
+    size: number
+    private heap: any[]
+    insert: (val: any) => PQ
+    remove: () => any
+    peek: () => any
+}

@@ -83,6 +83,9 @@ export default function instantiateQueue(runner: Runner) {
             }
             return last.value
         }
+        peek() {
+            return this.front ? this.front.value : undefined
+        }
         * values(): IterableIterator<any> {
             let current = this.front
             while (current) {
@@ -90,5 +93,6 @@ export default function instantiateQueue(runner: Runner) {
                 current = current.next
             }
         }
+
     }
 }

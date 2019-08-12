@@ -32,6 +32,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
             setNode(node)
         }
     }, [])
+
     renderId = useMemo(() => renderId || genId(objectId.length), [objectId, renderId])
     useEffect(() => {
         if (node) {
