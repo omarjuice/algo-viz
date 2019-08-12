@@ -65,6 +65,7 @@ declare class Queue {
     shift: () => any
     pop: () => any
     values: () => IterableIterator<any>
+    toArray: () => any[]
 }
 
 declare class PQ {

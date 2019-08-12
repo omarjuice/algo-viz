@@ -93,6 +93,17 @@ export default function instantiateQueue(runner: Runner) {
                 current = current.next
             }
         }
-
+        toArray() {
+            const arr = []
+            for (const val of this.values()) {
+                arr.push(val)
+            }
+            return arr
+        }
+        clear() {
+            this.front = null;
+            this.end = null
+            this.length = 0;
+        }
     }
 }

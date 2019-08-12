@@ -3,7 +3,7 @@ type compareFn = (a: any, b: any) => boolean
 export default function instantiatePQ(runner: Runner) {
     return class PQ {
         private _compare: (a: any, b: any) => boolean
-        private display: any;
+        private display: any = 0;
         private heap: any[]
         size: number = 0
         constructor(arg1: any[] | compareFn, arg2?: compareFn) {
@@ -25,11 +25,8 @@ export default function instantiatePQ(runner: Runner) {
             if (!items) {
                 items = []
             }
-            this._compare = (a, b) => {
-                const c = Boolean(compare(a, b));
-                this.display = c;
-                return c
-            };
+            this._compare = (a, b) => Boolean(compare(a, b));
+
             this.display = 0
             this.heap = []
             for (const item of items) {
@@ -39,7 +36,7 @@ export default function instantiatePQ(runner: Runner) {
         private _siftUp(idx: number) {
             let parent = Math.floor((idx - 1) / 2)
 
-            while (idx > 0 && this._compare(this.heap[idx], this.heap[parent])) {
+            while (idx > 0 && (this.display = this._compare(this.heap[idx], this.heap[parent]))) {
                 [this.heap[idx], this.heap[parent]] = [this.heap[parent], this.heap[idx]];
                 idx = parent;
                 parent = Math.floor((idx - 1) / 2)
@@ -51,7 +48,7 @@ export default function instantiatePQ(runner: Runner) {
             while (child1 <= end) {
                 const child2 = idx * 2 + 2 <= end ? idx * 2 + 2 : -1;
                 let swapIdx = child1
-                if (child2 !== -1 && this._compare(this.heap[child2], this.heap[child1])) {
+                if (child2 !== -1 && (this.display = this._compare(this.heap[child2], this.heap[child1]))) {
                     swapIdx = child2
                 }
                 if (this._compare(this.heap[swapIdx], this.heap[idx])) {
@@ -84,7 +81,18 @@ export default function instantiatePQ(runner: Runner) {
         peek() {
             return this.heap[0]
         }
-
+        clear() {
+            this.heap = []
+            return this;
+        }
+        * values(): IterableIterator<any> {
+            for (const val of this.heap) {
+                yield val;
+            }
+        }
+        toArray() {
+            return [...this.heap]
+        }
 
     }
 
