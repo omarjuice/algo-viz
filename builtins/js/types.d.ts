@@ -24,9 +24,9 @@ declare class DLL {
     static toArray: (list: DLL) => any[]
 }
 declare type array = {
-    sortedInts: (length: number, randomize: boolean = false) => number[]
-    randomints: (length: number, allowNegative: boolean = true) => number[]
-    filterDuplicates: (array: any[], mutate: boolean = true) => any[]
+    sortedInts: (length: number, randomize: boolean) => number[]
+    randomints: (length: number, allowNegative: boolean) => number[]
+    filterDuplicates: (array: any[], mutate: boolean) => any[]
     matrix: (rows: number, cols: number, callbackOrVal: ((i: number, j: number) => any) | any) => any[][]
 }
 
@@ -64,4 +64,5 @@ declare class Queue {
     unshift: (...values) => number
     shift: () => any
     pop: () => any
+    values: () => IterableIterator<any>
 }

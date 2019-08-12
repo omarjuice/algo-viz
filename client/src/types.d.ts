@@ -156,6 +156,15 @@ declare namespace Viz {
         types: { [key: string]: any },
         code: string
     }
+    type DisplayProps = {
+        color: string
+        size: number
+        anim: Viz.anim
+        objectId: string
+        textDisplay: string
+        textColor?: string
+        highlight?: boolean
+    }
 }
 declare module 'ansi-to-html' {
     interface ConverterOptions {

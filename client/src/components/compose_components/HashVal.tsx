@@ -17,17 +17,7 @@ type ValProps = {
 }
 
 
-type DisplayProps = {
-    color: string
-    size: number
-    anim: Viz.anim
-    objectId: string
-    textDisplay: string
-    orientation: 'row' | 'column',
-    type: string
-}
-
-
+type DisplayProps = Viz.DisplayProps & { orientation: 'row' | 'column', type: string }
 
 const getHashVal = (value: any, displayProps: DisplayProps) => {
 

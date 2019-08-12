@@ -16,7 +16,7 @@ export default function instantiateQueue(runner: Runner) {
             }
 
         }
-        push(...values: any[]) {
+        push(...values: any[]): number {
             if (!values.length) return this.length
             let current = this.end
             if (!current) {
@@ -48,7 +48,7 @@ export default function instantiateQueue(runner: Runner) {
             }
             return first.value
         }
-        unshift(...values: any[]) {
+        unshift(...values: any[]): number {
             if (!values.length) return this.length
             let current = this.front
             if (!current) {
@@ -82,6 +82,13 @@ export default function instantiateQueue(runner: Runner) {
                 this.end.next = null
             }
             return last.value
+        }
+        * values(): IterableIterator<any> {
+            let current = this.front
+            while (current) {
+                yield current.value;
+                current = current.next
+            }
         }
     }
 }

@@ -18,17 +18,9 @@ type Props = {
     isList?: boolean
     idx?: number
 }
-type DisplayProps = {
-    color: string
-    size: number
-    anim: Viz.anim
-    objectId: string
-    textDisplay: string
-    textColor?: string
-    highlight?: boolean
-}
 
-const getDataVal = (value: any, displayProps: DisplayProps, objectId: string) => {
+
+const getDataVal = (value: any, displayProps: Viz.DisplayProps, objectId: string) => {
     if (typeof value === 'boolean') {
         displayProps.textDisplay = value ? 'T' : 'F'
         return <ValDisplay {...displayProps} />
@@ -242,7 +234,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     }
 
     const size = Math.min(30, Math.max(width - 1, 1))
-    const displayProps: DisplayProps = {
+    const displayProps: Viz.DisplayProps = {
         objectId,
         color: color,
         size,

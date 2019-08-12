@@ -7,7 +7,8 @@ import store from '../../store';
 import Pointer from './Pointer';
 import ValDisplay from './ValDisplay';
 import ArrayChild from './ArrayChild';
-type ArrayValProps = {
+
+type Props = {
     array: Viz.Structure
     index: number
     objectId: string
@@ -17,17 +18,7 @@ type ArrayValProps = {
 }
 
 
-type DisplayProps = {
-    color: string
-    size: number
-    anim: Viz.anim
-    objectId: string
-    textDisplay: string
-}
-
-
-
-const getArrayVal = (value: any, displayProps: DisplayProps) => {
+const getArrayVal = (value: any, displayProps: Viz.DisplayProps) => {
     const { settings: { valueColors: colors } } = store
     if (typeof value === 'boolean') {
         displayProps.color = colors.boolean
@@ -63,7 +54,7 @@ const getArrayVal = (value: any, displayProps: DisplayProps) => {
     return <ValDisplay {...displayProps} />
 }
 
-const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, size, ratio }) => {
+const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
     const info = array[index] || {
         value: null,
@@ -74,7 +65,7 @@ const ArrayVal: React.FC<ArrayValProps> = observer(({ array, index, objectId, si
     const { get, set } = info;
     const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
-    const displayProps: DisplayProps = {
+    const displayProps: Viz.DisplayProps = {
         objectId,
         color: store.settings.valueColors.other,
         size,

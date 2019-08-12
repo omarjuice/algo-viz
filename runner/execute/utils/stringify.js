@@ -1,4 +1,3 @@
-const randomString = require('./randomString')
 const isNative = require('./isNative')
 const checkTypedArray = require('./checkTypedArray')
 // the values are specific to the Runner instance
@@ -6,13 +5,9 @@ module.exports = function (obj) {
     // these are functions that change instance methods on their respective object tyes
     if (obj && typeof obj === 'object') {
         // we want to ignore native objects
-
-
         if (this.map.has(obj)) {
             return this.map.get(obj)
         }
-
-
         checkTypedArray(obj)
         const native = isNative(obj)
         if (native) {
@@ -21,7 +16,7 @@ module.exports = function (obj) {
         if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
         if (!Array.isArray(obj)) {
             const objString = obj.toString()
-            if (objString.includes('Iterator')) {
+            if (objString.includes(' Iterator') || objString.includes(' Generator')) {
                 const id = this.genId(5, 2)
                 this.map.set(obj, id)
                 this.types[id] = objString

@@ -19,7 +19,7 @@ function virtualize(object) {
     const isArray = Array.isArray(object)
     if (!isArray) {
         const objString = object.toString()
-        if (objString.includes(' Iterator')) return object
+        if (objString.includes(' Iterator') || objString.includes(' Generator')) return object
     }
     const proxy = isArray ? virtualizeArray(object, runner) : virtualizeObject(object, runner)
     this.proxies.set(object, [proxy, false])

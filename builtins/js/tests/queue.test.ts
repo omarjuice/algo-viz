@@ -86,5 +86,24 @@ describe('Queue', () => {
             }
         })
     })
+    describe('values', () => {
+        it('Should allow iteration of the queue', () => {
+            const items = [1, 2, 3, 4, 5]
+            const queue = new Viz.Queue(items)
+
+            for (const v of queue.values()) {
+                expect(v).toBe(items.shift())
+            }
+
+        })
+        it('Should finish if the queue is empty', () => {
+            const items: any[] = []
+            const queue = new Viz.Queue(items)
+
+            for (const v of queue.values()) {
+                throw new Error('Iterating when you should not be!')
+            }
+        })
+    })
 
 })
