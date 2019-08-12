@@ -60,8 +60,8 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
     let value = info.value
     const { get, set } = info
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
-    if (!willRender) return null;
     const className = `${get && 'get'} ${set && 'set'} ${objectId}`
+    if (!willRender) return null;
     const type = store.viz.types[objectId]
     const displayProps: DisplayProps = {
         objectId,
@@ -139,7 +139,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                        {type === 'Map' && (getVal(prop, true,))}:{' '}
+                        {type === 'Map' ? getVal(prop, true) : String(prop)}:{' '}
                     </span>}
                     {getVal(value, true)}
                 </div >

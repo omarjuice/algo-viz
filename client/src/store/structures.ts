@@ -274,6 +274,7 @@ class Structures {
 
             // const element = document.querySelector(`.set.${object}`)
             // if (element) element.scrollIntoView()
+            this.scrollIntoView('set', object)
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
@@ -314,10 +315,18 @@ class Structures {
             }
 
             this.gets[object] = this.objects[object].get(key)
-            // const element = document.querySelector(`.get.${object}`)
-            // if (element) element.scrollIntoView()
+            this.scrollIntoView('get', object)
         }
         if (allowRender) this.setBindings()
+    }
+    scrollIntoView(type: 'get' | 'set', object: string) {
+        const element = document.querySelector(`.${type}.${object}`)
+        if (element) {
+            const { top } = element.getBoundingClientRect()
+            if (top < this.root.windowHeight && top > 0) {
+                element.scrollIntoView()
+            }
+        }
     }
     @action prev(step: Viz.Step.Any) {
         if (step.type === 'SET') {

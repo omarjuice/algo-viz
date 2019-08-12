@@ -6,6 +6,7 @@ export default class VizStore {
     @observable steps: Viz.Step.Any[];
     @observable objects: { [key: string]: Object };
     @observable types: { [key: string]: string };
+
     root: RootStore
     constructor(store: RootStore, data: Viz.Data) {
         this.root = store

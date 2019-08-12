@@ -15,7 +15,7 @@ type Props = {
 const iterate = (structure: Viz.Structure, len: number, objectId: string, ratio: number, willRender: boolean, maxWidth: number): ReactNode[] => {
     const obj: ReactNode[] = []
     if (!willRender) return obj;
-    const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, 12.5)
+    const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, 15)
     // const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     for (const key of structure.keys()) {
         obj.push(
@@ -58,7 +58,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     if (!willRender) return null
     const styles: React.CSSProperties = {
-        minWidth: ratio * 150,
+        minWidth: 150,
         maxHeight,
         overflowY: 'scroll',
         flexDirection: orientation
@@ -75,9 +75,9 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         braceStyle.transform += ' scale(2)'
     }
     return (
-        <div style={styles} className={`hash-struct`}>
+        <div style={{ ...styles, maxHeight: maxHeight + 100, }} className={`hash-struct`}>
             <div className="is-size-1" style={braceStyle}>{`{`}</div>
-            <div ref={ref}>
+            <div style={{ ...styles, minWidth: undefined, minHeight: 100 }} ref={ref}>
                 {obj}
             </div>
             <div className="is-size-1" style={braceStyle}>{'}'}</div>
