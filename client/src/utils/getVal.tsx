@@ -21,7 +21,6 @@ const getVal = (value: any, displayProps: Viz.DisplayProps, type: Viz.valType, i
     if (type === 'boolean') {
         displayProps.textDisplay = value ? 'T' : 'F'
     } else if (type === 'string') {
-        displayProps.color = colors.string
         if (value.length <= 4) displayProps.textDisplay = value
     } else if (type === 'number') {
         const strVal = String(value)
