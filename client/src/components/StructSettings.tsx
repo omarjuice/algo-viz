@@ -247,7 +247,7 @@ class StructSettings extends Component<Props> {
                         <hr />
                         <div>
                             <h1 className="title is-5">
-                                Number of Chilren
+                                Number of Children
                             </h1>
 
                             <Slider
@@ -256,7 +256,7 @@ class StructSettings extends Component<Props> {
                                 marks={
                                     new Array(13).fill(1).reduce((a, _, i) => {
                                         if (i === 0) {
-                                            a[i] = <span style={{ textOrientation: 'sideways', writingMode: 'vertical-rl', color: 'white' }}>unspecified</span>
+                                            a[i] = <span style={{ textOrientation: 'sideways', writingMode: 'vertical-rl', color: 'white', fontSize: 9 }}>unspecified</span>
                                         } else {
                                             a[i] = String(i)
                                         }

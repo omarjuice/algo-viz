@@ -1,6 +1,3 @@
-
-// const { parseExpression } = require('@babel/parser')
-// const { CodeGenerator } = require('@babel/generator')
 const ASThelpers = require('./ast-helpers')
 const t = require('@babel/types')
 const TYPES = require('../execute/utils/types')
@@ -47,7 +44,10 @@ module.exports = function (input) {
                     references = path.scope.references
 
                     //strict mode enforcement
-                    path.node.body.unshift(t.stringLiteral("use strict"), proxy(t.nullLiteral(), { type: TYPES.PROGRAM, scope: getScope(path) }))
+                    path.node.body.unshift(
+                        t.stringLiteral("use strict"),
+                        proxy(t.nullLiteral(), { type: TYPES.PROGRAM, scope: getScope(path) })
+                    )
                 },
                 Function: {
                     enter(path, { opts }) {

@@ -54,4 +54,17 @@ describe('VM code execution', () => {
         expect(typeof body.types).toBe('object')
         expect(body.steps[body.steps.length - 1].type).toBe('ERROR')
     })
+    it('natives', async () => {
+        let body = await execute(`
+            const p = Proxy;
+        `)
+        // require('fs').writeFileSync('executed.json', body)
+        body = JSON.parse(body)
+        expect(Array.isArray(body.steps)).toBe(true)
+        expect(typeof body.objects).toBe('object')
+        expect(typeof body.types).toBe('object')
+
+
+
+    })
 })

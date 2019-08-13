@@ -3,11 +3,12 @@ import store from '../../store';
 import DataChild from './DataChild';
 import ValDisplay from './ValDisplay';
 import { observer } from 'mobx-react';
-import { getVal } from './getVal';
+import ValText from './ValText';
 import Tooltip from 'rc-tooltip';
 import genId from '../../utils/genId';
 import ArcPointer from './ArcPointer';
 import Pointer from './Pointer';
+import getType from '../../utils/getType';
 
 
 type Props = {
@@ -188,7 +189,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
             otherKeys.push(
                 <div key={key} className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {key}:{' '}</span>
-                    {value === objectId ? <span className="has-text-danger">this</span> : getVal(value, false, 10)}
+                    {value === objectId ? <span className="has-text-danger">this</span> : <ValText value={value} type={getType(value)} textOnly={false} size={10} />}
                 </div >
             )
 

@@ -65,7 +65,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const active = pointed || store.structs.activePointers[objectId];
     const bkgExtend = active ? '600px' : '20px'
     const styles: React.CSSProperties = {
-        margin: `${size}px`,
+        margin: `${ratio < 1 ? 0 : size}px`,
         padding: `${size}px`,
         flexDirection: display as 'row' | 'column',
         backgroundImage: `linear-gradient(${color}, ${color}),

@@ -1,18 +1,16 @@
-const isNative = require('./isNative')
 const checkTypedArray = require('./checkTypedArray')
 // the values are specific to the Runner instance
+const natives = require('./natives')
 module.exports = function (obj) {
     // these are functions that change instance methods on their respective object tyes
+    if (this.map.has(obj)) {
+        return this.map.get(obj)
+    }
     if (obj && typeof obj === 'object') {
         // we want to ignore native objects
-        if (this.map.has(obj)) {
-            return this.map.get(obj)
-        }
+
         checkTypedArray(obj)
-        const native = isNative(obj)
-        if (native) {
-            return native
-        }
+
         if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
         if (!Array.isArray(obj)) {
             const objString = obj.toString()
@@ -79,15 +77,12 @@ module.exports = function (obj) {
         return newId
     } else {
         // these falsy primitives must be encoded because they all become `null` in JSON
-        if (this.map.has(obj)) return this.map.get(obj)
         if (typeof obj === 'function') {
             if (this.map.has(obj)) return this.map.get(obj)
-            const native = isNative(obj)
-            if (native) return native
             const name = obj.name && obj.name[0] !== '_' ? obj.name : 'function'
             let id;
             while (!id || (id in this.objects)) {
-                id = this.genId(5, 2)
+                id = this.genId(5, natives.has(name) ? 4 : 2)
             }
             this.types[id] = `[Function: ${name}]`
             this.map.set(obj, id)

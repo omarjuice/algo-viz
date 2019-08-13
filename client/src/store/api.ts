@@ -43,7 +43,6 @@ class ApiStore {
             this.error = null
             this.loading = false
             this.ok = true
-            this.root.editor.active = false
         } catch (e) {
             if (e.response) {
                 this.error = e.response.data.toString()

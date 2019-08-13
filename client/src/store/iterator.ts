@@ -171,6 +171,12 @@ class IteratorStore {
             // console.log('SKIP PERFORMANCE: ', Date.now() - t1)
         }
     }
+    @action reset() {
+        console.log('RESET');
+        this.beforeChange();
+        this.change(this.index)
+        this.afterChange()
+    }
     getSpeed(type: Viz.configurable) {
         if (!this.iterating) {
             return 300

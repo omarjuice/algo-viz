@@ -1,9 +1,8 @@
 const TYPES = require('./types')
-const isNative = require('./isNative')
 function virtualize(object) {
     const runner = this
     if (!object || typeof object !== 'object') return object
-    if (isNative(object) ||
+    if (
         object instanceof Map ||
         object instanceof Set ||
         object instanceof String ||

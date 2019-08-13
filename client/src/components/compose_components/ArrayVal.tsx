@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { getVal } from './getVal';
+import ValText from './ValText';
 import { observer } from 'mobx-react';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
-import Pointer from './Pointer';
-import ValDisplay from './ValDisplay';
-import ArrayChild from './ArrayChild';
 
+import ArrayChild from './ArrayChild';
+import getType from '../../utils/getType'
+import getVal from '../../utils/getVal';
 type Props = {
     array: Viz.Structure
     index: number
@@ -18,41 +18,6 @@ type Props = {
 }
 
 
-const getArrayVal = (value: any, displayProps: Viz.DisplayProps) => {
-    const { settings: { valueColors: colors } } = store
-    if (typeof value === 'boolean') {
-        displayProps.color = colors.boolean
-        displayProps.textDisplay = value ? 'T' : 'F'
-        return <ValDisplay {...displayProps} />
-    } else if (typeof value === 'string') {
-        if (value in store.viz.types) {
-            if (value in store.structs.objects) {
-                return <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size} />
-            }
-            if (store.viz.types[value] === '<empty>') {
-                displayProps.color = store.settings.background
-            } else {
-                displayProps.color = colors.special
-            }
-
-        } else {
-            displayProps.color = colors.string
-            if (value.length < 4) displayProps.textDisplay = value
-        }
-        return <ValDisplay {...displayProps} />
-    } else if (typeof value === 'number') {
-        displayProps.color = colors.number
-        const strVal = String(value)
-        let len = strVal.length
-        if (strVal[0] === '-')--len
-        if (len < 4) displayProps.textDisplay = strVal
-        return <ValDisplay {...displayProps} />
-    } else {
-        displayProps.color = store.settings.background
-    }
-
-    return <ValDisplay {...displayProps} />
-}
 
 const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
@@ -97,13 +62,13 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
                 </div>
             )
         }
-
     }
     const style: React.CSSProperties = {
         margin: `4px ${size / 5}px`,
         height: `${Math.max(size * 1.5)}px`,
     }
     const visible = (!!info.get || !!info.set)
+    const valType = getType(value)
     return (
         <div
             onMouseEnter={() => {
@@ -123,11 +88,11 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {index}:{' '}</span>
-                    {getVal(value, true)}
+                    <ValText value={value} type={valType} />
                 </div >)}
                 placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'}
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
-                {getArrayVal(value, displayProps)}
+                {getVal(value, displayProps, valType)}
             </Tooltip>
         </div >
     );

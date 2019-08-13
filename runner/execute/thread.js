@@ -7,13 +7,14 @@ const Runner = require('./runner')
 const { code, _name, original } = workerData
 const runner = new Runner(_name, original)
 const vm = new VM({
-
+    console: 'inherit',
     sandbox: {
         [_name]: runner,
         Viz: instantiateViz(runner)
     },
     timeout: 500,
 })
+
 try {
     vm.run(code)
 } catch (error) {

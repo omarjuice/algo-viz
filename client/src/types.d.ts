@@ -1,4 +1,5 @@
 declare namespace Viz {
+    type valType = 'null' | 'boolean' | 'string' | 'special' | 'func' | 'object' | 'native' | 'number'
     type scope = null | [null | number, number]
     type name = [number, number]
     type pointers = Map<string, (string | number)[]>
@@ -16,6 +17,8 @@ declare namespace Viz {
         string: string
         boolean: string
         other: string
+        native: string
+        func: string
     }
 
     type speeds = {

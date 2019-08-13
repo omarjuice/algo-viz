@@ -1,16 +1,8 @@
 const expect = require('expect')
-const isNative = require('../utils/isNative')
 const checkTypedArray = require('../utils/checkTypedArray')
 const Runner = require('../runner')
 describe('UTILS', () => {
-    describe('isNative', () => {
-        it('Should detect native objects', () => {
-            expect(isNative(Object)).toBe('Object')
-        })
-        it('Should not flag instances', () => {
-            expect(isNative(new Object)).toBe(undefined)
-        })
-    })
+
 
     describe('stringify', () => {
         class Circular {

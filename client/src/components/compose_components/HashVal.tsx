@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { getVal } from './getVal';
+import ValText from './ValText';
 import { observer } from 'mobx-react';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
 import Pointer from './Pointer';
-import ValDisplay from './ValDisplay';
 import ArrayChild from './ArrayChild';
+import getType from '../../utils/getType';
+import getVal from '../../utils/getVal';
 type ValProps = {
     object: Viz.Structure
     prop: string
@@ -18,40 +19,6 @@ type ValProps = {
 
 type DisplayProps = Viz.DisplayProps & { type: string }
 
-const getHashVal = (value: any, displayProps: DisplayProps) => {
-
-    const { settings: { valueColors: colors } } = store
-    if (typeof value === 'boolean') {
-        displayProps.color = colors.boolean
-        displayProps.textDisplay = value ? 'T' : 'F'
-    } else if (typeof value === 'string') {
-        if (value in store.viz.types) {
-            if (value in store.structs.objects) {
-                return (
-                    <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size} />
-                )
-            }
-            if (store.viz.types[value] === '<empty>') {
-                displayProps.color = store.settings.background
-            } else {
-                displayProps.color = colors.special
-            }
-
-        } else {
-            displayProps.color = colors.string
-            if (value.length < 4) displayProps.textDisplay = value
-        }
-    } else if (typeof value === 'number') {
-        displayProps.color = colors.number
-        const strVal = String(value)
-        let len = strVal.length
-        if (strVal[0] === '-')--len
-        if (len < 4) displayProps.textDisplay = strVal
-    }
-    return (
-        <ValDisplay {...displayProps} />
-    )
-}
 
 const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ratio }) => {
     const [hovered, toggle] = useState(false)
@@ -71,6 +38,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         textDisplay: "",
         type
     }
+
     if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
         const parents = store.structs.parents[value]
         let flag = false
@@ -100,7 +68,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                                         {type !== 'Set' && <span style={{ fontSize: 9 }}>
                                             {type === 'Map' && prop in store.structs.objects ? store.viz.types[prop] : prop}:{' '}
                                         </span>}
-                                        {getVal(prop, true)}
+                                        <ValText value={prop} type={getType(prop)} />
                                     </div >
                                 )}>
                                     <span className="prop-name" style={{ fontSize: 12 * ratio }}> {prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}</span>
@@ -115,6 +83,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
             )
         }
     }
+    const valType = getType(value)
     const style: React.CSSProperties = {
         margin: `${size / 5}px 0px`,
         height: `${Math.max(size * 1.5)}px`,
@@ -139,9 +108,9 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                        {type === 'Map' ? getVal(prop, true) : String(prop)}:{' '}
+                        {type === 'Map' ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
                     </span>}
-                    {getVal(value, true)}
+                    <ValText value={value} type={valType} />
                 </div >
             )}
                 placement={'right'}
@@ -154,12 +123,12 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                         }}
                             className={`is-size-6 $`}>
                             {type === 'Map' ?
-                                getHashVal(prop, { ...displayProps }) :
+                                getVal(prop, { ...displayProps }, getType(prop)) :
                                 <span className="prop-name" style={{}}>{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}
                     <div className={`column`}>
-                        {getHashVal(value, displayProps)}
+                        {getVal(value, displayProps, valType)}
                     </div>
                 </div>
             </Tooltip>

@@ -109,7 +109,9 @@ class Settings {
         number: 'steelblue',
         string: 'yellow',
         boolean: 'green',
-        other: 'white'
+        other: 'white',
+        func: 'white',
+        native: '#ff3860'
     }
     @observable background = '#0b1423'
     @observable speeds = {
@@ -136,7 +138,7 @@ class Settings {
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
             this.background = all.background
-            this.valueColors = all.valueColors
+            // this.valueColors = this.valueColors
             this.speeds = all.speeds
             this.structColors = all.structColors
             this.structSettings = all.structSettings

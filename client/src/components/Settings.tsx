@@ -51,10 +51,6 @@ class Settings extends React.Component {
                             <button className="button">Add</button>
                         </form>
                     </section>
-                    {/* <footer className="modal-card-foot">
-                        <button className="button is-success">Save changes</button>
-                        <button onClick={() => store.settings.stopEdit()} className="button">Cancel</button>
-                    </footer> */}
                 </div>
             </div>
         );

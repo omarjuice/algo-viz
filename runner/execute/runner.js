@@ -56,11 +56,8 @@ class Runner {
         const negInfinity = this.genId(5, 1)
         this.map.set(-Infinity, negInfinity)
         this.types[negInfinity] = '-Infinity'
-
-
         this._ignore = false
         this.ignore = (bool) => this._ignore = bool
-
     }
 
 

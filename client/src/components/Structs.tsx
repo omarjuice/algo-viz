@@ -8,12 +8,11 @@ import DataStruct from './compose_components/DataStruct';
 
 
 const Structs: React.FC = observer(() => {
-    if (!store.allowRender) return null
+    if (!store.allowRender) return null;
     const arrays: ReactNode[] = []
     const objects: ReactNode[] = []
     const data: ReactNode[] = []
     const ids = store.structs.bindings
-
     ids.forEach((id) => {
         if (store.viz.types[id] === 'Array') {
             arrays.push(

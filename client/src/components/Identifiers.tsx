@@ -1,7 +1,8 @@
 import React from 'react'
 import store from '../store'
 import { observer } from 'mobx-react';
-import { getVal } from './compose_components/getVal';
+import ValText from './compose_components/ValText';
+import getType from '../utils/getType';
 
 const Identifiers: React.FC = observer(() => {
     const identifiers = store.state.activeIds
@@ -18,7 +19,7 @@ const Identifiers: React.FC = observer(() => {
                             <p key={i}>
                                 <span>{id.name}</span>
                                 <span>{' '}={' '}</span>
-                                <span className="has-text-primary">{getVal(id.value)}</span>
+                                <ValText value={id.value} type={getType(id.value)} />
                             </p>
                         ))
                     }</div>

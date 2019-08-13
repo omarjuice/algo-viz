@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import store from '../store'
 import { observer } from 'mobx-react';
-import { getVal } from './compose_components/getVal'
+import ValText from './compose_components/ValText'
+import getType from '../utils/getType';
 
 const StepView: React.FC = observer(() => {
 
@@ -37,9 +38,7 @@ const StepView: React.FC = observer(() => {
                             {store.code.expression}
                         </span>
                         {' '}={' '}
-                        <span className="has-text-primary is-size-5">
-                            {getVal(store.code.value)}
-                        </span>
+                        <ValText value={store.code.value} type={getType(store.code.value)} />
                     </>
                 ) : (store.iterator.step.access && <span>{store.iterator.step.access[0]}</span>)}
             </div> :

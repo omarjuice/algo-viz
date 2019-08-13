@@ -29,7 +29,7 @@ class App extends React.Component {
                 <Identifiers />
               )}
             </div>
-            {store.ready && !store.api.error && !store.editor.active && (
+            {store.ready && !store.api.error && (
               <>
                 <div className="column is-6">
                   <StepView />

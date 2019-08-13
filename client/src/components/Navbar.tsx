@@ -70,25 +70,25 @@ const Navbar: React.FC = observer(() => {
                         </>
                     )}
 
-                    <div className="navbar-item">
-                        {!store.editor.active ? (
-                            <button onClick={() => {
-                                store.editor.active = !store.editor.active
-                                store.api.error = null
-                            }} className={`button is-small`}>
-                                <figure style={{ marginTop: '-3px' }} className="image is-4by4">
-                                    <img src={process.env.PUBLIC_URL + '/baseline-code-24px.svg'} alt="" />
-                                </figure>
-
-                            </button>
-                        ) : (
+                    {!store.api.loading &&
+                        <div className="navbar-item">
+                            {!store.editor.active ? (
                                 <button onClick={() => {
-                                    store.editor.active = !store.editor.active
-                                    store.api.error = null
-                                }} className="delete" />
+                                    store.editor.toggle()
+                                }} className={`button is-small`}>
+                                    <figure style={{ marginTop: '-3px' }} className="image is-4by4">
+                                        <img src={process.env.PUBLIC_URL + '/baseline-code-24px.svg'} alt="" />
+                                    </figure>
 
-                            )}
-                    </div>
+                                </button>
+                            ) : (
+                                    <button onClick={() => {
+                                        store.editor.toggle()
+                                    }} className="delete" />
+
+                                )}
+                        </div>
+                    }
 
 
                 </div>
