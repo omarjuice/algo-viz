@@ -32,7 +32,7 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
     const displayProps: Viz.DisplayProps = {
         objectId,
-        color: store.settings.valueColors.other,
+        color: '',
         size,
         anim,
         textDisplay: "",

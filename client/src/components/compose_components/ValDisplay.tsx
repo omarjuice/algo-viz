@@ -4,17 +4,8 @@ import { observer } from 'mobx-react';
 import genId from '../../utils/genId';
 
 
-type DisplayProps = {
-    color: string
-    size: number
-    anim: Viz.anim
-    objectId: string
-    textDisplay: string | ReactNode
-    textColor?: string
-    highlight?: boolean
-}
 
-const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, textDisplay, textColor, highlight }) => {
+const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, textDisplay, textColor, highlight, component }) => {
     const [state, setState] = useState([false, false])
     const [text, setText] = useState(null)
     const animation = useRef(null)
@@ -58,11 +49,11 @@ const ValDisplay: React.FC<DisplayProps> = observer(({ color, size, anim, textDi
             </radialGradient>
         </defs>
         <circle cx="50" cy="50" r="50" fill={highlight ? `url(#${gradId})` : color} stroke={color} />
-        <text x={50} y={50}
+        {component || <text x={50} y={50}
             fill={textColor || store.settings.background} fontSize={50} fontWeight={'bold'}
             dominantBaseline="middle" textAnchor="middle" >
             {text}
-        </text>
+        </text>}
     </svg>
 })
 

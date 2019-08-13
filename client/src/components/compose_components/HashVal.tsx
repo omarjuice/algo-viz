@@ -32,7 +32,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
     const type = store.viz.types[objectId]
     const displayProps: DisplayProps = {
         objectId,
-        color: store.settings.valueColors.other,
+        color: '',
         size,
         anim,
         textDisplay: "",

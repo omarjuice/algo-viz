@@ -9,6 +9,7 @@ import genId from '../../utils/genId';
 import ArcPointer from './ArcPointer';
 import Pointer from './Pointer';
 import getType from '../../utils/getType';
+import getVal from '../../utils/getVal';
 
 
 type Props = {
@@ -238,7 +239,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const size = Math.min(30, Math.max(width - 1, 1))
     const displayProps: Viz.DisplayProps = {
         objectId,
-        color: color,
+        color,
         size,
         anim,
         textDisplay: "",
@@ -266,7 +267,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginBottom: '10px'
-                    }}> {getDataVal(main ? main.value : '', displayProps, objectId)} </div>
+                    }}> {getVal(main ? main.value : '', displayProps, getType(main ? main.value : null), true)} </div>
             </Tooltip>
             {node && (
                 <div style={styles}>
