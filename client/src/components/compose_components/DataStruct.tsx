@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import store from '../../store';
 import DataChild from './DataChild';
-import ValDisplay from './ValDisplay';
 import { observer } from 'mobx-react';
 import ValText from './ValText';
 import Tooltip from 'rc-tooltip';
 import genId from '../../utils/genId';
 import ArcPointer from './ArcPointer';
-import Pointer from './Pointer';
 import getType from '../../utils/getType';
 import getVal from '../../utils/getVal';
 
@@ -20,37 +18,6 @@ type Props = {
     isList?: boolean
     idx?: number
 }
-
-
-const getDataVal = (value: any, displayProps: Viz.DisplayProps, objectId: string) => {
-    if (typeof value === 'boolean') {
-        displayProps.textDisplay = value ? 'T' : 'F'
-        return <ValDisplay {...displayProps} />
-    } else if (typeof value === 'string') {
-        if (value in store.viz.types) {
-            if (value === objectId) {
-                displayProps.textDisplay = 'this'
-                displayProps.textColor = 'red'
-            } else {
-                return <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size} />
-            }
-
-
-        } else {
-            if (value.length < 4) displayProps.textDisplay = value
-        }
-        return <ValDisplay {...displayProps} />
-    } else if (typeof value === 'number') {
-        const strVal = String(value)
-        let len = strVal.length
-        if (strVal[0] === '-')--len
-        if (len < 4) displayProps.textDisplay = strVal
-        return <ValDisplay {...displayProps} />
-    }
-
-    return <ValDisplay {...displayProps} />
-}
-
 
 const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx }) => {
     const [node, setNode] = useState(null)

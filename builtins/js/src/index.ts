@@ -6,6 +6,8 @@ import instantiateBST from './bst';
 import instantiateQueue from './queue';
 import instantiatePQ from './pq';
 import Node from './node';
+import instantiateTree from './tree';
+import Leaf from './leaf';
 export type Runner = {
     [key: string]: any
     ignore: (bool: boolean) => void
@@ -20,7 +22,9 @@ export default function instantiateViz(runner: Runner = { ignore: () => { } }) {
         static BST = instantiateBST(runner)
         static Queue = instantiateQueue(runner)
         static PQ = instantiatePQ(runner)
+        static Tree = instantiateTree(runner)
         static Node = Node
+        static Leaf = Leaf
     }
 
     runner.Viz = Viz

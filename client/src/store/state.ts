@@ -187,7 +187,7 @@ class StateStore {
                         for (const id in ids) {
                             const idens = ids[id]
                             if (idens.length === 1 && idens[idens.length - 1] === undefined) {
-                                if (step.prevVals[scope]) {
+                                if (step.prevVals && step.prevVals[scope]) {
                                     idens[idens.length - 1] = (step.prevVals[scope][id])
                                 } else {
                                     console.log('NO SCOPE', scope);

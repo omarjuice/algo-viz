@@ -66,12 +66,14 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                                 <Tooltip overlay={() => (
                                     <div className="has-text-weight-bold">
                                         {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                                            {type === 'Map' && prop in store.structs.objects ? store.viz.types[prop] : prop}:{' '}
+                                            {type === 'Map' ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
                                         </span>}
-                                        <ValText value={prop} type={getType(prop)} />
+                                        <ValText value={value} type={valType} textOnly={true} />
                                     </div >
                                 )}>
-                                    <span className="prop-name" style={{ fontSize: 12 * ratio }}> {prop.slice(0, 5) + (prop.length > 5 ? '...' : '')}</span>
+                                    {type === 'Map' ?
+                                        getVal(prop, { ...displayProps }, getType(prop)) :
+                                        <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                                 </Tooltip>}
                         </p>
                     </div>}
@@ -110,7 +112,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                     {type !== 'Set' && <span style={{ fontSize: 9 }}>
                         {type === 'Map' ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
                     </span>}
-                    <ValText value={value} type={valType} />
+                    <ValText value={value} type={valType} textOnly={true} />
                 </div >
             )}
                 placement={'right'}
@@ -124,7 +126,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                             className={`is-size-6 $`}>
                             {type === 'Map' ?
                                 getVal(prop, { ...displayProps }, getType(prop)) :
-                                <span className="prop-name" style={{}}>{prop.slice(0, 5)}{(prop.length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
+                                <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}
                     <div className={`column`}>

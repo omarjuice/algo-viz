@@ -83,8 +83,11 @@ export default function instantiateQueue(runner: Runner) {
             }
             return last.value
         }
-        peek() {
+        getFront() {
             return this.front ? this.front.value : undefined
+        }
+        getEnd() {
+            return this.end ? this.end.value : undefined
         }
         * values(): IterableIterator<any> {
             let current = this.front

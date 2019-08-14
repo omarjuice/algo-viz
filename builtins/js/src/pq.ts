@@ -51,7 +51,7 @@ export default function instantiatePQ(runner: Runner) {
                 if (child2 !== -1 && (this.display = this._compare(this.heap[child2], this.heap[child1]))) {
                     swapIdx = child2
                 }
-                if (this._compare(this.heap[swapIdx], this.heap[idx])) {
+                if (this.display = this._compare(this.heap[swapIdx], this.heap[idx])) {
                     [this.heap[swapIdx], this.heap[idx]] = [this.heap[idx], this.heap[swapIdx]];
                     idx = swapIdx;
                     child1 = idx * 2 + 1

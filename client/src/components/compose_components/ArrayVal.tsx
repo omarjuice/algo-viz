@@ -88,7 +88,7 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     <span style={{ fontSize: 9 }}> {index}:{' '}</span>
-                    <ValText value={value} type={valType} />
+                    <ValText value={value} type={valType} textOnly={true} />
                 </div >)}
                 placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'}
                 trigger={['hover']} visible={visible || hovered} defaultVisible={false} >

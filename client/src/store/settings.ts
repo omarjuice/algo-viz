@@ -100,6 +100,27 @@ export const structInfo: Viz.structSettings = {
         pointers: {
 
         }
+    },
+    Tree: {
+        order: {
+            leaf: {
+                pos: 1,
+                isMultiple: false
+            },
+            children: {
+                pos: 2,
+                isMultiple: true
+            }
+        },
+        main: 'key',
+        numChildren: null,
+        pointers: {}
+    },
+    Leaf: {
+        order: {},
+        main: 'value',
+        numChildren: null,
+        pointers: {}
     }
 }
 

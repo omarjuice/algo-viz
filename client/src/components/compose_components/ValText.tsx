@@ -23,11 +23,10 @@ const ValText: React.FC<Props> = ({ value, type, textOnly = false, size = 30 }) 
     } else {
         color = store.settings.valueColors[type]
     }
-
     if (type === 'func' || type === 'native' || type === 'special') {
         value = store.viz.types[value]
     }
-    return <span style={{ color }}>{value}</span>
+    return <span style={{ color }}>{String(value)}</span>
 
 }
 

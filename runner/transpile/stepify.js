@@ -257,20 +257,33 @@ module.exports = function (input) {
                     }
                 },
 
-                IfStatement(path) {
-                    if (!t.isBlockStatement(path.node.consequent)) {
-                        path.node.consequent = t.blockStatement([path.node.consequent])
-                    }
-                    path.node.test = proxy(path.node.test, {
-                        type: TYPES.BLOCK,
-                        scope: getScope(path)
-                    })
+                IfStatement: {
+                    exit(path) {
+                        if (!t.isBlockStatement(path.node.consequent)) {
+                            path.node.consequent = t.blockStatement([path.node.consequent])
+                        }
+                        path.node.test = proxy(path.node.test, {
+                            type: TYPES.BLOCK,
+                            scope: getScope(path)
+                        })
 
+                    }
                 },
                 MemberExpression: {
                     exit(path) {
                         if (isBarredObject(path.node.object.name, false)) {
                             return path.stop()
+                        }
+                        if (!t.isExpression(path.parent)) {
+                            const expression = path.node
+                            if (!expression.start) return
+                            const details = {
+                                scope: getScope(path),
+                            }
+
+                            details.type = TYPES.EXPRESSION
+
+                            path.replaceWith(proxy(expression, details))
                         }
                     }
                 },

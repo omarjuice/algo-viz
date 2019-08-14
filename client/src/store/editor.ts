@@ -1,5 +1,5 @@
 import { observable, action } from "mobx";
-import { RootStore } from ".";
+import store, { RootStore } from ".";
 
 class Editor {
     @observable code: string = ''
@@ -11,7 +11,7 @@ class Editor {
     }
     @action submit() {
         this.root.api.runCode(this.code).then(() => {
-            if (this.active) this.toggle()
+            if (this.active && !this.root.api.error) this.toggle()
         })
     }
     @action toggle() {

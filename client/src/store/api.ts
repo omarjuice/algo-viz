@@ -44,6 +44,7 @@ class ApiStore {
             this.loading = false
             this.ok = true
         } catch (e) {
+            console.log(e)
             if (e.response) {
                 this.error = e.response.data.toString()
                 console.log(this.error)
