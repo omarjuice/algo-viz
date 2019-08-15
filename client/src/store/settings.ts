@@ -121,6 +121,17 @@ export const structInfo: Viz.structSettings = {
         main: 'value',
         numChildren: null,
         pointers: {}
+    },
+    Trie: {
+        order: {
+            children: {
+                pos: 1,
+                isMultiple: true
+            }
+        },
+        main: 'value',
+        numChildren: null,
+        pointers: {}
     }
 }
 

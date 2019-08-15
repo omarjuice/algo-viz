@@ -38,11 +38,12 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         textDisplay: "",
         type
     }
-
+    const valType = getType(value)
     if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
         const parents = store.structs.parents[value]
         let flag = false
         if (parents) {
+            console.log(parents)
             if (!parents.has(objectId)) flag = true
             else {
                 const pointers = store.structs.pointers.get(value)
@@ -85,7 +86,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
             )
         }
     }
-    const valType = getType(value)
+
     const style: React.CSSProperties = {
         margin: `${size / 5}px 0px`,
         height: `${Math.max(size * 1.5)}px`,

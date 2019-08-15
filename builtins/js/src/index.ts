@@ -5,6 +5,7 @@ import instantiateBTree from './btree'
 import instantiateBST from './bst';
 import instantiateQueue from './queue';
 import instantiatePQ from './pq';
+import instantiateTrie from './trie';
 import Node from './node';
 import instantiateTree from './tree';
 import Leaf from './leaf';
@@ -23,6 +24,7 @@ export default function instantiateViz(runner: Runner = { ignore: () => { } }) {
         static Queue = instantiateQueue(runner)
         static PQ = instantiatePQ(runner)
         static Tree = instantiateTree(runner)
+        static Trie = instantiateTrie(runner)
         static Node = Node
         static Leaf = Leaf
     }

@@ -23,6 +23,9 @@ const ValText: React.FC<Props> = ({ value, type, textOnly = false, size = 30 }) 
     } else {
         color = store.settings.valueColors[type]
     }
+    if (type === 'string') {
+        value = `"${value}"`
+    }
     if (type === 'func' || type === 'native' || type === 'special') {
         value = store.viz.types[value]
     }

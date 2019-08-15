@@ -3,7 +3,7 @@ import instantiateViz from '../src'
 import expect from 'expect'
 const Viz = instantiateViz()
 
-describe.only('PQ(Priority Queue)', () => {
+describe('PQ(Priority Queue)', () => {
     describe('construction', () => {
         it('should create a priority queue', () => {
             {
