@@ -117,7 +117,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 </div >
             )}
                 placement={'right'}
-                trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
+                trigger={['hover']} visible={store.settings.config.tooltips ? visible || hovered : hovered} defaultVisible={false} >
                 <div className="columns is-paddingless is-multiline">
                     {type !== 'Set' && <div className={`column ${type === 'Map' && 'has-text-right'}`}>
                         < p style={{

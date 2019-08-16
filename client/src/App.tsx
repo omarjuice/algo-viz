@@ -9,7 +9,7 @@ import LeftPanel from './components/LeftPanel';
 import Convert from 'ansi-to-html';
 import Navbar from './components/Navbar';
 import Structs from './components/Structs';
-import Settings from './components/Settings';
+import Settings from './components/settings';
 const convert = new Convert({ newline: true })
 
 @observer

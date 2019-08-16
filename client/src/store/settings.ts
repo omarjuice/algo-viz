@@ -164,6 +164,9 @@ class Settings {
         Set: 'pink'
     }
     @observable structSettings: Viz.structSettings = {}
+    @observable config: Viz.configSettings = {
+        tooltips: true
+    }
     @observable root: RootStore
     constructor(store: RootStore) {
         const settings = window.localStorage.getItem('settings')
@@ -174,6 +177,7 @@ class Settings {
             this.speeds = all.speeds
             this.structColors = all.structColors
             this.structSettings = all.structSettings
+            this.config = all.config || this.config
         }
         this.structSettings['Array'] = {
             order: {},

@@ -91,7 +91,7 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
                     <ValText value={value} type={valType} textOnly={true} />
                 </div >)}
                 placement={(!!info.set && 'bottom') || ((!!info.get || hovered) && 'top') || 'top'}
-                trigger={['hover']} visible={visible || hovered} defaultVisible={false} >
+                trigger={['hover']} visible={store.settings.config.tooltips ? visible || hovered : hovered} defaultVisible={false} >
                 {getVal(value, displayProps, valType)}
             </Tooltip>
         </div >

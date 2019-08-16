@@ -42,12 +42,18 @@ declare namespace Viz {
         }
     }
 
+    type configTypes = 'tooltips'
+    type configSettings = {
+        [key in configTypes]: boolean
+    }
+
     interface AllSettings {
         valueColors: colors
         background: string
         speeds: speeds
         structColors: structColors
         structSettings: structSettings
+        config: configSettings
     }
 
 

@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import { observer } from 'mobx-react';
-import store from '../store';
-import DraggableList from './DraggableList'
+import store from '../../store';
+import DraggableList from '../DraggableList'
 import Slider from 'rc-slider'
 type Props = {
     name: string

@@ -135,6 +135,13 @@ body, html, #root, .app{
 .structs{
     z-index: 2;
 }
+.settings-tabs{
+    height: 2rem !important
+}
+.struct-settings-panel{
+    max-height: 50vh;
+}
+
 @keyframes pop-in{
     0%{
         transform: scale(0)
