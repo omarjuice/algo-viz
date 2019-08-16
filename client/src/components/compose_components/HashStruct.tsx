@@ -57,6 +57,8 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
 
     if (!willRender) return null
+    const type = store.viz.types[objectId]
+
     const styles: React.CSSProperties = {
         minWidth: 150,
         maxHeight,
@@ -64,7 +66,6 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         flexDirection: orientation
     }
 
-    const type = store.viz.types[objectId]
     const color = store.settings.structColors[type] || 'white'
 
     const active = pointed || store.structs.activePointers[objectId]
@@ -77,7 +78,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     return (
         <div style={{ ...styles, maxHeight: maxHeight + 100, }} className={`hash-struct`}>
             <div className="is-size-1" style={braceStyle}>{`{`}</div>
-            <div style={{ ...styles, minWidth: undefined, minHeight: 50 }} ref={ref}>
+            <div style={{ ...styles, minWidth: type === 'Map' ? 200 : undefined, minHeight: 50 }} ref={ref}>
                 {obj}
             </div>
             <div className="is-size-1" style={braceStyle}>{'}'}</div>

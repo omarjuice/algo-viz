@@ -22,7 +22,7 @@ function instantiateTrie(runner: Runner) {
         }
         add(word: string | string[]) {
             if (typeof word !== 'string') {
-                throw new Error('Trie.add: word parameter must be a string')
+                throw new Error(`Trie.add: word parameter must be a string. Got ${word}`)
             }
             let node: Trie = this;
             for (const letter of word) {
@@ -38,6 +38,9 @@ function instantiateTrie(runner: Runner) {
             return this
         }
         remove(word: string) {
+            if (typeof word !== 'string') {
+                throw new Error(`Trie.remove: word parameter must be a string. Got ${word}`)
+            }
             let value: string = '', node: Trie = this
             const stack: Trie[] = [this]
             for (const letter of word) {
@@ -67,6 +70,7 @@ function instantiateTrie(runner: Runner) {
 
         }
         find(word: string): Trie {
+            if (typeof word !== 'string') throw new Error(`Trie.find: word must be a string. Got ${word}`)
             let value: string = '', node: Trie = this
 
             for (const letter of word) {
@@ -79,7 +83,7 @@ function instantiateTrie(runner: Runner) {
             }
             return value === word ? node : null;
         }
-        findWords(value: string = '', words: string[] = [], node = this.find(value), ) {
+        findWords(value: string = '', words: string[] = [], node = this.find(value)) {
             if (node) {
                 if (node.isWord) words.push(value)
                 node.children.forEach((child) => {
@@ -90,7 +94,7 @@ function instantiateTrie(runner: Runner) {
         };
         addMany(words: string[]) {
             if (!Array.isArray(words)) {
-                throw new Error('Trie.add: words parameter must be an array of words')
+                throw new Error(`Trie.add: words parameter must be an array of words. Got ${words}`)
             }
             for (const word of words) {
                 this.add(word);
