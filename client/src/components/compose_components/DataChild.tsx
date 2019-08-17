@@ -49,7 +49,7 @@ class DataChild extends React.Component<Props>{
             element = <DataStruct idx={idx} isList={isList} renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
         } else if (type === 'Array') {
             element = <ArrayStruct renderId={this.renderId} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
-        } else if (type === 'Object') {
+        } else if (type === 'Object' || type === 'Map' || type === 'Set') {
             element = <HashStruct renderId={this.renderId} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else {
             element = null

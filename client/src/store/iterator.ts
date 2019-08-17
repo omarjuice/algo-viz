@@ -25,6 +25,32 @@ class IteratorStore {
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
+        document.addEventListener('keydown', (e) => {
+            console.log(e.which)
+            if (e.which === 32) {
+                if (this.iterating) {
+                    this.pause()
+                } else {
+                    this.play()
+                }
+            }
+            if (e.which === 37) {
+                if (this.iterating) {
+                    this.slower()
+                } else {
+                    if (store.iterator.index <= 0) return;
+                    this.exec(false)
+                }
+            }
+            if (e.which === 39) {
+                if (this.iterating) {
+                    this.faster()
+                } else {
+                    if (store.iterator.index >= store.viz.steps.length - 1) return;
+                    this.exec(true)
+                }
+            }
+        })
     }
     @action next() {
         if (!this.iterating) return false;
