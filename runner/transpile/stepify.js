@@ -248,14 +248,20 @@ module.exports = function (input) {
 
                     },
                     exit(path) {
+                        const details = {
+                            type: TYPES.BLOCK,
+                            scope: getScope(path)
+                        }
                         if (path.node.test && !path.node.test._isProxy) {
-                            path.node.test = proxy(path.node.test, {
-                                type: TYPES.BLOCK,
-                                scope: getScope(path)
-                            })
+                            path.node.test = proxy(path.node.test, details)
+                        }
+                        if (t.isDoWhileStatement(path)) {
+                            path.node.body.body.unshift(proxy(t.nullLiteral(), details))
                         }
                     }
                 },
+
+
 
                 IfStatement: {
                     exit(path) {

@@ -42,7 +42,7 @@ declare namespace Viz {
         }
     }
 
-    type configTypes = 'tooltips'
+    type configTypes = 'tooltips' | 'Active Pointer on GET'
     type configSettings = {
         [key in configTypes]: boolean
     }

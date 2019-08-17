@@ -11,7 +11,8 @@ type Props = {
 
 const Pointer: React.FC<Props> = observer(({ active, id, size, isInsideDisplay = false }) => {
     const [hovered, toggle] = useState(false)
-    const isActive = hovered || active
+    const config = store.settings.config
+    const isActive = config['Active Pointer on GET'] ? hovered || active : hovered
     useEffect(() => {
         store.structs.activePointers[id] = isActive
         if (isActive) {

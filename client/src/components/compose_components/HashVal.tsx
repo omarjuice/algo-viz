@@ -59,7 +59,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         if (!flag) {
             return (
                 <div className="columns is-paddingless is-multiline">
-                    {type !== 'Set' && <div className={`column`}>
+                    {type !== 'Set' && <div className={`column ${type === 'Map' && 'has-text-right'}`}>
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
                             {type === 'Map' && prop in store.structs.objects ?
                                 <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />

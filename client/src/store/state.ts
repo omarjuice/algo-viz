@@ -35,7 +35,12 @@ class StateStore {
                     //     console.log('FILLING IN SCOPE PARENT: ' + parent );
                     //     this.scopeChain[parent] = 
                     // }
-                    this.scopeChain[parent].children.push(scope)
+                    try {
+                        this.scopeChain[parent].children.push(scope)
+                    } catch (e) {
+                        console.log(parent)
+                        throw e
+                    }
 
                 }
             }

@@ -165,7 +165,8 @@ class Settings {
     }
     @observable structSettings: Viz.structSettings = {}
     @observable config: Viz.configSettings = {
-        tooltips: true
+        tooltips: true,
+        'Active Pointer on GET': false
     }
     @observable root: RootStore
     constructor(store: RootStore) {
@@ -177,7 +178,7 @@ class Settings {
             this.speeds = all.speeds
             this.structColors = all.structColors
             this.structSettings = all.structSettings
-            this.config = all.config || this.config
+            this.config = Object.keys(all.config).length === Object.keys(this.config).length ? all.config : this.config
         }
         this.structSettings['Array'] = {
             order: {},

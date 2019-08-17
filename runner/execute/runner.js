@@ -4,7 +4,8 @@ const randomString = require('./utils/randomString')
 const reassignMutative = require('./utils/reassignMutative')
 const virtualize = require('./utils/virtualize')
 class Runner {
-    constructor(name, code) {
+    constructor(name, code, limit = 30000) {
+        this.limit = limit
         this.code = code
         // The bucket for capturing steps to be used for visualization
         this.steps = []
@@ -100,7 +101,7 @@ class Runner {
         } else {
             this.steps.push(info)
         }
-        if (this.steps.length > 30000) throw new Error('Step limit of 30000 exceeded')
+        if (this.steps.length > this.limit) throw new Error('Step limit of 30000 exceeded')
         if (this.callStack.length > 500) throw new Error('Maximum callstack size of 500 exceeded')
         return this.virtualize(val)
     }
