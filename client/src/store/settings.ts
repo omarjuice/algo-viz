@@ -145,7 +145,18 @@ class Settings {
         func: 'white',
         native: '#ff3860'
     }
-    @observable background = '#0b1423'
+    @observable configColors: Viz.configColors = {
+        'Background': '#0b1423',
+        'Navbar': '#4a4a4a',
+        'Call Stack': 'orange',
+        'Code': 'whitesmoke',
+        'Code Highlight': 'lightgreen',
+        'Step Slider Track': '#A663CC',
+        'Step Slider Rail': '#C2BBF0',
+        'Step Slider Handle': 'blue',
+        'Step Type': 'gray',
+        'Text': 'whitesmoke',
+    }
     @observable speeds = {
         DECLARATION: 5,
         ASSIGNMENT: 5,
@@ -173,12 +184,12 @@ class Settings {
         const settings = window.localStorage.getItem('settings')
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
-            this.background = all.background
-            // this.valueColors = this.valueColors
+            this.valueColors = all.valueColors
+            this.configColors = all.configColors || this.configColors
             this.speeds = all.speeds
             this.structColors = all.structColors
             this.structSettings = all.structSettings
-            this.config = Object.keys(all.config).length === Object.keys(this.config).length ? all.config : this.config
+            this.config = all.config
         }
         this.structSettings['Array'] = {
             order: {},

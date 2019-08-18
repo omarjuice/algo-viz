@@ -6,11 +6,11 @@ import SlowArrow from './icons/SlowArrow';
 import FastArrow from './icons/FastArrow';
 
 const Navbar: React.FC = observer(() => {
-    const { iterator } = store
+    const { iterator, settings } = store
     const [type, setType] = useState('DECLARATION')
     return (
         <div>
-            <nav className="navbar has-background-dark" role="navigation" aria-label="main navigation">
+            <nav className="navbar" style={{ backgroundColor: settings.configColors['Navbar'] }} role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
                     {!store.editor.active && store.ready && (
                         <>

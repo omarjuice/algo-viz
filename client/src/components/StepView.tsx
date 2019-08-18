@@ -13,6 +13,10 @@ const StepView: React.FC = observer(() => {
     const lastIdx = store.viz.steps.length - 1
     const last = store.viz.steps[store.viz.steps.length - 1]
     const errorExists = last.type === 'ERROR'
+
+    const style: React.CSSProperties = {
+        color: store.settings.configColors['Step Type']
+    }
     return (
         step && <div className="step-view">
             {
@@ -28,13 +32,13 @@ const StepView: React.FC = observer(() => {
 
             }
             {' '}
-            <span >{index}/{store.viz.steps.length - 1}:</span>
-            <span>{step.type}</span>
+            <span style={style}>{index}/{store.viz.steps.length - 1}:</span>
+            <span style={style}>{step.type}</span>
 
             {!error && !(errorExists && index === store.viz.steps.length - 1) ? <div >
                 {store.code.start ? (
                     <>
-                        <span className={`has-text-success`} style={{ fontSize: Math.min(900 / store.code.expression.length, 16) }}>
+                        <span style={{ fontSize: Math.min(900 / store.code.expression.length, 16), color: store.settings.configColors['Code Highlight'] }}>
                             {store.code.expression}
                         </span>
                         {' '}={' '}

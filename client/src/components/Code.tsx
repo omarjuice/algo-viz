@@ -11,7 +11,7 @@ const Code: React.FC = observer(() => {
     let flag = false
     const tab = (key: number) => <span key={key} className="tab"></span>
 
-    return (<div className="user-code is-size-7">{
+    return (<div style={{ color: store.settings.configColors['Code'] }} className="user-code is-size-7">{
         store.code.tokenMap.map((token, i) => {
             if (!quoteStack.length) {
                 if (token.char === '{') {
@@ -40,7 +40,7 @@ const Code: React.FC = observer(() => {
                 }
                 return <span key={i}>
                     {tabs}
-                    <span className={`${store.allowRender && token.highlight ? 'highlight' : ''} token-${token.index}`}>
+                    <span style={{ color: token.highlight && store.settings.configColors['Code Highlight'] }} className={`${store.allowRender && token.highlight ? 'highlight' : ''} token-${token.index}`}>
                         {token.char}
                     </span>
                 </span>

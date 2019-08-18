@@ -26,7 +26,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
                 width: store.windowWidth / 7,
                 fontSize: `${Math.min(height / 2, 100 / (name ? (name as string).length : 1))}px`,
                 marginBottom: i === 0 ? '0px' : `-${height / 4}px`,
-                background: 'orange',
+                background: store.settings.configColors['Call Stack'],
                 borderBottomLeftRadius: '50%',
                 borderBottomRightRadius: '50%',
                 borderColor: 'black',

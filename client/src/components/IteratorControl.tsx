@@ -20,7 +20,7 @@ const handle = (props: any) => {
             key={index}
         >
             <Handle value={value} {...restProps} style={{
-                borderColor: 'blue',
+                borderColor: store.settings.configColors['Step Slider Handle'],
                 height: 14,
                 width: 14,
                 marginLeft: -5,
@@ -31,7 +31,7 @@ const handle = (props: any) => {
     );
 };
 const IteratorContol: React.FC = observer(() => {
-    const { iterator } = store
+    const { iterator, settings } = store
     return (
         <div className="iterator-control">
             <Slider
@@ -43,12 +43,12 @@ const IteratorContol: React.FC = observer(() => {
                 onChange={(e) => iterator.change(e)}
                 onAfterChange={() => { iterator.afterChange() }}
                 trackStyle={{
-                    backgroundColor: store.viz.steps[store.viz.steps.length - 1].type === 'ERROR' ? '#FF0000' : '#A663CC',
+                    backgroundColor: store.viz.steps[store.viz.steps.length - 1].type === 'ERROR' ? '#FF0000' : settings.configColors['Step Slider Track'],
                     height: 10
                 }}
                 handle={handle}
                 railStyle={{
-                    backgroundColor: store.viz.steps[store.viz.steps.length - 1].type === 'ERROR' ? '#FF8080' : '#C2BBF0',
+                    backgroundColor: store.viz.steps[store.viz.steps.length - 1].type === 'ERROR' ? '#FF8080' : settings.configColors['Step Slider Rail'],
                     height: 10
                 }}
             />

@@ -46,9 +46,22 @@ declare namespace Viz {
     type configSettings = {
         [key in configTypes]: boolean
     }
+    type configColors = {
+        'Background': string
+        'Navbar': string
+        'Call Stack': string
+        'Code': string
+        'Code Highlight': string
+        'Step Slider Track': string
+        'Step Slider Rail': string
+        'Step Slider Handle': string
+        'Step Type': string
+        'Text': string
+    }
 
     interface AllSettings {
         valueColors: colors
+        configColors: configColors
         background: string
         speeds: speeds
         structColors: structColors

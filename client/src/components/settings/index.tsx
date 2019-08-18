@@ -29,8 +29,8 @@ class Settings extends React.Component {
         return (
             <div className={`modal ${store.settings.editing && 'is-active'}`}>
                 <div className="modal-background" onClick={() => store.settings.stopEdit()}></div>
-                <div className="modal-card" style={{ backgroundColor: store.settings.background }}>
-                    <header className="modal-card-head">
+                <div className="modal-card" style={{ backgroundColor: store.settings.configColors['Background'] }}>
+                    <header style={{ backgroundColor: store.settings.configColors['Navbar'] }} className="modal-card-head">
                         <p className="modal-card-title">Settings</p>
                         <button onClick={() => store.settings.stopEdit()} className="delete" aria-label="close"></button>
                     </header>
@@ -43,7 +43,7 @@ class Settings extends React.Component {
                                     return (
                                         <li key={name} onClick={() => this.setPanel(name)}
                                             className={active && 'is-active'}>
-                                            <a className={active ? 'has-text-success' : 'has-text-white'}>{name}</a>
+                                            <a style={{ color: active ? store.settings.configColors['Code Highlight'] : store.settings.configColors['Code'] }}>{name}</a>
                                         </li>
                                     )
                                 })

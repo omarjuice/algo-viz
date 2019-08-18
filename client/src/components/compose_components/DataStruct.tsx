@@ -210,7 +210,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         size,
         anim,
         textDisplay: "",
-        textColor: store.settings.background,
+        textColor: store.settings.configColors['Background'],
         highlight: store.structs.activePointers[objectId]
     }
     return (
