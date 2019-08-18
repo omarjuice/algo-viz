@@ -5,7 +5,6 @@ export default function instantiatePQ(runner: Runner) {
         private _compare: (a: any, b: any) => boolean
         private display: any = 0;
         private heap: any[]
-        size: number = 0
         constructor(arg1: any[] | compareFn, arg2?: compareFn) {
             let compare: compareFn, items: any[];
             if (typeof arg1 === 'function') {
@@ -28,10 +27,18 @@ export default function instantiatePQ(runner: Runner) {
             this._compare = (a, b) => Boolean(compare(a, b));
 
             this.display = 0
-            this.heap = []
-            for (const item of items) {
-                this.insert(item)
+            this.buildHeap(items)
+        }
+        get size() {
+            return this.heap.length;
+        }
+        buildHeap(items: any[]) {
+            this.heap = items
+            const first = Math.floor((items.length - 2) / 2);
+            for (let i = first; i >= 0; i--) {
+                this._siftDown(i, items.length - 1)
             }
+            return this
         }
         private _siftUp(idx: number) {
             let parent = Math.floor((idx - 1) / 2)
@@ -65,7 +72,7 @@ export default function instantiatePQ(runner: Runner) {
             for (const value of values) {
                 this.heap.push(value);
                 this._siftUp(this.heap.length - 1);
-                this.display = ++this.size
+                this.display = this.size
             }
             return this
         }
@@ -75,7 +82,7 @@ export default function instantiatePQ(runner: Runner) {
             [this.heap[last], this.heap[0]] = [this.heap[0], this.heap[last]];
             const val = this.heap.pop()
             this._siftDown(0, last - 1)
-            this.display = --this.size
+            this.display = this.size
             return val
         }
         peek() {

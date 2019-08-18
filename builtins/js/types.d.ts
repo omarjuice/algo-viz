@@ -75,4 +75,19 @@ declare class PQ {
     insert: (val: any) => PQ
     remove: () => any
     peek: () => any
+    clear: () => PQ
+    values: () => IterableIterator<any>
+    toArray: () => any[]
+}
+
+declare class Trie {
+    value: string
+    isWord: boolean
+    children: Map<string, Trie>
+    static create: (words: string[]) => Trie
+    add: (word: string) => Trie
+    remove: (word: string) => Trie
+    find: (word: string) => Trie
+    findWords: (prefix: string) => string[]
+    addMany: (words: string[]) => Trie
 }

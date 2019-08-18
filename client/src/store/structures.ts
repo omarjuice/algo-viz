@@ -368,16 +368,16 @@ class Structures {
             const { object } = step
             this.objects[object] = step.prev
         }
-        if (step.type === 'GET') {
-            const { object, access, value } = step;
-            const [key] = access
-            this.objects[object].set(key, {
-                get: false,
-                set: false,
-                value
-            })
+        // if (step.type === 'GET') {
+        //     const { object, access, value } = step;
+        //     const [key] = access
+        //     this.objects[object].set(key, {
+        //         get: false,
+        //         set: false,
+        //         value
+        //     })
 
-        }
+        // }
 
     }
     @action reset() {

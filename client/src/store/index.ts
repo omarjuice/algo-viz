@@ -45,6 +45,7 @@ export class RootStore {
 
     }
     initialize(data: Viz.Data) {
+        if (this.iterator) this.iterator.cleanUp();
         this.viz = new VizStore(this, data)
         this.iterator = new IteratorStore(this)
         this.code = new CodeStore(this)

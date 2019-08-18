@@ -6,7 +6,7 @@ import ValDisplay from "../components/compose_components/ValDisplay";
 const getVal = (value: any, displayProps: Viz.DisplayProps, type: Viz.valType, includePointer = false) => {
     const { settings: { valueColors: colors } } = store
     if (type === 'null') {
-        displayProps.color = displayProps.color || store.settings.background
+        displayProps.color = displayProps.color || 'transparent';
     } else if (type === 'object') {
         displayProps.color = displayProps.color || store.settings.background
         if (includePointer) {

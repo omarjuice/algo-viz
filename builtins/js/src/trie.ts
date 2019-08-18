@@ -20,7 +20,7 @@ function instantiateTrie(runner: Runner) {
             runner.ignore(false)
             return trie;
         }
-        add(word: string | string[]) {
+        add(word: string) {
             if (typeof word !== 'string') {
                 throw new Error(`Trie.add: word parameter must be a string. Got ${word}`)
             }
@@ -83,11 +83,11 @@ function instantiateTrie(runner: Runner) {
             }
             return value === word ? node : null;
         }
-        findWords(value: string = '', words: string[] = [], node = this.find(value)) {
+        findWords(prefix: string = '', words: string[] = [], node = this.find(prefix)) {
             if (node) {
-                if (node.isWord) words.push(value)
+                if (node.isWord) words.push(prefix)
                 node.children.forEach((child) => {
-                    child.findWords(value + child.value, words, child);
+                    child.findWords(prefix + child.value, words, child);
                 })
             }
             return words;

@@ -4,7 +4,7 @@ import instantiateViz from '../src';
 
 const Viz = instantiateViz()
 
-describe.only('Trie', () => {
+describe('Trie', () => {
     describe('construction', () => {
         it('Should create a trie', () => {
             const words = ['apple', 'bottom', 'jeans']

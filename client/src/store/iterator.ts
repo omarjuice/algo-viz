@@ -18,6 +18,8 @@ class IteratorStore {
     @observable speed: number = 1
     @observable handling: boolean = false
     @observable handler: handler = { value: 0, allow: true, changing: false, wasPlaying: false }
+    onKeyUp: (e: any) => void
+    keyPressCooldown: boolean = false
     baseTime: number = 100
     timer: any = null
     maxSpeed: number = 32
@@ -25,8 +27,11 @@ class IteratorStore {
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
-        document.addEventListener('keydown', (e) => {
-            console.log(e.which)
+        this.onKeyUp = (e) => {
+            if (!this.root.allowRender || this.keyPressCooldown || this.root.editor.active) {
+                return
+            }
+
             if (e.which === 32) {
                 if (this.iterating) {
                     this.pause()
@@ -50,7 +55,17 @@ class IteratorStore {
                     this.exec(true)
                 }
             }
-        })
+            this.keyPressCooldown = true
+            setTimeout(() => {
+                this.keyPressCooldown = false
+            }, 50)
+        }
+
+        document.addEventListener('keydown', this.onKeyUp)
+
+    }
+    cleanUp() {
+        document.removeEventListener('keydown', this.onKeyUp)
     }
     @action next() {
         if (!this.iterating) return false;

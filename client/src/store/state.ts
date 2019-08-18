@@ -38,6 +38,7 @@ class StateStore {
                     try {
                         this.scopeChain[parent].children.push(scope)
                     } catch (e) {
+                        console.log(step.type)
                         console.log(parent)
                         throw e
                     }
