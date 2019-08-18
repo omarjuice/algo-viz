@@ -11,15 +11,7 @@ declare namespace Viz {
     type RenderMap = { [childId: string]: string }
 
     type Structure = Map<any, StructProp>
-    type colors = {
-        special: string
-        number: string
-        string: string
-        boolean: string
-        other: string
-        native: string
-        func: string
-    }
+
 
     type speeds = {
         [key in Viz.configurable]: number;
@@ -41,26 +33,22 @@ declare namespace Viz {
             pointers: { [key: string]: boolean }
         }
     }
-
+    type valueColor = "special" | "number" | "string" | "boolean" | "other" | "native" | "func"
+    type valueColors = {
+        [key in valueColor]: string
+    }
     type configTypes = 'tooltips' | 'Active Pointer on GET'
     type configSettings = {
         [key in configTypes]: boolean
     }
+    type configColor = 'Background' | 'Navbar' | 'Call Stack' | 'Code' | 'Code Highlight' | 'Step Slider Track' | 'Step Slider Rail' | 'Step Slider Handle' | 'Step Type' | 'Text' | 'Button'
     type configColors = {
-        'Background': string
-        'Navbar': string
-        'Call Stack': string
-        'Code': string
-        'Code Highlight': string
-        'Step Slider Track': string
-        'Step Slider Rail': string
-        'Step Slider Handle': string
-        'Step Type': string
-        'Text': string
+        [key in configColors]: string
     }
 
+
     interface AllSettings {
-        valueColors: colors
+        valueColors: valueColors
         configColors: configColors
         background: string
         speeds: speeds

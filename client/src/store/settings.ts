@@ -136,26 +136,35 @@ export const structInfo: Viz.structSettings = {
 }
 
 class Settings {
-    @observable valueColors = {
+    @observable valueColors: Viz.valueColors = {
         special: '#255e4f',
-        number: 'steelblue',
-        string: 'yellow',
-        boolean: 'green',
-        other: 'white',
-        func: 'white',
+        number: '#4682b4',
+        string: '#ffff00',
+        boolean: '#00ff00',
+        other: '#000000',
+        func: '#ffffff',
+        native: '#ff3860'
+    }
+    valueColorDefaults: Viz.valueColors = {
+        special: '#255e4f',
+        number: '#4682b4',
+        string: '#ffff00',
+        boolean: '#00ff00',
+        other: '#000000',
+        func: '#ffffff',
         native: '#ff3860'
     }
     @observable configColors: Viz.configColors = {
         'Background': '#0b1423',
         'Navbar': '#4a4a4a',
-        'Call Stack': 'orange',
-        'Code': 'whitesmoke',
-        'Code Highlight': 'lightgreen',
-        'Step Slider Track': '#A663CC',
-        'Step Slider Rail': '#C2BBF0',
-        'Step Slider Handle': 'blue',
-        'Step Type': 'gray',
-        'Text': 'whitesmoke',
+        'Call Stack': '#ffa500',
+        'Code': '#f5f5f5',
+        'Code Highlight': '#98fb98',
+        'Step Slider Track': '#a663cc',
+        'Step Slider Rail': '#c2bbf0',
+        'Step Slider Handle': '#0000ff',
+        'Step Type': '#808080',
+        'Text': '#f5f5f5',
     }
     @observable speeds = {
         DECLARATION: 5,
@@ -185,7 +194,7 @@ class Settings {
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
             this.valueColors = all.valueColors
-            this.configColors = all.configColors || this.configColors
+            // this.configColors = all.configColors || this.configColors
             this.speeds = all.speeds
             this.structColors = all.structColors
             this.structSettings = all.structSettings

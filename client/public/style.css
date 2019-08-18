@@ -136,7 +136,7 @@ body, html, #root, .app{
 .settings-tabs{
     height: 2rem !important
 }
-.struct-settings-panel{
+.struct-settings-panel, .color-settings-panel{
     max-height: 50vh;
 }
 

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../../store';
 import StructSettingsPanel from './StructSettingsPanel';
 import ConfigSettings from './ConfigSettings';
-
+import ColorSettings from './ColorSettings'
 type panelType = 'Config' | 'Structure Settings' | 'Colors'
 type State = {
     panel: panelType
@@ -16,7 +16,7 @@ class Settings extends React.Component {
     }
     panelNames: panelType[] = ['Colors', 'Config', 'Structure Settings']
     panelComponents: { [key in panelType]: React.ReactNode } = {
-        Colors: <div></div>,
+        Colors: <ColorSettings />,
         Config: <ConfigSettings />,
         "Structure Settings": <StructSettingsPanel />
     }
