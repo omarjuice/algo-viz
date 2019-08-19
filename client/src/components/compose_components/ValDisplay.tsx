@@ -40,7 +40,7 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
                             `scale(1)`,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
-            transition: `transform ${store.iterator.getSpeed('GET')}ms`
+            transition: `transform ${store.iterator.getSpeed('GET')}ms, height 200ms, width 200ms`
         }} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">

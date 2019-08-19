@@ -125,9 +125,17 @@ function virtualizeArray(object, runner) {
             if (prop === 'last') {
                 prop = target.length - 1
             }
-
+            const len = target.length;
             target[prop] = runner.virtualize(value)
-            const isVirtual = (typeof prop === 'number' && prop >= 0 && prop < target.length) || prop === 'length'
+            const isNumber = typeof prop === 'number';
+            const isVirtual = (isNumber && prop >= 0) || prop === 'length'
+            if (len !== target.length) {
+                runner.__(target.length, {
+                    type: TYPES.SET,
+                    object,
+                    access: ['length']
+                })
+            }
             if (isVirtual)
                 runner.__(target[prop], {
                     type: TYPES.SET,
