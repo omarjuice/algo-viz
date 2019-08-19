@@ -21,7 +21,7 @@ function reassignMutative() {
                         type: TYPES.GET,
 
                         object: runner.stringify(this),
-                        access: [runner.stringify(key)]
+                        access: runner.stringify(key)
                     })
                 } else {
                     return undefined
@@ -35,7 +35,7 @@ function reassignMutative() {
                 runner.__(value, {
                     type: TYPES.SET,
                     object: runner.stringify(this),
-                    access: [runner.stringify(key)]
+                    access: runner.stringify(key)
                 })
                 return result
             },
@@ -49,7 +49,7 @@ function reassignMutative() {
                         type: TYPES.DELETE,
 
                         object: runner.stringify(this),
-                        access: [runner.stringify(key)]
+                        access: runner.stringify(key)
                     })
                 }
                 return result
@@ -76,7 +76,7 @@ function reassignMutative() {
                             type: TYPES.GET,
 
                             object: runner.stringify(this),
-                            access: [runner.stringify(key)]
+                            access: runner.stringify(key)
                         })
                         return cb.call(args[1] || null, val, key, ..._args)
                     }
@@ -95,7 +95,7 @@ function reassignMutative() {
                     return runner.__(result, {
                         type: TYPES.GET,
                         object: runner.stringify(this),
-                        access: [runner.stringify(key)]
+                        access: runner.stringify(key)
                     })
                 } else {
                     return result
@@ -109,7 +109,7 @@ function reassignMutative() {
                 runner.__(val, {
                     type: TYPES.SET,
                     object: runner.stringify(this),
-                    access: [runner.stringify(val)]
+                    access: runner.stringify(val)
                 })
                 return result
             },
@@ -132,7 +132,7 @@ function reassignMutative() {
                     runner.__(result, {
                         type: TYPES.DELETE,
                         object: runner.stringify(this),
-                        access: [runner.stringify(key)]
+                        access: runner.stringify(key)
                     })
                 }
                 return result
@@ -148,7 +148,7 @@ function reassignMutative() {
                             type: TYPES.GET,
 
                             object: runner.stringify(this),
-                            access: [runner.stringify(key)]
+                            access: runner.stringify(key)
                         })
                         return cb.call(args[1] || null, key, val, ..._args)
                     }

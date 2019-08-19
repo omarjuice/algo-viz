@@ -71,7 +71,7 @@ declare namespace Viz {
         }
         interface ObjectType extends Generic {
             object: string
-            access: Array<number | string>
+            access: number | string
         }
         interface FuncType extends Generic {
             funcName: string

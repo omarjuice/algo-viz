@@ -56,17 +56,17 @@ module.exports = function ({ types, steps, objects, code }) {
     for (const step of steps) {
         if (step.type === TYPES.SET) {
             const { object, access, value } = step
-            if (access[0] in finalObjs[object]) {
-                step.prev = finalObjs[object][access[0]]
+            if (access in finalObjs[object]) {
+                step.prev = finalObjs[object][access]
             }
-            finalObjs[object][access[0]] = getValue(value)
+            finalObjs[object][access] = getValue(value)
         }
         if (step.type === TYPES.DELETE) {
             const { object, access, value } = step
             if (value) {
-                const original = finalObjs[object][access[0]]
+                const original = finalObjs[object][access]
                 step.prev = original
-                delete finalObjs[object][access[0]]
+                delete finalObjs[object][access]
             }
         }
         if (step.type === TYPES.CLEAR) {
@@ -75,10 +75,10 @@ module.exports = function ({ types, steps, objects, code }) {
             finalObjs[object] = {}
         }
         if (step.type === TYPES.GET) {
-            // console.log('GET', finalObjs[step.object][step.access[0]], step.value);
+            // console.log('GET', finalObjs[step.object][step.access], step.value);
         }
         // if (step.access) {
-        //     console.log(step.type, step.access[0], step.value, finalObjs[step.object]);
+        //     console.log(step.type, step.access, step.value, finalObjs[step.object]);
         // } else {
         //     console.log(step.type, step.name && code.slice(step.name[0], step.name[1]), step.value)
         // }
@@ -90,15 +90,15 @@ module.exports = function ({ types, steps, objects, code }) {
                 if (step.type === TYPES.SET) {
                     const { object, access } = step
                     if ('prev' in step) {
-                        finalObjs[object][access[0]] = getValue(step.prev)
+                        finalObjs[object][access] = getValue(step.prev)
                     } else {
-                        delete finalObjs[object][access[0]]
+                        delete finalObjs[object][access]
                     }
                 }
                 if (step.type === TYPES.DELETE) {
                     const { object, access, value } = step
                     if (value) {
-                        finalObjs[object][access[0]] = step.prev
+                        finalObjs[object][access] = step.prev
                     }
                 }
                 if (step.type === TYPES.CLEAR) {
@@ -107,7 +107,7 @@ module.exports = function ({ types, steps, objects, code }) {
                 }
                 if (step.type === TYPES.GET) {
                     const { object, access, value } = step
-                    finalObjs[object][access[0]] = getValue(value)
+                    finalObjs[object][access] = getValue(value)
                 }
                 // console.log(JSON.stringify(finalObjs));
             }

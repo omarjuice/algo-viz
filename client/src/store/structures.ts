@@ -223,7 +223,7 @@ class Structures {
         const { allowRender } = this.root
         if (step.type === 'SET') {
             const { object, access, value } = step
-            const [key] = access
+            const key = access
             if (this.objects[object].has(key)) {
                 step.prev = this.objects[object].get(key).value
                 if (step.prev in this.objects) {
@@ -278,7 +278,7 @@ class Structures {
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
-            const [key] = access
+            const key = access
             if (value) {
                 const original = this.objects[object].get(key).value
                 step.prev = original
@@ -299,7 +299,7 @@ class Structures {
         }
         if (step.type === 'GET') {
             const { object, access } = step
-            const [key] = access
+            const key = access
             if (this.gets[object]) {
                 const prop = this.gets[object]
                 this.switchOff(prop, 'get')
@@ -331,7 +331,7 @@ class Structures {
     @action prev(step: Viz.Step.Any) {
         if (step.type === 'SET') {
             const { object, access } = step
-            const [key] = access
+            const key = access
             const info = this.objects[object].get(key)
             if (info && typeof info.value === 'string' && info.value in this.objects) {
                 this.removePointers(info.value, object, key)
@@ -352,7 +352,7 @@ class Structures {
         }
         if (step.type === 'DELETE') {
             const { object, access, value } = step
-            const [key] = access
+            const key = access
             if (value) {
                 this.objects[object].set(key, {
                     get: false,
@@ -368,16 +368,7 @@ class Structures {
             const { object } = step
             this.objects[object] = step.prev
         }
-        // if (step.type === 'GET') {
-        //     const { object, access, value } = step;
-        //     const [key] = access
-        //     this.objects[object].set(key, {
-        //         get: false,
-        //         set: false,
-        //         value
-        //     })
 
-        // }
 
     }
     @action reset() {

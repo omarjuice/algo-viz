@@ -61,7 +61,7 @@ function virtualizeObject(object, runner) {
                 runner.__(val, {
                     type: TYPES.GET,
                     object,
-                    access: [prop]
+                    access: prop
                 })
             return val
         },
@@ -72,7 +72,7 @@ function virtualizeObject(object, runner) {
                 runner.__(target[prop], {
                     type: TYPES.SET,
                     object,
-                    access: [prop]
+                    access: prop
                 })
             return true
         },
@@ -81,7 +81,7 @@ function virtualizeObject(object, runner) {
             return runner.__(delete target[prop], {
                 type: TYPES.DELETE,
                 object,
-                access: [prop]
+                access: prop
             })
         },
         defineProperty(target, prop, descriptor) {
@@ -93,7 +93,7 @@ function virtualizeObject(object, runner) {
                     runner.__(target[prop], {
                         type: TYPES.SET,
                         object,
-                        access: [prop]
+                        access: prop
                     })
                 }
             }
@@ -115,7 +115,7 @@ function virtualizeArray(object, runner) {
                 runner.__(val, {
                     type: TYPES.GET,
                     object,
-                    access: [prop]
+                    access: prop
                 })
             }
             return val
@@ -133,14 +133,14 @@ function virtualizeArray(object, runner) {
                 runner.__(target.length, {
                     type: TYPES.SET,
                     object,
-                    access: ['length']
+                    access: 'length'
                 })
             }
             if (isVirtual)
                 runner.__(target[prop], {
                     type: TYPES.SET,
                     object,
-                    access: [prop]
+                    access: prop
                 })
             return true
         },
@@ -151,7 +151,7 @@ function virtualizeArray(object, runner) {
             return runner.__(delete target[prop], {
                 type: TYPES.DELETE,
                 object,
-                access: [prop]
+                access: prop
             })
         },
         defineProperty(target, prop, descriptor) {
@@ -164,7 +164,7 @@ function virtualizeArray(object, runner) {
                     runner.__(target[prop], {
                         type: TYPES.SET,
                         object,
-                        access: [convert(prop)]
+                        access: prop
                     })
                 }
             }

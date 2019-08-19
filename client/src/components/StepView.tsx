@@ -44,7 +44,7 @@ const StepView: React.FC = observer(() => {
                         {' '}={' '}
                         <ValText value={store.code.value} type={getType(store.code.value)} />
                     </>
-                ) : (store.iterator.step.access && <span>{store.iterator.step.access[0]}</span>)}
+                ) : (store.iterator.step.access && <span>{store.iterator.step.access}</span>)}
             </div> :
                 <div className="has-text-danger">
                     {last.error}

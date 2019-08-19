@@ -29,15 +29,20 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
             }, text === null ? 0 : store.iterator.getSpeed('SET'))
         }
     }, [anim, textDisplay, text])
+
+    let transform = '';
+    if (state[1]) {
+        transform += 'rotateX(180deg) '
+    }
+    if (state[0]) {
+        transform += `scale(1.5) `
+    }
+    if (highlight) {
+        transform += `scale(1.1)`
+    }
     return <svg
         className="val-display" style={{
-            transform:
-                state[1] ?
-                    `rotateX(180deg)`
-                    : state[0] ? `scale(${1.5})`
-                        : highlight ?
-                            `scale(1.1)` :
-                            `scale(1)`,
+            transform,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
             transition: `transform ${store.iterator.getSpeed('GET')}ms, height 200ms, width 200ms`
