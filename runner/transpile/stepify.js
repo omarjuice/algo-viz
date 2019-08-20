@@ -221,10 +221,7 @@ module.exports = function (input) {
                     exit(path) {
                         const details = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
                         if (!path.node.start) return
-                        if (t.isMemberExpression(path.node.argument)) {
-                            // setters will take care of it
-                            return
-                        } else if (t.isIdentifier(path.node.argument)) {
+                        if (t.isIdentifier(path.node.argument)) {
                             if (isBarredObject(path.node.argument.name)) return
                         }
                         if (t.isExpressionStatement(path.parent)) {
@@ -232,6 +229,11 @@ module.exports = function (input) {
                             path.node.prefix = true
                         } else {
                             details.update = path.node.operator === '++' ? 1 : -1
+                        }
+                        if (t.isMemberExpression(path.node.argument)) {
+                            // setters will take care of it
+                            delete details.update;
+                            details.type = TYPES.EXPRESSION
                         }
                         details.varName = path.node.argument.name
                         path.replaceWith(proxy(path.node, details))
