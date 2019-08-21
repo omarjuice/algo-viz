@@ -1,14 +1,15 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
+import PointerQueue from './pointerqueue';
 
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
-    @observable pointers: Map<string, Viz.pointers> = new Map()
+    @observable pointers: Map<string, PointerQueue> = new Map()
     @observable bindings: Set<string> = new Set()
     @observable children: { [id: string]: Set<string> } = {}
-    @observable parents: { [id: string]: Set<string> } = {}
+    @observable parents: { [id: string]: string } = {}
     @observable activePointers: { [id: string]: boolean } = {}
     @observable positions: { [id: string]: { x: number, y: number, radius: number, renderId: string } } = {}
     @observable renderMaps: { [id: string]: Viz.RenderMap } = {}
@@ -17,9 +18,9 @@ class Structures {
         this.root = store
         const objs = store.viz.objects
         for (const id in objs) {
-            if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this.root.viz.types, this.parents, id))
             if (!this.children[id]) this.children[id] = new Set()
-            if (!this.parents[id]) this.parents[id] = new Set()
+            if (id in this.parents) this.parents[id] = null;
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = new Map()
             const type = this.root.viz.types[id]
@@ -102,15 +103,11 @@ class Structures {
             const seen: Set<string> = new Set()
             seen.add(id)
             let current = id
-            let parents = this.parents[id]
+            let parent = this.parents[id]
             let isCircular = false
-            while (parents && parents.size) {
-                const parent = parents.values().next().value
-                // if (!ids.has(parent)) {
-                //     break // only active parents allowed?
-                // }
+            while (parent) {
                 current = parent
-                parents = this.parents[current]
+                parent = this.parents[current]
                 if (seen.has(current)) {
                     isCircular = true
                     break;
@@ -134,89 +131,30 @@ class Structures {
     }
     @action addPointers(id: string, parent: string, key: string | number) {
         if (id !== parent) {
-            let changed = false
             const parentType = this.root.viz.types[parent]
             const isChild = key in this.root.settings.structSettings[parentType].order
             if (!isChild && !['Object', 'Map', 'Array'].includes(parentType)) return
-            if (!this.pointers.has(id)) this.pointers.set(id, new Map())
+            if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this.root.viz.types, this.parents, id))
             if (!this.children[id]) this.children[id] = new Set()
-            if (!this.parents[id]) this.parents[id] = new Set()
-            const parents = this.pointers.get(id)
-            let refs;
-            if (parents) {
-                refs = parents.get(parent)
-                if (refs) {
-                    refs.push(key)
-                } else {
-                    parents.set(parent, [key])
-                }
+            if (id in this.parents) this.parents[id] = null
+            const pointers = this.pointers.get(id)
+            const prevParent = pointers.top
+            pointers.insert(key, parent, this.root.iterator.index);
+            if (pointers.size && pointers.top !== prevParent) {
+                const newParent = pointers.top;
+                this.children[prevParent.id].delete(id);
+                this.children[newParent.id].add(id)
+                this.parents[id] = newParent.id
+                delete this.positions[id]
             }
-            const currentParents = this.parents[id]
-            const affinity = this.getAffinity(parent, id)
-            if (affinity > 0) {
-
-                if (!currentParents.size) {
-                    changed = true
-                    currentParents.add(parent)
-                    this.children[parent].add(id)
-                } else {
-                    const entries = currentParents.values()
-                    const first = entries.next().value
-                    if (affinity > this.getAffinity(first, id)) {
-                        changed = true
-                        currentParents.delete(first)
-                        currentParents.add(parent)
-                        this.children[first].delete(id)
-                        this.children[parent].add(id)
-                    } else if (first === parent) {
-                        if (key !== refs[0]) {
-                            changed = true
-                        }
-                    }
-                }
-
-            }
-
-            if (changed) delete this.positions[id]
         }
     }
 
-    @action removePointers(id: string, parent: string, ref: string | number) {
-        const parents = this.pointers.get(id)
-        let changed = false
-        if (parents) {
-            const refs = parents.get(parent)
-            if (refs) {
-                const curr = refs[0]
-                for (let i = 0; i < refs.length; i++) {
-                    if (refs[i] === ref) {
-                        if (refs.splice(i, 1)[0] === curr) changed = true
-                    }
-                }
-                if (!refs.length) {
-                    parents.delete(parent)
-                    this.children[parent].delete(id)
-                    this.parents[id].delete(parent)
-                    if (!this.parents[id].size) {
-                        let bestParent: { objectId: string, affinity: number } = { objectId: '', affinity: 0 }
-                        parents.forEach((keys, objectId) => {
-                            const affinity = this.getAffinity(objectId, id)
-                            if (affinity > bestParent.affinity) {
-                                bestParent = {
-                                    objectId, affinity
-                                }
-                            }
-                        })
-                        if (bestParent.affinity > 0) {
-                            this.parents[id].add(bestParent.objectId)
-                            this.children[bestParent.objectId].add(id)
-                        }
-                    }
-                }
-            }
+    @action removePointers(id: string, parent: string, key: string | number) {
+        if (id !== parent) {
+            const pointers = this.pointers.get(id);
+            pointers.heap
         }
-        if (changed) delete this.positions[id]
-
     }
 
     @action next(step: Viz.Step.Any) {
@@ -402,54 +340,7 @@ class Structures {
             this.positions[id] = { x, y, renderId, radius }
         }
     }
-    getAffinity(parent: string, child: string): number {
-        const _this = this
-        const val = (function () {
-            const hashTypes = ['Object', 'Map', 'Set']
-            const parentType = _this.root.viz.types[parent]
-            const childType = _this.root.viz.types[child]
-            if (parentType === childType) {
-                if (parentType === 'Array') {
-                    return 2
-                }
-                if (hashTypes.includes(parentType)) {
-                    return 0
-                }
-                return 4
-            }
-            if (!hashTypes.includes(parentType) && !hashTypes.includes(childType) && parentType !== 'Array' && childType !== 'Array') {
-                return 3
-            }
-            if (childType === 'Array') {
-                if (hashTypes.includes(parentType)) {
-                    return 1
-                }
-                return 3
-            }
-            if (hashTypes.includes(childType)) {
-                if (!hashTypes.includes(parentType) && parentType !== 'Array') {
-                    return 3
-                }
-                return 0
-            }
-            if (parentType === 'Array') {
-                if (_this.parents[parent].size) {
-                    const [firstParent] = _this.parents[parent].entries().next().value
-                    const type = _this.root.viz.types[firstParent];
-                    if (type !== 'Array' && !hashTypes.includes(type)) {
-                        return 2
-                    }
-                }
-                return 0
-            }
-            if (['Object', 'Map'].includes(parentType)) {
-                if (_this.parents[parent].size) return 2
-            }
 
-            return 0
-        })()
-        return val
-    }
 
 }
 

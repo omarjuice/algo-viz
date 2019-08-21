@@ -43,7 +43,7 @@ class Settings extends React.Component {
                                     return (
                                         <li key={name} onClick={() => this.setPanel(name)}
                                             className={active && 'is-active'}>
-                                            <a style={{ color: active ? store.settings.configColors['Code Highlight'] : store.settings.configColors['Code'] }}>{name}</a>
+                                            <a href="#/" style={{ color: active ? store.settings.configColors['Code Highlight'] : store.settings.configColors['Code'] }}>{name}</a>
                                         </li>
                                     )
                                 })

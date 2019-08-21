@@ -3,6 +3,12 @@ declare namespace Viz {
     type scope = null | [null | number, number]
     type name = [number, number]
     type pointers = Map<string, (string | number)[]>
+    type objectPointer = {
+        key: string | number
+        affinity: number
+        index: number
+        id: string
+    }
     type StructProp = {
         get: boolean,
         set: boolean
