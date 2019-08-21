@@ -1,5 +1,5 @@
 import { observable, action } from "mobx";
-import store, { RootStore } from ".";
+import { RootStore } from ".";
 
 class Editor {
     @observable code: string = ''

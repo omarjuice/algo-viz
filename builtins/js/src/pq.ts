@@ -1,5 +1,6 @@
 import { Runner } from ".";
 type compareFn = (a: any, b: any) => boolean
+type searchFn = (val: any) => boolean
 export default function instantiatePQ(runner: Runner) {
     return class PQ {
         private _compare: (a: any, b: any) => boolean
@@ -84,6 +85,32 @@ export default function instantiatePQ(runner: Runner) {
             this._siftDown(0, last - 1)
             this.display = this.size
             return val
+        }
+        findAndRemove(search: any | searchFn): any {
+            if (typeof search !== 'function') {
+                const value = search;
+                search = (val: any) => val === value
+            }
+            for (let i = 0; i < this.heap.length; i++) {
+                const val = this.heap[i]
+                if (Boolean(search(val))) {
+                    if (i === this.heap.length - 1) {
+                        return this.heap.pop()
+                    }
+                    delete this.heap[i];
+                    this.heap[i] = this.heap.pop();
+                    if (this.size > 1) {
+                        const parent = Math.floor((i - 1) / 2);
+                        if (this._compare(this.heap[i], this.heap[parent])) {
+                            this._siftUp(i);
+                        } else {
+                            this._siftDown(i, this.heap.length - 1);
+                        }
+                    }
+                    return val
+                }
+            }
+            return undefined
         }
         peek() {
             return this.heap[0]

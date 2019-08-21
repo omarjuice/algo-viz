@@ -13,7 +13,7 @@ class ConfigSettings extends Component {
                 {Object.keys(store.settings.config).map((name) => {
                     const n = name as Viz.configTypes
                     return (
-                        <div>
+                        <div key={name}>
                             <div className="columns">
                                 <div className="column has-text-white">
                                     {name}

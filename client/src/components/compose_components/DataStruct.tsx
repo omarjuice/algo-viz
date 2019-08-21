@@ -109,21 +109,18 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                     }
                 }
             } else if (key in settings.order) {
-                const parents = store.structs.parents[value]
-                if (parents) {
-                    if (!parents.has(objectId)) {
-                        const firstParent = parents.values().next().value
-                        const info = structure.get(key)
-                        if (store.structs.bindings.has(firstParent)) {
-                            pointers.push(
-                                <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!info.get} set={!!info.set}>
-                                    {null}
-                                </ArcPointer >
-                            )
-                            continue;
-                        }
-                    }
+                const parent = store.structs.pointers.get(value).top
+
+                const info = structure.get(key)
+                if (parent && (objectId !== parent.id || key !== parent.key) && store.structs.bindings.has(parent.id)) {
+                    pointers.push(
+                        <ArcPointer prop={key} key={key} from={objectId} to={value} get={!!info.get} set={!!info.set}>
+                            {null}
+                        </ArcPointer >
+                    )
+                    continue;
                 }
+
                 const order = settings.order[key]
 
                 if (order && order.isMultiple) {

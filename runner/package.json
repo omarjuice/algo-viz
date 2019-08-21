@@ -23,6 +23,7 @@
     "lodash": "^4.17.11"
   },
   "devDependencies": {
+    "axios": "^0.19.0",
     "expect": "^24.8.0",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2"

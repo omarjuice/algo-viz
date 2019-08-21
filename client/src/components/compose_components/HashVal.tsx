@@ -40,23 +40,9 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
     }
     const valType = getType(value)
     if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
-        const parents = store.structs.parents[value]
-        let flag = false
-        if (parents) {
-            console.log(parents)
-            if (!parents.has(objectId)) flag = true
-            else {
-                const pointers = store.structs.pointers.get(value)
-                if (pointers) {
-                    const refs = pointers.get(objectId)
-                    if (refs[0] !== prop) {
-                        flag = true
-                    }
-                }
-            }
-        }
-        if (store.structs.bindings.has(value)) flag = true
-        if (!flag) {
+        const parent = store.structs.pointers.get(value).top
+
+        if (parent && parent.id === objectId && parent.key === prop) {
             return (
                 <div className="columns is-paddingless is-multiline">
                     {type !== 'Set' && <div className={`column ${type === 'Map' && 'has-text-right'}`}>

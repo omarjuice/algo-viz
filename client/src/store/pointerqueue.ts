@@ -1,4 +1,4 @@
-import { observable, computed, action } from "mobx";
+import { observable, computed, action, toJS } from "mobx";
 type types = { [key: string]: string }
 type parents = { [id: string]: string }
 class PointerQueue {
@@ -13,23 +13,27 @@ class PointerQueue {
         this.id = id
         this.map = {}
     }
-    private _compare(a: Viz.objectPointer, b: Viz.objectPointer): boolean {
-        if (a.affinity === b.affinity) {
-            if (a.index === b.index) {
-                return a.key < b.key
+    private _compare(a: Viz.objectPointer, b: Viz.objectPointer, idxs: [number, number]): boolean {
+        try {
+            if (a.affinity === b.affinity) {
+                if (a.index === b.index) {
+                    return a.key < b.key
+                }
+                return a.index < b.index
             }
-            return a.index < b.index
+            return a.affinity > b.affinity
+        } catch (e) {
+            console.log(toJS(this.heap))
+            console.log(idxs)
+            throw (e)
         }
-        return a.affinity > b.affinity
     }
     @action private swap(i: number, j: number) {
         const tmp = this.heap[i];
         this.heap[i] = this.heap[j];
         this.heap[j] = tmp;
-        const val1 = this.heap[i]
-        const val2 = this.heap[j]
-        this.map[val1.id].set(val1.key, i);
-        this.map[val2.id].set(val2.key, j);
+        this.map[this.heap[i].id].set(this.heap[i].key, i)
+        this.map[this.heap[j].id].set(this.heap[j].key, j)
     }
     @computed get size() {
         return this.heap.length;
@@ -40,7 +44,7 @@ class PointerQueue {
     @action private _siftUp(idx: number) {
         let parent = Math.floor((idx - 1) / 2)
 
-        while (idx > 0 && this._compare(this.heap[idx], this.heap[parent])) {
+        while (idx > 0 && this._compare(this.heap[idx], this.heap[parent], [idx, parent])) {
             this.swap(idx, parent);
             idx = parent;
             parent = Math.floor((idx - 1) / 2)
@@ -52,10 +56,10 @@ class PointerQueue {
         while (child1 <= end) {
             const child2 = idx * 2 + 2 <= end ? idx * 2 + 2 : -1;
             let swapIdx = child1
-            if (child2 !== -1 && this._compare(this.heap[child2], this.heap[child1])) {
+            if (child2 !== -1 && this._compare(this.heap[child2], this.heap[child1], [child2, child1])) {
                 swapIdx = child2
             }
-            if (this._compare(this.heap[swapIdx], this.heap[idx])) {
+            if (this._compare(this.heap[swapIdx], this.heap[idx], [swapIdx, idx])) {
                 this.swap(idx, swapIdx)
                 idx = swapIdx;
                 child1 = idx * 2 + 1
@@ -68,6 +72,9 @@ class PointerQueue {
     @action insert(key: string | number, parentId: string, index: number) {
         if (parentId === this.id) return this
         const affinity = this.getAffinity(parentId, this.id)
+        if (parentId in this.map) {
+            if (this.map[parentId].has(key)) return this
+        }
         if (affinity > 0) {
             this.heap.push({
                 key,
@@ -77,15 +84,46 @@ class PointerQueue {
             });
             if (!(parentId in this.map)) {
                 this.map[parentId] = new Map([[key, this.heap.length - 1]])
+            } else {
+                this.map[parentId].set(key, this.heap.length - 1)
             }
             this._siftUp(this.heap.length - 1);
         }
         return this
     }
+    @action findAndRemove(parentId: string, key: string | number): any {
+        const parentKeys = this.map[parentId]
+        if (!parentKeys) return null;
+        const i = parentKeys.get(key)
+        if (typeof i !== 'number') {
+            return null;
+        }
+        const pointer = this.heap[i]
+        if (i === this.heap.length - 1) {
+            this.heap.pop()
+        } else {
+            this.swap(i, this.heap.length - 1);
+            this.heap.pop()
+            if (this.size > 1) {
+                const parent = Math.trunc((i - 1) / 2);
+                if (this._compare(this.heap[i], this.heap[parent], [i, parent])) {
+                    this._siftUp(i);
+                } else {
+                    this._siftDown(i, this.heap.length - 1);
+                }
+            }
+        }
+        this.map[parentId].delete(key);
+        if (!this.map[parentId].size) {
+            delete this.map[parentId]
+        }
+
+        return pointer
+    }
     @action remove() {
         if (!this.size) return undefined;
         const last = this.heap.length - 1;
-        [this.heap[last], this.heap[0]] = [this.heap[0], this.heap[last]];
+        this.swap(0, last)
         const val = this.heap.pop()
         this.map[val.id].delete(val.key);
         if (!this.map[val.id].size) {
@@ -145,9 +183,6 @@ class PointerQueue {
     }
 
 }
-
-
-
 
 
 

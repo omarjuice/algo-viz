@@ -48,4 +48,18 @@ describe('PQ(Priority Queue)', () => {
         })
 
     })
+    describe('findAndRemove O(n)', () => {
+        it('Should remove an arbitary element from the pq', () => {
+            const elements = [6, 5, 1, 2, 3, 4]
+            const pq = new Viz.PQ(elements);
+            pq.findAndRemove(2);
+
+            const vals = [1, 3, 4, 5, 6]
+            const elems = []
+            while (pq.size) {
+                elems.push(pq.remove())
+            }
+            expect(elems).toEqual(vals);
+        })
+    })
 })

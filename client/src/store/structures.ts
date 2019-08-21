@@ -16,11 +16,11 @@ class Structures {
     root: RootStore
     constructor(store: RootStore) {
         this.root = store
-        const objs = store.viz.objects
+        const objs = this.root.viz.objects
         for (const id in objs) {
             if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this.root.viz.types, this.parents, id))
             if (!this.children[id]) this.children[id] = new Set()
-            if (id in this.parents) this.parents[id] = null;
+            if (!(id in this.parents)) this.parents[id] = null;
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = new Map()
             const type = this.root.viz.types[id]
@@ -136,13 +136,13 @@ class Structures {
             if (!isChild && !['Object', 'Map', 'Array'].includes(parentType)) return
             if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this.root.viz.types, this.parents, id))
             if (!this.children[id]) this.children[id] = new Set()
-            if (id in this.parents) this.parents[id] = null
+            if (!(id in this.parents)) this.parents[id] = null
             const pointers = this.pointers.get(id)
             const prevParent = pointers.top
             pointers.insert(key, parent, this.root.iterator.index);
             if (pointers.size && pointers.top !== prevParent) {
                 const newParent = pointers.top;
-                this.children[prevParent.id].delete(id);
+                if (prevParent) this.children[prevParent.id].delete(id);
                 this.children[newParent.id].add(id)
                 this.parents[id] = newParent.id
                 delete this.positions[id]
@@ -153,7 +153,22 @@ class Structures {
     @action removePointers(id: string, parent: string, key: string | number) {
         if (id !== parent) {
             const pointers = this.pointers.get(id);
-            pointers.heap
+            const prevParent = pointers.top;
+            const pointer = pointers.findAndRemove(parent, key);
+            if (!pointer) return;
+            if (!pointers.size) {
+                this.parents[id] = null;
+                if (pointer) this.children[pointer.id].delete(id)
+            } else {
+                const newParent = pointers.top;
+                if (newParent && newParent !== prevParent) {
+                    this.parents[id] = newParent.id;
+                    this.children[prevParent.id].delete(id)
+                    this.children[newParent.id].add(id)
+                    delete this.positions[id]
+                }
+            }
+
         }
     }
 
@@ -306,7 +321,7 @@ class Structures {
             const { object } = step
             this.objects[object] = step.prev
         }
-
+        if (this.root.allowRender) this.setBindings()
 
     }
     @action reset() {
