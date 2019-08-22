@@ -11,7 +11,7 @@ const Navbar: React.FC = observer(() => {
 
     return (
         <div>
-            <nav className="navbar" style={{ backgroundColor: settings.configColors['Navbar'] }} role="navigation" aria-label="main navigation">
+            <nav className="navbar has-background-dark" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
                     {!store.editor.active && store.ready && (
                         <>
@@ -93,7 +93,7 @@ const Navbar: React.FC = observer(() => {
 
 
                 </div>
-                <a role="button" href="#/" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <a role="button" href="#/" className="navbar-burger burger has-text-white" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>

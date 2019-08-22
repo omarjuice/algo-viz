@@ -19,7 +19,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
             placement={'left'}
             trigger={['hover']} defaultVisible={false} >
             <li style={{
-                ...props,
+                color: store.settings.configColors['Background'],
                 position: 'relative',
                 zIndex: i as number,
                 height: `${height}px`,
@@ -34,7 +34,8 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
                 borderStyle: 'solid',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                ...props,
             }}
                 className="list-item has-text-centered">
                 <span style={{ marginTop: `${height / 4}px` }} >
@@ -53,9 +54,22 @@ const CallStack: React.FC = observer(() => {
     const stack: stackItem[] = []
     const len = store.state.callStack.length
     if (len > 100) {
-        return <div className="call-stack box has-background-danger">
-            {len} stack frames
-        </div>
+        return (
+            <div className="call-stack">
+                {renderItem(
+                    [0, `${len} stack frames`,],
+                    40,
+                    {
+                        backgroundColor: 'red',
+                        borderTopLeftRadius: '50%',
+                        borderTopRightRadius: '50%',
+                        fontSize: 12,
+                        fontWeight: 'bold'
+                    }
+                )}
+            </div>
+        )
+
     } else {
         for (let i = len - 1; i >= 0; --i) {
             stack.push(

@@ -10,46 +10,48 @@ import Convert from 'ansi-to-html';
 import Navbar from './components/Navbar';
 import Structs from './components/Structs';
 import Settings from './components/settings';
+import InvalidScreenWidth from './components/InvalidScreenWidth';
 const convert = new Convert({ newline: true })
 
 @observer
 class App extends React.Component {
   render() {
-    return (<>
-      <Settings />
-      <div className="app ">
-        <Navbar />
-        <div className="columns is-paddingless">
+    return store.isInvalidScreenWidth ? <InvalidScreenWidth /> : (
+      <>
+        <Settings />
+        <div className="app ">
+          <Navbar />
+          <div className="columns is-paddingless">
 
 
-          {store.api.ok && <>
-            <div className={store.editor.active ? "column is-half" : "column is-one-third"}>
-              <LeftPanel />
-              {store.ready && !store.api.error && !store.editor.active && (
-                <Identifiers />
-              )}
-            </div>
-            {store.ready && !store.api.error && (
-              <>
-                <div className="column is-6">
-                  <StepView />
-                  <Structs />
-                </div>
-                <div className="column is-2">
-                  <CallStack />
-                </div>
-              </>
-            )}
-            {store.api.error && (
-              <div className="column is-half has-text-danger"
-                dangerouslySetInnerHTML={{ __html: convert.toHtml(store.api.error) }}>
-
+            {store.api.ok && <>
+              <div className={store.editor.active ? "column is-half" : "column is-one-third"}>
+                <LeftPanel />
+                {store.ready && !store.api.error && !store.editor.active && (
+                  <Identifiers />
+                )}
               </div>
-            )}
-          </>}
+              {store.ready && !store.api.error && (
+                <>
+                  <div className="column is-6">
+                    <StepView />
+                    <Structs />
+                  </div>
+                  <div className="column is-2">
+                    <CallStack />
+                  </div>
+                </>
+              )}
+              {store.api.error && (
+                <div className="column is-half has-text-danger"
+                  dangerouslySetInnerHTML={{ __html: convert.toHtml(store.api.error) }}>
+
+                </div>
+              )}
+            </>}
+          </div>
         </div>
-      </div>
-    </>
+      </>
     );
   }
 }

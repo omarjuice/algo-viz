@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import VizStore from './viz';
 import CodeStore from './code'
 import IteratorStore from './iterator';
@@ -31,6 +31,7 @@ export class RootStore {
         object: 0,
         data: 0
     }
+    minWidth = 850
     constructor() {
         const data = window.localStorage.getItem('data')
         this.settings = new Settings(this)
@@ -53,6 +54,9 @@ export class RootStore {
         this.structs = new Structures(this)
         this.ready = true
         // this.iterator.play()
+    }
+    @computed get isInvalidScreenWidth() {
+        return this.windowWidth < this.minWidth
     }
     @action onWindowResize(width: number, height: number) {
         if (width !== this.windowWidth) {
