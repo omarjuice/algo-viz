@@ -7,6 +7,7 @@ import ApiStore from './api';
 import Editor from './editor';
 import Structures from './structures';
 import Settings from './settings';
+import defaultData from './default.json'
 
 type widths = {
     array: number
@@ -38,6 +39,9 @@ export class RootStore {
         this.api = new ApiStore(this)
         if (data) {
             this.initialize(JSON.parse(data))
+        } else {
+            // @ts-ignore
+            this.initialize(defaultData as Viz.Data)
         }
         this.editor = new Editor(this, this.viz ? this.viz.code.trim() : '')
         window.onresize = () => {

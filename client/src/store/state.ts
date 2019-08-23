@@ -47,10 +47,19 @@ class StateStore {
             }
             const s = this.scopeStack
             if (s[s.length - 1] !== scope) {
-                if (!step.prevScopeStack) step.prevScopeStack = [...s];
+
                 // while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
-                //     s.pop()
+                //     const scope = s.pop()
+                //     //NEW
+                //     for (const id in this.identifiers[scope]) {
+                //         const vals = this.identifiers[scope][id]
+                //         vals[vals.length - 1] = undefined
+                //     }
+                //     //
                 // }
+                // if (step.type !== 'RETURN' && s[s.length - 1] !== scope) s.push(scope)
+
+                if (!step.prevScopeStack) step.prevScopeStack = [...s];
                 const newStack = [scope, parent]
                 let par = parent
                 while (par) {
@@ -58,9 +67,12 @@ class StateStore {
                     newStack.push(par)
                 }
                 newStack.reverse()
+                let i = s.length - 1, j = newStack.length - 1;
+
+
                 this.scopeStack = newStack
 
-                // if (step.type !== 'RETURN' && s[s.length - 1] !== scope) s.push(scope)
+
             }
         }
         if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
@@ -153,6 +165,19 @@ class StateStore {
         }
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
+            // const [parent, scope] = step.scope
+
+            // const s = this.scopeStack
+            // if (s[s.length - 1] !== scope) {
+            //     while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
+            //         const scope = s.pop()
+            //         for (const id in this.identifiers[scope]) {
+            //             const vals = this.identifiers[scope][id]
+            //             vals[vals.length - 1] = undefined
+            //         }
+            //     }
+            //     if (!['METHOD', 'FUNC'].includes(step.type) && s[s.length - 1] !== scope) s.push(scope)
+            // }
         }
         if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
             let { varName: name, block } = step

@@ -33,7 +33,7 @@ const Pointer: React.FC<Props> = observer(({ active, id, size, isInsideDisplay =
         }}
         viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" >
 
-        <path d="M4.5454545454554385,300l295.45454545454555,291.81818181818824l289.09090909090895,-580.9090909090946l-581.8181818181818,287.2727272727236Z"
+        <path d="M39.54545454545544,299l295.4545454545455,291.8181818181881l196.9999999999991,-478.8181818181881l-489.72727272727184,185.18181818181722Z"
             style={{ fill: isActive ? color : "none", stroke: color, strokeWidth }} />
     </svg>
 }

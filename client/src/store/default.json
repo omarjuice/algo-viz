@@ -1,0 +1,171 @@
+{
+    "steps": [
+        {
+            "type": "PROGRAM",
+            "scope": [
+                null,
+                153
+            ],
+            "value": "_mep5d"
+        },
+        {
+            "scope": [
+                null,
+                153
+            ],
+            "type": "CALL",
+            "name": [
+                30,
+                47
+            ],
+            "value": "___anf49"
+        },
+        {
+            "scope": [
+                null,
+                153
+            ],
+            "type": "CALL",
+            "name": [
+                15,
+                48
+            ],
+            "value": "___r2emh"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hello",
+            "scope": [
+                null,
+                153
+            ],
+            "block": true,
+            "name": [
+                1,
+                49
+            ],
+            "value": "___r2emh"
+        },
+        {
+            "scope": [
+                null,
+                153
+            ],
+            "type": "CALL",
+            "name": [
+                79,
+                96
+            ],
+            "value": "___k8jdl"
+        },
+        {
+            "scope": [
+                null,
+                153
+            ],
+            "type": "CALL",
+            "name": [
+                64,
+                97
+            ],
+            "value": "___bi8k2"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "world",
+            "scope": [
+                null,
+                153
+            ],
+            "block": true,
+            "name": [
+                50,
+                97
+            ],
+            "value": "___bi8k2"
+        }
+    ],
+    "objects": {
+        "___anf49": {
+            "0": "H",
+            "1": "E",
+            "2": "L",
+            "3": "L",
+            "4": "O",
+            "length": 5
+        },
+        "___jfi3g": {
+            "value": "O",
+            "next": "_mep5d"
+        },
+        "___nn11o": {
+            "value": "L",
+            "next": "___jfi3g"
+        },
+        "___p4fhp": {
+            "value": "L",
+            "next": "___nn11o"
+        },
+        "___a6b1a": {
+            "value": "E",
+            "next": "___p4fhp"
+        },
+        "___r2emh": {
+            "value": "H",
+            "next": "___a6b1a"
+        },
+        "___k8jdl": {
+            "0": "W",
+            "1": "O",
+            "2": "R",
+            "3": "L",
+            "4": "D",
+            "length": 5
+        },
+        "___wc4dg": {
+            "next": "_mep5d",
+            "prev": "___p0pan",
+            "value": "D"
+        },
+        "___p0pan": {
+            "next": "___wc4dg",
+            "prev": "___hlb9j",
+            "value": "L"
+        },
+        "___hlb9j": {
+            "next": "___p0pan",
+            "prev": "___dh8ok",
+            "value": "R"
+        },
+        "___dh8ok": {
+            "next": "___hlb9j",
+            "prev": "___bi8k2",
+            "value": "O"
+        },
+        "___bi8k2": {
+            "next": "___dh8ok",
+            "prev": "_mep5d",
+            "value": "W"
+        }
+    },
+    "types": {
+        "_gb0om": "undefined",
+        "_mep5d": "null",
+        "_vf1ek": "NaN",
+        "_x4khf": "Infinity",
+        "_bbkb0": "-Infinity",
+        "___anf49": "Array",
+        "___jfi3g": "Viz.SLL",
+        "___nn11o": "Viz.SLL",
+        "___p4fhp": "Viz.SLL",
+        "___a6b1a": "Viz.SLL",
+        "___r2emh": "Viz.SLL",
+        "___k8jdl": "Array",
+        "___wc4dg": "Viz.DLL",
+        "___p0pan": "Viz.DLL",
+        "___hlb9j": "Viz.DLL",
+        "___dh8ok": "Viz.DLL",
+        "___bi8k2": "Viz.DLL"
+    },
+    "code": "\nconst hello = Viz.SLL.create('HELLO'.split(''));\nconst world = Viz.DLL.create('WORLD'.split(''))\n"
+}
