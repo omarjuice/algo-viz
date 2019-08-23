@@ -58,7 +58,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         return null
     }
 
-    const width = store.windowWidth * .5 * ratio * store.widths.data
+    const width = store.windowWidth * (store.structsWidth >= 10 ? (store.structsWidth / 24) : .5) * ratio
     const color = store.settings.structColors[type]
 
     const styles: React.CSSProperties = {

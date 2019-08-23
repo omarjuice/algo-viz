@@ -38,7 +38,7 @@ class CodeStore {
     }
     @action update() {
         const name = this.root.iterator.name
-        if (name) {
+        if (name && this.root.settings.config['Code Display']) {
             const [start, end] = name;
             this.start = start
             this.end = end

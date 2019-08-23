@@ -26,7 +26,6 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
                 width: store.windowWidth / 7,
                 fontSize: `${Math.min(height / 2, 100 / (name ? (name as string).length : 1))}px`,
                 marginBottom: i === 0 ? '0px' : `-${height / 4}px`,
-                background: store.settings.configColors['Call Stack'],
                 borderBottomLeftRadius: '50%',
                 borderBottomRightRadius: '50%',
                 borderColor: 'black',
@@ -50,7 +49,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
     )
 }
 const CallStack: React.FC = observer(() => {
-    if (!store.allowRender) return null
+    if (!store.allowRender || !store.settings.config['Callstack']) return null
     const stack: stackItem[] = []
     const len = store.state.callStack.length
     if (len > 100) {
@@ -79,7 +78,7 @@ const CallStack: React.FC = observer(() => {
     }
 
 
-
+    const color = store.settings.configColors['Call Stack']
     const height = Math.min(store.windowHeight / stack.length, 40)
     if (!store.iterator.iterating || store.iterator.speed < 8) {
         return (
@@ -93,6 +92,8 @@ const CallStack: React.FC = observer(() => {
                         leave={len <= 100 ? { transform: `translateY(-40px)`, height, opacity: 0, borderTopLeftRadius: '50%', borderTopRightRadius: '50%' } : {}}
                     >
                         {([i, name]) => (props: React.CSSProperties) => {
+                            props.backgroundColor = color;
+
                             if (i === stack.length - 1) {
                                 props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
                             }
@@ -109,6 +110,7 @@ const CallStack: React.FC = observer(() => {
             <ul>
                 {stack.map(([i, name]) => {
                     const props: React.CSSProperties = {}
+                    props.backgroundColor = color
                     if (i === stack.length - 1) {
                         props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
                     }

@@ -6,7 +6,7 @@ import getType from '../utils/getType';
 
 const Identifiers: React.FC = observer(() => {
     const identifiers = store.state.activeIds
-    if (!store.allowRender) return null
+    if (!store.allowRender || !store.settings.config['Identifiers']) return null
 
     const colSize = Math.floor(12 / identifiers.length)
     let fontSize = Math.floor(Math.min(5 + identifiers.length / 2, 7))

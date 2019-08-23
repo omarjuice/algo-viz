@@ -6,7 +6,7 @@ import SlowArrow from './icons/SlowArrow';
 import FastArrow from './icons/FastArrow';
 
 const Navbar: React.FC = observer(() => {
-    const { iterator, settings } = store
+    const { iterator } = store
     const [type, setType] = useState('DECLARATION')
 
     return (

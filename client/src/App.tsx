@@ -16,25 +16,39 @@ const convert = new Convert({ newline: true })
 @observer
 class App extends React.Component {
   render() {
+    const codeDisplay = store.settings.config['Code Display'];
+    const identifiers = store.settings.config['Identifiers']
+    let switchStepView = !codeDisplay || !identifiers;
+    let renderWithStructs = true
+    if (!codeDisplay && !identifiers) {
+      renderWithStructs = false;
+      switchStepView = false
+    }
     return store.isInvalidScreenWidth ? <InvalidScreenWidth /> : (
       <>
         <Settings />
         <div className="app ">
           <Navbar />
-          <div className="columns is-paddingless">
-
-
+          <div className="columns is-multiline is-paddingless">
             {store.api.ok && <>
               <div className={store.editor.active ? "column is-half" : "column is-one-third"}>
                 <LeftPanel />
                 {store.ready && !store.api.error && !store.editor.active && (
-                  <Identifiers />
+                  <>
+                    <Identifiers />
+                    {switchStepView && <StepView />}
+                  </>
                 )}
               </div>
               {store.ready && !store.api.error && (
                 <>
-                  <div className="column is-6">
-                    <StepView />
+                  {!renderWithStructs && (
+                    <div style={{ marginTop: '1rem' }} >
+                      <StepView />
+                    </div>
+                  )}
+                  <div className={`column is-${store.structsWidth}`}>
+                    {!switchStepView && renderWithStructs && <StepView />}
                     <Structs />
                   </div>
                   <div className="column is-2">

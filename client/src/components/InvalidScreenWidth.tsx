@@ -57,10 +57,10 @@ class InvalidScreenWidth extends Component {
                     }
                 </div>
                 <div className='has-text-white has-text-centered'>
-                    Your screen has width of{' '}
-                    <span className='has-text-danger'>{store.windowWidth}</span>.
+                    Your screen's width is {' '}
+                    <span className='has-text-danger has-text-weight-bold'>{store.windowWidth}</span>.
                     It needs to be at least {' '}
-                    <span className='has-text-success'>{store.minWidth}</span>
+                    <span className='has-text-success has-text-weight-bold'>{store.minWidth}</span>
                     .
                 </div>
 

@@ -5,9 +5,9 @@ import ValText from './compose_components/ValText'
 import getType from '../utils/getType';
 
 const StepView: React.FC = observer(() => {
-
+    const config = store.settings.config
     const [error, toggleError] = useState(false)
-    if (!store.allowRender) return null
+    if (!store.allowRender || !store.settings.config['Step View']) return null
 
     const { step, index } = store.iterator
     const lastIdx = store.viz.steps.length - 1
@@ -44,9 +44,9 @@ const StepView: React.FC = observer(() => {
                         {' '}={' '}
                         <ValText value={store.code.value} type={getType(store.code.value)} />
                     </>
-                ) : (store.iterator.step.access && <span>{store.iterator.step.access}</span>)}
+                ) : null}
             </div> :
-                <div className="has-text-danger">
+                config["Code Display"] && <div className="has-text-danger">
                     {last.error}
                 </div>
             }

@@ -8,7 +8,7 @@ import DataStruct from './compose_components/DataStruct';
 
 
 const Structs: React.FC = observer(() => {
-    if (!store.allowRender) return null;
+    if (!store.allowRender || !store.settings.config['Objects']) return null;
     const arrays: ReactNode[] = []
     const objects: ReactNode[] = []
     const data: ReactNode[] = []
@@ -25,26 +25,48 @@ const Structs: React.FC = observer(() => {
             )
         } else {
             data.push(
-                <DataStruct idx={data.length} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
+                <div key={id} style={{ overflowX: 'scroll', padding: 2 }}>
+                    <DataStruct idx={data.length} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
+                </div>
             )
         }
     })
-    // const ratio = 1 / (Math.min(objects.length, 1) + Math.min(arrays.length, 1) + Math.min(data.length, 1))
     store.setWidths({
         array: objects.length ? .5 : 1,
         object: arrays.length ? .5 : 1,
         data: 1
     })
 
+
+    let dataCol = 12;
+    let arrayCol = 6;
+    let objCol = 6;
+    if (arrays.length && !objects.length) {
+        arrayCol = 12;
+    }
+    if (objects.length && !arrays.length) {
+        objCol = 12;
+    }
+
+    if (store.structsWidth >= 10) {
+        dataCol = 7;
+        arrayCol = 3;
+        objCol = 2;
+
+    }
+
+
+
+
     return (
         <div className="structs columns is-multiline">
-            {data.length ? <div className="column is-full">
+            {data.length ? <div className={`column is-narrow is-${dataCol}`}>
                 {data}
             </div> : null}
-            {arrays.length ? <div className={`column is-${objects.length ? 'half' : 'full'}`}>
+            {arrays.length ? <div className={`column is-narrow is-${arrayCol}`}>
                 {arrays}
             </div> : null}
-            {objects.length ? <div className={`column is-${arrays.length ? 'half' : 'full'}`}>
+            {objects.length ? <div className={`column is-narrow is-${objCol}`}>
                 {objects}
             </div> : null}
         </div>

@@ -45,7 +45,7 @@ export class RootStore {
         }
 
     }
-    initialize(data: Viz.Data) {
+    @action initialize(data: Viz.Data) {
         if (this.iterator) this.iterator.cleanUp();
         this.viz = new VizStore(this, data)
         this.iterator = new IteratorStore(this)
@@ -58,7 +58,22 @@ export class RootStore {
     @computed get isInvalidScreenWidth() {
         return this.windowWidth < this.minWidth
     }
-    @action onWindowResize(width: number, height: number) {
+    @computed get structsWidth() {
+        const { config } = this.settings;
+
+        if (!config.Objects) return 0;
+
+        let width = 12;
+        if (config['Identifiers'] || config['Code Display']) {
+            width -= 4;
+        }
+        if (config['Callstack']) {
+            width -= 2
+        }
+
+        return width
+    }
+    @action private onWindowResize(width: number, height: number) {
         if (width !== this.windowWidth) {
             this.windowWidth = width
         }

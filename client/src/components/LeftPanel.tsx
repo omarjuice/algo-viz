@@ -6,7 +6,7 @@ import Code from './Code';
 import IteratorContol from './IteratorControl';
 
 const LeftPanel: React.FC = observer(() => {
-
+    const activeCodePanel = store.settings.config['Code Display']
     return (
         <div>
             {store.editor.active ?
@@ -16,9 +16,8 @@ const LeftPanel: React.FC = observer(() => {
                 :
                 store.ready && (
                     <>
-                        <Code />
+                        {activeCodePanel && <Code />}
                         <IteratorContol />
-
                     </>
                 )
             }

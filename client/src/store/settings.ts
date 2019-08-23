@@ -154,6 +154,18 @@ class Settings {
         func: '#ffffff',
         native: '#ff3860'
     }
+    configColorDefaults: Viz.configColors = {
+        'Background': '#0b1423',
+        'Navbar': '#4a4a4a',
+        'Call Stack': '#ffa500',
+        'Code': '#f5f5f5',
+        'Code Highlight': '#98fb98',
+        'Step Slider Track': '#a663cc',
+        'Step Slider Rail': '#c2bbf0',
+        'Step Slider Handle': '#0000ff',
+        'Step Type': '#808080',
+        'Text': '#f5f5f5',
+    }
     @observable configColors: Viz.configColors = {
         'Background': '#0b1423',
         'Navbar': '#4a4a4a',
@@ -178,15 +190,21 @@ class Settings {
     }
     @observable editing: boolean = false
     @observable structColors: Viz.structColors = {
-        Array: 'whitesmoke',
-        Object: 'fucshia',
-        Map: 'steelblue',
-        Set: 'pink'
+        Array: '#FFFFFF',
+        Object: '#FFFFFF',
+        Map: '#4682B4',
+        Set: '#FF69B4'
     }
     @observable structSettings: Viz.structSettings = {}
     @observable config: Viz.configSettings = {
+        'Callstack': true,
+        'Code Display': true,
+        'Identifiers': true,
+        'Objects': true,
+        'Step View': true,
         tooltips: true,
-        'Active Pointer on GET': false
+        'Active Pointer on GET': false,
+
     }
     @observable root: RootStore
     constructor(store: RootStore) {
@@ -194,7 +212,7 @@ class Settings {
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
             this.valueColors = all.valueColors
-            // this.configColors = all.configColors || this.configColors
+            this.configColors = all.configColors
             this.speeds = all.speeds
             this.structColors = all.structColors
             this.structSettings = all.structSettings
@@ -273,7 +291,7 @@ class Settings {
 
     }
     @action setColor(structType: string, color?: string) {
-        if (!color) color = '#' + (Math.floor(Math.random() * (255 ** 3))).toString(16)
+        if (!color) color = '#' + (Math.floor(Math.random() * (16777215))).toString(16)
         this.structColors[structType] = color
     }
     @action deleteStruct(structType: string) {

@@ -42,14 +42,14 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const pos = store.structs.positions[objectId]
 
 
-    const maxWidth = store.windowWidth * .5 * store.widths.array
+    const maxWidth = store.windowWidth * (store.structsWidth >= 10 ? store.structsWidth / 24 : .5) * store.widths.array
     const len = structure.get('length').value
 
     const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
 
     if (display === 'column' && store.widths.array === 1) {
-        ratio *= Math.min(1, 8 / len)
+        ratio *= Math.min(ratio, store.structsWidth * 1.5 / len)
     }
     const willRender = !(pos && pos.renderId && pos.renderId !== renderId)
 
@@ -67,7 +67,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const styles: React.CSSProperties = {
         margin: `${ratio < 1 ? 0 : size}px`,
         padding: `${size}px`,
-        flexDirection: display as 'row' | 'column',
+        flexDirection: display,
         backgroundImage: `linear-gradient(${color}, ${color}),
         linear-gradient(${color}, ${color}),
         linear-gradient(${color}, ${color}),
@@ -80,7 +80,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     if (display === 'row') {
         styles.height = valSize * 1.5 + 5
     } else {
-        styles.maxHeight = '100%'
+        styles.maxHeight = store.windowHeight - (store.settings.config['Step View'] ? 200 : 100);
         styles.overflowY = 'scroll'
     }
     return (
