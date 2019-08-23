@@ -47,9 +47,14 @@ declare namespace Viz {
     type configSettings = {
         [key in configTypes]: boolean
     }
-    type configColor = 'Background' | 'Navbar' | 'Call Stack' | 'Code' | 'Code Highlight' | 'Step Slider Track' | 'Step Slider Rail' | 'Step Slider Handle' | 'Step Type' | 'Text' | 'Button'
+    type configColor = (
+        'Background' | 'Navbar' | 'Call Stack' |
+        'Code' | 'Code Highlight' | 'Step Slider Track' |
+        'Step Slider Rail' | 'Step Slider Handle' |
+        'Step Type' | 'Text' | 'Line Pointer' | 'Arc Pointer' |
+        'Line Pointer: GET' | 'Line Pointer: SET' | 'Arc Pointer: GET' | 'Arc Pointer: SET')
     type configColors = {
-        [key in configColors]: string
+        [key in configColor]: string
     }
 
 

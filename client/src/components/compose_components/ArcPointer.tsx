@@ -26,6 +26,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
     const active = store.structs.activePointers[from]
     const willRender = fromCoords && toCoords
     const timeout = useRef(null)
+    const { configColors } = store.settings
     useEffect(() => {
         if (willRender) {
             if (active) {
@@ -143,7 +144,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
         }
         const isActive = (get || set || active)
         const lineStyle: React.CSSProperties = {
-            stroke: get ? '#23D160' : set ? '#A663CC' : 'white',
+            stroke: get ? configColors["Arc Pointer: GET"] : set ? configColors["Arc Pointer: SET"] : configColors["Arc Pointer"],
             strokeWidth: isActive ? '3px' : '1px',
             strokeDasharray: '1000',
             strokeDashoffset: isActive ? '0' : '1000',
@@ -155,7 +156,7 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
 
-                    {d && <path d={d} strokeDashoffset={toCoords.radius} stroke="white" strokeWidth={1} fill="transparent" />}
+                    {d && <path d={d} strokeDashoffset={toCoords.radius} stroke={configColors["Arc Pointer"]} strokeWidth={1} fill="transparent" />}
                     {d && <path d={d} style={lineStyle} />}
                 </svg>
                 {children}

@@ -18,6 +18,7 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
     const active = store.structs.activePointers[from]
     const willRender = fromCoords && toCoords
     const timeout = useRef(null)
+    const { configColors } = store.settings
     useEffect(() => {
         if (willRender) {
             if (active) {
@@ -73,7 +74,7 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
         }
         const isActive = (get || set || active)
         const lineStyle: React.CSSProperties = {
-            stroke: get ? '#23D160' : set ? '#A663CC' : 'white',
+            stroke: get ? configColors["Line Pointer: GET"] : set ? configColors["Line Pointer: SET"] : configColors['Line Pointer'],
             strokeWidth: isActive ? '5px' : '1px',
             strokeDasharray: '1000',
             strokeDashoffset: isActive ? toCoords.radius : '1000',
@@ -84,7 +85,7 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-                    <line {...lineCoords} stroke="white" strokeWidth={1} ></line>
+                    <line {...lineCoords} stroke={configColors["Line Pointer"]} strokeWidth={1} ></line>
                     <line {...lineCoords} style={lineStyle}></line>
 
                 </svg>

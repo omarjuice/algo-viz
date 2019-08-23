@@ -135,49 +135,39 @@ export const structInfo: Viz.structSettings = {
     }
 }
 
+const configColorDefaults: Viz.configColors = {
+    'Background': '#0b1423',
+    'Navbar': '#4a4a4a',
+    'Call Stack': '#ffa500',
+    'Code': '#f5f5f5',
+    'Code Highlight': '#98fb98',
+    'Step Slider Track': '#a663cc',
+    'Step Slider Rail': '#c2bbf0',
+    'Step Slider Handle': '#0000ff',
+    'Step Type': '#808080',
+    'Text': '#f5f5f5',
+    'Line Pointer': '#FFFFFF',
+    'Arc Pointer': '#FFFFFF',
+    'Line Pointer: GET': '#23D160',
+    'Line Pointer: SET': '#A663CC',
+    'Arc Pointer: GET': '#23D160',
+    'Arc Pointer: SET': `#A663CC`
+}
+const valueColorDefaults: Viz.valueColors = {
+    special: '#255e4f',
+    number: '#4682b4',
+    string: '#ffff00',
+    boolean: '#00ff00',
+    other: '#000000',
+    func: '#ffffff',
+    native: '#ff3860'
+}
+
 class Settings {
-    @observable valueColors: Viz.valueColors = {
-        special: '#255e4f',
-        number: '#4682b4',
-        string: '#ffff00',
-        boolean: '#00ff00',
-        other: '#000000',
-        func: '#ffffff',
-        native: '#ff3860'
-    }
-    valueColorDefaults: Viz.valueColors = {
-        special: '#255e4f',
-        number: '#4682b4',
-        string: '#ffff00',
-        boolean: '#00ff00',
-        other: '#000000',
-        func: '#ffffff',
-        native: '#ff3860'
-    }
-    configColorDefaults: Viz.configColors = {
-        'Background': '#0b1423',
-        'Navbar': '#4a4a4a',
-        'Call Stack': '#ffa500',
-        'Code': '#f5f5f5',
-        'Code Highlight': '#98fb98',
-        'Step Slider Track': '#a663cc',
-        'Step Slider Rail': '#c2bbf0',
-        'Step Slider Handle': '#0000ff',
-        'Step Type': '#808080',
-        'Text': '#f5f5f5',
-    }
-    @observable configColors: Viz.configColors = {
-        'Background': '#0b1423',
-        'Navbar': '#4a4a4a',
-        'Call Stack': '#ffa500',
-        'Code': '#f5f5f5',
-        'Code Highlight': '#98fb98',
-        'Step Slider Track': '#a663cc',
-        'Step Slider Rail': '#c2bbf0',
-        'Step Slider Handle': '#0000ff',
-        'Step Type': '#808080',
-        'Text': '#f5f5f5',
-    }
+    valueColorDefaults: Viz.valueColors = valueColorDefaults
+    @observable valueColors: Viz.valueColors = { ...valueColorDefaults }
+    configColorDefaults: Viz.configColors = configColorDefaults
+    @observable configColors: Viz.configColors = { ...configColorDefaults }
     @observable speeds = {
         DECLARATION: 5,
         ASSIGNMENT: 5,
