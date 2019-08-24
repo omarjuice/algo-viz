@@ -32,6 +32,7 @@ export class RootStore {
         object: 0,
         data: 0
     }
+    @observable numStructs: number[] = [0, 0, 0]
     minWidth = 850
     constructor() {
         const data = window.localStorage.getItem('data')
@@ -85,10 +86,14 @@ export class RootStore {
             this.windowHeight = height
         }
     }
-    @action setWidths(vals: widths) {
+    @action setWidths(vals: widths, [numArrays, numObjects, numData]: number[]) {
         this.widths.array = vals.array
         this.widths.object = vals.object
-        this.widths.data = 1
+        this.widths.data = vals.data
+
+        this.numStructs[0] = numArrays;
+        this.numStructs[1] = numObjects;
+        this.numStructs[2] = numData
     }
 }
 

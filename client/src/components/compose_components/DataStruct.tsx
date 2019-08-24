@@ -32,7 +32,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         return renderId || genId(objectId.length + 3)
     }, [objectId, renderId])
     const ref = useCallback((elem) => {
-        if (idx) { }//For rerendered
+        if (idx) { }//For rerender
         if (elem) {
             if (!node) {
                 if (!isList) {
@@ -61,9 +61,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     }
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
     const config = store.settings.config;
-    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
+    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers'], ...store.numStructs, store.widths.data]
 
-    const width = store.windowWidth * (store.structsWidth >= 10 ? (store.structsWidth / 24) : .5) * ratio
+    const width = store.windowWidth * ((store.structsWidth >= 10 ? store.structsWidth / 24 : .5)) * ratio
     const color = store.settings.structColors[type]
 
     const styles: React.CSSProperties = {
@@ -236,7 +236,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginBottom: '10px'
-                    }}> {getVal(main ? main.value : '', displayProps, getType(main ? main.value : null), true)} </div>
+                    }}> {getVal(main ? main.value : '', displayProps, getType(main ? main.value : null), true, true)} </div>
             </Tooltip>
             {node && (
                 <div style={styles}>

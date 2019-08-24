@@ -5,7 +5,7 @@ import genId from '../../utils/genId';
 
 
 
-const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, textDisplay, textColor, highlight, component }) => {
+const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, textDisplay, textColor, highlight, component, isDataDisplay = false }) => {
     const [state, setState] = useState([false, false])
     const [text, setText] = useState(null)
     const animation = useRef(null)
@@ -45,7 +45,7 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
             transform,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
-            transition: `transform ${store.iterator.getSpeed('GET')}ms, height 200ms, width 200ms`
+            transition: `transform ${store.iterator.getSpeed('GET')}ms, ${isDataDisplay ? '' : 'height 200ms, width 200ms'}`
         }} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">

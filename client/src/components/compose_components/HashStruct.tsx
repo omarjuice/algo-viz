@@ -51,7 +51,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     const dimensionsMultiplier = (store.structsWidth >= 10 ? store.structsWidth / 24 : .5) * store.widths.object * ratio
     const maxWidth = store.windowWidth * dimensionsMultiplier
-    const maxHeight = store.windowHeight * dimensionsMultiplier
+    const maxHeight = store.windowHeight * dimensionsMultiplier * 2
     const obj: ReactNode[] = useMemo(
         () => iterate(structure, len, objectId, ratio, willRender, maxWidth),
         [structure, len, objectId, ratio, willRender, maxWidth]

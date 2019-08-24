@@ -33,6 +33,7 @@ class IteratorStore {
             }
 
             if (e.which === 32) {
+                console.log(e.which)
                 if (this.iterating) {
                     this.pause()
                 } else {

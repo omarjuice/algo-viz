@@ -42,15 +42,15 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const pos = store.structs.positions[objectId]
 
 
-    const maxWidth = store.windowWidth * (store.structsWidth >= 10 ? store.structsWidth / 24 : .5) * store.widths.array
+    const maxWidth = store.windowWidth * (store.structsWidth / 18) * store.widths.array
     const len = structure.get('length').value
-
-    const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
-
-    if (display === 'column' && store.widths.array === 1) {
-        ratio *= Math.min(ratio, store.structsWidth * 1.5 / len)
+    if (display === 'column') {
+        ratio *= .7
     }
+    const valSize = Math.max(Math.min(maxWidth / (len * 2), 30) * ratio, .001)
+
+
     const willRender = !(pos && pos.renderId && pos.renderId !== renderId)
 
     const arr: React.ReactNode[] = useMemo(
@@ -85,7 +85,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     if (display === 'row') {
         styles.height = valSize * 1.5 + 5
     } else {
-        styles.maxHeight = store.windowHeight - (store.settings.config['Step View'] ? 200 : 100);
+        styles.maxHeight = store.windowHeight
         styles.overflowY = 'scroll'
     }
     return (

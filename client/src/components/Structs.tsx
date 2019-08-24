@@ -13,6 +13,7 @@ const Structs: React.FC = observer(() => {
     const objects: ReactNode[] = []
     const data: ReactNode[] = []
     const ids = store.structs.bindings
+    let i = 0;
     ids.forEach((id) => {
         if (store.viz.types[id] === 'Array') {
             arrays.push(
@@ -24,23 +25,22 @@ const Structs: React.FC = observer(() => {
                 <HashStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
             )
         } else {
+            const type = store.viz.types[id];
+            const numChildren = store.settings.structSettings[type].numChildren
             data.push(
-                <div key={id} style={{ overflowX: 'scroll', padding: 2 }}>
-                    <DataStruct idx={data.length} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
+                <div key={id} style={{ overflow: 'scroll', display: numChildren === 1 ? 'block' : 'inline-flex' }}>
+                    <DataStruct idx={i} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
                 </div>
             )
         }
+        i++
     })
-    store.setWidths({
-        array: objects.length ? .5 : 1,
-        object: arrays.length ? .5 : 1,
-        data: 1
-    })
+
 
 
     let dataCol = 12;
-    let arrayCol = 6;
-    let objCol = 6;
+    let arrayCol = 7;
+    let objCol = 5;
     if (arrays.length && !objects.length) {
         arrayCol = 12;
     }
@@ -49,18 +49,46 @@ const Structs: React.FC = observer(() => {
     }
 
     if (store.structsWidth >= 10) {
-        dataCol = 7;
-        arrayCol = 3;
-        objCol = 2;
-
+        if (data.length) {
+            dataCol = 6;
+            if (arrays.length && !objects.length) {
+                arrayCol = 6
+                objCol = 0;
+            } else if (objects.length && !arrays.length) {
+                arrayCol = 0;
+                objCol = 6;
+            } else if (objects.length && arrays.length) {
+                arrayCol = 4;
+                objCol = 2;
+            } else {
+                dataCol = 12
+                arrayCol = 0;
+                objCol = 0;
+            }
+        } else {
+            arrayCol = objects.length ? 9 : 12;
+            objCol = arrays.length ? 3 : 12;
+        }
     }
 
+    store.setWidths(
+        {
+            array: Math.max(arrayCol / 6, .5),
+            object: Math.max(objCol / 6, .5),
+            data: (dataCol / 6)
+        },
+        [
+            arrays.length,
+            objects.length,
+            data.length
+        ]
+    )
 
 
 
     return (
         <div className="structs columns is-multiline">
-            {data.length ? <div className={`column is-narrow is-${dataCol}`}>
+            {data.length ? <div onScroll={() => store.structs.resetPositions()} className={`column is-narrow is-${dataCol}`}>
                 {data}
             </div> : null}
             {arrays.length ? <div className={`column is-narrow is-${arrayCol}`}>

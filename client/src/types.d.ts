@@ -183,6 +183,7 @@ declare namespace Viz {
         textColor?: string
         highlight?: boolean
         component?: ReactNode
+        isDataDisplay?: boolean
     }
 }
 declare module 'ansi-to-html' {
