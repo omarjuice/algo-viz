@@ -1,40 +1,71 @@
+const { VM } = require('../../../vm2')
 const { default: instantiateViz } = require('../../builtins/js/dist/index')
-module.exports = async function (___code) {
-    let ___name;
-    let Viz;
+const Runner = require('./runner')
+const util = require('util')
+const transpile = require('../transpile')
+
+
+module.exports = async function (code) {
+    const input = { _name: null, references: {} }
+    const transpiled = await transpile(code, input)
+    const fs = require('fs')
+    fs.writeFile('transpiled.js', transpiled, () => { })
+    const { _name } = input
+    const runner = new Runner(_name, code)
+    const vm = new VM({
+        console: 'inherit',
+        sandbox: {
+            [_name]: runner,
+            Viz: instantiateViz(runner)
+        },
+        timeout: 500,
+    })
     try {
-        eval(await (async function (func) {
-            const fs = require('fs')
-            const input = { _name: null, references: {} }
-            const code = await require('../transpile')(func, input)
-            const { _name } = input
-            global[_name] = new (require('./runner'))(_name, func)
-            Viz = instantiateViz(global[_name])
-            fs.writeFile('transpiled.js', code, () => { })
-            const key = require('./utils/key')
-            global[key] = () => ___name = _name
-            return code
-        })(___code))
+        vm.run(transpiled)
     } catch (error) {
         console.log(error);
-        global[require('./utils/key')]()
-        if (global[___name]) {
-            global[___name].ignore(true)
-            global[___name].steps.push({
-                type: 'ERROR',
-                error: error.message || JSON.stringify(error)
-            })
-        } else {
-            throw error
-        }
+        runner.ignore(true)
+        runner.steps.push({
+            type: 'ERROR',
+            error: error.message || 'ERROR'
+        })
     }
-    global[require('./utils/key')]()
-    const fs = require('fs')
-    const { types, objects, steps } = global[___name]
-    delete global[___name]
-    fs.writeFile('executed.json', JSON.stringify({
-        steps, objects, types
-    }), () => { })
-    return { types, objects, steps }
+    const { steps, objects, types } = runner
+    try {
+        const data = JSON.stringify({
+            steps, objects, types, code
+        })
+        fs.writeFileSync('executed.json', data)
+        return data
+    } catch (e) {
+        try {
+            const getCircularReplacer = () => {
+                const seen = new Set();
+                return (key, value) => {
+                    if (typeof value === "object" && value !== null) {
+                        if (seen.has(value)) {
+                            return;
+                        }
+                        seen.add(value);
+                    }
+                    return value;
+                };
+            };
+
+            const data = JSON.stringify({ steps, objects, types, code }, getCircularReplacer());
+            return data
+        } catch (e) {
+            require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types }))
+            throw e
+        }
+
+
+    }
+
 
 }
+
+
+
+
+

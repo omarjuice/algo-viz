@@ -1,5 +1,5 @@
 const expect = require('expect')
-const execute = require('../../execute')
+const execute = process.env.version > 10 ? require('../../execute') : require('../../execute/execSync')
 
 describe('VM code execution', () => {
     it('Should run code in a VM', async () => {

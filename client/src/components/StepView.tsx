@@ -35,17 +35,19 @@ const StepView: React.FC = observer(() => {
             <span style={style}>{index}/{store.viz.steps.length - 1}:</span>
             <span style={style}>{step.type}</span>
 
-            {!error && !(errorExists && index === store.viz.steps.length - 1) ? <div >
-                {store.code.start ? (
-                    <>
-                        <span style={{ fontSize: Math.min(900 / store.code.expression.length, 16), color: store.settings.configColors['Code Highlight'] }}>
-                            {store.code.expression}
-                        </span>
-                        {' '}={' '}
-                        <ValText value={store.code.value} type={getType(store.code.value)} />
-                    </>
-                ) : null}
-            </div> :
+            {!error && !(errorExists && index === store.viz.steps.length - 1) ? (
+                <div style={style}>
+                    {store.code.start ? (
+                        <>
+                            <span style={{ fontSize: Math.min(900 / store.code.expression.length, 16), color: store.settings.configColors['Code Highlight'] }}>
+                                {store.code.expression}
+                            </span>
+                            {' '}={' '}
+                            <ValText value={store.code.value} type={getType(store.code.value)} />
+                        </>
+                    ) : null}
+                </div>
+            ) :
                 config["Code Display"] && <div className="has-text-danger">
                     {last.error}
                 </div>

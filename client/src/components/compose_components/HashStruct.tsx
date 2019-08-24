@@ -62,7 +62,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
     const config = store.settings.config;
-    [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
+    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
 
 
     const type = store.viz.types[objectId]
