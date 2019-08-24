@@ -29,7 +29,7 @@ const Structs: React.FC = observer(() => {
             const numChildren = store.settings.structSettings[type].numChildren
             data.push(
                 <div key={id} style={{ overflow: 'scroll', display: numChildren === 1 ? 'block' : 'inline-flex' }}>
-                    <DataStruct idx={i} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
+                    <DataStruct depth={0} idx={i} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
                 </div>
             )
         }

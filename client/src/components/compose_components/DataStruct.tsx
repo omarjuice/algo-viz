@@ -17,12 +17,14 @@ type Props = {
     renderId?: string
     isList?: boolean
     idx?: number
+    depth: number
 }
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx }) => {
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx, depth }) => {
     const [node, setNode] = useState(null)
+
     const type = store.viz.types[objectId]
-    if (!type) return null
+
     const settings = store.settings.structSettings[type]
 
     isList = isList && settings.numChildren === 1
@@ -45,7 +47,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     }, [node, idx, isList])
 
 
-
     useEffect(() => {
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
@@ -56,6 +57,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const get = main && main.get
     const set = main && main.set
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
+
     if (pos && pos.renderId && pos.renderId !== renderId) {
         return null
     }
@@ -79,7 +81,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     }
 
 
-    const otherKeys: React.ReactNode[] = []
+    const otherKeys: [string | number, any][] = []
     const pointers: React.ReactNode[] = []
     let children: ({
         order: Viz.order
@@ -131,7 +133,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 if (order && order.isMultiple) {
                     const object = store.structs.objects[value]
                     const type = store.viz.types[value]
-                    if (['Object', 'Array', 'Map'].includes(type))
+                    if (['Object', 'Array', 'Map'].includes(type)) {
                         for (const key of object.keys()) {
                             const info = object.get(key)
                             if (typeof info.value === 'string' && info.value in store.structs.objects) {
@@ -143,6 +145,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                                 })
                             }
                         }
+                    }
+                    otherKeys.push([key, value])
+
 
                 } else {
                     children.push(
@@ -156,14 +161,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 }
             }
         } else {
-            otherKeys.push(
-                <div key={key} className="has-text-weight-bold">
-                    <span style={{ fontSize: 9 }}> {key}:{' '}</span>
-                    {value === objectId ? <span className="has-text-danger">this</span> : <ValText value={value} type={getType(value)} textOnly={false} size={10} />}
-                </div >
-            )
-
-
+            otherKeys.push([key, value])
         }
     }
 
@@ -223,7 +221,12 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         }} >
             <Tooltip overlay={() => (
                 <div>
-                    {otherKeys}
+                    {otherKeys.map(([key, value]) => {
+                        return <div key={key} className="has-text-weight-bold">
+                            <span style={{ fontSize: 9 }}> {key}:{' '}</span>
+                            {value === objectId ? <span className="has-text-danger">this</span> : <ValText value={value} type={getType(value)} textOnly={false} size={10} />}
+                        </div >
+                    })}
                 </div>
             )}
                 placement={'top'}
@@ -249,6 +252,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                         } else {
                             return (
                                 <DataChild
+                                    depth={depth + 1}
                                     idx={idx}
                                     key={child} parent={parent}
                                     parentId={objectId}
