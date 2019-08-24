@@ -44,6 +44,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         }
     }, [node, idx, isList])
 
+
+
     useEffect(() => {
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
@@ -57,6 +59,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     if (pos && pos.renderId && pos.renderId !== renderId) {
         return null
     }
+    //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
+    const config = store.settings.config;
+    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
 
     const width = store.windowWidth * (store.structsWidth >= 10 ? (store.structsWidth / 24) : .5) * ratio
     const color = store.settings.structColors[type]

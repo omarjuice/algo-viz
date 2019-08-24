@@ -60,6 +60,11 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     if (!willRender) {
         return null
     }
+
+    //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
+    const config = store.settings.config;
+    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
+
     const size = Math.max(Math.round(ratio * 5), 3)
     const color = store.settings.structColors['Array']
     const active = pointed || store.structs.activePointers[objectId];
