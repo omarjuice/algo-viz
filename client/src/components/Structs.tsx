@@ -88,7 +88,7 @@ const Structs: React.FC = observer(() => {
 
     return (
         <div className="structs columns is-multiline">
-            {data.length ? <div onScroll={() => store.structs.resetPositions()} className={`column is-narrow is-${dataCol}`}>
+            {data.length ? <div className={`column is-narrow is-${dataCol}`}>
                 {data}
             </div> : null}
             {arrays.length ? <div className={`column is-narrow is-${arrayCol}`}>

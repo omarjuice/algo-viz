@@ -38,13 +38,15 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
         textDisplay: "",
     }
     if (typeof value === 'string' && value in store.structs.objects) {
-        const parent = store.structs.pointers.get(value).top;
-        if (parent && parent.id === objectId && parent.key === index) {
-            return (
-                <div className={`array-line ${className}`}>
-                    <ArrayChild className={className} objectId={value} ratio={ratio} anim={anim} />
-                </div>
-            )
+        if (!store.structs.bindings.has(value)) {
+            const parent = store.structs.pointers.get(value).top;
+            if (parent && parent.id === objectId && parent.key === index) {
+                return (
+                    <div className={`array-line ${className}`}>
+                        <ArrayChild className={className} objectId={value} ratio={ratio} anim={anim} />
+                    </div>
+                )
+            }
         }
     }
     const style: React.CSSProperties = {

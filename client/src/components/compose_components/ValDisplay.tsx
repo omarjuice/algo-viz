@@ -11,7 +11,6 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
     const animation = useRef(null)
     const timeout = useRef(null)
     const gradId = useMemo(() => genId(7), [])
-
     useEffect(() => {
 
         if (anim !== animation.current) {

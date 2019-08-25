@@ -12,8 +12,8 @@ function virtualize(object) {
     ) {
         return object
     }
-    if (this.proxies.has(object)) {
-        return this.proxies.get(object)[0]
+    if (runner.proxies.has(object)) {
+        return runner.proxies.get(object)[0]
     }
     const isArray = Array.isArray(object)
     if (!isArray) {
@@ -21,17 +21,17 @@ function virtualize(object) {
         if (objString.includes(' Iterator') || objString.includes(' Generator')) return object
     }
     const proxy = isArray ? virtualizeArray(object, runner) : virtualizeObject(object, runner)
-    this.proxies.set(object, [proxy, false])
-    this.proxies.set(proxy, [proxy, true])
-    if (this.map.has(object)) {
-        this.map.set(proxy, this.map.get(object))
+    runner.proxies.set(object, [proxy, false])
+    runner.proxies.set(proxy, [proxy, true])
+    if (runner.map.has(object)) {
+        runner.map.set(proxy, this.map.get(object))
     } else {
-        if (this.constructors.has(object)) {
-            const [, id] = this.constructors.get(object)
-            this.map.set(proxy, id)
+        if (runner.constructors.has(object)) {
+            const [, id] = runner.constructors.get(object)
+            runner.map.set(proxy, id)
         } else {
-            const id = this.stringify(object)
-            this.map.set(proxy, id)
+            const id = runner.stringify(object)
+            runner.map.set(proxy, id)
         }
     }
     return proxy
