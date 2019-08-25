@@ -1,5 +1,5 @@
 const { parentPort, workerData, } = require('worker_threads')
-const { VM } = require('../../../vm2')
+const { VM } = require('../vm2')
 const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 const util = require('util')
