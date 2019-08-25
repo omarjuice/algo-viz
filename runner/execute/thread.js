@@ -4,7 +4,7 @@ const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 const util = require('util')
 
-const { code, _name, original } = workerData
+const { code, _name, original, prod } = workerData
 const runner = new Runner(_name, original)
 const vm = new VM({
     console: 'inherit',
@@ -18,7 +18,7 @@ const vm = new VM({
 try {
     vm.run(code)
 } catch (error) {
-    console.log(error);
+    !prod && console.log(error);
     runner.ignore(true)
     runner.steps.push({
         type: 'ERROR',
@@ -49,8 +49,8 @@ try {
         const data = JSON.stringify({ steps, objects, types, code: original }, getCircularReplacer());
         parentPort.postMessage(data)
     } catch (e) {
-        require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types }))
-        throw new Error('Your code has an error that could not be shown to you')
+        !prod && require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types }))
+        throw new Error('The runner made an error with your code. Sorry :(')
     }
 
 

@@ -214,7 +214,6 @@ class IteratorStore {
         }
     }
     @action reset() {
-        console.log('RESET');
         this.beforeChange();
         this.change(this.index)
         this.afterChange()

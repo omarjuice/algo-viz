@@ -27,7 +27,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
     const settings = store.settings.structSettings[type]
 
-    isList = isList && settings.numChildren === 1
+
+    isList = isList && (settings && settings.numChildren === 1)
 
     const pos = store.structs.positions[objectId]
     renderId = useMemo(() => {
@@ -50,15 +51,14 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     useEffect(() => {
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
-
         }
     })
-    const main = structure.get(settings.main)
+    const main = settings && structure.get(settings.main)
     const get = main && main.get
     const set = main && main.set
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
 
-    if (pos && pos.renderId && pos.renderId !== renderId) {
+    if ((pos && pos.renderId && pos.renderId !== renderId) || !settings) {
         return null
     }
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust

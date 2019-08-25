@@ -26,7 +26,8 @@ const Structs: React.FC = observer(() => {
             )
         } else {
             const type = store.viz.types[id];
-            const numChildren = store.settings.structSettings[type].numChildren
+            const settings = store.settings.structSettings[type]
+            const numChildren = settings && settings.numChildren
             data.push(
                 <div key={id} style={{ overflow: 'visible', display: numChildren === 1 ? 'block' : 'inline-flex', maxHeight: (store.windowHeight - 50) / 2 }}>
                     <DataStruct depth={0} idx={i} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />

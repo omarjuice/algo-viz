@@ -47,7 +47,6 @@ class StateStore {
             }
             const s = this.scopeStack
             if (s[s.length - 1] !== scope) {
-
                 // while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
                 //     const scope = s.pop()
                 //     //NEW
@@ -58,7 +57,6 @@ class StateStore {
                 //     //
                 // }
                 // if (step.type !== 'RETURN' && s[s.length - 1] !== scope) s.push(scope)
-
                 if (!step.prevScopeStack) step.prevScopeStack = [...s];
                 const newStack = [scope, parent]
                 let par = parent
@@ -67,8 +65,6 @@ class StateStore {
                     newStack.push(par)
                 }
                 newStack.reverse()
-                let i = s.length - 1, j = newStack.length - 1;
-
 
                 this.scopeStack = newStack
 
@@ -221,7 +217,7 @@ class StateStore {
                                 if (step.prevVals && step.prevVals[scope]) {
                                     idens[idens.length - 1] = (step.prevVals[scope][id])
                                 } else {
-                                    console.log('NO SCOPE', scope);
+                                    // console.log('NO SCOPE', scope);
                                 }
                             } else {
                                 if (step.prevVals)

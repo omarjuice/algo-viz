@@ -14,19 +14,14 @@ class PointerQueue {
         this.map = {}
     }
     private _compare(a: Viz.objectPointer, b: Viz.objectPointer, idxs: [number, number]): boolean {
-        try {
-            if (a.affinity === b.affinity) {
-                if (a.index === b.index) {
-                    return a.key < b.key
-                }
-                return a.index < b.index
+        if (a.affinity === b.affinity) {
+            if (a.index === b.index) {
+                return a.key < b.key
             }
-            return a.affinity > b.affinity
-        } catch (e) {
-            console.log(toJS(this.heap))
-            console.log(idxs)
-            throw (e)
+            return a.index < b.index
         }
+        return a.affinity > b.affinity
+
     }
     @action private swap(i: number, j: number) {
         const tmp = this.heap[i];

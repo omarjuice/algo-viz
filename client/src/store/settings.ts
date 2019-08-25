@@ -1,6 +1,8 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
 
+const SETTINGS_VERSION = 'settings_v1'
+
 export const structInfo: Viz.structSettings = {
     BST: {
         order: {
@@ -198,7 +200,7 @@ class Settings {
     }
     @observable root: RootStore
     constructor(store: RootStore) {
-        const settings = window.localStorage.getItem('settings')
+        const settings = window.localStorage.getItem(SETTINGS_VERSION)
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
             this.valueColors = all.valueColors
@@ -244,7 +246,7 @@ class Settings {
         this.root = store
         window.onbeforeunload = () => {
             delete this.root
-            window.localStorage.setItem('settings', JSON.stringify(this))
+            window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(this))
         }
     }
     @action startEdit() {

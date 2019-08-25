@@ -16,20 +16,7 @@ class ApiStore {
     @observable root: RootStore
     constructor(store: RootStore) {
         this.root = store
-        // this.loading = true
-        // axios.get('/')
-        //     .then(res => {
-        //         this.loading = false
-        //         if (res.status === 200) {
-        //             this.ok = true
-        //         } else {
-        //             this.ok = false
-        //         }
-        //     }).catch(e => {
-        //         console.log(e);
-        //         this.loading = false
-        //         this.error = e
-        //     })
+
         this.ok = true
     }
     @action async runCode(code: string) {
@@ -39,15 +26,13 @@ class ApiStore {
             const res = await axios.post('/', { code })
             const data: Viz.Data = res.data
             this.root.initialize(data)
-            window.localStorage.setItem('data', JSON.stringify(data))
+            window.localStorage.setItem(this.root.dataVersion, JSON.stringify(data))
             this.error = null
             this.loading = false
             this.ok = true
         } catch (e) {
-            console.log(e)
             if (e.response) {
                 this.error = e.response.data.toString()
-                console.log(this.error)
             } else {
                 this.error = e.message
             }

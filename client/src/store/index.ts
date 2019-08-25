@@ -15,6 +15,7 @@ type widths = {
     data: number
 }
 export class RootStore {
+    dataVersion: 'data_V1'
     @observable settings: Settings
     @observable viz: VizStore
     @observable code: CodeStore
@@ -35,7 +36,7 @@ export class RootStore {
     @observable numStructs: number[] = [0, 0, 0]
     minWidth = 850
     constructor() {
-        const data = window.localStorage.getItem('data')
+        const data = window.localStorage.getItem(this.dataVersion)
         this.settings = new Settings(this)
         this.api = new ApiStore(this)
         if (data) {

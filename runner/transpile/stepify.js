@@ -42,7 +42,6 @@ module.exports = function (input) {
                     getScope = helpers.getScope
                     createId = helpers.createId
                     references = path.scope.references
-
                     //strict mode enforcement
                     path.node.body.unshift(
                         t.stringLiteral("use strict"),
@@ -145,6 +144,11 @@ module.exports = function (input) {
                             ])
                         }
                     }
+                },
+                ClassDeclaration(path) {
+                    if (path.node.superClass) {
+                        throw new Error('Class extension is not supported yet.')
+                    };
                 },
                 BlockStatement(path) {
                     if (!t.isFunction(path.parent)) {

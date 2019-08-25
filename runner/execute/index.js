@@ -1,21 +1,22 @@
 const { Worker } = require('worker_threads')
 const transpile = require('../transpile')
 const fs = require('fs')
-
+const prod = process.env.NODE_ENV === 'production'
 module.exports = async function (code) {
     const input = { _name: null, references: {} }
     const transpiled = await transpile(code, input)
-    fs.writeFile('transpiled.js', transpiled, () => { })
+    !prod && fs.writeFile('transpiled.js', transpiled, () => { })
     const worker = new Worker(__dirname + '/thread.js', {
         workerData: {
             code: transpiled,
             _name: input._name,
-            original: code
+            original: code,
+            prod
         }
     })
     return new Promise((resolve, reject) => {
         worker.on('message', data => {
-            fs.writeFile('executed.json', data, () => { })
+            !prod && fs.writeFile('executed.json', data, () => { })
             resolve(data)
             worker.terminate()
         })
