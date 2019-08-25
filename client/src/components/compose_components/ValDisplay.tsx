@@ -44,7 +44,7 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
             transform,
             position: 'relative',
             zIndex: highlight ? 5 : 3,
-            transition: `transform ${store.iterator.getSpeed('GET')}ms, ${isDataDisplay ? '' : 'height 200ms, width 200ms'}`
+            transition: `transform ${store.iterator.getSpeed('GET')}ms ${isDataDisplay ? '' : ', height 200ms, width 200ms'}`
         }} height={size} width={size} viewBox="0 0 100 100" >
         <defs>
             <radialGradient id={gradId} cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
@@ -52,7 +52,7 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
                 <stop offset="100%" style={{ stopColor: `white`, stopOpacity: 1 }} />
             </radialGradient>
         </defs>
-        <circle cx="50" cy="50" r="50" fill={highlight ? `url(#${gradId})` : color} stroke={color} />
+        <circle cx="50" cy="50" r="50" fill={highlight ? `url(#${gradId})` : color} style={{ transition: 'fill 500ms' }} stroke={color} />
         {component || <text x={50} y={50}
             fill={textColor || store.settings.configColors['Background']} fontSize={text && text.length > 0 ? text.length <= 3 ? 50 : 40 : 50} fontWeight={'bold'}
             dominantBaseline="middle" textAnchor="middle" >

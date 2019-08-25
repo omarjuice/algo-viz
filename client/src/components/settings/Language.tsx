@@ -4,9 +4,7 @@ import store from '../../store';
 import { observer } from 'mobx-react';
 
 
-type language = 'JavaScript' | 'Python'
 
-const languages: [language, string][] = [["JavaScript", process.env.PUBLIC_URL + '/nodejs.svg'], ['Python', process.env.PUBLIC_URL + '/python.svg']]
 
 const Language: React.FC = observer(() => {
     return (
@@ -14,7 +12,7 @@ const Language: React.FC = observer(() => {
             <div className="columns is-multiline">
                 <div className="column is-half">
                     <div className="box has-background-dark has-text-light"
-                        style={{ border: '5px outset ' + store.settings.configColors['Step Slider Rail'] }}>
+                        style={{ border: '5px outset ' + store.settings.configColors['Step Slider Track'] }}>
                         <div className="columns ">
                             <div className="column is-half has-text-centered has-text-weight-bold">
                                 JavaScript

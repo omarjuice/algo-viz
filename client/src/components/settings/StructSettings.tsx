@@ -153,8 +153,8 @@ class StructSettings extends Component<Props> {
         const style: React.CSSProperties = {
             border: `5px solid ${structColors[name]}`,
             color: "white",
-
         }
+        console.log(structColors[name])
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
         const isBuiltin = /Viz\./g.test(name) || ['Array', 'Object', 'Set', 'Map'].includes(name)

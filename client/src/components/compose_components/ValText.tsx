@@ -29,7 +29,9 @@ const ValText: React.FC<Props> = ({ value, type, textOnly = false, size = 30 }) 
     if (type === 'func' || type === 'native' || type === 'special') {
         value = store.viz.types[value]
     }
-    return <span style={{ color }}>{String(value)}</span>
+    value = String(value)
+
+    return <span style={{ color, fontSize: `${(value.length > 20 ? 100 / value.length : 100)}%` }}>{value}</span>
 
 }
 

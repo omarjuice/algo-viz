@@ -29,7 +29,7 @@ class Settings extends React.Component {
     }
     render() {
         return (
-            <div className={`modal ${store.settings.editing && 'is-active'}`}>
+            <div className={`modal ${store.settings.editing && 'is-active'}`} >
                 <div className="modal-background" onClick={() => store.settings.stopEdit()}></div>
                 <div className="modal-card" style={{ backgroundColor: store.settings.configColors['Background'] }}>
                     <header style={{ backgroundColor: store.settings.configColors['Navbar'] }} className="modal-card-head">
@@ -53,7 +53,7 @@ class Settings extends React.Component {
                         </ul>
                     </div>
 
-                    <section className="modal-card-body">
+                    <section className="modal-card-body" style={{ transition: 'height 500ms' }}>
                         {this.panelComponents[this.state.panel]}
                     </section>
 

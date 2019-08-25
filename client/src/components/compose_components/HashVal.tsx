@@ -116,7 +116,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                                 <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                         </p>
                     </div>}
-                    <div className={`column ${type === 'Map' ? 'has-text-left' : type === 'Set' ? 'has-text-centerd' : ''}`}>
+                    <div className={`column ${type === 'Map' ? 'has-text-left' : type === 'Set' ? 'has-text-centered' : ''}`}>
                         {getVal(value, displayProps, valType)}
                     </div>
                 </div>

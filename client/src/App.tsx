@@ -47,13 +47,11 @@ class App extends React.Component {
                       <StepView />
                     </div>
                   )}
-                  <div className={`column is-${store.structsWidth}`}>
+                  <div className={`column is-${store.structsWidth}`} >
                     {!switchStepView && renderWithStructs && <StepView />}
                     <Structs />
                   </div>
-                  <div className="column is-2">
-                    <CallStack />
-                  </div>
+                  <CallStack />
                 </>
               )}
               {store.api.error && (

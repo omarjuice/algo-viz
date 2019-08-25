@@ -17,7 +17,6 @@ class Editor {
     @action toggle() {
         this.active = !this.active
         this.root.allowRender = !this.active;
-        console.log(this.root.allowRender);
         if (this.root.allowRender && this.root.iterator.index > -1) {
             this.root.iterator.reset()
         }

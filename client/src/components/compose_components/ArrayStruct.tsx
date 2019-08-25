@@ -60,7 +60,6 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     if (!willRender) {
         return null
     }
-    console.log('RENDER');
 
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
     const config = store.settings.config;

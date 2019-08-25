@@ -4,89 +4,195 @@
             "type": "PROGRAM",
             "scope": [
                 null,
-                153
+                85
             ],
-            "value": "_mep5d"
+            "value": "_i0jbk"
         },
         {
             "scope": [
                 null,
-                153
+                85
             ],
             "type": "CALL",
             "name": [
                 30,
                 47
             ],
-            "value": "___anf49"
+            "value": "___hknlb"
         },
         {
             "scope": [
                 null,
-                153
+                85
             ],
             "type": "CALL",
             "name": [
                 15,
                 48
             ],
-            "value": "___r2emh"
+            "value": "___yg104"
         },
         {
             "type": "DECLARATION",
             "varName": "hello",
             "scope": [
                 null,
-                153
+                85
             ],
             "block": true,
             "name": [
                 1,
                 49
             ],
-            "value": "___r2emh"
+            "value": "___yg104"
         },
         {
             "scope": [
                 null,
-                153
+                85
             ],
             "type": "CALL",
             "name": [
                 79,
                 96
             ],
-            "value": "___k8jdl"
+            "value": "___m8h7h"
         },
         {
             "scope": [
                 null,
-                153
+                85
             ],
             "type": "CALL",
             "name": [
                 64,
                 97
             ],
-            "value": "___bi8k2"
+            "value": "___w62m1"
         },
         {
             "type": "DECLARATION",
             "varName": "world",
             "scope": [
                 null,
-                153
+                85
             ],
             "block": true,
             "name": [
                 50,
                 97
             ],
-            "value": "___bi8k2"
+            "value": "___w62m1"
+        },
+        {
+            "scope": [
+                null,
+                85
+            ],
+            "type": "CALL",
+            "name": [
+                121,
+                141
+            ],
+            "value": "___n6e14"
+        },
+        {
+            "scope": [
+                null,
+                85
+            ],
+            "type": "CALL",
+            "name": [
+                147,
+                167
+            ],
+            "value": "___xk3m3"
+        },
+        {
+            "scope": [
+                null,
+                85
+            ],
+            "type": "CALL",
+            "name": [
+                173,
+                193
+            ],
+            "value": "___xi28g"
+        },
+        {
+            "scope": [
+                null,
+                85
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                115,
+                195
+            ],
+            "value": "___yimpa"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "welcome",
+            "scope": [
+                null,
+                85
+            ],
+            "block": true,
+            "name": [
+                99,
+                195
+            ],
+            "value": "___yimpa"
+        },
+        {
+            "scope": [
+                null,
+                85
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                219,
+                225
+            ],
+            "value": "___tmnlp"
+        },
+        {
+            "type": "GET",
+            "object": "___tmnlp",
+            "access": 0,
+            "value": "🤓"
+        },
+        {
+            "scope": [
+                null,
+                85
+            ],
+            "type": "CALL",
+            "name": [
+                211,
+                226
+            ],
+            "value": "___m2h4k"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "emote",
+            "scope": [
+                null,
+                85
+            ],
+            "block": true,
+            "name": [
+                197,
+                226
+            ],
+            "value": "___m2h4k"
         }
     ],
     "objects": {
-        "___anf49": {
+        "___hknlb": {
             "0": "H",
             "1": "E",
             "2": "L",
@@ -94,27 +200,27 @@
             "4": "O",
             "length": 5
         },
-        "___jfi3g": {
+        "___j70ki": {
             "value": "O",
-            "next": "_mep5d"
+            "next": "_i0jbk"
         },
-        "___nn11o": {
+        "___jif0c": {
             "value": "L",
-            "next": "___jfi3g"
+            "next": "___j70ki"
         },
-        "___p4fhp": {
+        "___wa5io": {
             "value": "L",
-            "next": "___nn11o"
+            "next": "___jif0c"
         },
-        "___a6b1a": {
+        "___ei1dj": {
             "value": "E",
-            "next": "___p4fhp"
+            "next": "___wa5io"
         },
-        "___r2emh": {
+        "___yg104": {
             "value": "H",
-            "next": "___a6b1a"
+            "next": "___ei1dj"
         },
-        "___k8jdl": {
+        "___m8h7h": {
             "0": "W",
             "1": "O",
             "2": "R",
@@ -122,50 +228,102 @@
             "4": "D",
             "length": 5
         },
-        "___wc4dg": {
-            "next": "_mep5d",
-            "prev": "___p0pan",
+        "___wbnlp": {
+            "next": "_i0jbk",
+            "prev": "___fkf8h",
             "value": "D"
         },
-        "___p0pan": {
-            "next": "___wc4dg",
-            "prev": "___hlb9j",
+        "___fkf8h": {
+            "next": "___wbnlp",
+            "prev": "___chl0b",
             "value": "L"
         },
-        "___hlb9j": {
-            "next": "___p0pan",
-            "prev": "___dh8ok",
+        "___chl0b": {
+            "next": "___fkf8h",
+            "prev": "___k2f41",
             "value": "R"
         },
-        "___dh8ok": {
-            "next": "___hlb9j",
-            "prev": "___bi8k2",
+        "___k2f41": {
+            "next": "___chl0b",
+            "prev": "___w62m1",
             "value": "O"
         },
-        "___bi8k2": {
-            "next": "___dh8ok",
-            "prev": "_mep5d",
+        "___w62m1": {
+            "next": "___k2f41",
+            "prev": "_i0jbk",
             "value": "W"
+        },
+        "___n6e14": {
+            "0": "W",
+            "1": "E",
+            "2": "L",
+            "3": "C",
+            "4": "O",
+            "5": "M",
+            "6": "E",
+            "7": " ",
+            "length": 8
+        },
+        "___xk3m3": {
+            "0": " ",
+            "1": " ",
+            "2": " ",
+            "3": "T",
+            "4": "O",
+            "5": " ",
+            "6": " ",
+            "7": " ",
+            "length": 8
+        },
+        "___xi28g": {
+            "0": "A",
+            "1": "L",
+            "2": "G",
+            "3": "O",
+            "4": "-",
+            "5": "V",
+            "6": "I",
+            "7": "Z",
+            "length": 8
+        },
+        "___yimpa": {
+            "0": "___n6e14",
+            "1": "___xk3m3",
+            "2": "___xi28g",
+            "length": 3
+        },
+        "___tmnlp": {
+            "0": "🤓",
+            "length": 1
+        },
+        "___m2h4k": {
+            "0": "🤓"
         }
     },
     "types": {
-        "_gb0om": "undefined",
-        "_mep5d": "null",
-        "_vf1ek": "NaN",
-        "_x4khf": "Infinity",
-        "_bbkb0": "-Infinity",
-        "___anf49": "Array",
-        "___jfi3g": "Viz.SLL",
-        "___nn11o": "Viz.SLL",
-        "___p4fhp": "Viz.SLL",
-        "___a6b1a": "Viz.SLL",
-        "___r2emh": "Viz.SLL",
-        "___k8jdl": "Array",
-        "___wc4dg": "Viz.DLL",
-        "___p0pan": "Viz.DLL",
-        "___hlb9j": "Viz.DLL",
-        "___dh8ok": "Viz.DLL",
-        "___bi8k2": "Viz.DLL"
+        "_nob6a": "undefined",
+        "_i0jbk": "null",
+        "_i7bo6": "NaN",
+        "_af917": "Infinity",
+        "_tpje8": "-Infinity",
+        "___hknlb": "Array",
+        "___j70ki": "Viz.SLL",
+        "___jif0c": "Viz.SLL",
+        "___wa5io": "Viz.SLL",
+        "___ei1dj": "Viz.SLL",
+        "___yg104": "Viz.SLL",
+        "___m8h7h": "Array",
+        "___wbnlp": "Viz.DLL",
+        "___fkf8h": "Viz.DLL",
+        "___chl0b": "Viz.DLL",
+        "___k2f41": "Viz.DLL",
+        "___w62m1": "Viz.DLL",
+        "___n6e14": "Array",
+        "___xk3m3": "Array",
+        "___xi28g": "Array",
+        "___yimpa": "Array",
+        "___tmnlp": "Array",
+        "___m2h4k": "Set"
     },
-    "code": "\nconst hello = Viz.SLL.create('HELLO'.split(''));\nconst world = Viz.DLL.create('WORLD'.split(''))\n"
+    "code": "\nconst hello = Viz.SLL.create('HELLO'.split(''));\nconst world = Viz.DLL.create('WORLD'.split(''))\n\nconst welcome = [\n    'WELCOME '.split(''),\n    '   TO   '.split(''),\n    'ALGO-VIZ'.split('')\n]\n\nconst emote = new Set(['🤓'])\n"
 }

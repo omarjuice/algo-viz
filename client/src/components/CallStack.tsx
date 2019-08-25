@@ -82,42 +82,48 @@ const CallStack: React.FC = observer(() => {
     const height = Math.min(store.windowHeight / stack.length, 40)
     if (!store.iterator.iterating || store.iterator.speed < 8) {
         return (
-            <div className="call-stack">
-                <ul >
-                    <Transition
-                        config={{ duration: (store.iterator.baseTime / (store.iterator.iterating ? store.iterator.speed : 2)) * 3 }}
-                        items={stack}
-                        from={{ transform: `translateY(-40px)`, opacity: 0 }}
-                        enter={{ transform: `translateY(0px)`, opacity: 1 }}
-                        leave={len <= 100 ? { transform: `translateY(-40px)`, height, opacity: 0, borderTopLeftRadius: '50%', borderTopRightRadius: '50%' } : {}}
-                    >
-                        {([i, name]) => (props: React.CSSProperties) => {
-                            props.backgroundColor = color;
+            <div className="column is-2">
+                <div className="call-stack">
+                    <ul >
+                        <Transition
+                            config={{ duration: (store.iterator.baseTime / (store.iterator.iterating ? store.iterator.speed : 2)) * 3 }}
+                            items={stack}
+                            from={{ transform: `translateY(-40px)`, opacity: 0 }}
+                            enter={{ transform: `translateY(0px)`, opacity: 1 }}
+                            leave={len <= 100 ? { transform: `translateY(-40px)`, height, opacity: 0, borderTopLeftRadius: '50%', borderTopRightRadius: '50%' } : {}}
+                        >
+                            {([i, name]) => (props: React.CSSProperties) => {
+                                props.backgroundColor = color;
 
-                            if (i === stack.length - 1) {
-                                props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
-                            }
-                            return (
-                                renderItem([i as number, name as any], height, props)
-                            )
-                        }}
-                    </Transition>
-                </ul>
+                                if (i === stack.length - 1) {
+                                    props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
+                                }
+                                return (
+                                    renderItem([i as number, name as any], height, props)
+                                )
+                            }}
+                        </Transition>
+                    </ul>
+                </div>
             </div>
         )
     } else {
-        return <div className="call-stack">
-            <ul>
-                {stack.map(([i, name]) => {
-                    const props: React.CSSProperties = {}
-                    props.backgroundColor = color
-                    if (i === stack.length - 1) {
-                        props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
-                    }
-                    return renderItem([i, name], height, props)
-                })}
-            </ul>
-        </div>
+        return (
+            <div className="column is-2">
+                <div className="call-stack">
+                    <ul>
+                        {stack.map(([i, name]) => {
+                            const props: React.CSSProperties = {}
+                            props.backgroundColor = color
+                            if (i === stack.length - 1) {
+                                props.borderTopLeftRadius = props.borderTopRightRadius = '50%'
+                            }
+                            return renderItem([i, name], height, props)
+                        })}
+                    </ul>
+                </div>
+            </div>
+        )
     }
 })
 export default CallStack

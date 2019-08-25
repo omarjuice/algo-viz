@@ -65,7 +65,6 @@ class ColorSettings extends Component {
                     const name = n as Viz.configColor
                     if (this.skipSet.has(name)) return null;
                     const [colors, defaults] = [configColors, configColorDefaults]
-                    console.log(name, colors[name]);
                     return (
                         <React.Fragment key={name}>
                             <div className="columns is-multiline" style={{ color: configColors['Text'], backgroundColor: configColors['Background'] }}>

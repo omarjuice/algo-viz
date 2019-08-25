@@ -48,10 +48,11 @@ body, html, #root, .app{
     height: 37.5vh
 }
 .step-view{
-    height: 10%;
+    height: 30px;
     margin-bottom: 10%;
     position: relative;
     z-index: 1;
+    overflow: visible;
 }
 
 .structs > .column{
