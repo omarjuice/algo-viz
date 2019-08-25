@@ -218,6 +218,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
             display: 'flex',
             flexDirection: isList ? 'row' : 'column',
             alignItems: 'center',
+
         }} >
             <Tooltip overlay={() => (
                 <div>

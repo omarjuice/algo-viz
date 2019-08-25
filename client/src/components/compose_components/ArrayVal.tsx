@@ -52,6 +52,7 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
     const style: React.CSSProperties = {
         margin: `4px ${size / 5}px`,
         height: `${Math.max(size * 1.5)}px`,
+
     }
     const visible = (!!info.get || !!info.set)
     const valType = getType(value)

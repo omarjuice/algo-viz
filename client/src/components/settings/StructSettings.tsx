@@ -80,7 +80,6 @@ class StructSettings extends Component<Props> {
         const { order } = this.state
         const newKeys = { ...order }
         items.forEach((k, i) => newKeys[k].pos = Math.max(1, Math.min(i + 1, this.state.numKeys)))
-        console.log(newKeys)
         this.setState({
             order: newKeys
         })
