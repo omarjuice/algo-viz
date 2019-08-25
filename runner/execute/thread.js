@@ -4,7 +4,7 @@ const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 const util = require('util')
 
-const { code, _name, original, prod } = workerData
+const { code, _name, original, prod, timeout } = workerData
 const runner = new Runner(_name, original)
 const vm = new VM({
     console: 'inherit',
@@ -12,7 +12,7 @@ const vm = new VM({
         [_name]: runner,
         Viz: instantiateViz(runner)
     },
-    timeout: 500,
+    timeout: timeout,
 })
 
 try {
