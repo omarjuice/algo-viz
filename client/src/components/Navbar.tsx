@@ -105,7 +105,7 @@ const Navbar: React.FC = observer(() => {
                             (<>
                                 <div className="navbar-item has-dropdown is-hoverable has-background-light">
                                     <a href="#/" className="navbar-link">
-                                        <figure style={{ marginTop: '2px' }} className="image is-4by4">
+                                        <figure style={{ marginTop: '2px' }} className="image is-32x32">
                                             <img height={30} width={30} src={process.env.PUBLIC_URL + '/tachometer-alt-solid.svg'} alt="" />
                                         </figure>
                                     </a>

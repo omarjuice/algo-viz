@@ -4,8 +4,11 @@ import { observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor'
 import * as monaco from 'monaco-editor';
 import pastels from '../pastels.json'
-let Pastels = pastels as any
+const Pastels = pastels as any
 monaco.editor.defineTheme('pastels', Pastels)
+
+
+
 @observer
 class Input extends Component {
 

@@ -4,7 +4,8 @@ import store from '../../store';
 import StructSettingsPanel from './StructSettingsPanel';
 import ConfigSettings from './ConfigSettings';
 import ColorSettings from './ColorSettings'
-type panelType = 'Config' | 'Structure Settings' | 'Colors'
+import Language from './Language';
+type panelType = 'Config' | 'Structure Settings' | 'Colors' | 'Language'
 type State = {
     panel: panelType
 }
@@ -14,11 +15,12 @@ class Settings extends React.Component {
     state: State = {
         panel: 'Config'
     }
-    panelNames: panelType[] = ['Colors', 'Config', 'Structure Settings']
+    panelNames: panelType[] = ['Colors', 'Config', 'Structure Settings', 'Language']
     panelComponents: { [key in panelType]: React.ReactNode } = {
         Colors: <ColorSettings />,
         Config: <ConfigSettings />,
-        "Structure Settings": <StructSettingsPanel />
+        "Structure Settings": <StructSettingsPanel />,
+        "Language": <Language />
     }
     setPanel = (panel: panelType) => {
         this.setState({
