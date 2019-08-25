@@ -4,7 +4,7 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || process.env.NODE_ENV === 'test' ? 8080 : 3001
+const PORT = process.env.PORT || (process.env.NODE_ENV === 'test' ? 8080 : 3001)
 console.log(process.env.PORT)
 if (process.env.NODE_ENV === 'development') {
     app.use(cors({
