@@ -11,7 +11,8 @@ module.exports = async function (code) {
             code: transpiled,
             _name: input._name,
             original: code,
-            prod
+            prod,
+            timeout: process.env.EXECUTION_TIMEOUT || 500,
         }
     })
     return new Promise((resolve, reject) => {
