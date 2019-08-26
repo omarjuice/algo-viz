@@ -12,7 +12,7 @@ module.exports = async function (code) {
             _name: input._name,
             original: code,
             prod,
-            timeout: process.env.EXECUTION_TIMEOUT || 500,
+            timeout: Number(process.env.EXECUTION_TIMEOUT) || 500,
         }
     })
     return new Promise((resolve, reject) => {
