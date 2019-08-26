@@ -273,6 +273,7 @@ class Structures {
         if (allowRender) this.setBindings()
     }
     scrollIntoView(type: 'get' | 'set', object: string) {
+        if (!this.root.settings.config["Scroll Objects Into View"]) return;
         const element = document.querySelector(`.${type}.${object}`)
         if (element) {
             const { top } = element.getBoundingClientRect()

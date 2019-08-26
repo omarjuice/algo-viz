@@ -48,7 +48,7 @@ body, html, #root, .app{
     height: 37.5vh
 }
 .step-view{
-    height: 30px;
+    height: 10px;
     margin-bottom: 10%;
     position: relative;
     z-index: 1;

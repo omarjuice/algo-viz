@@ -1,7 +1,7 @@
 import { observable, action } from "mobx";
 import { RootStore } from ".";
 
-const SETTINGS_VERSION = 'settings_v1'
+const SETTINGS_VERSION = 'settings'
 
 export const structInfo: Viz.structSettings = {
     BST: {
@@ -194,8 +194,9 @@ class Settings {
         'Identifiers': true,
         'Objects': true,
         'Step View': true,
-        tooltips: true,
+        'tooltips': false,
         'Active Pointer on GET': false,
+        'Scroll Objects Into View': false
 
     }
     @observable root: RootStore
@@ -203,12 +204,7 @@ class Settings {
         const settings = window.localStorage.getItem(SETTINGS_VERSION)
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
-            this.valueColors = all.valueColors
-            this.configColors = all.configColors
-            this.speeds = all.speeds
-            this.structColors = all.structColors
-            this.structSettings = all.structSettings
-            this.config = all.config
+            syncObjects(this, all)
         }
         this.structSettings['Array'] = {
             order: {},
@@ -249,6 +245,7 @@ class Settings {
             window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(this))
         }
     }
+
     @action startEdit() {
         this.editing = true
         if (this.root.iterator) {
@@ -298,3 +295,15 @@ class Settings {
 }
 
 export default Settings
+
+
+function syncObjects(obj1: any, obj2: any) {
+    for (const key in obj1) {
+        if (key in obj2) {
+            obj1[key] = obj2[key]
+            if (obj1[key] && typeof obj1[key] === 'object') {
+                syncObjects(obj1[key], obj2[key])
+            }
+        }
+    }
+}
