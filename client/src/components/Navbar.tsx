@@ -132,7 +132,13 @@ const Navbar: React.FC = observer(() => {
 
 
                     <div className="navbar-end">
-
+                        <div className="navbar-item">
+                            <button onClick={() => store.api.startPostingIssue()} className="button is-danger is-small">
+                                <figure style={{ marginTop: '-3px' }} className="image is-4by4">
+                                    <img src={process.env.PUBLIC_URL + '/bug-24px.svg'} alt="" />
+                                </figure>
+                            </button>
+                        </div>
                         <div className="navbar-item">
                             <button onClick={() => store.settings.startEdit()} className="button is-link is-small">
                                 <figure style={{ marginTop: '-2px' }} className="image is-4by4">

@@ -14,9 +14,9 @@ class ApiStore {
     @observable loading: boolean = false
     @observable error: null | string = null
     @observable root: RootStore
+    @observable issueForm: boolean = false;
     constructor(store: RootStore) {
         this.root = store
-
         this.ok = true
     }
     @action async runCode(code: string) {
@@ -38,6 +38,26 @@ class ApiStore {
             }
             this.loading = false
         }
+    }
+    @action async postIssue(description: string) {
+        try {
+            const code = this.root.viz.code;
+            this.loading = true;
+            await axios.post('/issues', { code, description });
+        } catch (e) {
+            console.log(e);
+        }
+        this.loading = false;
+        this.issueForm = false;
+    }
+    @action startPostingIssue() {
+        this.issueForm = true
+        if (this.root.iterator) {
+            this.root.iterator.pause()
+        }
+    }
+    @action stopPostingIssue() {
+        this.issueForm = false
     }
 }
 

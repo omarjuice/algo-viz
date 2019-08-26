@@ -28,7 +28,11 @@ class IteratorStore {
     constructor(store: RootStore) {
         this.root = store
         this.onKeyUp = (e) => {
-            if (!this.root.allowRender || this.keyPressCooldown || this.root.editor.active) {
+            if (!this.root.allowRender ||
+                this.keyPressCooldown ||
+                this.root.editor.active ||
+                this.root.settings.editing ||
+                this.root.api.issueForm) {
                 return
             }
 

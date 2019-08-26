@@ -11,6 +11,7 @@ import Navbar from './components/Navbar';
 import Structs from './components/Structs';
 import Settings from './components/settings';
 import InvalidScreenWidth from './components/InvalidScreenWidth';
+import Issues from './components/Issues';
 const convert = new Convert({ newline: true })
 
 @observer
@@ -27,6 +28,7 @@ class App extends React.Component {
     return store.isInvalidScreenWidth ? <InvalidScreenWidth /> : (
       <>
         <Settings />
+        <Issues />
         <div className="app ">
           <Navbar />
           <div className="columns is-multiline is-paddingless">

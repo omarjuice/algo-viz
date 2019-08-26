@@ -62,6 +62,7 @@ async function initialize() {
     app.post('/issues', async (req, res, next) => {
         try {
             const { description, code } = req.body;
+            console.log(description)
             if (!description || !code) throw new Error('Missing Fields.')
             const { ops: [newIssue] } = await Issues.insertOne({
                 date: new Date(),
