@@ -1,8 +1,17 @@
 const expect = require('expect')
 const request = require('supertest')
-const app = require('../')
+const { init } = require('../')
 const funcs = require('../../execute/tests/funcs')
 const execSync = require('../../execute/execSync')
+
+let app;
+
+before(async () => {
+    const { server } = await init
+    app = server
+    return;
+})
+
 
 describe('SERVER', function () {
     this.timeout(5000)
