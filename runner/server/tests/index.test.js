@@ -4,11 +4,11 @@ const { init } = require('../')
 const funcs = require('../../execute/tests/funcs')
 const execSync = require('../../execute/execSync')
 
-let app;
-
+let agent;
 before(async () => {
-    const { server } = await init
-    app = server
+    const { server, database } = await init
+    agent = request.agent(server)
+    await database.collection('sessions').drop()
     return;
 })
 
@@ -16,14 +16,14 @@ before(async () => {
 describe('SERVER', function () {
     this.timeout(5000)
     it('should return 200', done => {
-        request(app)
+        agent
             .get('/')
             .expect(200)
             .end(done)
     })
     it('Posting code returns results', done => {
-        request(app)
-            .post('/')
+        agent
+            .post('/execute')
             .send({
                 code: `
                 class MyClass{
@@ -46,8 +46,8 @@ describe('SERVER', function () {
             const responses = []
             const start = Date.now()
             for (const name in funcs) {
-                responses.push(request(app)
-                    .post('/')
+                responses.push(agent
+                    .post('/execute')
                     .send({
                         code: funcs[name]
                     })

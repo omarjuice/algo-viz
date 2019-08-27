@@ -50,7 +50,8 @@ try {
         parentPort.postMessage(data)
     } catch (e) {
         !prod && require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types }))
-        throw new Error('The runner made an error with your code. Sorry :(')
+        e.isRunnerError = true;
+        throw e
     }
 
 

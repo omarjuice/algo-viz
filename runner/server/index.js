@@ -1,7 +1,10 @@
 const version = parseInt(process.versions.node.split('.')[0])
 process.env.VERSION = version
 const express = require('express')
+
 const mongo = require('mongodb').MongoClient;
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const cors = require('cors')
 const path = require('path');
 const app = express();
@@ -14,7 +17,8 @@ const PORT = process.env.PORT || (process.env.NODE_ENV === 'test' ? 8080 : 3001)
 
 if (process.env.NODE_ENV === 'development') {
     app.use(cors({
-        origin: 'http://localhost:3000'
+        origin: 'http://localhost:3000',
+        credentials: true
     }))
 }
 
@@ -44,19 +48,42 @@ if (version >= 11) {
 
 
 async function initialize() {
-    const client = await mongo.connect(process.env.MONGO_URI || 'mongodb://localhost:27017', { useNewUrlParser: true })
-    const database = client.db(process.env.NODE_ENV === 'test' ? 'algo_viz_test' : 'algo_viz')
+    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017';
+    const dbName = process.env.NODE_ENV === 'test' ? 'algo_viz_test' : 'algo_viz'
+    const client = await mongo.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+    const database = client.db(dbName);
     const Issues = database.collection('issues');
-
-    app.post('/', async (req, res, next) => {
+    app.use(session({
+        store: new MongoStore({ url: mongoUri + '/' + dbName }),
+        secret: process.env.SESSION_SECRET || 'secret',
+        resave: false,
+        saveUninitialized: true
+    }));
+    app.post('/execute', (req, res, next) => {
         const { code } = req.body;
         execute(code)
             .then(result => {
                 res.send(JSON.parse(result))
             })
             .catch(e => {
-                next(e)
+                if (e.isRunnerError) {
+                    Issues.insertOne({
+                        date: new Date(),
+                        description: JSON.stringify(e),
+                        code
+                    })
+                    next(new Error('The runner made a fatal mistake with your code. It will be investigated ASAP. In the meantime, please do not run the same code again.'))
+                } else {
+                    next(e)
+                }
+
             })
+        if (req.session.submissions) {
+            req.session.submissions++;
+        } else {
+            req.session.submissions = 1;
+        }
+        req.session.save()
     })
 
     app.post('/issues', async (req, res, next) => {
@@ -73,6 +100,7 @@ async function initialize() {
             next(e)
         }
     })
+
     if (process.env.NODE_ENV === 'production') {
         app.get("/", (req, res, next) => {
             res.sendFile(path.join(__dirname, "..", "..", "client/build/index.html"));
