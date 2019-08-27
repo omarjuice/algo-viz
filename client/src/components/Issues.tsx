@@ -32,7 +32,7 @@ class Issues extends Component<{}, State> {
                     </header>
                     <section className="modal-card-body">
                         <form className="form">
-                            <h1 className="title is-3 has-text-white">
+                            <h1 className="title is-6 has-text-white">
                                 Please describe the issue:
                             </h1>
                             <textarea onChange={(e) => this.setState({ description: e.target.value })} className="textarea">

@@ -281,8 +281,7 @@ class Settings {
     }
     @action setColor(structType: string, color?: string) {
         if (!color) {
-            const newColor = (Math.floor(Math.random() * (16777215))).toString(16);
-            newColor.padStart(6, '0')
+            const newColor = (Math.floor(Math.random() * (16777215))).toString(16).padStart(6, '0');
             color = '#' + newColor
 
         }

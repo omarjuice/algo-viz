@@ -16,6 +16,7 @@ type widths = {
 }
 export class RootStore {
     dataVersion: 'data_V1'
+    @observable tutorial: boolean = false
     @observable settings: Settings
     @observable viz: VizStore
     @observable code: CodeStore
@@ -39,6 +40,7 @@ export class RootStore {
         const data = window.localStorage.getItem(this.dataVersion)
         this.settings = new Settings(this)
         this.api = new ApiStore(this)
+
         if (data) {
             this.initialize(JSON.parse(data))
         } else {
@@ -46,9 +48,12 @@ export class RootStore {
             this.initialize(defaultData as Viz.Data)
         }
         this.editor = new Editor(this, this.viz ? this.viz.code.trim() : '')
+
         window.onresize = () => {
             this.onWindowResize(window.innerWidth, window.innerHeight)
         }
+        this.iterator.play();
+        this.iterator.pause()
 
     }
     @action initialize(data: Viz.Data) {
@@ -59,7 +64,7 @@ export class RootStore {
         this.state = new StateStore(this)
         this.structs = new Structures(this)
         this.ready = true
-        // this.iterator.play()
+
     }
     @computed get isInvalidScreenWidth() {
         return this.windowWidth < this.minWidth
@@ -95,6 +100,15 @@ export class RootStore {
         this.numStructs[0] = numArrays;
         this.numStructs[1] = numObjects;
         this.numStructs[2] = numData
+    }
+    @action startTutorial() {
+        if (this.iterator) {
+            this.iterator.pause()
+        }
+        this.tutorial = true
+    }
+    @action stopTutorial() {
+        this.tutorial = false
     }
 }
 

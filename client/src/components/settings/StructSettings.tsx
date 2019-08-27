@@ -157,11 +157,11 @@ class StructSettings extends Component<Props> {
         const pointers = Object.keys(this.state.pointers)
         const isBuiltin = /Viz\./g.test(name) || ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
-            <div className="box has-background-dark" style={style}>
+            <div className="box has-background-dark has-text-light" style={style}>
 
                 <div className="columns">
                     <div className="column has-text-left">
-                        <h1 className="title is-5 has-text-weight-bold">{name}</h1>
+                        <h1 className="title is-6 has-text-light has-text-weight-bold">{name}</h1>
                     </div>
                     <div className="column">
                         {!isBuiltin && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small">
@@ -177,7 +177,7 @@ class StructSettings extends Component<Props> {
                 </div>
                 {this.state.editing && (
                     <div>
-                        <h1 className="title is-5">
+                        <h1 className="title is-6 has-text-light">
                             Children
                         </h1>
                         <DraggableList
@@ -200,7 +200,7 @@ class StructSettings extends Component<Props> {
                             </div>
                         </div>
                         <hr />
-                        <h1 className="title is-5">
+                        <h1 className="title is-6 has-text-light">
                             Pointers
                         </h1>
                         <ul className="list">
@@ -237,14 +237,14 @@ class StructSettings extends Component<Props> {
                         </div>
                         <hr />
                         <div>
-                            <h1 className="title is-5">
+                            <h1 className="title is-6 has-text-light">
                                 Display Key
                             </h1>
                             <input className="input" type="text" value={this.state.main} onChange={(e) => this.changeMain(e.target.value)} />
                         </div>
                         <hr />
                         <div>
-                            <h1 className="title is-5">
+                            <h1 className="title is-6 has-text-light">
                                 Number of Children
                             </h1>
 

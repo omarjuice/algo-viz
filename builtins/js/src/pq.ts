@@ -39,6 +39,7 @@ export default function instantiatePQ(runner: Runner) {
             for (let i = first; i >= 0; i--) {
                 this._siftDown(i, items.length - 1)
             }
+            this.display = this.size
             return this
         }
         private _siftUp(idx: number) {

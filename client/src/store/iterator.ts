@@ -68,6 +68,7 @@ class IteratorStore {
 
         document.addEventListener('keydown', this.onKeyUp)
 
+
     }
     cleanUp() {
         document.removeEventListener('keydown', this.onKeyUp)

@@ -12,6 +12,7 @@ import Structs from './components/Structs';
 import Settings from './components/settings';
 import InvalidScreenWidth from './components/InvalidScreenWidth';
 import Issues from './components/Issues';
+import Tutorial from './components/Tutorial';
 const convert = new Convert({ newline: true })
 
 @observer
@@ -29,6 +30,7 @@ class App extends React.Component {
       <>
         <Settings />
         <Issues />
+        <Tutorial />
         <div className="app ">
           <Navbar />
           <div className="columns is-multiline is-paddingless">
