@@ -75,7 +75,7 @@ const Structs: React.FC = observer(() => {
     store.setWidths(
         {
             array: Math.max(arrayCol / 6, .5),
-            object: Math.max(objCol / 6, .5),
+            object: 1,
             data: (dataCol / 6)
         },
         [

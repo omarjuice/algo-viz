@@ -1,4 +1,4 @@
-import { observable, computed, action, toJS } from "mobx";
+import { observable, computed, action } from "mobx";
 type types = { [key: string]: string }
 type parents = { [id: string]: string }
 class PointerQueue {

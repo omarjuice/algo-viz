@@ -28,16 +28,18 @@ class IteratorStore {
     constructor(store: RootStore) {
         this.root = store
         this.onKeyUp = (e) => {
-            if (!this.root.allowRender ||
+            if (
+                !this.root.allowRender ||
                 this.keyPressCooldown ||
                 this.root.editor.active ||
                 this.root.settings.editing ||
-                this.root.api.issueForm) {
+                this.root.api.issueForm ||
+                this.root.tutorial
+            ) {
                 return
             }
 
             if (e.which === 32) {
-                console.log(e.which)
                 if (this.iterating) {
                     this.pause()
                 } else {

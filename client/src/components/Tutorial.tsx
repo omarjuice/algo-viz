@@ -349,7 +349,7 @@ class Tutorial extends Component {
                     As I figure out how to make the editor's auto-complete work with the type definitions of the builtins,
                     please refer to this file for documentation:
                     <br />
-                    <a className="has-text-weight-bold" href="https://github.com/omarjuice/algo-viz/blob/master/builtins/js/types.d.ts" target="_blank">
+                    <a className="has-text-weight-bold" href="https://github.com/omarjuice/algo-viz/blob/master/builtins/js/types.d.ts" target="_blank" rel="noopener noreferrer">
                         Builtin Type Definitions
                     </a>
                 </div>
@@ -388,7 +388,7 @@ class Tutorial extends Component {
                 </div>
                 <div className="columns is-centered">
                     <div className="column is-narrow">
-                        <a href="https://github.com/omarjuice/algo-viz" target="_blank">
+                        <a href="https://github.com/omarjuice/algo-viz" target="_blank" rel="noopener noreferrer">
                             <figure className="image is-64x64">
                                 <img src={process.env.PUBLIC_URL + '/github-brands.svg'} alt="" />
                             </figure>

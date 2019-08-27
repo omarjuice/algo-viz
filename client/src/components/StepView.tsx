@@ -37,7 +37,7 @@ const StepView: React.FC = observer(() => {
 
             {!error && !(errorExists && index === store.viz.steps.length - 1) ? (
                 <div style={style}>
-                    {store.code.start ? (
+                    {config["Code Display"] && store.code.start ? (
                         <>
                             <span style={{ fontSize: Math.min(900 / store.code.expression.length, 16), color: store.settings.configColors['Code Highlight'] }}>
                                 {store.code.expression}

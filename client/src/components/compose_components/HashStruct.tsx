@@ -51,7 +51,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
 
     const dimensionsMultiplier = (store.structsWidth >= 10 ? store.structsWidth / 24 : .5) * store.widths.object * ratio
     const maxWidth = store.windowWidth * dimensionsMultiplier
-    const maxHeight = store.windowHeight * dimensionsMultiplier * 2
+    const maxHeight = store.windowHeight * dimensionsMultiplier / 2
     const obj: ReactNode[] = useMemo(
         () => iterate(structure, len, objectId, ratio, willRender, maxWidth),
         [structure, len, objectId, ratio, willRender, maxWidth]
@@ -71,6 +71,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         minWidth: 150,
         maxHeight,
         overflowY: 'scroll',
+        overflowX: 'visible',
         flexDirection: orientation
     }
 
@@ -86,7 +87,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     return (
         <div style={{ ...styles, maxHeight: maxHeight + 100, }} className={`hash-struct`}>
             <div className="is-size-1" style={braceStyle}>{`{`}</div>
-            <div style={{ ...styles, minWidth: type === 'Map' ? 200 : type === 'Set' ? 100 : undefined, minHeight: 50 }} ref={ref}>
+            <div style={{ ...styles, minWidth: ['Object', 'Map'].includes(type) ? 200 : 100, minHeight: 50 }} ref={ref}>
                 {obj}
             </div>
             <div className="is-size-1" style={braceStyle}>{'}'}</div>
