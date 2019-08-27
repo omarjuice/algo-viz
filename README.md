@@ -1,20 +1,15 @@
 # Algo-Viz
 
-## _Work In Progress_
+## Visualize algorithms and data structures
 
-## How to run
-
-`npm install` then `npm run dev`
+## [Deployed here](https://algo-viz.herokuapp.com)
 
 ### The application will take user code and execute it to transform it into a visualization of the involved data structures and expressions. 
 
-## EXAMPLES
-![bst](https://res.cloudinary.com/omarjuice/image/upload/v1562789972/algo-viz/algo-viz-bst.gif)
-![trie](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-trie.png)
-![riverSizes](https://res.cloudinary.com/omarjuice/image/upload/v1562778624/algo-viz/algo-viz-example-riverSizes.png)
-![letterCombinations](https://res.cloudinary.com/omarjuice/image/upload/v1562782410/algo-viz/algo-viz-example-lc.png)
-### *What have I done...*
-![What have I done](https://res.cloudinary.com/omarjuice/image/upload/v1563550903/algo-viz/algo-viz-whid2.png)
+![data structures](https://res.cloudinary.com/omarjuice/image/upload/v1566855817/algo-viz-tutorial/builtins.png)
+![recursion](https://res.cloudinary.com/omarjuice/image/upload/v1566930111/algo-viz-tutorial/nthFib.png)
+
+
 ## How it works
 The functionality can be broken down into high level steps.
 
