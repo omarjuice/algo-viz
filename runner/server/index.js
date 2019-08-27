@@ -54,7 +54,7 @@ async function initialize() {
     const database = client.db(dbName);
     const Issues = database.collection('issues');
     app.use(session({
-        store: new MongoStore({ url: mongoUri + '/' + dbName }),
+        store: new MongoStore({ url: process.env.NODE_ENV === 'production' ? mongoUri : mongoUri + '/' + dbName }),
         secret: process.env.SESSION_SECRET || 'secret',
         resave: false,
         saveUninitialized: true
@@ -78,12 +78,16 @@ async function initialize() {
                 }
 
             })
-        if (req.session.submissions) {
-            req.session.submissions++;
-        } else {
-            req.session.submissions = 1;
+        try {
+            if (req.session.submissions) {
+                req.session.submissions++;
+            } else {
+                req.session.submissions = 1;
+            }
+            req.session.save()
+        } catch (e) {
+            console.log(e);
         }
-        req.session.save()
     })
 
     app.post('/issues', async (req, res, next) => {
