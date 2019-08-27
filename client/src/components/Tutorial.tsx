@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 
 import FastArrow from './icons/FastArrow';
 import SlowArrow from './icons/SlowArrow';
+import ValDisplay from './compose_components/ValDisplay';
 
 // -Submitting code
 // -Visualizing: playing and pausing
@@ -26,7 +27,7 @@ import SlowArrow from './icons/SlowArrow';
 
 @observer
 class Tutorial extends Component {
-    imageUrl = (name: string) => `https://res.cloudinary.com/omarjuice/image/upload/v1566855817/algo-viz-tutorial/${name}.png`;
+    imageUrl = (name: string) => `https://res.cloudinary.com/omarjuice/image/upload/v1566858014/algo-viz-tutorial/${name}.png`;
     titles = [
         'Submitting code',
         'Visualizing: Playing and Pausing',
@@ -54,7 +55,7 @@ class Tutorial extends Component {
                             <div key={i}>
                                 <button  onClick={() => this.setState({ index: i + 1 })}
                                     className="button is-text has-text-weight-bold">
-                                    {i + 1}. {title}
+                                    <ValDisplay color={store.settings.configColors['Step Slider Track']} size={25} anim={[false, false]} textDisplay={String(i + 1)} highlight={false} objectId={String(i)} /> {title}
                                 </button>
                             </div>
                         )
@@ -303,7 +304,7 @@ class Tutorial extends Component {
                 </figure>
                 <div>
                     You might not always want to link structures to each other as children. In that case, you may want to specify
-                    a particular key as a <b>pointer</b>. Take for example, the <b>prev</b> pointer on the above Doubly Linked List.
+                    a particular key as a <b>pointer</b>. Take, for example, the <b>prev</b> pointer on the above Doubly Linked List.
                      The key difference between pointers and children are as follows:
                     <ul>
                         <li> <b>1.</b> A parent will find its children and render them with it. A parent will not find its pointers.</li>
@@ -369,7 +370,7 @@ class Tutorial extends Component {
                         </figure>
                     </button>
                     {' '}
-                    to report a bug. Write a description of the bug and preferably the steps to recreate it as well.
+                    to report a bug. Write a description of the issue and preferably the steps to recreate it as well.
                     A copy of the code currently being visualized will be sent along with your report.
                 </div>
             </div>
@@ -413,7 +414,7 @@ class Tutorial extends Component {
         return (
             <div className={`modal ${store.tutorial && 'is-active'}`}>
                 <div className="modal-background" onClick={() => store.stopTutorial()} />
-                <div className="modal-card" style={{ backgroundColor: '#111111' }}>
+                <div  className="modal-card" style={{ backgroundColor: '#111111', height: '90vh' }}>
                     <header style={{ backgroundColor: store.settings.configColors['Navbar'] }} className="modal-card-head">
                         <p className="modal-card-title">Tutorial</p>
                         <button onClick={() => store.stopTutorial()} className="delete" aria-label="close"></button>

@@ -52,7 +52,7 @@ class InvalidScreenWidth extends Component {
                     {
                         this.state.display.map((v, i) => {
                             const { char, anim } = v
-                            return <ValDisplay key={i} color={'#a663cc'} size={50} anim={anim} textDisplay={char} highlight={false} objectId={char} />
+                            return <ValDisplay key={i} color={store.settings.configColors['Step Slider Track']} size={50} anim={anim} textDisplay={char} highlight={false} objectId={char} />
                         })
                     }
                 </div>
