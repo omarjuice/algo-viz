@@ -1,16 +1,13 @@
 const checkTypedArray = require('./checkTypedArray')
-// the values are specific to the Runner instance
 const natives = require('./natives')
 module.exports = function (obj) {
-    // these are functions that change instance methods on their respective object tyes
     if (this.map.has(obj)) {
         return this.map.get(obj)
     }
     if (obj && typeof obj === 'object') {
         // we want to ignore native objects
-
         checkTypedArray(obj)
-
+        //Typed arrays cannot be virtualized :(
         if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
         if (!Array.isArray(obj)) {
             const objString = obj.toString()
@@ -38,6 +35,8 @@ module.exports = function (obj) {
             for (const [key, val] of obj.entries()) {
                 copy[i++] = [this.stringify(key), this.stringify(val)]
             }
+            // these are functions that change instance methods on their respective object tyes
+
             this.reassignMapMethods(obj)
             this.objects[newId] = copy
         } else if (obj instanceof Set) {
@@ -47,6 +46,7 @@ module.exports = function (obj) {
             for (const value of obj.values()) {
                 copy[i++] = this.stringify(value)
             }
+            // these are functions that change instance methods on their respective object tyes
             this.reassignSetMethods(obj)
             this.objects[newId] = copy
         } else if (Array.isArray(obj)) {
@@ -76,7 +76,6 @@ module.exports = function (obj) {
         this.types[newId] = type
         return newId
     } else {
-        // these falsy primitives must be encoded because they all become `null` in JSON
         if (typeof obj === 'function') {
             if (this.map.has(obj)) return this.map.get(obj)
             const name = obj.name && obj.name[0] !== '_' ? obj.name : 'function'

@@ -11,15 +11,18 @@ class Runner {
         this.steps = []
         // keeps references of objects and their generated id's
         this.map = new Map()
-        // the actual objects, with flattened references
+
+        // the actual objects that will be consumed by the visualizer, with flattened references
         this.objects = {}
-        // the constructors of objects
+
+        // the constructors of objects, used to skip stringification until the object is intantiated
         this.constructors = new Map()
+
+        //record of already virtualized objects so each unique object has only one virtualized version
         this.proxies = new Map()
         this.types = {}
         // callStack for determining the type of function we are currently in
         this.callStack = []
-        // a wrapper for Object.defineProperty that gives it the signature
 
         this.virtualize = virtualize
 
@@ -28,6 +31,7 @@ class Runner {
             while (!id || id in this.objects) id = '_'.repeat(num_) + randomString(l)
             return id
         }
+
         const { reassignMapMethods, reassignSetMethods } = reassignMutative.call(this)
         this.reassignMapMethods = reassignMapMethods;
         this.reassignSetMethods = reassignSetMethods
@@ -41,7 +45,7 @@ class Runner {
         this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
 
 
-        // keeping references to literal values because `undefined` is not JSONable and null is used as an empty value
+        // keeping references to literal values because they are  not JSONable and `null` is used as an empty value
         const undefLiteral = this.genId(5, 1)
         this.map.set(undefined, undefLiteral)
         this.types[undefLiteral] = 'undefined'
@@ -57,6 +61,8 @@ class Runner {
         const negInfinity = this.genId(5, 1)
         this.map.set(-Infinity, negInfinity)
         this.types[negInfinity] = '-Infinity'
+
+        //Will not catch steps when this is true
         this._ignore = false
         this.ignore = (bool) => this._ignore = bool
     }
