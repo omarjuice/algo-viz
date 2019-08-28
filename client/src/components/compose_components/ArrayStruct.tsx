@@ -68,7 +68,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const size = Math.max(Math.round(ratio * 5), 3)
     const color = store.settings.structColors['Array']
     const active = pointed || store.structs.activePointers[objectId];
-    const bkgExtend = active ? `${Math.min(len * valSize * 2, 2000)}px` : '20px'
+    const bkgExtend = active ? `${Math.min(len * valSize * 2 + 100, 2000)}px` : '20px'
     const styles: React.CSSProperties = {
         margin: `${ratio < 1 ? 0 : size}px`,
         padding: `${size}px`,

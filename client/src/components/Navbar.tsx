@@ -148,7 +148,7 @@ const Navbar: React.FC = observer(() => {
                         </div>
                         <div className="navbar-item">
                             <button onClick={() => store.settings.startEdit()} className="button is-link is-small">
-                                <figure style={{ marginTop: '-2px' }} className="image is-4by4">
+                                <figure style={{ marginTop: '-1.5px' }} className="image is-4by4">
                                     <img src={process.env.PUBLIC_URL + '/baseline-settings-20px.svg'} alt="" />
                                 </figure>
                             </button>

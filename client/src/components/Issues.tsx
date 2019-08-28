@@ -18,6 +18,9 @@ class Issues extends Component<{}, State> {
             store.api.postIssue(this.state.description)
                 .then(() => {
                     store.api.stopPostingIssue()
+                    this.setState({
+                        description: ''
+                    })
                 })
         }
     }

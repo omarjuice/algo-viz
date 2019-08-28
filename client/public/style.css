@@ -100,28 +100,18 @@ body, html, #root, .app{
     z-index: 5
 }
 
-.array-index{
-    position: relative;
-    margin-top: -30%;
-    margin-left: -100%;
-    padding: 0;
-    margin-bottom: -30%;
-    color: grey;
 
-}
 .array-line{
     display: block
 }
+
 .hash-struct{
     display: inline-flex;
     justify-content: center;
     align-items: center;
     margin: 10px;
 }
-.object-container{
-    display: flex;
-    flex-direction: column;
-}
+
 .hash-val .columns .column.is-full{
     padding-top: 0px !important;
     padding-bottom:  0px !important

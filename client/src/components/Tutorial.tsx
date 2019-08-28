@@ -29,6 +29,7 @@ import ValDisplay from './compose_components/ValDisplay';
 class Tutorial extends Component {
     imageUrl = (name: string) => `https://res.cloudinary.com/omarjuice/image/upload/v1566858014/algo-viz-tutorial/${name}.png`;
     titles = [
+        'Getting Started',
         'Submitting code',
         'Visualizing: Playing and Pausing',
         'Visualizing: Stepping and Adjusting the Speed',
@@ -62,11 +63,26 @@ class Tutorial extends Component {
                     })
                 }
             </div>
+        ),(
+            <div>
+            <h1 className="title is-4 has-text-centered">
+                {this.titles[0]}
+            </h1>
+            <figure className="image is-16by9">
+                <img src={this.imageUrl('nthFib')} alt="" />
+            </figure>
+            <br />
+            <p >
+               Algo-viz currently has language support for JavaScript. Support for Python will be coming in the near future.
+               <br/>
+                You will have the best experience using the <b>latest</b> versions of Chrome, Firefox, or Safari.
+            </p>
+        </div>
         )
         ,
         (<div>
             <h1 className="title is-4 has-text-centered">
-                {this.titles[0]}
+                {this.titles[1]}
             </h1>
             <figure className="image is-16by9">
                 <img src={this.imageUrl('coding')} alt="" />
@@ -88,7 +104,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[1]}
+                    {this.titles[2]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('playing')} alt="" />
@@ -111,7 +127,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[2]}
+                    {this.titles[3]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('playing2')} alt="" />
@@ -150,7 +166,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[3]}
+                    {this.titles[4]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('speeds')} alt="" />
@@ -171,7 +187,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[4]}
+                    {this.titles[5]}
                 </h1>
                 <figure className="image is-5by3">
                     <img src={this.imageUrl('config')} alt="" />
@@ -217,7 +233,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[5]}
+                    {this.titles[6]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('structs')} alt="" />
@@ -235,7 +251,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[6]}
+                    {this.titles[7]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('children')} alt="" />
@@ -251,7 +267,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[7]}
+                    {this.titles[8]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('multi_children')} alt="" />
@@ -271,7 +287,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[8]}
+                    {this.titles[9]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('numChildren')} alt="" />
@@ -297,7 +313,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[9]}
+                    {this.titles[10]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('pointers')} alt="" />
@@ -358,7 +374,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[12]}
+                    {this.titles[13]}
                 </h1>
 
                 <div>
