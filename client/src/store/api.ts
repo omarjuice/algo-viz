@@ -18,6 +18,15 @@ class ApiStore {
     constructor(store: RootStore) {
         this.root = store
         this.ok = true
+        window.addEventListener('error', ({ error }) => {
+            const errorObj: any = {};
+
+            Object.getOwnPropertyNames(error).forEach(function (key) {
+                errorObj[key] = error[key];
+            });
+            errorObj.stepType = this.root.iterator.step ? this.root.iterator.step.type : null
+            this.postIssue(JSON.stringify(errorObj))
+        })
     }
     @action async runCode(code: string) {
         try {

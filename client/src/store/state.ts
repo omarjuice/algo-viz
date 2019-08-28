@@ -20,7 +20,6 @@ class StateStore {
     }
 
     @action next(step: Viz.Step.Any) {
-        console.log(step.type)
         while (this.queue.length) {
             this.next(this.queue.pop())
         }
@@ -157,6 +156,7 @@ class StateStore {
     }
     @action prev(step: Viz.Step.Any) {
         this.queue = []
+
         if ('batch' in step) {
             for (let i = step.batch.length - 1; i >= 0; i--) {
                 this.prev(step.batch[i])
