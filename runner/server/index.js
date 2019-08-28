@@ -57,7 +57,10 @@ async function initialize() {
         store: new MongoStore({ url: process.env.NODE_ENV === 'production' ? mongoUri : mongoUri + '/' + dbName }),
         secret: process.env.SESSION_SECRET || 'secret',
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
+        cookie: {
+            expires: new Date(253402300000000)
+        }
     }));
     app.post('/execute', (req, res, next) => {
         const { code } = req.body;
