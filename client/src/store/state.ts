@@ -20,6 +20,7 @@ class StateStore {
     }
 
     @action next(step: Viz.Step.Any) {
+        console.log(step.type)
         while (this.queue.length) {
             this.next(this.queue.pop())
         }
@@ -151,14 +152,17 @@ class StateStore {
                 this.queue.push(s)
             })
         }
+        step.executed = true
         // console.log(step.type, toJS(this.scopeStack))
     }
     @action prev(step: Viz.Step.Any) {
+        this.queue = []
         if ('batch' in step) {
             for (let i = step.batch.length - 1; i >= 0; i--) {
                 this.prev(step.batch[i])
             }
         }
+        if (!step.executed) return
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
             // const [parent, scope] = step.scope
@@ -245,14 +249,19 @@ class StateStore {
                                 ids[id].push(undefined)
                             }
                         }
-                        const { children } = this.scopeChain[scope]
-                        for (const child of children) {
-                            queue.push(child)
+                        try {
+                            const { children } = this.scopeChain[scope]
+                            for (const child of children) {
+                                queue.push(child)
+                            }
+                        } catch (e) {
+                            throw e
                         }
                     }
                 }
             }
         }
+        step.executed = false;
     }
     @computed get activeIds(): activeIds[][] {
         const s = this.scopeStack;
