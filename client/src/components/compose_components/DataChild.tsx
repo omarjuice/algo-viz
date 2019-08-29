@@ -17,11 +17,19 @@ type Props = {
     isList?: boolean
     idx?: number
     depth: number
+    setDepth: (d: number, val: number) => void
+    depthMultiplier: number
 }
 
 @observer
 class DataChild extends React.Component<Props>{
     renderId: string = genId(5)
+    depthWasSet = false
+
+
+    componentDidMount() {
+        this.props.setDepth(this.props.depth, 1)
+    }
     componentWillUnmount() {
         const pos = store.structs.positions[this.props.objectId]
         if (pos) {
@@ -29,14 +37,17 @@ class DataChild extends React.Component<Props>{
                 delete store.structs.positions[this.props.objectId]
             }
         }
+
+        this.props.setDepth(this.props.depth, -1)
     }
     render() {
-        const { objectId, ratio, prop, parent, parentId, isList, idx } = this.props
+        const { objectId, ratio, prop, parent, parentId, isList, idx, depth, setDepth, depthMultiplier } = this.props
         const pos = store.structs.positions[objectId]
 
         const info = parent.get(prop)
         const type = store.viz.types[objectId]
         const arc = pos ? this.renderId !== pos.renderId : false
+
         const pointerProps = {
             arc,
             get: info.get,
@@ -47,7 +58,7 @@ class DataChild extends React.Component<Props>{
         }
         let element;
         if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
-            element = <DataStruct depth={this.props.depth} idx={idx} isList={isList} renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
+            element = <DataStruct depthMultiplier={depthMultiplier} setDepth={setDepth} depth={depth} idx={idx} isList={isList} renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
         } else if (type === 'Array') {
             element = <ArrayStruct renderId={this.renderId} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else if (type === 'Object' || type === 'Map' || type === 'Set') {

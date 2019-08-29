@@ -156,8 +156,13 @@ const ArcPointer: React.FC<Props> = observer(({ from, to, children, get, set, pr
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
 
-                    {d && <path d={d} strokeDashoffset={toCoords.radius} stroke={configColors["Arc Pointer"]} strokeWidth={1} fill="transparent" />}
-                    {d && <path d={d} style={lineStyle} />}
+                    {fromCoords.radius && toCoords.radius && (
+                        <>
+                            {d && <path d={d} strokeDashoffset={toCoords.radius} stroke={configColors["Arc Pointer"]} strokeWidth={1} fill="transparent" />}
+                            {d && <path d={d} style={lineStyle} />}
+                        </>
+                    )}
+
                 </svg>
                 {children}
             </div>

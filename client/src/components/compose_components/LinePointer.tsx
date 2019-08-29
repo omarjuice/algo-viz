@@ -16,7 +16,9 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
     const toCoords = store.structs.positions[to]
 
     const active = store.structs.activePointers[from]
-    const willRender = fromCoords && toCoords
+    let willRender: boolean = Boolean(fromCoords && toCoords)
+
+
     const timeout = useRef(null)
     const { configColors } = store.settings
     useEffect(() => {
@@ -82,12 +84,16 @@ const LinePointer: React.FC<Props> = observer(({ from, to, children, get, set, p
 
         }
 
+
         return (
             <div>
                 <svg style={{ position: 'absolute', top, left, zIndex: 0 }} height={height} width={width} viewBox={`0 0 ${width} ${height}`}>
-                    <line {...lineCoords} stroke={configColors["Line Pointer"]} strokeWidth={1} ></line>
-                    <line {...lineCoords} style={lineStyle}></line>
-
+                    {fromCoords.radius && toCoords.radius && (
+                        <>
+                            <line {...lineCoords} stroke={configColors["Line Pointer"]} strokeWidth={1} ></line>
+                            <line {...lineCoords} style={lineStyle}></line>
+                        </>)
+                    }
                 </svg>
                 {children}
             </div>

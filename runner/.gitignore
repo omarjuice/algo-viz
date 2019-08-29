@@ -11,3 +11,4 @@ run.js
 .DS_Store
 vm.js
 debug.txt
+.env

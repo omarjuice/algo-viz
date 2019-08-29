@@ -4,6 +4,7 @@ import store from '../store';
 import ArrayStruct from './compose_components/ArrayStruct';
 import HashStruct from './compose_components/HashStruct';
 import DataStruct from './compose_components/DataStruct';
+import DataStructContainer from './compose_components/DataStructContainer';
 
 
 
@@ -11,7 +12,7 @@ const Structs: React.FC = observer(() => {
     if (!store.allowRender || !store.settings.config['Objects']) return null;
     const arrays: ReactNode[] = []
     const objects: ReactNode[] = []
-    const data: ReactNode[] = []
+    const data: ({ id: string, idx: number })[] = []
     const ids = store.structs.bindings
     let i = 0;
     ids.forEach((id) => {
@@ -25,30 +26,21 @@ const Structs: React.FC = observer(() => {
                 <HashStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
             )
         } else {
-            const type = store.viz.types[id];
-            const settings = store.settings.structSettings[type]
-            const numChildren = settings && settings.numChildren
             data.push(
-                <div key={id} style={{ overflow: 'visible', display: numChildren === 1 ? 'block' : 'inline-flex', maxHeight: (store.windowHeight - 50) / 2 }}>
-                    <DataStruct depth={0} idx={i} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={true} />
-                </div>
+                {
+                    id,
+                    idx: i
+                }
             )
         }
         i++
     })
 
 
-
+    let heightMultiple = 2;
     let dataCol = 12;
     let arrayCol = 7;
     let objCol = 5;
-    if (arrays.length && !objects.length) {
-        arrayCol = 12;
-    }
-    if (objects.length && !arrays.length) {
-        objCol = 12;
-    }
-
     if (store.structsWidth >= 10) {
         if (data.length) {
             dataCol = 6;
@@ -70,6 +62,16 @@ const Structs: React.FC = observer(() => {
             arrayCol = objects.length ? 9 : 12;
             objCol = arrays.length ? 3 : 12;
         }
+        heightMultiple = data.length > 1 ? 1 : 2
+    } else {
+        if (arrays.length && !objects.length) {
+            arrayCol = 12;
+        } else if (objects.length && !arrays.length) {
+            objCol = 12;
+        }
+        if (arrays.length || objects.length) {
+            heightMultiple = 1
+        }
     }
 
     store.setWidths(
@@ -90,7 +92,7 @@ const Structs: React.FC = observer(() => {
     return (
         <div className="structs columns is-multiline">
             {data.length ? <div className={`column is-narrow is-${dataCol}`}>
-                {data}
+                {data.map((d) => <DataStructContainer key={d.id} {...d} heightMultiple={heightMultiple} />)}
             </div> : null}
             {arrays.length ? <div className={`column is-narrow is-${arrayCol}`}>
                 {arrays}

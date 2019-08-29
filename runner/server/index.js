@@ -1,7 +1,7 @@
+require('dotenv').config()
 const version = parseInt(process.versions.node.split('.')[0])
 process.env.VERSION = version
 const express = require('express')
-
 const mongo = require('mongodb').MongoClient;
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -9,7 +9,7 @@ const cors = require('cors')
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'test' ? 8080 : 3001)
-
+const env = process.env.NODE_ENV
 
 
 
@@ -48,13 +48,13 @@ if (version >= 11) {
 
 
 async function initialize() {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017';
-    const dbName = process.env.NODE_ENV === 'test' ? 'algo_viz_test' : 'algo_viz'
+    const mongoUri = env === 'production' ? process.env.MONGO_URI : 'mongodb://localhost:27017';
+    const dbName = env === 'test' ? 'algo_viz_test' : 'algo_viz'
     const client = await mongo.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
     const database = client.db(dbName);
     const Issues = database.collection('issues');
     app.use(session({
-        store: new MongoStore({ url: process.env.NODE_ENV === 'production' ? mongoUri : mongoUri + '/' + dbName }),
+        store: new MongoStore({ url: env === 'production' ? mongoUri : mongoUri + '/' + dbName }),
         secret: process.env.SESSION_SECRET || 'secret',
         resave: false,
         saveUninitialized: true,

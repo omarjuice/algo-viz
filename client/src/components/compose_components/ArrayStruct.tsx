@@ -15,7 +15,8 @@ type Props = {
 
 const iterate = (len: number, display: 'column' | 'row', ratio: number, valSize: number, objectId: string, structure: Viz.Structure) => {
     const arr = []
-    for (let i = 0; i < Math.min(len, 1000); i++) {
+    len = Math.min(len, 1000)
+    for (let i = 0; i < len; i++) {
         arr.push(
             <ArrayVal display={display}
                 ratio={ratio} size={valSize}

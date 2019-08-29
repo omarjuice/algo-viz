@@ -18,9 +18,11 @@ type Props = {
     isList?: boolean
     idx?: number
     depth: number
+    setDepth: (d: number, v: number) => void
+    depthMultiplier: number
 }
 
-const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx, depth }) => {
+const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, renderId, isList, idx, depth, depthMultiplier, setDepth }) => {
     const [node, setNode] = useState(null)
 
     const type = store.viz.types[objectId]
@@ -38,7 +40,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         if (idx) { }//For rerender
         if (elem) {
             if (!node) {
-                if (!isList) {
+                if (depth === 0 || depth % 15 !== 0) {
                     setNode(elem)
                 } else {
                     setImmediate(() => setNode(elem))
@@ -203,7 +205,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         }
     }
 
-    const size = Math.min(30, Math.max(width - 1, 1))
+    const size = Math.min(30, Math.max(width - 1, 1)) * depthMultiplier
     const displayProps: Viz.DisplayProps = {
         objectId,
         color,
@@ -260,6 +262,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                                     objectId={child}
                                     ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}
                                     prop={key}
+                                    depthMultiplier={depthMultiplier}
+                                    setDepth={setDepth}
                                     isList={isList} />
 
                             )
