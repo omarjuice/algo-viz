@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import FastArrow from './icons/FastArrow';
 import SlowArrow from './icons/SlowArrow';
 import ValDisplay from './compose_components/ValDisplay';
+import SwitchButton from './settings/SwitchButton';
 
 // -Submitting code
 // -Visualizing: playing and pausing
@@ -189,9 +190,24 @@ class Tutorial extends Component {
                 <h1 className="title is-4 has-text-centered">
                     {this.titles[5]}
                 </h1>
-                <figure className="image is-5by3">
-                    <img src={this.imageUrl('config')} alt="" />
-                </figure>
+               <div style={{backgroundColor: store.settings.configColors["Background"]}}>
+               {Object.keys(store.settings.config).map((name) => {
+                    const n = name as Viz.configTypes
+                    return (
+                        <div key={name}>
+                            <div className="columns">
+                                <div className="column has-text-white">
+                                    {name}
+                                </div>
+                                <div className="column">
+                                    <SwitchButton onClick={() => {}} size={50} toggled={store.settings.config[n]} />
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+               </div>
+               <br/>
                 <p>
                     You have a high degree of customization available to you.
                     <br />
@@ -221,6 +237,12 @@ class Tutorial extends Component {
                     </span>
                     {' '}
                     When enabled, if an element in an object is not visible, when a GET or SET is performed on that element, it will be scrolled into view.
+                    <br />
+                    <span className="has-text-weight-bold">
+                        Find Object Parents:
+                    </span>
+                    {' '}
+                    Normally, an object will only find its parent if its parent has an active parent binding. With this enabled, it will find its parent regardless. 
                     <br />
                     <span className="has-text-weight-bold">
                         Colors:

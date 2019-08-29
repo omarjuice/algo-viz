@@ -107,7 +107,7 @@ class Structures {
             let isCircular = false
             while (parent) {
                 if (!this.root.settings.config["Find Object Parents"] && !ids.has(parent)) {
-                    return
+                    break;
                 }
                 current = parent
                 parent = this.parents[current]

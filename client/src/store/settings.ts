@@ -197,7 +197,7 @@ class Settings {
         'tooltips': false,
         'Active Pointer on GET': false,
         'Scroll Objects Into View': false,
-        'Find Object Parents': true
+        'Find Object Parents': false
 
     }
     @observable root: RootStore
