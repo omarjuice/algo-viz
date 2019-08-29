@@ -46,12 +46,13 @@ class DataStructContainer extends Component<Props, State> {
 
     render() {
         const { id, idx } = this.props
+        const { depthMultiplier } = this.state
         const type = store.viz.types[id];
         const settings = store.settings.structSettings[type]
         const numChildren = settings && settings.numChildren
         return (
             <div style={{ overflow: 'visible', display: numChildren === 1 ? 'block' : 'inline-flex' }}>
-                <DataStruct depthMultiplier={this.state.depthMultiplier} setDepth={this.setDepth} depth={0} idx={idx} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={numChildren === 1} />
+                <DataStruct depthMultiplier={numChildren === 1 ? Math.min(depthMultiplier * 1.4, 1) : depthMultiplier} setDepth={this.setDepth} depth={0} idx={idx} key={id} ratio={1} structure={store.structs.objects[id]} objectId={id} isList={numChildren === 1} />
             </div>
         )
 
