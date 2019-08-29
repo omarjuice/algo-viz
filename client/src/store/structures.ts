@@ -355,7 +355,6 @@ class Structures {
         const radius = width / 2
         const y = top + (height / 2)
         const x = left + (radius)
-        // console.log({ x, y });
         const pos = this.positions[id]
         if (!pos || pos.x !== x || pos.y !== y || pos.renderId !== renderId) {
             this.positions[id] = { x, y, renderId, radius }

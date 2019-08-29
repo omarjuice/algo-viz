@@ -43,6 +43,7 @@ const Structs: React.FC = observer(() => {
     let objCol = 5;
     if (store.structsWidth >= 10) {
         if (data.length) {
+            heightMultiple = data.length > 1 ? 1 : 2
             dataCol = 6;
             if (arrays.length && !objects.length) {
                 arrayCol = 6
@@ -57,12 +58,12 @@ const Structs: React.FC = observer(() => {
                 dataCol = 12
                 arrayCol = 0;
                 objCol = 0;
+                heightMultiple = data.length > 2 ? 1 : 2
             }
         } else {
             arrayCol = objects.length ? 9 : 12;
             objCol = arrays.length ? 3 : 12;
         }
-        heightMultiple = data.length > 1 ? 1 : 2
     } else {
         if (arrays.length && !objects.length) {
             arrayCol = 12;

@@ -32,13 +32,16 @@ class DataStructContainer extends Component<Props, State> {
                 this.depths.pop()
             }
         }
-        const multiple = (.7 ** Math.max((this.depths.length - 1) / (5 * this.props.heightMultiple)));
+        const multiple = ((this.depths.length > 10 ? .5 : .7) ** Math.floor((this.depths.length - 1) / (5 * this.props.heightMultiple)));
         const depthMultiplier = 1 * (multiple)
         if (depthMultiplier !== this.state.depthMultiplier) {
-            console.log(depthMultiplier);
             this.setState({ depthMultiplier })
         }
-        // console.log(this.depths);
+    }
+    componentDidUpdate(prevProps: Props) {
+        if (prevProps.heightMultiple !== this.props.heightMultiple) {
+            this.setDepth(0, 0)
+        }
     }
 
     render() {
