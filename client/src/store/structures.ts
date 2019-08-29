@@ -106,6 +106,9 @@ class Structures {
             let parent = this.parents[id]
             let isCircular = false
             while (parent) {
+                if (!this.root.settings.config["Find Object Parents"] && !ids.has(parent)) {
+                    return
+                }
                 current = parent
                 parent = this.parents[current]
                 if (seen.has(current)) {
@@ -119,6 +122,7 @@ class Structures {
                 ids.add(current)
             }
         })
+
         deletes.forEach((id) => {
             ids.delete(id)
         })

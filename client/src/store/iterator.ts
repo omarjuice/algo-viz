@@ -110,6 +110,7 @@ class IteratorStore {
             nextTime *= this.root.settings.speeds[nextType as Viz.configurable] || 0
             const exec = () => {
                 const cont = this.next()
+
                 if (cont) {
                     this.begin()
                 }
@@ -123,6 +124,9 @@ class IteratorStore {
     @action play() {
         this.iterating = true
         this.direction = true;
+        if (this.index === 0) {
+            this.root.structs.resetPositions()
+        }
         if (this.index >= this.root.viz.steps.length - 1) {
             clearTimeout(this.timer)
             this.handler.allow = true
@@ -183,7 +187,7 @@ class IteratorStore {
             this.handler.value = val
         }
     }
-    @action async afterChange() {
+    @action afterChange() {
         if (this.handler.allow && this.handling) {
             // const t1 = Date.now()
             const iterating = this.handler.wasPlaying
@@ -213,7 +217,7 @@ class IteratorStore {
                 this.handler.allow = true
             }, 500)
             //remove highlights and flashes
-            await this.root.structs.reset()
+            this.root.structs.reset()
             this.root.structs.resetPositions()
             this.root.allowRender = true
             if (iterating) this.play()

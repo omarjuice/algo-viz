@@ -185,8 +185,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                     newList[pos] = child
                     child = newList[pos]
                 }
-                pos--
-                if (pos < 0) pos = newList.length - 1
+                pos++
+                if (pos >= newList.length) pos = 0;
             }
             newList[pos] = child
         })
@@ -255,7 +255,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                                 <DataChild
                                     depth={depth + 1}
                                     idx={idx}
-                                    key={child} parent={parent}
+                                    key={child + key} parent={parent}
                                     parentId={objectId}
                                     objectId={child}
                                     ratio={ratio / (settings.numChildren === null ? children.length : settings.numChildren)}

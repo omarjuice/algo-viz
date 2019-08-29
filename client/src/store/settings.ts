@@ -196,7 +196,8 @@ class Settings {
         'Step View': true,
         'tooltips': false,
         'Active Pointer on GET': false,
-        'Scroll Objects Into View': false
+        'Scroll Objects Into View': false,
+        'Find Object Parents': true
 
     }
     @observable root: RootStore
@@ -204,7 +205,13 @@ class Settings {
         const settings = window.localStorage.getItem(SETTINGS_VERSION)
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
-            syncObjects(this, all)
+            // syncObjects(this, all)
+            this.valueColors = { ...this.valueColors, ...all.valueColors };
+            this.configColors = { ...this.configColors, ...all.configColors };
+            this.speeds = { ...this.speeds, ...all.speeds }
+            this.structColors = { ...this.structColors, ...all.structColors }
+            this.structSettings = all.structSettings;
+            this.config = { ...this.config, ...all.config }
         }
         this.structSettings['Array'] = {
             order: {},
@@ -294,15 +301,3 @@ class Settings {
 }
 
 export default Settings
-
-
-function syncObjects(obj1: any, obj2: any) {
-    for (const key in obj1) {
-        if (key in obj2) {
-            obj1[key] = obj2[key]
-            if (obj1[key] && typeof obj1[key] === 'object') {
-                syncObjects(obj1[key], obj2[key])
-            }
-        }
-    }
-}

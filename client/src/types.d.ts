@@ -43,7 +43,11 @@ declare namespace Viz {
     type valueColors = {
         [key in valueColor]: string
     }
-    type configTypes = 'Callstack' | 'Code Display' | 'Objects' | 'Identifiers' | 'Step View' | 'tooltips' | 'Active Pointer on GET' | 'Scroll Objects Into View'
+    type configTypes = ('Callstack' | 'Code Display' |
+        'Objects' | 'Identifiers' |
+        'Step View' | 'tooltips' |
+        'Active Pointer on GET' | 'Scroll Objects Into View' |
+        'Find Object Parents')
     type configSettings = {
         [key in configTypes]: boolean
     }
