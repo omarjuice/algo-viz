@@ -99,16 +99,15 @@ class Structures {
             }
         }
         const deletes: Set<string> = new Set()
+        const findParents = this.root.settings.config["Find Object Parents"]
         ids.forEach(id => {
             const seen: Set<string> = new Set()
             seen.add(id)
             let current = id
             let parent = this.parents[id]
             let isCircular = false
+            let lastBoundParent;
             while (parent) {
-                if (!this.root.settings.config["Find Object Parents"] && !ids.has(parent)) {
-                    break;
-                }
                 current = parent
                 parent = this.parents[current]
                 if (seen.has(current)) {
@@ -116,16 +115,26 @@ class Structures {
                     break;
                 }
                 seen.add(current)
+                if (ids.has(current)) {
+                    lastBoundParent = current
+                }
             }
             if (!isCircular && current !== id) {
-                deletes.add(id)
-                ids.add(current)
+                if (findParents) {
+                    deletes.add(id)
+                    ids.add(current)
+                } else {
+                    if (lastBoundParent) {
+                        deletes.add(id)
+                        ids.add(lastBoundParent)
+                    }
+                }
             }
         })
-
         deletes.forEach((id) => {
             ids.delete(id)
         })
+
         this.bindings.forEach(id => {
             if (!ids.has(id)) {
                 delete this.positions[id]
