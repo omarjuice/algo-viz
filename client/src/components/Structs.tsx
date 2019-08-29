@@ -16,7 +16,6 @@ const Structs: React.FC = observer(() => {
     const ids = store.structs.bindings
     let i = 0;
     ids.forEach((id) => {
-        console.log(store.structs.objects[id].get('value').value);
         if (store.viz.types[id] === 'Array') {
             arrays.push(
                 <ArrayStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
