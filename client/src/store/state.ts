@@ -9,7 +9,7 @@ type activeIds = {
 
 class StateStore {
     @observable scopeStack: (null | number)[] = []
-    @observable callStack: string[] = []
+    @observable callStack: [string, string][] = []
     @observable scopeChain: { [key: string]: Viz.ScopeChainEl } = {}
     @observable identifiers: { [key: string]: Viz.ScopeIdentifiers } = {}
     @observable funcScopes: { [key: string]: string } = {}
@@ -31,32 +31,12 @@ class StateStore {
             if (!(scope in this.scopeChain)) {
                 this.scopeChain[scope] = { parent, children: [] }
                 if (typeof parent === 'number') {
-                    // if(!this.scopeChain[parent]){
-                    //     console.log('FILLING IN SCOPE PARENT: ' + parent );
-                    //     this.scopeChain[parent] = 
-                    // }
-                    try {
-                        this.scopeChain[parent].children.push(scope)
-                    } catch (e) {
-                        console.log(step.type)
-                        console.log(parent)
-                        throw e
-                    }
-
+                    this.scopeChain[parent].children.push(scope)
                 }
             }
             const s = this.scopeStack
             if (s[s.length - 1] !== scope) {
-                // while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
-                //     const scope = s.pop()
-                //     //NEW
-                //     for (const id in this.identifiers[scope]) {
-                //         const vals = this.identifiers[scope][id]
-                //         vals[vals.length - 1] = undefined
-                //     }
-                //     //
-                // }
-                // if (step.type !== 'RETURN' && s[s.length - 1] !== scope) s.push(scope)
+
                 if (!step.prevScopeStack) step.prevScopeStack = [...s];
                 const newStack = [scope, parent]
                 let par = parent
@@ -105,7 +85,7 @@ class StateStore {
         if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
             const fScope: number = step.scope[1]
             if (step.type !== 'RETURN') {
-                this.callStack.push(step.funcName)
+                this.callStack.push([step.funcName, step.funcID])
                 this.funcScopes[fScope] = step.funcName
                 const queue: number[] = [fScope]
                 while (queue.length) {
@@ -122,7 +102,13 @@ class StateStore {
                     }
                 }
             } else {
-                this.callStack.pop()
+
+                let i = this.callStack.length - 1;
+                while (this.callStack[i][1] !== step.funcID && i >= 0) {
+                    i--;
+                }
+                this.callStack.splice(i, 1);
+                step.callIdx = i;
                 const prevVals: { [key: string]: any } = {}
                 const queue: number[] = [fScope]
                 while (queue.length > 0) {
@@ -152,7 +138,6 @@ class StateStore {
             })
         }
         step.executed = true
-        // console.log(step.type, toJS(this.scopeStack))
     }
     @action prev(step: Viz.Step.Any) {
         this.queue = []
@@ -165,19 +150,6 @@ class StateStore {
         if (!step.executed) return
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
-            // const [parent, scope] = step.scope
-
-            // const s = this.scopeStack
-            // if (s[s.length - 1] !== scope) {
-            //     while (s.length && (![parent, scope].includes(s[s.length - 1]))) {
-            //         const scope = s.pop()
-            //         for (const id in this.identifiers[scope]) {
-            //             const vals = this.identifiers[scope][id]
-            //             vals[vals.length - 1] = undefined
-            //         }
-            //     }
-            //     if (!['METHOD', 'FUNC'].includes(step.type) && s[s.length - 1] !== scope) s.push(scope)
-            // }
         }
         if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
             let { varName: name, block } = step
@@ -208,7 +180,7 @@ class StateStore {
         if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
             const fScope = step.scope[1]
             if (step.type === 'RETURN') {
-                this.callStack.push(step.funcName)
+                this.callStack.splice(step.callIdx, 0, [step.funcName, step.funcID])
                 this.funcScopes[fScope] = step.funcName
                 const queue = [fScope]
                 while (queue.length) {

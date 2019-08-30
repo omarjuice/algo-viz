@@ -72,7 +72,7 @@ const CallStack: React.FC = observer(() => {
     } else {
         for (let i = len - 1; i >= 0; --i) {
             stack.push(
-                [i, store.state.callStack[i]]
+                [i, store.state.callStack[i][0]]
             )
         }
     }

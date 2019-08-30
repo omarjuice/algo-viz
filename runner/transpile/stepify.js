@@ -54,7 +54,7 @@ module.exports = function (input) {
                         //     return path.skip()
                         // }
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
-                        if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
+                        // if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
 
                         //put the params as declarations
                         const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
@@ -106,15 +106,17 @@ module.exports = function (input) {
                                 }
                             }
                         }
-                        if (!funcName) funcName = createId(4, 1)
+                        const funcID = createId(4, 1)
+                        if (!funcName) funcName = funcID
 
                         path.node.funcName = funcName
-
-                        // this if for the callstack management
+                        path.node.funcID = funcID
+                        // this is for the callstack management
                         const details = {
                             type: isClassMethod ? TYPES.METHOD : TYPES.FUNC,
                             scope: getScope(path),
                             funcName,
+                            funcID
                         }
                         // we need to know class methods because of their weird scoping
                         if (isClassMethod) {
@@ -167,7 +169,8 @@ module.exports = function (input) {
                         path.node.argument = proxy(path.node.argument, {
                             type: TYPES.RETURN,
                             scope: getScope(parent),
-                            funcName: parent.node.funcName
+                            funcName: parent.node.funcName,
+                            funcID: parent.node.funcID
                         })
                     }
                 },

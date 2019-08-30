@@ -90,6 +90,7 @@ declare namespace Viz {
         }
         interface FuncType extends Generic {
             funcName: string
+            funcID: string
         }
         interface VarType extends Generic {
             varName: string
@@ -117,7 +118,6 @@ declare namespace Viz {
             update?: number,
         }
 
-
         interface FUNC extends FuncType {
             type: 'FUNC'
         }
@@ -128,6 +128,7 @@ declare namespace Viz {
         }
         interface RETURN extends FuncType {
             type: 'RETURN'
+            callIdx?: number
         }
 
         interface GET extends ObjectType {

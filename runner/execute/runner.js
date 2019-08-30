@@ -115,7 +115,7 @@ class Runner {
     _f(info) {
         // for function invocations and returns
         // is the currently executing function a constructor ?
-        // if so, we want to ignore any assignments/ accessors of the constructor's object until the constructor has finished running
+        // if so, we want to avoid stringifying the object until the constructor has finished running
 
         if (info.type === TYPES.RETURN) {
             const call = this.callStack.pop()
