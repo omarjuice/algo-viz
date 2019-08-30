@@ -1,9 +1,13 @@
 declare class Viz {
-    array: array
-    SLL: SLL
-    DLL: DLL
-    BTree: BTree
-    BST: BST
+    static array: array
+    static SLL: SLL
+    static DLL: DLL
+    static BTree: BTree
+    static BST: BST
+    static Queue: Queue
+    static PQ: PQ
+    static Trie: Trie
+    static Node: Node
 }
 
 declare class SLL {

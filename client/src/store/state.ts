@@ -78,7 +78,14 @@ class StateStore {
                 }
                 if (vals) {
                     step.prev = vals[vals.length - 1]
-                    vals[vals.length - 1] = step.value
+
+                    let val: any = step.value;
+                    if ('update' in step) {
+                        val += step.update
+                    }
+                    vals[vals.length - 1] = val
+
+
                 }
             }
         }

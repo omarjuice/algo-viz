@@ -11,7 +11,6 @@ module.exports = async function transpile(func, input, ) {
             [stepify(input), {
                 disallow: {
                     async: true,
-                    generator: true
                 },
             }]
         ],

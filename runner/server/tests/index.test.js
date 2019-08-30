@@ -80,7 +80,6 @@ describe('SERVER', function () {
             twoNumberSum([1,2,3,4,5], 5)
         `
         const result = JSON.parse(await execSync(code))
-        console.log(result)
         expect(Array.isArray(result.steps)).toBe(true)
         expect(result.steps.length > 0).toBe(true)
         expect(typeof result.objects).toBe('object')

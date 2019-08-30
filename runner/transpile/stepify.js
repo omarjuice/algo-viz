@@ -50,11 +50,8 @@ module.exports = function (input) {
                 },
                 Function: {
                     enter(path, { opts }) {
-                        // if (path.node.id && path.node.id.name && path.node.id.name[0] === '_' && !t.isAssignmentExpression(path.parent) && !t.isVariableDeclarator(path.parent)) {
-                        //     return path.skip()
-                        // }
+
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
-                        // if (path.node.generator && opts.disallow.generator) throw new Error('generators are disallowed')
 
                         //put the params as declarations
                         const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
@@ -70,7 +67,6 @@ module.exports = function (input) {
                         ) || null);
 
                         const isClassMethod = t.isClassMethod(path.node)
-                        // console.log(path.parent)
                         let funcName;
                         if (path.node.id) {
                             funcName = path.node.id.name
