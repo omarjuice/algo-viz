@@ -43,6 +43,7 @@ class Tutorial extends Component {
         'Data Structures: Pointers',
         'Secret #1',
         'Secret #2',
+        'Gotchas',
         'Bug Reporting'
     ]
     tutorialCompenents: React.ReactNode[] = [
@@ -392,11 +393,31 @@ class Tutorial extends Component {
                     </a>
                 </div>
             </div>
+        ), (
+            <div>
+                <h1 className="title is-4 has-text-centered">
+                    {this.titles[13]}
+                </h1>
+
+                <div>
+                   Here are some things to be aware of:
+                    <br/>
+                   1. <b>Typed Arrays</b> are not supported.
+                   <br/>
+                   2. <b>Getters and setters</b> will be invoked from outside of your code.
+                   <br/>
+                   3. <b>Generator functions</b> are experimentally supported.
+                    To be specific, if your code executes <b>two or more</b> instances of the same generator at the same time,
+                    it cannot be guaranteed that the values displayed will be accurate. However, recursive calls to the same generator will work just fine.
+                    <br/>
+                    4. <b>Asynchronous APIs</b> (setImmediate, setTimeout, etc.) are unavailable.
+                </div>
+            </div>
         ),
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[13]}
+                    {this.titles[14]}
                 </h1>
 
                 <div>
