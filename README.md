@@ -3,9 +3,10 @@
 ## Visualize algorithms and data structures
 
 ## [Deployed here](https://algo-viz.herokuapp.com)
-A tutorial is available within the application.
 
 ## [Video Overview](https://www.linkedin.com/posts/omarjameer_algorithms-datastructures-javascript-activity-6572991787336515584-5nyr)
+
+A tutorial is available within the application.
 
 ### The application will take user code and execute it to transform it into a visualization of the involved data structures and expressions. 
 
