@@ -5,6 +5,8 @@
 ## [Deployed here](https://algo-viz.herokuapp.com)
 A tutorial is available within the application.
 
+## [Video Overview](https://www.linkedin.com/posts/omarjameer_algorithms-datastructures-javascript-activity-6572991787336515584-5nyr)
+
 ### The application will take user code and execute it to transform it into a visualization of the involved data structures and expressions. 
 
 ![data structures](https://res.cloudinary.com/omarjuice/image/upload/v1566855817/algo-viz-tutorial/builtins.png)
