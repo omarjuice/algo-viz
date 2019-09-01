@@ -81,8 +81,11 @@ declare namespace Viz {
             name?: name
             scope?: scope
             value?: any
-            [key: string]: any
             batch?: (FUNC | METHOD | RETURN | BLOCK)[]
+            prev?: any
+            prevPointerIdx?: number
+            prevScopeStack?: number[]
+            [key: string]: any
         }
         interface ObjectType extends Generic {
             object: string

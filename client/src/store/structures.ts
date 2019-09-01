@@ -142,7 +142,7 @@ class Structures {
         })
         this.bindings = ids
     }
-    @action addPointers(id: string, parent: string, key: string | number) {
+    @action addPointers(id: string, parent: string, key: string | number, idx = this.root.iterator.index) {
         if (id !== parent) {
             const parentType = this.root.viz.types[parent]
             const isChild = key in this.root.settings.structSettings[parentType].order
@@ -152,7 +152,7 @@ class Structures {
             if (!(id in this.parents)) this.parents[id] = null
             const pointers = this.pointers.get(id)
             const prevParent = pointers.top
-            pointers.insert(key, parent, this.root.iterator.index);
+            pointers.insert(key, parent, idx);
             if (pointers.size && pointers.top !== prevParent) {
                 const newParent = pointers.top;
                 if (prevParent) this.children[prevParent.id].delete(id);
@@ -163,12 +163,12 @@ class Structures {
         }
     }
 
-    @action removePointers(id: string, parent: string, key: string | number) {
+    @action removePointers(id: string, parent: string, key: string | number): number {
         if (id !== parent) {
             const pointers = this.pointers.get(id);
             const prevParent = pointers.top;
-            const pointer = pointers.findAndRemove(parent, key);
-            if (!pointer) return;
+            const pointer: Viz.objectPointer = pointers.findAndRemove(parent, key);
+            if (!pointer) return null;
             if (!pointers.size) {
                 this.parents[id] = null;
                 if (pointer) this.children[pointer.id].delete(id)
@@ -181,8 +181,9 @@ class Structures {
                     delete this.positions[id]
                 }
             }
-
+            return pointer.index
         }
+        return null;
     }
 
     @action next(step: Viz.Step.Any) {
@@ -193,7 +194,7 @@ class Structures {
             if (this.objects[object].has(key)) {
                 step.prev = this.objects[object].get(key).value
                 if (step.prev in this.objects) {
-                    this.removePointers(step.prev, object, key)
+                    step.prevPointerIdx = this.removePointers(step.prev, object, key)
                 }
 
             }
@@ -254,7 +255,7 @@ class Structures {
                     this.objects[object].get(key).value = null
                 }
                 if (step.prev in this.objects) {
-                    this.removePointers(step.prev, object, key)
+                    step.prevPointerIdx = this.removePointers(step.prev, object, key)
                 }
             }
         }
@@ -309,8 +310,10 @@ class Structures {
                     set: false,
                     value: step.prev
                 })
-                if (typeof step.prev === 'string' && step.prev in this.objects) {
-                    this.addPointers(step.prev, object, key)
+                if (step.prev in this.objects) {
+                    if (step.prevPointerIdx !== null) {
+                        this.addPointers(step.prev, object, key, step.prevPointerIdx)
+                    }
                 }
             } else {
                 this.objects[object].delete(key)
@@ -327,7 +330,9 @@ class Structures {
                     value: step.prev
                 })
                 if (step.prev in this.objects) {
-                    this.addPointers(step.prev, object, key)
+                    if (step.prevPointerIdx !== null) {
+                        this.addPointers(step.prev, object, key, step.prevPointerIdx)
+                    }
                 }
             }
         }
