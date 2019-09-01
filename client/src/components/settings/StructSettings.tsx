@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../../store';
 import DraggableList from './DraggableList'
 import Slider from 'rc-slider'
+import { structInfo } from '../../store/settings';
 type Props = {
     name: string
 }
@@ -155,7 +156,8 @@ class StructSettings extends Component<Props> {
         }
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
-        const isBuiltin = /Viz\./g.test(name) || ['Array', 'Object', 'Set', 'Map'].includes(name)
+        const isBuiltin = /Viz\./g.test(name);
+        const isNative = ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
             <div className="box has-background-dark has-text-light" style={style}>
 
@@ -164,7 +166,7 @@ class StructSettings extends Component<Props> {
                         <h1 className="title is-6 has-text-light has-text-weight-bold">{name}</h1>
                     </div>
                     <div className="column">
-                        {!isBuiltin && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small">
+                        {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small has-text-weight-bold">
                             {this.state.editing ? 'Cancel' : 'Edit'}
                         </button>}
                     </div>
@@ -172,7 +174,7 @@ class StructSettings extends Component<Props> {
                         <input type="color" value={structColors[name]} onChange={(e) => structColors[name] = e.target.value} />
                     </div>
                     <div className="column has-text-right">
-                        {!isBuiltin && <button className="delete" onClick={() => settings.deleteStruct(name)}></button>}
+                        {!isNative && !isBuiltin && <button className="delete" onClick={() => settings.deleteStruct(name)}></button>}
                     </div>
                 </div>
                 {this.state.editing && (
@@ -181,6 +183,7 @@ class StructSettings extends Component<Props> {
                             Children
                         </h1>
                         <DraggableList
+                            isConfigurable={!isBuiltin}
                             updatePositions={this.updatePositions}
                             changeType={this.changeType}
                             removeKey={this.removeKey}
@@ -191,25 +194,26 @@ class StructSettings extends Component<Props> {
                             } />
 
 
-                        <div className="columns">
+                        {!isBuiltin && <div className="columns">
                             <div className="column">
                                 <input type="text" className="input" onChange={(e) => this.setState({ newKeyName: e.target.value })} value={this.state.newKeyName} />
                             </div>
                             <div className="column has-text-right">
                                 <button className="button is-primary" disabled={!this.state.newKeyName} onClick={this.addKey}>Add Child</button>
                             </div>
-                        </div>
+                        </div>}
                         <hr />
                         <h1 className="title is-6 has-text-light">
                             Pointers
                         </h1>
                         <ul className="list">
                             {pointers.map(key => {
+                                const configurable = isBuiltin ? !(key in structInfo[name].pointers) : true
                                 return (
                                     <li key={key} className="list-item">
                                         <div className="columns ">
                                             <div className="column">
-                                                <select onChange={(e) => this.configPointer(key, e.target.value as pointerType)}
+                                                <select onChange={configurable ? (e) => this.configPointer(key, e.target.value as pointerType) : undefined}
                                                     value={this.state.pointers[key] ? "multiple" : "single"} className="select">
                                                     <option value={'single'}>single</option>
                                                     <option value={'multiple'}>multiple</option>
@@ -218,9 +222,9 @@ class StructSettings extends Component<Props> {
                                             <div className="column has-text-centered">
                                                 {key}
                                             </div>
-                                            <div className="column has-text-right">
+                                            {configurable && <div className="column has-text-right">
                                                 <button className="delete" onClick={() => this.removePointer(key)} />
-                                            </div>
+                                            </div>}
                                         </div>
                                     </li>
                                 )
@@ -240,7 +244,7 @@ class StructSettings extends Component<Props> {
                             <h1 className="title is-6 has-text-light">
                                 Display Key
                             </h1>
-                            <input className="input" type="text" value={this.state.main} onChange={(e) => this.changeMain(e.target.value)} />
+                            <input className="input" type="text" value={this.state.main} onChange={isBuiltin ? undefined : (e) => this.changeMain(e.target.value)} />
                         </div>
                         <hr />
                         <div>
@@ -262,7 +266,7 @@ class StructSettings extends Component<Props> {
                                     }, {} as { [key: string]: ReactNode })
                                 }
                                 value={Number(this.state.numChildren)}
-                                onChange={(v) => v === 0 ? this.toggleNumChildren() : this.setState({ numChildren: v })}
+                                onChange={isBuiltin ? undefined : (v) => v === 0 ? this.toggleNumChildren() : this.setState({ numChildren: v })}
                             />
                         </div>
                         <br />

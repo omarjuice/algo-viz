@@ -4,7 +4,7 @@ import { RootStore } from ".";
 const SETTINGS_VERSION = 'settings'
 
 export const structInfo: Viz.structSettings = {
-    BST: {
+    "Viz.BST": {
         order: {
             left: {
                 pos: 1,
@@ -21,7 +21,7 @@ export const structInfo: Viz.structSettings = {
 
         }
     },
-    DLL: {
+    "Viz.DLL": {
         order: {
             next: {
                 pos: 1,
@@ -34,7 +34,7 @@ export const structInfo: Viz.structSettings = {
             prev: false
         }
     },
-    SLL: {
+    "Viz.SLL": {
         order: {
             next: {
                 pos: 1,
@@ -46,7 +46,7 @@ export const structInfo: Viz.structSettings = {
         pointers: {
         }
     },
-    BTree: {
+    "Viz.BTree": {
         order: {
             left: {
                 pos: 1,
@@ -64,7 +64,7 @@ export const structInfo: Viz.structSettings = {
             root: false
         }
     },
-    Queue: {
+    "Viz.Queue": {
         order: {
             front: {
                 pos: 1,
@@ -77,7 +77,7 @@ export const structInfo: Viz.structSettings = {
             end: false
         }
     },
-    Node: {
+    "Viz.Node": {
         order: {
             next: {
                 pos: 1,
@@ -90,7 +90,7 @@ export const structInfo: Viz.structSettings = {
             prev: false
         }
     },
-    PQ: {
+    "Viz.PQ": {
         order: {
             heap: {
                 pos: 1,
@@ -103,7 +103,7 @@ export const structInfo: Viz.structSettings = {
 
         }
     },
-    Tree: {
+    "Viz.Tree": {
         order: {
             leaf: {
                 pos: 1,
@@ -118,13 +118,13 @@ export const structInfo: Viz.structSettings = {
         numChildren: null,
         pointers: {}
     },
-    Leaf: {
+    "Viz.Leaf": {
         order: {},
         main: 'value',
         numChildren: null,
         pointers: {}
     },
-    Trie: {
+    "Viz.Trie": {
         order: {
             children: {
                 pos: 1,
@@ -239,10 +239,17 @@ class Settings {
         }
 
         for (const name in structInfo) {
-            const newName = 'Viz.' + name
-            this.structSettings[newName] = structInfo[name]
-            if (!this.structColors[newName]) {
-                this.setColor(newName)
+            this.structSettings[name] = {
+                ...structInfo[name],
+                pointers: {
+                    ...this.structSettings[name].pointers,
+                    ...structInfo[name].pointers
+                }
+            }
+
+
+            if (!this.structColors[name]) {
+                this.setColor(name)
             }
         }
 

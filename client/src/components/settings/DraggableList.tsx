@@ -5,6 +5,7 @@ type childType = 'single' | 'multiple'
 type item = { key: string } & Viz.order
 type Props = {
     items: item[]
+    isConfigurable: boolean
     changeType: (key: string, type: childType) => void
     removeKey: (key: string) => void
     updatePositions: (names: string[]) => void
@@ -67,7 +68,7 @@ class DraggableList extends React.Component<Props> {
                             style={getListStyle(snapshot.isDraggingOver)}
                         >
                             {this.state.items.map((item, index) => (
-                                <Draggable key={item.key} draggableId={item.key} index={index}>
+                                <Draggable isDragDisabled={!this.props.isConfigurable} key={item.key} draggableId={item.key} index={index}>
                                     {(provided, snapshot) => (
                                         < div ref={provided.innerRef}
                                             {...provided.draggableProps}
@@ -78,7 +79,7 @@ class DraggableList extends React.Component<Props> {
                                             )} className="columns is-paddingless draggable-item list-item has-background-gray">
                                             <div className="column is-paddingless">
                                                 <div className="select is-small">
-                                                    <select onChange={(e) => this.props.changeType(item.key, e.target.value as childType)}
+                                                    <select onChange={this.props.isConfigurable ? (e) => this.props.changeType(item.key, e.target.value as childType) : undefined}
                                                         value={item.isMultiple ? 'multiple' : 'single'}>
                                                         <option value={'single'}>single</option>
                                                         <option value={'multiple'}>multiple</option>
@@ -91,9 +92,9 @@ class DraggableList extends React.Component<Props> {
                                             <div className="column is-paddingless has-text-white has-text-centered">
                                                 {index + 1}
                                             </div>
-                                            <div className="column is-paddingless has-text-right">
+                                            {this.props.isConfigurable && <div className="column is-paddingless has-text-right">
                                                 <button className="delete" onClick={() => this.props.removeKey(item.key)} />
-                                            </div>
+                                            </div>}
                                         </div>
                                     )}
                                 </Draggable>
