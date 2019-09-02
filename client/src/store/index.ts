@@ -37,9 +37,9 @@ export class RootStore {
     @observable numStructs: number[] = [0, 0, 0]
     minWidth = 850
     constructor() {
+        this.api = new ApiStore(this)
         const data = window.localStorage.getItem(this.dataVersion)
         this.settings = new Settings(this)
-        this.api = new ApiStore(this)
 
         if (data) {
             this.initialize(JSON.parse(data))
