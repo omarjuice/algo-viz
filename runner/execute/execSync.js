@@ -23,17 +23,16 @@ module.exports = async function (code) {
     try {
         vm.run(transpiled)
     } catch (error) {
-        console.log(error);
         runner.ignore(true)
         runner.steps.push({
             type: 'ERROR',
             error: error.message || 'ERROR'
         })
     }
-    const { steps, objects, types } = runner
+    const { steps, objects, types, objectIndex } = runner
     try {
         const data = JSON.stringify({
-            steps, objects, types, code
+            steps, objects, types, objectIndex, code,
         })
         fs.writeFileSync('executed.json', data)
         return data
@@ -52,10 +51,10 @@ module.exports = async function (code) {
                 };
             };
 
-            const data = JSON.stringify({ steps, objects, types, code }, getCircularReplacer());
+            const data = JSON.stringify({ steps, objects, types, objectIndex, code }, getCircularReplacer());
             return data
         } catch (e) {
-            require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types }))
+            require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types, objectIndex }))
             throw e
         }
 

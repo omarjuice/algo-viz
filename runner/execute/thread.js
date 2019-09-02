@@ -25,10 +25,10 @@ try {
         error: error.message || 'ERROR'
     })
 }
-const { steps, objects, types } = runner
+const { steps, objects, types, objectIndex } = runner
 try {
     const data = JSON.stringify({
-        steps, objects, types, code: original
+        steps, objects, types, objectIndex, code: original
     })
     parentPort.postMessage(data)
 } catch (e) {
@@ -46,10 +46,10 @@ try {
             };
         };
 
-        const data = JSON.stringify({ steps, objects, types, code: original }, getCircularReplacer());
+        const data = JSON.stringify({ steps, objects, types, objectIndex, code: original }, getCircularReplacer());
         parentPort.postMessage(data)
     } catch (e) {
-        !prod && require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types }))
+        !prod && require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types, objectIndex }))
         e.isRunnerError = true;
         throw e
     }

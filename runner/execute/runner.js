@@ -21,6 +21,9 @@ class Runner {
         //record of already virtualized objects so each unique object has only one virtualized version
         this.proxies = new Map()
         this.types = {}
+
+        this.objectIndex = {}
+
         // callStack for determining the type of function we are currently in
         this.callStack = []
 
@@ -65,6 +68,7 @@ class Runner {
         //Will not catch steps when this is true
         this._ignore = false
         this.ignore = (bool) => this._ignore = bool
+
     }
 
 

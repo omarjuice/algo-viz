@@ -2,8 +2,11 @@ import { observable, action } from "mobx";
 import { RootStore } from ".";
 import PointerQueue from './pointerqueue';
 
+
+
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
+    @observable inactiveObjects: { [id: string]: Viz.Structure } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
     @observable pointers: Map<string, PointerQueue> = new Map()
@@ -11,7 +14,7 @@ class Structures {
     @observable children: { [id: string]: Set<string> } = {}
     @observable parents: { [id: string]: string } = {}
     @observable activePointers: { [id: string]: boolean } = {}
-    @observable positions: { [id: string]: { x: number, y: number, radius: number, renderId: string } } = {}
+    @observable positions: Viz.ojectPositions = {}
     @observable renderMaps: { [id: string]: Viz.RenderMap } = {}
     root: RootStore
     constructor(store: RootStore) {
@@ -82,7 +85,7 @@ class Structures {
                 }
             }
 
-            this.objects[id] = cloned
+            this.inactiveObjects[id] = cloned
             this.activePointers[id] = false
         }
 
@@ -141,6 +144,12 @@ class Structures {
             }
         })
         this.bindings = ids
+    }
+    @action addObject(id: string) {
+        this.objects[id] = this.inactiveObjects[id];
+    }
+    @action removeObject(id: string) {
+        delete this.objects[id]
     }
     @action addPointers(id: string, parent: string, key: string | number, idx = this.root.iterator.index) {
         if (id !== parent) {

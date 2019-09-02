@@ -74,6 +74,8 @@ declare namespace Viz {
 
 
     type anim = [boolean, boolean]
+    type ojectPositions = { [id: string]: { x: number, y: number, radius: number, renderId: string } }
+
     type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 
     declare namespace Step {
@@ -178,8 +180,9 @@ declare namespace Viz {
     }
     type Data = {
         steps: Step.Any[],
-        objects: { [key: string]: any },
-        types: { [key: string]: any },
+        objects: { [objectId: string]: any },
+        types: { [objectId: string]: any },
+        objectIndex: { [index: string]: string },
         code: string
     }
     type DisplayProps = {
