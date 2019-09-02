@@ -261,7 +261,7 @@ class Structures {
         }
         if (step.type === 'CLEAR') {
             const { object } = step
-            step.prev = this.objects[object]
+            step.prev = new Map(this.objects[object])
             this.objects[object].clear()
         }
         if (step.type === 'GET') {
@@ -282,20 +282,14 @@ class Structures {
             }
 
             this.gets[object] = this.objects[object].get(key)
+            if (this.root.viz.types[object] !== 'Array') {
+                this.gets[object].value = step.value;
+            }
             this.scrollIntoView('get', object)
         }
         if (allowRender) this.setBindings()
     }
-    scrollIntoView(type: 'get' | 'set', object: string) {
-        if (!this.root.settings.config["Scroll Objects Into View"]) return;
-        const element = document.querySelector(`.${type}.${object}`)
-        if (element) {
-            const { top } = element.getBoundingClientRect()
-            if (top < this.root.windowHeight && top > 0) {
-                element.scrollIntoView()
-            }
-        }
-    }
+
     @action prev(step: Viz.Step.Any) {
         if (step.type === 'SET') {
             const { object, access } = step
@@ -326,7 +320,7 @@ class Structures {
             if (value) {
                 this.objects[object].set(key, {
                     get: false,
-                    set: true,
+                    set: false,
                     value: step.prev
                 })
                 if (step.prev in this.objects) {
@@ -340,8 +334,27 @@ class Structures {
             const { object } = step
             this.objects[object] = step.prev
         }
+
+        if (step.type === 'GET') {
+            const { object, access } = step
+            const key = access
+            const prop = this.objects[object].get(key)
+            if (this.root.viz.types[object] !== 'Array') {
+                prop.value = step.value
+            }
+        }
         if (this.root.allowRender) this.setBindings()
 
+    }
+    scrollIntoView(type: 'get' | 'set', object: string) {
+        if (!this.root.settings.config["Scroll Objects Into View"]) return;
+        const element = document.querySelector(`.${type}.${object}`)
+        if (element) {
+            const { top } = element.getBoundingClientRect()
+            if (top < this.root.windowHeight && top > 0) {
+                element.scrollIntoView()
+            }
+        }
     }
     @action reset() {
         for (const key in this.gets) {

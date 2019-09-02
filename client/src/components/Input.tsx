@@ -15,8 +15,8 @@ class Input extends Component {
     render() {
         return (
             <MonacoEditor
-                width="50vw"
-                height="90vh"
+                width={store.windowWidth * .5}
+                height={store.windowHeight * .91}
                 language="javascript"
                 theme="vs-dark"
                 editorDidMount={(editor) => {

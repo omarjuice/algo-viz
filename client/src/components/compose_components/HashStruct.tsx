@@ -85,7 +85,7 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         braceStyle.transform += ' scale(2)'
     }
     return (
-        <div style={{ ...styles, maxHeight: maxHeight + 100, }} className={`hash-struct`}>
+        <div style={{ ...styles, maxHeight: maxHeight + 100 }} className={`hash-struct has-text-centered`}>
             <div className="is-size-1" style={braceStyle}>{`{`}</div>
             <div style={{ ...styles, minWidth: ['Object', 'Map'].includes(type) ? 200 : 100, minHeight: 50 }} ref={ref}>
                 {obj}

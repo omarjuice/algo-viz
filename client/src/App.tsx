@@ -13,6 +13,7 @@ import Settings from './components/settings';
 import InvalidScreenWidth from './components/InvalidScreenWidth';
 import Issues from './components/Issues';
 import Tutorial from './components/Tutorial';
+import SideLogo from './components/SideLogo';
 const convert = new Convert({ newline: true })
 
 @observer
@@ -44,26 +45,33 @@ class App extends React.Component {
                   </>
                 )}
               </div>
-              {store.ready && !store.api.error && (
-                <>
-                  {!renderWithStructs && (
-                    <div style={{ marginTop: '1rem' }} >
-                      <StepView />
-                    </div>
-                  )}
-                  <div className={`column is-${store.structsWidth}`} >
-                    {!switchStepView && renderWithStructs && <StepView />}
-                    <Structs />
-                  </div>
-                  <CallStack />
-                </>
-              )}
-              {store.api.error && (
-                <div className="column is-half has-text-danger"
-                  dangerouslySetInnerHTML={{ __html: convert.toHtml(store.api.error) }}>
 
-                </div>
-              )}
+              {store.editor.active ?
+                store.api.error ? (
+                  <div className="column is-half has-text-danger"
+                    dangerouslySetInnerHTML={{ __html: convert.toHtml(store.api.error) }}>
+
+                  </div>
+                ) : (
+                    <div className="column is-6">
+                      <SideLogo />
+                    </div>
+                  ) : (
+                  store.ready && !store.api.error && (
+                    <>
+                      {!renderWithStructs && (
+                        <div style={{ marginTop: '1rem' }} >
+                          <StepView />
+                        </div>
+                      )}
+                      <div className={`column is-${store.structsWidth}`} >
+                        {!switchStepView && renderWithStructs && <StepView />}
+                        <Structs />
+                      </div>
+                      <CallStack />
+                    </>
+                  )
+                )}
             </>}
           </div>
         </div>

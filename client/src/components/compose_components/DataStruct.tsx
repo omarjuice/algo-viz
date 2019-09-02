@@ -40,14 +40,14 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         if (idx) { }//For rerender
         if (elem) {
             if (!node) {
-                if (depth === 0 || depth % 15 !== 0) {
+                if (!isList && (depth === 0 || depth % 15 !== 0)) {
                     setNode(elem)
                 } else {
                     setImmediate(() => setNode(elem))
                 }
             }
         }
-    }, [node, idx, isList])
+    }, [node, idx, isList, depth])
 
 
     useEffect(() => {

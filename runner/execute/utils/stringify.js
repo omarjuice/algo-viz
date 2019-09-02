@@ -66,7 +66,10 @@ module.exports = function (obj) {
             const copy = {}
             for (const key in obj) {
                 if (key[0] === '_') continue;
+                const def = Reflect.getOwnPropertyDescriptor(obj, key)
+
                 copy[key] = this.stringify(obj[key])
+                if (def.get && !def.set) continue;
                 obj[key] = this.virtualize(obj[key])
             }
             this.objects[newId] = copy

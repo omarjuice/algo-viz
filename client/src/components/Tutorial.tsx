@@ -404,7 +404,7 @@ class Tutorial extends Component {
                     <br/>
                    1. <b>Typed Arrays</b> are not supported.
                    <br/>
-                   2. <b>Getters and setters</b> will be invoked from outside of your code.
+                   2. <b>Getters and setters</b> will be invoked from outside of your code 
                    <br/>
                    3. <b>Generator functions</b> are experimentally supported.
                     To be specific, if your code executes <b>two or more</b> instances of the same generator at the same time,
