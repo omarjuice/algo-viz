@@ -241,7 +241,7 @@ class Settings {
             this.structSettings[name] = {
                 ...structInfo[name],
                 pointers: {
-                    ...this.structSettings[name].pointers,
+                    ...(this.structSettings[name] || { pointers: {} }).pointers,
                     ...structInfo[name].pointers
                 }
             }
