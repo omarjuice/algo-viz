@@ -15,7 +15,7 @@ type widths = {
     data: number
 }
 export class RootStore {
-    dataVersion: 'data_V1'
+    dataVersion = 'data_V1'
     @observable tutorial: boolean = false
     @observable settings: Settings
     @observable viz: VizStore
