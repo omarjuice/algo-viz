@@ -97,7 +97,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
                     {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                        {type === 'Map' ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
+                        {type === 'Map' ? <ValText textOnly={true} value={prop} type={getType(prop)} /> : String(prop)}:{' '}
                     </span>}
                     <ValText value={value} type={valType} textOnly={true} />
                 </div >
