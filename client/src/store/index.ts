@@ -38,6 +38,7 @@ export class RootStore {
     minWidth = 850
     constructor() {
         this.api = new ApiStore(this)
+        window.localStorage.removeItem('undefined')
         const data = window.localStorage.getItem(this.dataVersion)
         this.settings = new Settings(this)
 
