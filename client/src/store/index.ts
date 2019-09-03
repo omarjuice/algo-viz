@@ -38,8 +38,7 @@ export class RootStore {
     constructor() {
         const data = JSON.parse(window.localStorage.getItem('data'))
         this.settings = new Settings(this)
-        this.api = new ApiStore(this)
-        console.log('DATA_VERSION', process.env.REACT_APP_DATA_VERSION)
+
         if (data && Number(data.version) === Number(process.env.REACT_APP_DATA_VERSION)) {
             this.initialize(data)
         } else {
