@@ -411,6 +411,7 @@ class Tutorial extends Component {
                     it cannot be guaranteed that the values displayed will be accurate. However, recursive calls to the same generator will work just fine.
                     <br/>
                     4. <b>Asynchronous APIs</b> (setImmediate, setTimeout, etc.) are unavailable.
+                    5. <b>Class extension</b> is not currently supported but will be in the future.
                 </div>
             </div>
         ),
