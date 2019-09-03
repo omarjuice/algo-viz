@@ -2,11 +2,12 @@
   "name": "algo-viz",
   "version": "1.0.0",
   "description": "## _Work In Progress_",
+  "dataVersion": 1,
   "scripts": {
-    "server": "npm run dev --prefix runner",
-    "client": "npm start --prefix client",
+    "server": "export DATA_VERSION=$npm_package_dataVersion && npm run dev --prefix runner",
+    "client": "export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build-client": "npm run build --prefix client",
+    "build-client": "export DATA_VERSION=$npm_package_dataVersion && npm run create-default --prefix runner && export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm run build --prefix client",
     "postinstall": "npm install --prefix client && npm install --prefix runner && npm install --prefix builtins/js && npm run compile --prefix builtins/js && npm run build-client",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm start --prefix runner"

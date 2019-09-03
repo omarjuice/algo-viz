@@ -48,11 +48,14 @@ if (version >= 11) {
 
 
 async function initialize() {
+
     const mongoUri = env === 'production' ? process.env.MONGO_URI : 'mongodb://localhost:27017';
     const dbName = env === 'test' ? 'algo_viz_test' : 'algo_viz'
     const client = await mongo.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
     const database = client.db(dbName);
     const Issues = database.collection('issues');
+
+
     app.use(session({
         store: new MongoStore({ url: env === 'production' ? mongoUri : mongoUri + '/' + dbName }),
         secret: process.env.SESSION_SECRET || 'secret',
@@ -62,6 +65,7 @@ async function initialize() {
             expires: new Date(253402300000000)
         }
     }));
+
     app.post('/execute', (req, res, next) => {
         const { code } = req.body;
         execute(code)

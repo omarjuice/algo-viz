@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { observable, action } from 'mobx';
 import { RootStore } from '.';
+import { async } from 'q';
 
 if (process.env.NODE_ENV === 'development') {
     axios.defaults.baseURL = 'http://localhost:3001/'
@@ -35,7 +36,7 @@ class ApiStore {
             const res = await axios.post('/execute', { code }, { withCredentials: true })
             const data: Viz.Data = res.data
             this.root.initialize(data)
-            window.localStorage.setItem(this.root.dataVersion, JSON.stringify(data))
+            window.localStorage.setItem('data', JSON.stringify(data))
             this.error = null
             this.loading = false
             this.ok = true

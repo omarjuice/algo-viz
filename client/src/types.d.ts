@@ -179,10 +179,11 @@ declare namespace Viz {
         [key: string]: any[]
     }
     type Data = {
-        steps: Step.Any[],
-        objects: { [objectId: string]: any },
-        types: { [objectId: string]: any },
-        objectIndex: { [index: string]: string[] },
+        steps: Step.Any[]
+        objects: { [objectId: string]: any }
+        types: { [objectId: string]: any }
+        objectIndex: { [index: string]: string[] }
+        version: number
         code: string
     }
     type DisplayProps = {

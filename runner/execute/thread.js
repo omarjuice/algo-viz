@@ -4,7 +4,7 @@ const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 const util = require('util')
 
-const { code, _name, original, prod, timeout } = workerData
+const { code, _name, original, prod, timeout, version } = workerData
 const runner = new Runner(_name, original)
 const vm = new VM({
     console: 'inherit',
@@ -28,7 +28,7 @@ try {
 const { steps, objects, types, objectIndex } = runner
 try {
     const data = JSON.stringify({
-        steps, objects, types, objectIndex, code: original
+        steps, objects, types, objectIndex, code: original, version
     })
     parentPort.postMessage(data)
 } catch (e) {
@@ -46,7 +46,7 @@ try {
             };
         };
 
-        const data = JSON.stringify({ steps, objects, types, objectIndex, code: original }, getCircularReplacer());
+        const data = JSON.stringify({ steps, objects, types, objectIndex, code: original, version }, getCircularReplacer());
         parentPort.postMessage(data)
     } catch (e) {
         !prod && require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types, objectIndex }))

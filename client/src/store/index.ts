@@ -15,7 +15,6 @@ type widths = {
     data: number
 }
 export class RootStore {
-    dataVersion: 'data_V1'
     @observable tutorial: boolean = false
     @observable settings: Settings
     @observable viz: VizStore
@@ -37,12 +36,12 @@ export class RootStore {
     @observable numStructs: number[] = [0, 0, 0]
     minWidth = 850
     constructor() {
-        const data = window.localStorage.getItem(this.dataVersion)
+        const data = JSON.parse(window.localStorage.getItem('data'))
         this.settings = new Settings(this)
         this.api = new ApiStore(this)
-
-        if (data) {
-            this.initialize(JSON.parse(data))
+        console.log('DATA_VERSION', process.env.REACT_APP_DATA_VERSION)
+        if (data && Number(data.version) === Number(process.env.REACT_APP_DATA_VERSION)) {
+            this.initialize(data)
         } else {
             // @ts-ignore
             this.initialize(defaultData as Viz.Data)

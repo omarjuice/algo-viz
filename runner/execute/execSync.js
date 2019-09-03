@@ -3,7 +3,7 @@ const { default: instantiateViz } = require('../../builtins/js/dist/index')
 const Runner = require('./runner')
 const util = require('util')
 const transpile = require('../transpile')
-
+const version = process.env.DATA_VERSION
 
 module.exports = async function (code) {
     const input = { _name: null, references: {} }
@@ -32,7 +32,7 @@ module.exports = async function (code) {
     const { steps, objects, types, objectIndex } = runner
     try {
         const data = JSON.stringify({
-            steps, objects, types, objectIndex, code,
+            steps, objects, types, objectIndex, code, version
         })
         fs.writeFileSync('executed.json', data)
         return data
@@ -51,7 +51,7 @@ module.exports = async function (code) {
                 };
             };
 
-            const data = JSON.stringify({ steps, objects, types, objectIndex, code }, getCircularReplacer());
+            const data = JSON.stringify({ steps, objects, types, objectIndex, code, version }, getCircularReplacer());
             return data
         } catch (e) {
             require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types, objectIndex }))

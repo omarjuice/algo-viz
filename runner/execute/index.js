@@ -13,6 +13,7 @@ module.exports = async function (code) {
             original: code,
             prod,
             timeout: Number(process.env.EXECUTION_TIMEOUT) || 500,
+            version: process.env.DATA_VERSION
         }
     })
     return new Promise((resolve, reject) => {
