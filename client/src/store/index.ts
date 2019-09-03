@@ -36,8 +36,9 @@ export class RootStore {
     @observable numStructs: number[] = [0, 0, 0]
     minWidth = 850
     constructor() {
-        const data = JSON.parse(window.localStorage.getItem('data'))
+        this.api = new ApiStore(this)
         this.settings = new Settings(this)
+        const data = JSON.parse(window.localStorage.getItem('data'))
 
         if (data && Number(data.version) === Number(process.env.REACT_APP_DATA_VERSION)) {
             this.initialize(data)
