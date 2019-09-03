@@ -14,6 +14,7 @@ const Pointer: React.FC<Props> = observer(({ active, id, size, isInsideDisplay =
     const config = store.settings.config
     const isActive = config['Active Pointer on GET'] ? hovered || active : hovered
     useEffect(() => {
+        if (!(id in store.structs.objects)) return
         store.structs.activePointers[id] = isActive
         if (isActive) {
             if (!store.structs.positions[id]) {

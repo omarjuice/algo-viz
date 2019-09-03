@@ -68,12 +68,12 @@ class PointerQueue {
     }
 
     @action insert(key: string | number, parentId: string, index: number) {
-        if (parentId === this.id) return this
+
         const affinity = this.getAffinity(parentId, this.id)
         if (parentId in this.map) {
             if (this.map[parentId].has(key)) return this
         }
-        if (affinity > 0) {
+        if (parentId !== this.id && affinity > 0) {
             this.heap.push({
                 key,
                 id: parentId,
