@@ -1,4 +1,5 @@
 import { observable, computed, action } from "mobx";
+import Structures from './structures';
 type types = { [key: string]: string }
 type parents = { [id: string]: string }
 class PointerQueue {
@@ -7,9 +8,11 @@ class PointerQueue {
     types: types
     map: { [id: string]: Map<string | number, number> }
     id: string
-    constructor(types: types, parents: parents, id: string) {
-        this.types = types;
-        this.parents = parents;
+    structs: Structures
+    constructor(structs: Structures, id: string) {
+        this.types = structs.root.viz.types;
+        this.parents = structs.parents;
+        this.structs = structs;
         this.id = id
         this.map = {}
     }
@@ -83,6 +86,8 @@ class PointerQueue {
                 this.map[parentId].set(key, this.heap.length - 1)
             }
             this._siftUp(this.heap.length - 1);
+        } else {
+            this.structs.childKeyMemo[parentId].delete(key)
         }
         return this
     }

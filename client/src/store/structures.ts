@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, action, toJS } from "mobx";
 import { RootStore } from ".";
 import PointerQueue from './pointerqueue';
 
@@ -7,6 +7,7 @@ import PointerQueue from './pointerqueue';
 class Structures {
     @observable objects: { [id: string]: Viz.Structure } = {}
     @observable inactiveObjects: { [id: string]: Viz.Structure } = {}
+    @observable childKeyMemo: { [id: string]: Map<any, string> } = {}
     @observable gets: { [id: string]: Viz.StructProp } = {}
     @observable sets: { [id: string]: Viz.StructProp } = {}
     @observable pointers: Map<string, PointerQueue> = new Map()
@@ -21,8 +22,9 @@ class Structures {
         this.root = store
         const objs = this.root.viz.objects
         for (const id in objs) {
-            if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this.root.viz.types, this.parents, id))
+            if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this, id))
             if (!this.children[id]) this.children[id] = new Set()
+            if (!this.childKeyMemo[id]) this.childKeyMemo[id] = new Map()
             if (!(id in this.parents)) this.parents[id] = null;
             const obj: { [key: string]: any } = objs[id]
             const cloned: Viz.Structure = new Map()
@@ -40,7 +42,7 @@ class Structures {
                         value: val
                     });
                     if (val in objs) {
-                        this.addPointers(val, id, i)
+                        this.childKeyMemo[id].set(i, val)
                     }
                 }
                 cloned.set('length', {
@@ -58,7 +60,7 @@ class Structures {
                         value,
                     })
                     if (value in objs) {
-                        this.addPointers(value, id, key)
+                        this.childKeyMemo[id].set(key, value)
                     }
                 }
             } else if (type === 'Set') {
@@ -80,7 +82,7 @@ class Structures {
                         value
                     })
                     if (value in objs) {
-                        this.addPointers(value, id, key)
+                        this.childKeyMemo[id].set(key, value)
                     }
                 }
             }
@@ -147,16 +149,23 @@ class Structures {
     }
     @action addObject(id: string) {
         this.objects[id] = this.inactiveObjects[id];
+        console.log(toJS(this.childKeyMemo[id]))
+        this.childKeyMemo[id].forEach((child, key) => {
+            this.addPointers(child, id, key)
+        })
     }
     @action removeObject(id: string) {
         delete this.objects[id]
+        this.childKeyMemo[id].forEach((child, key) => {
+            this.removePointers(child, id, key)
+        })
     }
     @action addPointers(id: string, parent: string, key: string | number, idx = this.root.iterator.index) {
         if (id !== parent) {
             const parentType = this.root.viz.types[parent]
             const isChild = key in this.root.settings.structSettings[parentType].order
             if (!isChild && !['Object', 'Map', 'Array'].includes(parentType)) return
-            if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this.root.viz.types, this.parents, id))
+            if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this, id))
             if (!this.children[id]) this.children[id] = new Set()
             if (!(id in this.parents)) this.parents[id] = null
             const pointers = this.pointers.get(id)
@@ -197,6 +206,11 @@ class Structures {
 
     @action next(step: Viz.Step.Any) {
         const { allowRender } = this.root
+        if (this.root.iterator.index in this.root.viz.objectIndex) {
+            this.root.viz.objectIndex[this.root.iterator.index].forEach(obj => {
+                this.addObject(obj)
+            })
+        }
         if (step.type === 'SET') {
             const { object, access, value } = step
             const key = access
@@ -300,6 +314,11 @@ class Structures {
     }
 
     @action prev(step: Viz.Step.Any) {
+        if (this.root.iterator.index in this.root.viz.objectIndex) {
+            this.root.viz.objectIndex[this.root.iterator.index].forEach(obj => {
+                this.removeObject(obj)
+            })
+        }
         if (step.type === 'SET') {
             const { object, access } = step
             const key = access
@@ -369,7 +388,6 @@ class Structures {
         for (const key in this.gets) {
             this.switchOff(this.gets[key], 'get')
             this.switchOff(this.gets[key], 'set')
-
         }
         for (const key in this.sets) {
             this.switchOff(this.sets[key], 'get')

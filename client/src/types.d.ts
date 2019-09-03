@@ -182,7 +182,7 @@ declare namespace Viz {
         steps: Step.Any[],
         objects: { [objectId: string]: any },
         types: { [objectId: string]: any },
-        objectIndex: { [index: string]: string },
+        objectIndex: { [index: string]: string[] },
         code: string
     }
     type DisplayProps = {

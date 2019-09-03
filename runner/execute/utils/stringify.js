@@ -26,7 +26,10 @@ module.exports = function (obj) {
             this.constructors.delete(obj)
         }
         this.map.set(obj, newId)
-        this.objectIndex[this.steps.length] = newId;
+        if (!this.objectIndex[this.steps.length]) {
+            this.objectIndex[this.steps.length] = []
+        };
+        this.objectIndex[this.steps.length].push(newId)
         if (obj instanceof Map) {
             // maps can have object keys, we need to stringify those too.
 
