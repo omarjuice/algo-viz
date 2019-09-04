@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import store from '../store';
 import ArrayStruct from './compose_components/ArrayStruct';
 import HashStruct from './compose_components/HashStruct';
-import DataStruct from './compose_components/DataStruct';
 import DataStructContainer from './compose_components/DataStructContainer';
 
 

@@ -75,6 +75,7 @@ declare namespace Viz {
 
     type anim = [boolean, boolean]
     type ojectPositions = { [id: string]: { x: number, y: number, radius: number, renderId: string } }
+    type displayOrientation = 'row' | 'column'
 
     type configurable = 'DECLARATION' | 'ASSIGNMENT' | 'EXPRESSION' | 'CALL' | 'DELETE' | 'GET' | 'SET' | 'CLEAR'
 

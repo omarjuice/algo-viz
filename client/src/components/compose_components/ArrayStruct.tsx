@@ -3,7 +3,6 @@ import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
 import store from '../../store';
 import genId from '../../utils/genId';
-import { toJS } from 'mobx';
 
 type Props = {
     structure: Viz.Structure,
@@ -14,12 +13,22 @@ type Props = {
 }
 
 
-const iterate = (len: number, display: 'column' | 'row', ratio: number, valSize: number, objectId: string, structure: Viz.Structure) => {
+const iterate = (
+    len: number,
+    display: 'column' | 'row',
+    ratio: number,
+    valSize: number,
+    objectId: string,
+    structure: Viz.Structure,
+    setChildren: (n: number) => void
+) => {
+
     const arr = []
     len = Math.min(len, 1000)
     for (let i = 0; i < len; i++) {
+
         arr.push(
-            <ArrayVal display={display}
+            <ArrayVal setChildren={setChildren} display={display}
                 ratio={ratio} size={valSize}
                 key={i} index={i} objectId={objectId} array={structure} />
         )
@@ -29,11 +38,16 @@ const iterate = (len: number, display: 'column' | 'row', ratio: number, valSize:
 
 const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, pointed, renderId }) => {
     const [node, setNode] = useState(null)
+    const [children, setNumChildren] = useState<number>(0)
     const ref = useCallback((node) => {
         if (node) {
             setNode(node)
         }
     }, [])
+
+    const setChildren = useCallback((n: number) => {
+        setNumChildren(children + n)
+    }, [children])
 
     renderId = useMemo(() => renderId || genId(objectId.length), [objectId, renderId])
     useEffect(() => {
@@ -43,11 +57,13 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     })
     const pos = store.structs.positions[objectId]
 
+    const display: Viz.displayOrientation = children > 0 ? 'column' : 'row'
+
+
 
     const maxWidth = store.windowWidth * (store.structsWidth / 18) * store.widths.array
 
     const len = structure.get('length').value
-    const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
     if (display === 'column') {
         ratio *= .7
     }
@@ -57,8 +73,8 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     const willRender = !(pos && pos.renderId && pos.renderId !== renderId)
 
     const arr: React.ReactNode[] = useMemo(
-        () => willRender ? iterate(len, display, ratio, valSize, objectId, structure) : [],
-        [len, display, ratio, valSize, objectId, structure, willRender]
+        () => willRender ? iterate(len, display, ratio, valSize, objectId, structure, setChildren) : [],
+        [len, display, ratio, valSize, objectId, structure, willRender, setChildren]
     )
     if (!willRender) {
         return null

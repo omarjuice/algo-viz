@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ValDisplay from './compose_components/ValDisplay';
 import store from '../store';
 import { observer } from 'mobx-react';

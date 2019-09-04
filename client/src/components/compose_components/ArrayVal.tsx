@@ -8,25 +8,30 @@ import store from '../../store';
 import ArrayChild from './ArrayChild';
 import getType from '../../utils/getType'
 import getVal from '../../utils/getVal';
+
+
 type Props = {
     array: Viz.Structure
     index: number
     objectId: string
     size: number
     ratio: number
-    display: 'row' | 'column'
+    display: Viz.displayOrientation
+    setChildren: (o: number) => void
 }
 
 
 
-const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, ratio }) => {
+const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, ratio, setChildren }) => {
     const [hovered, toggle] = useState(false)
     const info = array.get(index) || {
         value: null,
         get: false,
         set: false,
     }
-    let value = info.value
+
+    const value = info.value
+
     const { get, set } = info;
     const className = `${!!info.get && 'get'} ${!!info.set && 'set'} ${objectId}`
     const anim: Viz.anim = useMemo(() => [get, set], [get, set])
@@ -39,11 +44,13 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
     }
     if (typeof value === 'string' && value in store.structs.objects) {
         if (!store.structs.bindings.has(value)) {
+            const type = store.viz.types[value];
             const parent = store.structs.pointers.get(value).top;
-            if (parent && parent.id === objectId && parent.key === index) {
+            const grandParent = parent ? store.structs.pointers.get(parent.id).top : null
+            if ((!grandParent || store.viz.types[grandParent.id] === 'Array') && type === 'Array' && parent && parent.id === objectId && parent.key === index) {
                 return (
                     <div className={`array-line ${className}`}>
-                        <ArrayChild className={className} objectId={value} ratio={ratio} anim={anim} />
+                        <ArrayChild setChildren={setChildren} className={className} objectId={value} ratio={ratio} anim={anim} />
                     </div>
                 )
             }

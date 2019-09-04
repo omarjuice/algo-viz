@@ -65,7 +65,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                         </p>
                     </div>}
                     <div className={`column`}>
-                        <ArrayChild className={className} objectId={value} ratio={ratio * .5} anim={anim} />
+                        <ArrayChild setChildren={null} className={className} objectId={value} ratio={ratio * .5} anim={anim} />
                     </div>
                 </div>
 

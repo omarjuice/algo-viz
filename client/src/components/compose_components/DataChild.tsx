@@ -24,9 +24,6 @@ type Props = {
 @observer
 class DataChild extends React.Component<Props>{
     renderId: string = genId(5)
-    depthWasSet = false
-
-
     componentDidMount() {
         this.props.setDepth(this.props.depth, 1)
     }

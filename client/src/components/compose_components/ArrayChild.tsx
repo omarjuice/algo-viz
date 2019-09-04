@@ -9,18 +9,26 @@ type Props = {
     anim: Viz.anim,
     objectId: string
     ratio: number
+    setChildren: ((n: number) => void) | null
 }
 
 @observer
 class ArrayChild extends Component<Props> {
 
     renderId: string = genId(5)
+
+    componentDidMount() {
+        this.props.setChildren(1)
+    }
     componentWillUnmount() {
         const pos = store.structs.positions[this.props.objectId]
         if (pos) {
             if (pos.renderId === this.renderId) {
                 delete store.structs.positions[this.props.objectId]
             }
+        }
+        if (this.props.setChildren) {
+            this.props.setChildren(-1)
         }
     }
     render() {

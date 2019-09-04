@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { observable, action } from 'mobx';
 import { RootStore } from '.';
-import { async } from 'q';
 
 if (process.env.NODE_ENV === 'development') {
     axios.defaults.baseURL = 'http://localhost:3001/'

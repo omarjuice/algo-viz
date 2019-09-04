@@ -1,4 +1,4 @@
-import { observable, action, toJS } from "mobx";
+import { observable, action } from "mobx";
 import { RootStore } from ".";
 import PointerQueue from './pointerqueue';
 
