@@ -167,13 +167,12 @@ class PointerQueue {
         }
         if (parentType === 'Array') {
             if (this.parents[parent]) {
-                const firstParent = this.parents[parent]
-                const type = this.types[firstParent];
-                if (!hashTypes.includes(type)) {
+                const grandParent = this.parents[parent]
+                const type = this.types[grandParent];
+                if (!hashTypes.includes(type) && type !== 'Array') {
                     return 2
                 }
             }
-            return 0
         }
         if (['Object', 'Map'].includes(parentType)) {
             if (this.parents[parent]) return 2

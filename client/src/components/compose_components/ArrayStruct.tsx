@@ -3,6 +3,7 @@ import ArrayVal from './ArrayVal';
 import { observer } from 'mobx-react';
 import store from '../../store';
 import genId from '../../utils/genId';
+import { toJS } from 'mobx';
 
 type Props = {
     structure: Viz.Structure,
@@ -44,6 +45,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
 
 
     const maxWidth = store.windowWidth * (store.structsWidth / 18) * store.widths.array
+
     const len = structure.get('length').value
     const display = store.structs.children[objectId].size > 0 ? 'column' : 'row'
     if (display === 'column') {

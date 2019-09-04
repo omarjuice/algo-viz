@@ -149,7 +149,6 @@ class Structures {
     }
     @action addObject(id: string) {
         this.objects[id] = this.inactiveObjects[id];
-        console.log(toJS(this.childKeyMemo[id]))
         this.childKeyMemo[id].forEach((child, key) => {
             this.addPointers(child, id, key)
         })
