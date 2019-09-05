@@ -27,6 +27,7 @@ class DataChild extends React.Component<Props>{
     componentDidMount() {
         this.props.setDepth(this.props.depth, 1)
     }
+
     componentWillUnmount() {
         const pos = store.structs.positions[this.props.objectId]
         if (pos) {
@@ -34,7 +35,6 @@ class DataChild extends React.Component<Props>{
                 delete store.structs.positions[this.props.objectId]
             }
         }
-
         this.props.setDepth(this.props.depth, -1)
     }
     render() {

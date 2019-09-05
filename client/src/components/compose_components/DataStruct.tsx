@@ -36,11 +36,13 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     renderId = useMemo(() => {
         return renderId || genId(objectId.length + 3)
     }, [objectId, renderId])
+
+    const depthMod = isList ? 5 : 15
     const ref = useCallback((elem) => {
         if (idx) { }//For rerender
         if (elem) {
             if (!node) {
-                if (depth === 0 || depth % 5 !== 0) {
+                if (depth === 0 || depth % depthMod !== 0) {
                     setNode(elem)
                 } else {
                     setImmediate(() => setNode(elem))
@@ -51,6 +53,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
 
     useEffect(() => {
+        console.log(ratio)
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
         }
