@@ -87,9 +87,7 @@ class Runner {
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(info.type)) {
             this._f(info)
         }
-        if ([TYPES.ASSIGNMENT].includes(info.type) && info.update) {
-            info.value += info.update
-        }
+
 
         if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
 

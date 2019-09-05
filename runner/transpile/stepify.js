@@ -225,18 +225,16 @@ module.exports = function (input) {
                         if (t.isIdentifier(path.node.argument)) {
                             if (isBarredObject(path.node.argument.name)) return
                         }
-                        if (t.isExpressionStatement(path.parent)) {
-                            // better for yielding the current value of the variable
-                            path.node.prefix = true
-                        } else {
+                        if (!path.node.prefix) {
                             details.update = path.node.operator === '++' ? 1 : -1
                         }
                         if (t.isMemberExpression(path.node.argument)) {
                             // setters will take care of it
                             delete details.update;
                             details.type = TYPES.EXPRESSION
+                        } else {
+                            details.varName = path.node.argument.name
                         }
-                        details.varName = path.node.argument.name
                         path.replaceWith(proxy(path.node, details))
                     }
 

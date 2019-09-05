@@ -53,7 +53,6 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
 
     useEffect(() => {
-        console.log(ratio)
         if (node) {
             store.structs.setPosition(objectId, node, renderId)
         }
