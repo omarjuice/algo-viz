@@ -67,4 +67,22 @@ describe('VM code execution', () => {
 
 
     })
+    it.only('objs', async () => {
+        let body = await execute(`
+        const str = 'HELLO'
+        const obj = Object(str)
+        
+        
+        const z = typeof obj
+
+        `)
+        require('fs').writeFileSync('executed.json', body)
+        body = JSON.parse(body)
+        expect(Array.isArray(body.steps)).toBe(true)
+        expect(typeof body.objects).toBe('object')
+        expect(typeof body.types).toBe('object')
+
+
+
+    })
 })

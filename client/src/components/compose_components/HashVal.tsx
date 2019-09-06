@@ -44,7 +44,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
 
         if (parent && parent.id === objectId && parent.key === prop) {
             return (
-                <div className="columns is-paddingless is-multiline">
+                <div className={`columns is-paddingless is-multiline ${className}`}>
                     {type !== 'Set' && <div className={`column ${type === 'Map' && 'has-text-right'}`}>
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
                             {type === 'Map' && prop in store.structs.objects ?
@@ -89,8 +89,7 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 toggle(false)
             }}
             className={`
-            hash-val 
-            ${className}
+            hash-val ${className}
                 `}
             style={style}
         >

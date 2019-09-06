@@ -260,9 +260,6 @@ class Structures {
             if (value in this.objects) {
                 this.addPointers(value, object, key)
             }
-
-            // const element = document.querySelector(`.set.${object}`)
-            // if (element) element.scrollIntoView()
             this.scrollIntoView('set', object)
         }
         if (step.type === 'DELETE') {
@@ -304,7 +301,8 @@ class Structures {
             }
 
             this.gets[object] = this.objects[object].get(key)
-            if (this.root.viz.types[object] !== 'Array') {
+            const t = this.root.viz.types[object]
+            if (!['Array', 'Map', 'Set'].includes(t)) {
                 this.gets[object].value = step.value;
             }
             this.scrollIntoView('get', object)

@@ -49,7 +49,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 }
             }
         }
-    }, [node, idx, depth])
+    }, [node, idx, depth, depthMod])
 
 
     useEffect(() => {

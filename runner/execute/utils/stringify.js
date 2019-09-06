@@ -8,7 +8,7 @@ module.exports = function (obj) {
         // we want to ignore native objects
         checkTypedArray(obj)
         //Typed arrays cannot be virtualized :(
-        if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) return obj.toString()
+
         if (!Array.isArray(obj)) {
             const objString = obj.toString()
             if (objString.includes(' Iterator') || objString.includes(' Generator')) {
@@ -78,7 +78,11 @@ module.exports = function (obj) {
             }
             this.objects[newId] = copy
         }
+
         let type = obj.constructor.name
+        if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) {
+            type = 'Object'
+        }
         if (this.Viz && this.Viz[type] && this.Viz[type] === obj.constructor) type = 'Viz.' + type
         this.types[newId] = type
         return newId
