@@ -117,8 +117,8 @@ module.exports = function (input) {
                         // we need to know class methods because of their weird scoping
                         if (isClassMethod) {
                             details.kind = path.node.kind
-                            details.object = t.thisExpression()
                         }
+                        details.object = t.thisExpression()
 
                         const newNode = proxy(t.nullLiteral(), details)
                         if (t.isBlockStatement(path.node.body)) {
@@ -166,7 +166,8 @@ module.exports = function (input) {
                             type: TYPES.RETURN,
                             scope: getScope(parent),
                             funcName: parent.node.funcName,
-                            funcID: parent.node.funcID
+                            funcID: parent.node.funcID,
+                            object: t.thisExpression()
                         })
                     }
                 },

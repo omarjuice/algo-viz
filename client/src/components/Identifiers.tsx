@@ -17,7 +17,7 @@ const Identifiers: React.FC = observer(() => {
                     return <div key={i} className={`column is-${colSize} is-size-${fontSize}`}>{
                         ids.map((id, i) => (
                             <p key={i}>
-                                <span style={{ color: store.settings.configColors['Text'] }}>{id.name}{' '}={' '}</span>
+                                <span style={{ color: id.color || store.settings.configColors['Text'] }}>{id.name}{' '}={' '}</span>
                                 <ValText value={id.value} type={getType(id.value)} />
                             </p>
                         ))

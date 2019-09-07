@@ -2,14 +2,15 @@ import { observable, action, computed } from "mobx";
 import { RootStore } from ".";
 
 
-type activeIds = {
+type activeId = {
     name: string
     value: any
+    color?: string
 }
 
 class StateStore {
     @observable scopeStack: (null | number)[] = []
-    @observable callStack: [string, string][] = []
+    @observable callStack: Viz.Step.FuncType[] = []
     @observable scopeChain: { [key: string]: Viz.ScopeChainEl } = {}
     @observable identifiers: { [key: string]: Viz.ScopeIdentifiers } = {}
     @observable funcScopes: { [key: string]: string } = {}
@@ -92,7 +93,7 @@ class StateStore {
         if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
             const fScope: number = step.scope[1]
             if (step.type !== 'RETURN') {
-                this.callStack.push([step.funcName, step.funcID])
+                this.callStack.push(step as Viz.Step.FUNC)
                 this.funcScopes[fScope] = step.funcName
                 const queue: number[] = [fScope]
                 while (queue.length) {
@@ -111,7 +112,7 @@ class StateStore {
             } else {
 
                 let i = this.callStack.length - 1;
-                while (this.callStack[i][1] !== step.funcID && i >= 0) {
+                while (this.callStack[i].funcID !== step.funcID && i >= 0) {
                     i--;
                 }
                 this.callStack.splice(i, 1);
@@ -187,7 +188,7 @@ class StateStore {
         if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
             const fScope = step.scope[1]
             if (step.type === 'RETURN') {
-                this.callStack.splice(step.callIdx, 0, [step.funcName, step.funcID])
+                this.callStack.splice(step.callIdx, 0, step)
                 this.funcScopes[fScope] = step.funcName
                 const queue = [fScope]
                 while (queue.length) {
@@ -242,10 +243,17 @@ class StateStore {
         }
         step.executed = false;
     }
-    @computed get activeIds(): activeIds[][] {
+    @computed get activeIds(): activeId[][] {
         const s = this.scopeStack;
-        const identifiers: activeIds[][] = [[]]
+        const identifiers: activeId[][] = [[]]
         const activeObjs: string[] = []
+        if (this.callStack.length && this.callStack[this.callStack.length - 1].object) {
+            identifiers[0][0] = {
+                name: 'this',
+                value: this.callStack[this.callStack.length - 1].object,
+                color: this.root.settings.valueColors['native']
+            }
+        }
         for (const scope of s) {
             if (scope === null) continue;
             const ids = this.identifiers[scope]

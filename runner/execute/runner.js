@@ -127,7 +127,16 @@ class Runner {
                     this.constructors.set(call.object, [true, id])
                     this.constructors.set(this.virtualize(call.object), [true, id])
                 }
+            }
+            if (call.object !== undefined) {
                 call.object = this.stringify(call.object)
+            } else {
+                call.object = null
+            }
+            if (info.object !== undefined) {
+                info.object = this.stringify(info.object)
+            } else {
+                info.object = null
             }
         } else {
             if (info.type === TYPES.METHOD) {

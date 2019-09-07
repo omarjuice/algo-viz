@@ -97,6 +97,7 @@ declare namespace Viz {
         interface FuncType extends Generic {
             funcName: string
             funcID: string
+            object: null | string
         }
         interface VarType extends Generic {
             varName: string
@@ -130,7 +131,6 @@ declare namespace Viz {
         interface METHOD extends FuncType {
             type: 'METHOD'
             kind: string,
-            object: string
         }
         interface RETURN extends FuncType {
             type: 'RETURN'
