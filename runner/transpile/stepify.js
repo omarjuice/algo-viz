@@ -172,50 +172,84 @@ module.exports = function (input) {
                 },
                 VariableDeclaration: {
                     exit(path) {
-                        // if (t.isForInStatement(path.parent) || t.isForOfStatement(path.parent)) return
-                        // path.node.declarations.forEach((declaration) => {
-                        //     const { id: identifier, init } = declaration
-                        //     if (identifier.name[0] !== '_') {
-                        //         if (!t.isFunction(init)) {
-                        //             if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
-                        //                 if (init.callee.object.name !== _name) return
-                        //             }
-                        //             if (!init || !declaration.init.visited) {
-                        //                 const details = {
-                        //                     type: TYPES.DECLARATION,
-                        //                     varName: identifier.name,
-                        //                     scope: getScope(path),
-                        //                     block: path.node.kind !== 'var',
-                        //                 }
-                        //                 if (path.node.start) {
-                        //                     details.name = t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
-                        //                 }
-                        //                 declaration.init = proxy(
-                        //                     init || t.identifier('undefined'), details
-                        //                 )
-                        //             }
-                        //             declaration.init.visited = true
-                        //         }
-                        //     }
+                        if (t.isForStatement(path.parent)) return;
 
-                        // });
+                        const declarations = [];
+                        path.get("declarations").forEach(d => {
+                            const id = d.get("id");
+                            if (t.isIdentifier(id)) {
+                                const details = {
+                                    type: TYPES.DECLARATION,
+                                    varName: id.node.name,
+                                    scope: getScope(path),
+                                    block: path.node.kind !== 'var',
+                                }
+                                declarations.push(proxy(id.node, details))
+                                return
+                            }
+                            id.traverse({
+                                Identifier: {
+                                    enter(p) {
+                                        if (t.isObjectProperty(p.parent)) {
+                                            if (p.node === p.parent.key) return
+                                        }
+                                        if (t.isAssignmentPattern(p.parent)) {
+                                            if (p.node !== p.parent.left) return p.stop();
+                                        }
+                                        const details = {
+                                            type: TYPES.DECLARATION,
+                                            varName: p.node.name,
+                                            scope: getScope(path),
+                                            block: path.node.kind !== 'var',
+                                        }
+                                        declarations.push(proxy(p.node, details))
+                                    }
+                                },
+                                Expression(p) {
+                                    p.stop()
+                                }
+                            })
+                        })
+                        for (let i = declarations.length - 1; i >= 0; i--) {
+                            path.insertAfter(declarations[i])
+                        }
                     },
                 },
 
                 AssignmentExpression: {
                     exit(path) {
-                        const assignment = path.node
-                        if (assignment.left.name && assignment.left.name[0] === '_') return
-                        if (!assignment.start) return
-                        const details = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
 
-                        if (t.isMemberExpression(assignment.left)) {
-                            // we need to know if/when a new property is created on an object
-                            details.type = TYPES.EXPRESSION;
-                        } else {
-                            details.varName = assignment.left.name
+                        if (t.isMemberExpression(path.node.left)) {
+                            const details = { type: TYPES.EXPRESSION, scope: getScope(path) }
+                            path.replaceWith(proxy(path.node, details))
                         }
-                        path.replaceWith(proxy(assignment, details))
+                        const details = [];
+                        const base = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
+                        if (t.isIdentifier(path.node.left)) {
+                            details.push({ ...base, varName: path.node.left.name })
+                        } else {
+                            path.get("left").traverse({
+                                Identifier(p) {
+                                    if (t.isObjectProperty(p.parent)) {
+                                        if (p.node === p.parent.key) return p.skip()
+                                    }
+                                    if (t.isAssignmentPattern(p.parent)) {
+                                        if (p.node !== p.parent.left) return p.skip();
+                                    }
+                                    details.push({
+                                        ...base,
+                                        varName: p.node.name,
+                                        name: t.arrayExpression([t.numericLiteral(p.node.start), t.numericLiteral(p.node.end)])
+                                    })
+                                },
+                                Expression(p) {
+                                    p.stop()
+                                }
+                            })
+                        }
+                        while (details.length) {
+                            path.replaceWith(proxy(path.node, details.shift()))
+                        }
                     }
                 },
                 UpdateExpression: {

@@ -51,7 +51,7 @@ module.exports = function ({ t = types, input, code, Node }) {
                         if (path.node === path.parent.key) return
                     }
                     if (t.isAssignmentPattern(path.parent)) {
-                        if (path.node === path.parent.right) return
+                        if (path.node === path.parent.right) p.stop()
                     }
                     params.push(proxy(
                         path.node,

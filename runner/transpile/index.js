@@ -6,7 +6,6 @@ module.exports = async function transpile(func, input, ) {
     const { code } = await babel.transformAsync(func, {
         plugins: [
             ['@babel/plugin-transform-destructuring', { loose: true }],
-            ['@babel/plugin-transform-parameters'],
             'babel-plugin-transform-remove-console',
             [stepify(input), {
                 disallow: {
