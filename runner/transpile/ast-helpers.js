@@ -43,6 +43,30 @@ module.exports = function ({ t = types, input, code, Node }) {
             assignment: t.assignmentExpression('=', id, node)
         }
     }
+    const traverseParameters = (parentPath, params) => {
+        return p => {
+            p.traverse({
+                Identifier(path) {
+                    if (t.isObjectProperty(path.parent)) {
+                        if (path.node === path.parent.key) return
+                    }
+                    if (t.isAssignmentPattern(path.parent)) {
+                        if (path.node === path.parent.right) return
+                    }
+                    params.push(proxy(
+                        path.node,
+                        {
+                            type: TYPES.DECLARATION,
+                            varName: path.node.name,
+                            scope: getScope(parentPath),
+                            block: true
+                        }
+                    ))
+                },
+
+            })
+        }
+    }
     //iterates through the chain of access of an object to get the computed accessor
     // not in use
     const computeAccessor = (path, memberExpression) => {
@@ -213,7 +237,8 @@ module.exports = function ({ t = types, input, code, Node }) {
         proxy,
         willTraverse,
         getScope,
-        createId
+        createId,
+        traverseParameters
     }
 }
 

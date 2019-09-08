@@ -19,6 +19,7 @@ module.exports = function (input) {
             isBarredObject,
             getScope,
             reassignSprad,
+            traverseParameters,
             createId;
 
         return {
@@ -33,6 +34,7 @@ module.exports = function (input) {
                     reducePropExpressions = helpers.reducePropExpressions
                     getAccessorProxy = helpers.getAccessorProxy
                     reassignComputedValue = helpers.reassignComputedValue
+                    traverseParameters = helpers.traverseParameters
                     construct = helpers.construct
                     computeAccessor = helpers.computeAccessor
                     proxyAssignment = helpers.proxyAssignment
@@ -54,17 +56,9 @@ module.exports = function (input) {
                         if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
 
                         //put the params as declarations
-                        const params = path.node.params.map(param => param.name && param.name[0] !== '_' && t.expressionStatement(
-                            proxy(
-                                param,
-                                {
-                                    type: TYPES.DECLARATION,
-                                    varName: param.name,
-                                    scope: getScope(path),
-                                    block: true
-                                }
-                            )
-                        ) || null);
+                        const params = [];
+
+                        path.get("params").forEach(traverseParameters(path, params))
 
                         const isClassMethod = t.isClassMethod(path.node)
                         let funcName;
@@ -141,7 +135,12 @@ module.exports = function (input) {
                                 t.returnStatement(path.node.body)
                             ])
                         }
+
+
                     }
+
+
+
                 },
                 ClassDeclaration(path) {
                     if (path.node.superClass) {
@@ -173,33 +172,33 @@ module.exports = function (input) {
                 },
                 VariableDeclaration: {
                     exit(path) {
-                        if (t.isForInStatement(path.parent) || t.isForOfStatement(path.parent)) return
-                        path.node.declarations.forEach((declaration) => {
-                            const { id: identifier, init } = declaration
-                            if (identifier.name[0] !== '_') {
-                                if (!t.isFunction(init)) {
-                                    if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
-                                        if (init.callee.object.name !== _name) return
-                                    }
-                                    if (!init || !declaration.init.visited) {
-                                        const details = {
-                                            type: TYPES.DECLARATION,
-                                            varName: identifier.name,
-                                            scope: getScope(path),
-                                            block: path.node.kind !== 'var',
-                                        }
-                                        if (path.node.start) {
-                                            details.name = t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
-                                        }
-                                        declaration.init = proxy(
-                                            init || t.identifier('undefined'), details
-                                        )
-                                    }
-                                    declaration.init.visited = true
-                                }
-                            }
+                        // if (t.isForInStatement(path.parent) || t.isForOfStatement(path.parent)) return
+                        // path.node.declarations.forEach((declaration) => {
+                        //     const { id: identifier, init } = declaration
+                        //     if (identifier.name[0] !== '_') {
+                        //         if (!t.isFunction(init)) {
+                        //             if (t.isCallExpression(init) && t.isMemberExpression(init.callee) && isBarredObject(init.callee.object.name)) {
+                        //                 if (init.callee.object.name !== _name) return
+                        //             }
+                        //             if (!init || !declaration.init.visited) {
+                        //                 const details = {
+                        //                     type: TYPES.DECLARATION,
+                        //                     varName: identifier.name,
+                        //                     scope: getScope(path),
+                        //                     block: path.node.kind !== 'var',
+                        //                 }
+                        //                 if (path.node.start) {
+                        //                     details.name = t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
+                        //                 }
+                        //                 declaration.init = proxy(
+                        //                     init || t.identifier('undefined'), details
+                        //                 )
+                        //             }
+                        //             declaration.init.visited = true
+                        //         }
+                        //     }
 
-                        });
+                        // });
                     },
                 },
 
