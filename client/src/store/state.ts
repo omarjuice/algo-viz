@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action, computed, toJS } from "mobx";
 import { RootStore } from ".";
 
 
@@ -9,6 +9,7 @@ type activeId = {
 }
 
 class StateStore {
+    @observable global: number;
     @observable scopeStack: (null | number)[] = []
     @observable callStack: Viz.Step.FuncType[] = []
     @observable scopeChain: { [key: string]: Viz.ScopeChainEl } = {}
@@ -33,6 +34,8 @@ class StateStore {
                 this.scopeChain[scope] = { parent, children: [] }
                 if (typeof parent === 'number') {
                     this.scopeChain[parent].children.push(scope)
+                } else if (parent === null) {
+                    this.global = scope
                 }
             }
             const s = this.scopeStack
@@ -51,13 +54,14 @@ class StateStore {
 
 
             }
+
         }
         if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
             let { varName: name, block } = step
             let scope: null | number = step.scope[1]
             if (step.type === 'DECLARATION') {
                 if (!block) {
-                    while (scope && !(scope in this.funcScopes)) {
+                    while (scope && !(scope in this.funcScopes) && scope !== this.global) {
                         scope = this.scopeChain[scope].parent
                     }
                 }
