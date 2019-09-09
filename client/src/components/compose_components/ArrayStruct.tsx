@@ -72,6 +72,13 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
 
     const willRender = !(pos && pos.renderId && pos.renderId !== renderId)
 
+
+    const config = store.settings.config;
+
+    // eslint-disable-next-line
+    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
+
+
     const arr: React.ReactNode[] = useMemo(
         () => willRender ? iterate(len, display, ratio, valSize, objectId, structure, setChildren) : [],
         [len, display, ratio, valSize, objectId, structure, willRender, setChildren]
@@ -81,8 +88,6 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     }
 
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
-    const config = store.settings.config;
-    const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers']]
 
     const size = Math.max(Math.round(ratio * 5), 3)
     const color = store.settings.structColors['Array']

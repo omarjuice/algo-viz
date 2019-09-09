@@ -67,6 +67,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     }
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
     const config = store.settings.config;
+
+    // eslint-disable-next-line
     const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers'], ...store.numStructs, store.widths.data]
 
     const width = store.windowWidth * ((store.structsWidth >= 10 ? store.structsWidth / 24 : .5)) * ratio
