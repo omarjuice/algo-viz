@@ -143,34 +143,18 @@ module.exports = function (input) {
                 },
                 VariableDeclaration: {
                     exit(path) {
-                        const declarations = [];
+                        const declarations = []
+                        const isFor = t.isForInStatement(path.parent) || t.isForOfStatement(path.parent)
+                        path.get("declarations").forEach(traverseDeclarations(path, isFor, declarations))
 
-                        path.get("declarations").forEach(traverseDeclarations(path, declarations))
-
-                        if (t.isFor(path.parent)) {
+                        if (isFor) {
                             const parent = path.findParent(parent => t.isFor(parent))
-                            let undeclared = false;
-                            if (t.isForOfStatement(parent) || t.isForInStatement(parent)) {
-                                undeclared = true
-                            }
-                            for (let [node, details] of declarations) {
-                                node = t.identifier('undefined')
-                                parent.insertBefore(proxy(node, details))
-                            }
-                            if (undeclared) {
-                                const assignments = [];
-                                declarations.forEach(([node, details]) => {
-                                    const copiedDetails = { ...details }
-                                    copiedDetails.type = TYPES.ASSIGNMENT;
-                                    delete copiedDetails.block;
-                                    assignments.push(proxy(node, copiedDetails))
-                                })
-                                parent.node.body.body = [...assignments, ...parent.node.body.body]
-                            }
-                        } else {
-                            for (let i = declarations.length - 1; i >= 0; i--) {
-                                path.insertAfter(proxy(declarations[i][0], declarations[i][1]))
-                            }
+
+                            parent.node.body.body = [
+                                ...declarations.map(([node, details]) => proxy(node, details)),
+                                ...parent.node.body.body
+                            ]
+
                         }
                     },
                 },
@@ -214,7 +198,8 @@ module.exports = function (input) {
                     }
 
                 },
-                "For|While|DoWhileStatement": {
+                "For|WhileStatement|DoWhileStatement": {
+
                     enter(path) {
                         if (!t.isBlockStatement(path.node.body)) {
                             //we need to put things into the bodies so we need a block statement
@@ -226,12 +211,7 @@ module.exports = function (input) {
                             type: TYPES.BLOCK,
                             scope: getScope(path)
                         }
-                        if (path.node.test && !path.node.test._isProxy) {
-                            path.node.test = proxy(path.node.test, details)
-                        }
-                        if (t.isDoWhileStatement(path)) {
-                            path.node.body.body.unshift(proxy(t.nullLiteral(), details))
-                        }
+                        path.insertBefore(proxy(t.nullLiteral(), details))
                     }
                 },
                 IfStatement: {
@@ -239,11 +219,6 @@ module.exports = function (input) {
                         if (!t.isBlockStatement(path.node.consequent)) {
                             path.node.consequent = t.blockStatement([path.node.consequent])
                         }
-                        path.node.test = proxy(path.node.test, {
-                            type: TYPES.BLOCK,
-                            scope: getScope(path)
-                        })
-
                     }
                 },
                 MemberExpression: {

@@ -56,6 +56,13 @@ class StateStore {
             }
 
         }
+        if (step.type === 'BLOCK') {
+            const scope = step.scope[1];
+            const ids = this.identifiers[scope];
+            for (const id in ids) {
+                ids[id][ids[id].length - 1] = undefined
+            }
+        }
         if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
             let { varName: name, block } = step
             let scope: null | number = step.scope[1]

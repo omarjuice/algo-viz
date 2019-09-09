@@ -70,23 +70,36 @@ module.exports = function ({ t = types, input, code, Node }) {
         }
     }
 
-    const traverseDeclarations = (parentPath, declarations) => {
+    const traverseDeclarations = (parentPath, isFor, declarations) => {
         return declaration => {
             const id = declaration.get("id");
+            const decs = []
             if (t.isIdentifier(id)) {
                 const details = {
                     type: TYPES.DECLARATION,
                     varName: id.node.name,
                     scope: getScope(parentPath),
                     block: parentPath.node.kind !== 'var',
+                    name: t.arrayExpression([t.numericLiteral(id.node.start), t.numericLiteral(id.node.end)])
                 }
-                declarations.push([id.node, details])
+                const init = declaration.get("init");
+                if (!isFor) {
+                    if (init.node) {
+                        init.replaceWith(proxy(init.node, details))
+                    } else {
+                        declaration.node.init = proxy(t.identifier("undefined"), details)
+                    }
+                } else {
+                    declarations.push([id.node, details])
+                }
                 return
             }
             id.traverse({
                 Identifier: {
                     enter(path) {
+                        if (path.node._wasTraversed) return
                         if (t.isObjectProperty(path.parent)) {
+                            path.parent.shorthand = false
                             if (path.node === path.parent.key) return
                         }
                         if (t.isAssignmentPattern(path.parent)) {
@@ -97,15 +110,27 @@ module.exports = function ({ t = types, input, code, Node }) {
                             varName: path.node.name,
                             scope: getScope(path),
                             block: parentPath.node.kind !== 'var',
-
+                            name: t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
                         }
-                        declarations.push([path.node, details])
+                        const variableName = path.node
+
+                        if (isFor) {
+                            declarations.push([path.node, details])
+                        } else {
+                            path.replaceWith(t.identifier(createId(4, 1)))
+                            path.node._wasTraversed = true;
+                            variableName._wasTraversed = true;
+                            decs.push(t.variableDeclarator(variableName, proxy(path.node, details)))
+                        }
                     }
                 },
                 Expression(path) {
                     path.stop()
                 }
             })
+            for (let i = decs.length - 1; i >= 0; i--) {
+                declaration.insertAfter(decs[i])
+            }
         }
     }
     traverseAssignments = (details, base) => {
