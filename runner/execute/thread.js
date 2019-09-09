@@ -7,7 +7,7 @@ const util = require('util')
 const { code, _name, original, prod, timeout, version } = workerData
 const runner = new Runner(_name, original)
 const vm = new VM({
-    console: 'inherit',
+    console: prod ? 'off' : 'inherit',
     sandbox: {
         [_name]: runner,
         Viz: instantiateViz(runner)

@@ -15,6 +15,12 @@ module.exports = function (input) {
             traverseAssignments,
             createId;
 
+        const thisArgNode = t.conditionalExpression(
+            t.binaryExpression("===", t.thisExpression(), t.identifier('global')),
+            t.nullLiteral(),
+            t.thisExpression()
+
+        )
         return {
             visitor: {
                 Program(path, { file: { code: original }, opts }) {
@@ -88,7 +94,7 @@ module.exports = function (input) {
                         if (isClassMethod) {
                             details.kind = path.node.kind
                         }
-                        details.object = t.thisExpression()
+                        details.object = thisArgNode
 
                         const newNode = proxy(t.nullLiteral(), details)
                         if (t.isBlockStatement(path.node.body)) {
@@ -137,7 +143,7 @@ module.exports = function (input) {
                             scope: getScope(parent),
                             funcName: parent.node.funcName,
                             funcID: parent.node.funcID,
-                            object: t.thisExpression()
+                            object: thisArgNode
                         })
                     }
                 },

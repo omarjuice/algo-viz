@@ -13,7 +13,8 @@ module.exports = async function transpile(func, input, ) {
         ],
         parserOpts: {
             strictMode: true
-        }
+        },
+
     })
     return code
 }
