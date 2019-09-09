@@ -63,7 +63,7 @@ class Runner {
         this.types[infinity] = 'Infinity'
         const negInfinity = this.genId(5, 1)
         this.map.set(-Infinity, negInfinity)
-        this.types[negInfinity] = '-Infinity'
+        this.types[negInfinity] = '-Infinity';
 
         //Will not catch steps when this is true
         this._ignore = false
@@ -138,6 +138,7 @@ class Runner {
             } else {
                 info.object = null
             }
+
         } else {
             if (info.type === TYPES.METHOD) {
                 if (info.kind === 'constructor') {
@@ -146,8 +147,18 @@ class Runner {
                     this.constructors.set((this.virtualize), [false, id])
                 }
             }
+            if (info.type === TYPES.FUNC) {
+                if (info.object !== undefined) {
+                    info.object = this.stringify(info.object)
+                } else {
+                    info.object = null
+                }
+            }
             this.callStack.push(info)
+
         }
+
+
     }
 
 

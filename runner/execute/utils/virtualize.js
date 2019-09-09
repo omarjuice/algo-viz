@@ -1,5 +1,6 @@
 const TYPES = require('./types')
 function virtualize(object) {
+    if (object === this) return undefined;
     const runner = this
     if (!object || typeof object !== 'object') return object
     if (
