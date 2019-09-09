@@ -44,14 +44,16 @@ describe('VM code execution', () => {
     })
     it('restricted objects cannot be accessed from callbacks', async () => {
         let body = await execute(`
+            const k = 'j'
             const matrix = Viz.array.matrix(5,5, () => {
                 return require('fs')
             })
+
+      
         `)
+        // require('fs').writeFileSync('executed.json', body)
         body = JSON.parse(body)
         expect(Array.isArray(body.steps)).toBe(true)
-        expect(typeof body.objects).toBe('object')
-        expect(typeof body.types).toBe('object')
         expect(body.steps[body.steps.length - 1].type).toBe('ERROR')
     })
     it('natives', async () => {
@@ -67,22 +69,5 @@ describe('VM code execution', () => {
 
 
     })
-    it.only('objs', async () => {
-        let body = await execute(`
-        const str = 'HELLO'
-        const obj = Object(str)
-        
-        
-        const z = typeof obj
 
-        `)
-        require('fs').writeFileSync('executed.json', body)
-        body = JSON.parse(body)
-        expect(Array.isArray(body.steps)).toBe(true)
-        expect(typeof body.objects).toBe('object')
-        expect(typeof body.types).toBe('object')
-
-
-
-    })
 })

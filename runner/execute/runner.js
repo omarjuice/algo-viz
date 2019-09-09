@@ -128,12 +128,12 @@ class Runner {
                     this.constructors.set(this.virtualize(call.object), [true, id])
                 }
             }
-            if (call.object !== undefined) {
+            if (call.object) {
                 call.object = this.stringify(call.object)
             } else {
                 call.object = null
             }
-            if (info.object !== undefined) {
+            if (info.object) {
                 info.object = this.stringify(info.object)
             } else {
                 info.object = null
@@ -148,7 +148,7 @@ class Runner {
                 }
             }
             if (info.type === TYPES.FUNC) {
-                if (info.object !== undefined) {
+                if (info.object) {
                     info.object = this.stringify(info.object)
                 } else {
                     info.object = null

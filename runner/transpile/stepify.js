@@ -7,19 +7,12 @@ module.exports = function (input) {
         let Node,
             _name,
             code,
-            willTraverse,
-            reducePropExpressions,
-            getAccessorProxy,
-            reassignComputedValue,
-            construct,
-            computeAccessor,
-            proxyAssignment,
             proxy,
-            randomString,
             isBarredObject,
             getScope,
-            reassignSprad,
             traverseParameters,
+            traverseDeclarations,
+            traverseAssignments,
             createId;
 
         return {
@@ -30,20 +23,14 @@ module.exports = function (input) {
                     input.references = { ...input.references, ...path.scope.references }
                     const helpers = ASThelpers({ t, input, code, Node })
                     _name = input._name
-                    willTraverse = helpers.willTraverse
-                    reducePropExpressions = helpers.reducePropExpressions
-                    getAccessorProxy = helpers.getAccessorProxy
-                    reassignComputedValue = helpers.reassignComputedValue
                     traverseParameters = helpers.traverseParameters
-                    construct = helpers.construct
-                    computeAccessor = helpers.computeAccessor
-                    proxyAssignment = helpers.proxyAssignment
+                    traverseDeclarations = helpers.traverseDeclarations
+                    traverseAssignments = helpers.traverseAssignments
                     proxy = helpers.proxy
-                    randomString = helpers.randomString
                     isBarredObject = helpers.isBarredObject
                     getScope = helpers.getScope
                     createId = helpers.createId
-                    references = path.scope.references
+
                     //strict mode enforcement
                     path.node.body.unshift(
                         t.stringLiteral("use strict"),
@@ -64,24 +51,14 @@ module.exports = function (input) {
                         let funcName;
                         if (path.node.id) {
                             funcName = path.node.id.name
-                        } else if (t.isVariableDeclarator(path.parent)) {
-                            if (path.parent.id.name[0] === '_') return path.skip()
+                        } else if (t.isVariableDeclarator(path.parent) && t.isIdentifier(path.parent.id)) {
                             funcName = path.parent.id.name
                         } else if (t.isObjectProperty(path.parent) && !path.parent.computed) {
-                            if (path.parent.key.name[0] === '_') return path.skip()
                             funcName = 'method:' + path.parent.key.name
                         } else if (t.isCallExpression(path.parent) || t.isNewExpression(path.parent)) {
                             if (t.isMemberExpression(path.parent.callee)) {
-                                const { object, props } = computeAccessor(path, path.parent.callee)
-                                if (!isBarredObject(object.name, false)) {
-                                    funcName = t.binaryExpression('+', t.stringLiteral(object.name), t.stringLiteral('.'))
-                                    for (const p of props) {
-                                        // funcName += '.' + (t.isIdentifier(p) ? p.name : p.value)
-                                        funcName = t.binaryExpression('+', t.binaryExpression('+', funcName, p), t.stringLiteral('.'))
-                                    }
-                                    const idx = path.parent.arguments.indexOf(path.node)
-                                    funcName = t.binaryExpression('+', funcName, t.stringLiteral(`(callback-${idx})`))
-                                }
+                                const idx = path.parent.arguments.indexOf(path.node)
+                                funcName = t.stringLiteral(`callback-${idx}`)
 
                             } else if (t.isIdentifier(path.parent.callee)) {
                                 const idx = path.parent.arguments.indexOf(path.node)
@@ -91,7 +68,6 @@ module.exports = function (input) {
                             const parent = path.findParent(p => t.isClassDeclaration(p))
                             if (t.isIdentifier(parent.node.id)) {
                                 if (t.isIdentifier(path.node.key)) {
-                                    if (path.node.key.name[0] === '_') return path.skip()
                                     funcName = parent.node.id.name + '.' + path.node.key.name
                                 }
                             }
@@ -135,12 +111,7 @@ module.exports = function (input) {
                                 t.returnStatement(path.node.body)
                             ])
                         }
-
-
                     }
-
-
-
                 },
                 ClassDeclaration(path) {
                     if (path.node.superClass) {
@@ -172,53 +143,40 @@ module.exports = function (input) {
                 },
                 VariableDeclaration: {
                     exit(path) {
-                        if (t.isForStatement(path.parent)) return;
-
                         const declarations = [];
-                        path.get("declarations").forEach(d => {
-                            const id = d.get("id");
-                            if (t.isIdentifier(id)) {
-                                const details = {
-                                    type: TYPES.DECLARATION,
-                                    varName: id.node.name,
-                                    scope: getScope(path),
-                                    block: path.node.kind !== 'var',
-                                }
-                                declarations.push(proxy(id.node, details))
-                                return
+
+                        path.get("declarations").forEach(traverseDeclarations(path, declarations))
+
+                        if (t.isFor(path.parent)) {
+                            const parent = path.findParent(parent => t.isFor(parent))
+                            let undeclared = false;
+                            if (t.isForOfStatement(parent) || t.isForInStatement(parent)) {
+                                undeclared = true
                             }
-                            id.traverse({
-                                Identifier: {
-                                    enter(p) {
-                                        if (t.isObjectProperty(p.parent)) {
-                                            if (p.node === p.parent.key) return
-                                        }
-                                        if (t.isAssignmentPattern(p.parent)) {
-                                            if (p.node !== p.parent.left) return p.stop();
-                                        }
-                                        const details = {
-                                            type: TYPES.DECLARATION,
-                                            varName: p.node.name,
-                                            scope: getScope(path),
-                                            block: path.node.kind !== 'var',
-                                        }
-                                        declarations.push(proxy(p.node, details))
-                                    }
-                                },
-                                Expression(p) {
-                                    p.stop()
-                                }
-                            })
-                        })
-                        for (let i = declarations.length - 1; i >= 0; i--) {
-                            path.insertAfter(declarations[i])
+                            for (let [node, details] of declarations) {
+                                node = t.identifier('undefined')
+                                parent.insertBefore(proxy(node, details))
+                            }
+                            if (undeclared) {
+                                const assignments = [];
+                                declarations.forEach(([node, details]) => {
+                                    const copiedDetails = { ...details }
+                                    copiedDetails.type = TYPES.ASSIGNMENT;
+                                    delete copiedDetails.block;
+                                    assignments.push(proxy(node, copiedDetails))
+                                })
+                                parent.node.body.body = [...assignments, ...parent.node.body.body]
+                            }
+                        } else {
+                            for (let i = declarations.length - 1; i >= 0; i--) {
+                                path.insertAfter(proxy(declarations[i][0], declarations[i][1]))
+                            }
                         }
                     },
                 },
 
                 AssignmentExpression: {
                     exit(path) {
-
                         if (t.isMemberExpression(path.node.left)) {
                             const details = { type: TYPES.EXPRESSION, scope: getScope(path) }
                             path.replaceWith(proxy(path.node, details))
@@ -228,24 +186,7 @@ module.exports = function (input) {
                         if (t.isIdentifier(path.node.left)) {
                             details.push({ ...base, varName: path.node.left.name })
                         } else {
-                            path.get("left").traverse({
-                                Identifier(p) {
-                                    if (t.isObjectProperty(p.parent)) {
-                                        if (p.node === p.parent.key) return p.skip()
-                                    }
-                                    if (t.isAssignmentPattern(p.parent)) {
-                                        if (p.node !== p.parent.left) return p.skip();
-                                    }
-                                    details.push({
-                                        ...base,
-                                        varName: p.node.name,
-                                        name: t.arrayExpression([t.numericLiteral(p.node.start), t.numericLiteral(p.node.end)])
-                                    })
-                                },
-                                Expression(p) {
-                                    p.stop()
-                                }
-                            })
+                            path.get("left").traverse(traverseAssignments(details, base))
                         }
                         while (details.length) {
                             path.replaceWith(proxy(path.node, details.shift()))
@@ -279,8 +220,6 @@ module.exports = function (input) {
                             //we need to put things into the bodies so we need a block statement
                             path.node.body = t.blockStatement([path.node.body])
                         }
-
-
                     },
                     exit(path) {
                         const details = {
@@ -295,9 +234,6 @@ module.exports = function (input) {
                         }
                     }
                 },
-
-
-
                 IfStatement: {
                     exit(path) {
                         if (!t.isBlockStatement(path.node.consequent)) {
@@ -330,49 +266,10 @@ module.exports = function (input) {
                 },
                 ForStatement(path) {
                     if (t.isBlockStatement(path.node.body)) {
-
                         if (path.node.update && t.isUpdateExpression(path.node.update)) {
                             //yielding the correct current value of i
                             path.node.update.prefix = true
                         }
-                    }
-                },
-                "ForOfStatement|ForInStatement": {
-                    exit(path) {
-                        if (t.isBlockStatement(path.node.body)) {
-                            const variables = [];
-                            (path.node.left.declarations || [{ id: path.node.left }]).forEach(declaration => {
-                                const { id: identifier } = declaration
-                                variables.push(t.expressionStatement(proxy(
-                                    identifier,
-                                    {
-                                        type: TYPES.DECLARATION,
-                                        varName: identifier.name,
-                                        scope: getScope(path),
-                                        block: path.node.left.kind !== 'var'
-                                    }
-                                )))
-                            })
-
-                            path.node.body.body = [
-                                ...variables,
-                                ...path.node.body.body
-                            ]
-                        }
-                    }
-                },
-                "BinaryExpression|LogicalExpression": {
-                    exit(path) {
-                        const expression = path.node
-                        if (!expression.start) return
-                        const details = {
-                            scope: getScope(path),
-                        }
-
-                        details.type = TYPES.EXPRESSION
-
-
-                        path.replaceWith(proxy(expression, details))
                     }
                 },
                 "CallExpression|NewExpression": {
@@ -392,29 +289,6 @@ module.exports = function (input) {
                     }
                 },
 
-                ConditionalExpression: {
-                    exit(path) {
-                        const conditional = path.node
-                        const details = {
-                            scope: getScope(path),
-                            type: TYPES.EXPRESSION,
-                        }
-                        if (!conditional.start) return
-                        path.replaceWith(proxy(conditional, details))
-                    }
-                },
-                "ObjectExpression|ArrayExpression": {
-                    exit(path) {
-                        if (!t.isObjectProperty(path.parent) && !t.isArrayExpression(path.parent)) {
-                            const details = {
-                                scope: getScope(path)
-                            }
-                            details.type = TYPES.EXPRESSION
-                            const node = proxy(path.node, details)
-                            path.replaceWith(node)
-                        }
-                    }
-                },
                 UnaryExpression: {
                     exit(path) {
                         const unary = path.node
@@ -444,22 +318,18 @@ module.exports = function (input) {
                         if (t.isUpdateExpression(path)) return
                         if (t.isThisExpression(path)) return
                         if (t.isLiteral(path)) return
+                        if (t.isCallExpression(path) || t.isNewExpression(path)) return
                         if (t.isLVal(path) || t.isFunction(path)) {
                             return
                         };
-                        if (willTraverse(path)) {
-                            return
-                        } else {
-                            const details = {
-                                scope: getScope(path)
-                            }
-                            // if (t.isSequenceExpression(path.node)) {
-                            //     console.log(path.parent);
-                            // }
-                            details.type = TYPES.EXPRESSION
-                            const node = proxy(path.node, details)
-                            path.replaceWith(node)
+
+                        const details = {
+                            scope: getScope(path)
                         }
+                        details.type = TYPES.EXPRESSION
+                        const node = proxy(path.node, details)
+                        path.replaceWith(node)
+
                     },
                 },
             }
