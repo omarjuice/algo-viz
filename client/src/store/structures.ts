@@ -225,38 +225,52 @@ class Structures {
                 this.switchOff(prop, 'get')
                 this.switchOff(prop, 'set')
             }
-            if (this.root.viz.types[object] === 'Array' && typeof key === 'number') {
+            if (this.root.viz.types[object] === 'Array') {
                 const len = this.objects[object].get('length');
-                if (key >= len.value) {
-                    for (let i = len.value; i < key; i++) {
-                        this.objects[object].set(i, {
-                            value: null,
-                            get: false,
-                            set: false
-                        })
+                if (typeof key === 'number') {
+                    if (key >= len.value) {
+                        for (let i = len.value; i < key; i++) {
+                            this.objects[object].set(i, {
+                                value: null,
+                                get: false,
+                                set: false
+                            })
+                        }
+                        len.value = key + 1
                     }
-                    len.value = key + 1
+                }
+                if (key === 'length') {
+                    if (value > len.value) {
+                        for (let i = len.value; i < value; i++) {
+                            this.objects[object].set(i, {
+                                value: null,
+                                get: false,
+                                set: false
+                            })
+                        }
+                    }
                 }
             }
-            if (!this.objects[object].has(key)) {
-                this.objects[object].set(key, {
-                    get: false,
-                    set: true,
-                    value
-                })
-                this.sets[object] = this.objects[object].get(key)
-            } else {
-                if (allowRender) {
-                    if (this.sets[object] === this.objects[object].get(key)) {
-                        this.sets[object].set = false
+            if (this.root.viz.types)
+                if (!this.objects[object].has(key)) {
+                    this.objects[object].set(key, {
+                        get: false,
+                        set: true,
+                        value
+                    })
+                    this.sets[object] = this.objects[object].get(key)
+                } else {
+                    if (allowRender) {
+                        if (this.sets[object] === this.objects[object].get(key)) {
+                            this.sets[object].set = false
+                        }
+                        this.objects[object].get(key).set = true
+                        this.switchOff(this.objects[object].get(key), 'get')
                     }
-                    this.objects[object].get(key).set = true
-                    this.switchOff(this.objects[object].get(key), 'get')
-                }
 
-                this.sets[object] = this.objects[object].get(key)
-                this.objects[object].get(key).value = value
-            }
+                    this.sets[object] = this.objects[object].get(key)
+                    this.objects[object].get(key).value = value
+                }
             if (value in this.objects) {
                 this.addPointers(value, object, key)
             }
@@ -295,6 +309,9 @@ class Structures {
                 const prop = this.objects[object].get(key)
                 if (this.gets[object] === prop) {
                     this.gets[object].get = false
+                }
+                if (!prop) {
+                    console.log(key);
                 }
                 prop.get = true
                 this.switchOff(prop, 'set')
