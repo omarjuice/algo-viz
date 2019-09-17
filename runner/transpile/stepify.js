@@ -232,7 +232,7 @@ module.exports = function (input) {
                         if (isBarredObject(path.node.object.name, false)) {
                             return path.stop()
                         }
-                        if (!t.isExpression(path.parent)) {
+                        if (!t.isExpression(path.parent) && !t.isPattern(path.parent)) {
                             const expression = path.node
                             if (!expression.start) return
                             const details = {

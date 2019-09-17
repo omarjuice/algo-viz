@@ -109,7 +109,8 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     if (display === 'row') {
         styles.height = valSize * 1.5 + 5
     } else {
-        styles.maxHeight = store.windowHeight
+
+        styles.maxHeight = store.windowHeight / (store.structsWidth < 10 ? (store.numStructs[2] + 1) : 1)
         styles.overflowY = 'scroll'
     }
     return (

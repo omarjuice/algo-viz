@@ -95,7 +95,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         child: string | null
         parent: Viz.Structure
     })[] = []
-
+    let childKeys = 0
+    let childrenInArray = false
     for (const [key, prop] of structure.entries()) {
         const { value } = prop
         if (typeof value === 'string' && value in store.structs.objects && value !== objectId && (key in settings.pointers || key in settings.order)) {
@@ -122,6 +123,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                     }
                 }
             } else if (key in settings.order) {
+                childKeys++
                 const parent = store.structs.pointers.get(value).top
 
                 const info = structure.get(key)
@@ -140,6 +142,9 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                     const object = store.structs.objects[value]
                     const type = store.viz.types[value]
                     if (['Object', 'Array', 'Map'].includes(type)) {
+                        if (type === 'Array') {
+                            childrenInArray = true
+                        }
                         for (const key of object.keys()) {
                             const info = object.get(key)
                             if (typeof info.value === 'string' && info.value in store.structs.objects) {
@@ -174,6 +179,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
 
 
     if (settings.numChildren === null) {
+
         children.sort((a, b) => {
             if (a.order.pos === b.order.pos) {
                 return a.key > b.key ? 1 : -1
@@ -181,21 +187,28 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 return a.order.pos - b.order.pos
             }
         })
+
     } else {
         let newList = new Array(settings.numChildren)
-        children.forEach(child => {
-            let pos = child.order.pos === Infinity ? newList.length - 1 : child.order.pos - 1
-            while (newList[pos]) {
-                const current = newList[pos].order
-                if (current.pos === Infinity) {
-                    newList[pos] = child
-                    child = newList[pos]
+        if (childKeys === 1 && childrenInArray) {
+            children.forEach(child => {
+                newList[Number(child.key)] = child
+            })
+        } else {
+            children.forEach(child => {
+                let pos = child.order.pos === Infinity ? newList.length - 1 : child.order.pos - 1
+                while (newList[pos]) {
+                    const current = newList[pos].order
+                    if (current.pos === Infinity) {
+                        newList[pos] = child
+                        child = newList[pos]
+                    }
+                    pos++
+                    if (pos >= newList.length) pos = 0;
                 }
-                pos++
-                if (pos >= newList.length) pos = 0;
-            }
-            newList[pos] = child
-        })
+                newList[pos] = child
+            })
+        }
         children = newList
         for (let i = 0; i < children.length; i++) {
             if (!(i in children)) {
