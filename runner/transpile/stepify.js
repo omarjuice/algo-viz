@@ -300,6 +300,7 @@ module.exports = function (input) {
                         if (t.isThisExpression(path)) return
                         if (t.isLiteral(path)) return
                         if (t.isCallExpression(path) || t.isNewExpression(path)) return
+                        if (t.isUnaryExpression(path)) return
                         if (t.isLVal(path) || t.isFunction(path)) {
                             return
                         };
