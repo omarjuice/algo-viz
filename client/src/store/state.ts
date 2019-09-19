@@ -21,9 +21,16 @@ class StateStore {
         this.root = store
     }
 
-    @action next(step: Viz.Step.Any) {
-        while (this.queue.length) {
-            this.next(this.queue.pop())
+    @action next(step: Viz.Step.Any, isBatch: boolean = false) {
+
+        const prev = this.root.iterator.index - 1
+        if (prev >= 0 && !isBatch) {
+            const prevStep = this.root.viz.steps[prev]
+            if ('batch' in prevStep) {
+                for (const batchStep of prevStep.batch) {
+                    this.next(batchStep, true)
+                }
+            }
         }
         if (step.scope) {
             const [parent, scope] = step.scope;
