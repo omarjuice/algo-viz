@@ -129,7 +129,7 @@ class StateStore {
             } else {
 
                 let i = this.callStack.length - 1;
-                while (this.callStack[i].funcID !== step.funcID && i >= 0) {
+                while (i > 0 && this.callStack[i].funcID !== step.funcID) {
                     i--;
                 }
                 this.callStack.splice(i, 1);
