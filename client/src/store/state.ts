@@ -15,7 +15,6 @@ class StateStore {
     @observable scopeChain: { [key: string]: Viz.ScopeChainEl } = {}
     @observable identifiers: { [key: string]: Viz.ScopeIdentifiers } = {}
     @observable funcScopes: { [key: string]: string } = {}
-    @observable queue: Viz.Step.Any[] = []
     @observable root: RootStore
     constructor(store: RootStore) {
         this.root = store
@@ -158,15 +157,10 @@ class StateStore {
                 step.prevVals = prevVals;
             }
         }
-        if ('batch' in step) {
-            step.batch.forEach((s) => {
-                this.queue.push(s)
-            })
-        }
+
         step.executed = true
     }
     @action prev(step: Viz.Step.Any) {
-        this.queue = []
 
         if ('batch' in step) {
             for (let i = step.batch.length - 1; i >= 0; i--) {

@@ -243,7 +243,7 @@ class Tutorial extends Component {
                         Find Object Parents:
                     </span>
                     {' '}
-                    Normally, an object will only find its parent if its parent has an active parent binding. With this enabled, it will find its parent regardless. 
+                    Normally, an object will only find its parent if its parent has an active variable binding. With this enabled, it will find its parent regardless. 
                     <br />
                     <span className="has-text-weight-bold">
                         Colors:
