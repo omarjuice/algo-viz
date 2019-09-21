@@ -16,21 +16,25 @@ class StateStore {
     @observable identifiers: { [key: string]: Viz.ScopeIdentifiers } = {}
     @observable funcScopes: { [key: string]: string } = {}
     @observable root: RootStore
+    @observable queue: Viz.Step.Any[] = []
     constructor(store: RootStore) {
         this.root = store
     }
 
     @action next(step: Viz.Step.Any, isBatch: boolean = false) {
 
-        const prev = this.root.iterator.index - 1
-        if (prev >= 0 && !isBatch) {
-            const prevStep = this.root.viz.steps[prev]
-            if ('batch' in prevStep) {
-                for (const batchStep of prevStep.batch) {
-                    this.next(batchStep, true)
-                }
-            }
-        }
+        // const prev = this.root.iterator.index - 1
+        // if (prev >= 0 && !isBatch) {
+        //     const prevStep = this.root.viz.steps[prev]
+        //     if ('batch' in prevStep) {
+        //         for (const batchStep of prevStep.batch) {
+        //             this.next(batchStep, true)
+        //         }
+        //     }
+        // }
+        // while (this.queue.length) {
+        //     this.next(this.queue.pop())
+        // }
         if (step.scope) {
             const [parent, scope] = step.scope;
             if (!(scope in this.identifiers)) {
@@ -129,7 +133,7 @@ class StateStore {
             } else {
 
                 let i = this.callStack.length - 1;
-                while (i > 0 && this.callStack[i].funcID !== step.funcID) {
+                while (i >= 0 && this.callStack[i].funcID !== step.funcID) {
                     i--;
                 }
                 this.callStack.splice(i, 1);
@@ -159,15 +163,20 @@ class StateStore {
         }
 
         step.executed = true
+
+        if (step.batch) {
+            this.queue.push(...step.batch)
+        }
     }
     @action prev(step: Viz.Step.Any) {
-
+        if (!step.executed) return
+        this.queue = []
         if ('batch' in step) {
             for (let i = step.batch.length - 1; i >= 0; i--) {
                 this.prev(step.batch[i])
             }
         }
-        if (!step.executed) return
+
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }

@@ -90,8 +90,20 @@ class IteratorStore {
         this.step = this.root.viz.steps[nextIdx]
         this.name = this.step.name
         this.root.code.update()
-        this.root.state[this.direction ? 'next' : 'prev'](this.step)
-        this.root.structs[this.direction ? 'next' : 'prev'](this.step)
+
+        if (this.direction) {
+            if (this.root.state.queue.length > 0) {
+                this.root.state.queue.forEach(s => this.root.state.next(s))
+                this.root.state.queue = []
+            }
+            this.root.state.next(this.step)
+            this.root.structs.next(this.step)
+        } else {
+            this.root.state.prev(this.step)
+            this.root.structs.prev(this.step)
+        }
+
+
 
         return true
     }
