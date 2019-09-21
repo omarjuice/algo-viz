@@ -3,10 +3,10 @@ import { RootStore } from './index';
 
 export default class VizStore {
     @observable code: string;
-    steps: Viz.Step.Any[];
-    objects: { [objectId: string]: Object };
+    @observable steps: Viz.Step.Any[];
+    @observable objects: { [objectId: string]: Object };
     @observable types: { [objectId: string]: string };
-    objectIndex: { [index: string]: string[] };
+    @observable objectIndex: { [index: string]: string[] };
     root: RootStore
     constructor(store: RootStore, data: Viz.Data) {
         this.root = store
