@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.0",
     "@babel/core": "^7.4.4",
     "@babel/plugin-transform-destructuring": "^7.4.4",
     "@babel/plugin-transform-parameters": "^7.4.4",
@@ -30,7 +31,6 @@
     "mongodb": "^3.3.1"
   },
   "devDependencies": {
-    "axios": "^0.19.0",
     "expect": "^24.8.0",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2"
