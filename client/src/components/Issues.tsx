@@ -37,6 +37,8 @@ class Issues extends Component<{}, State> {
                         <form className="form">
                             <h1 className="title is-6 has-text-white">
                                 Please describe the issue:
+                                <br />
+
                             </h1>
                             <textarea onChange={(e) => this.setState({ description: e.target.value })} className="textarea">
 
@@ -47,6 +49,9 @@ class Issues extends Component<{}, State> {
                             <button onClick={this.onSubmit} className={`button is-success ${store.api.loading && 'is-loading'}`}>
                                 Submit
                             </button>
+                            <div className="has-text-white">
+                                Your last executed code will be sent with your description.
+                           </div>
                         </div>
                     </section>
 
