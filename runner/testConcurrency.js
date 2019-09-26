@@ -8,7 +8,7 @@ let count = 0
 for (const name in funcs) {
     count++
     responses.push(axios
-        .post('http://localhost:3001/execute', {
+        .post(process.env.ENDPOINT, {
             code: funcs[name]
         })
     )
