@@ -40,7 +40,7 @@ In particular, we need to interact with Babel's Abstract Syntax Tree(AST). Babel
 For more reading on Babel's AST, see [this helful article](https://www.sitepoint.com/understanding-asts-building-babel-plugin/)
 and Babels [plugin handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/en/plugin-handbook.md).
 
-Algo-viz's plugin wraps every expression in an external function call. These calls will take the values and metadata from the code. Of course, the values will be passed back into the code. I will spare you the gory details of that. If you like, see the transpiler [here](https://github.com/omarjuice/algo-viz/blob/master/runner/execute/stepify.js)
+Algo-viz's plugin wraps every expression in an external function call. These calls will take the values and metadata from the code. Of course, the values will be passed back into the code. I will spare you the gory details of that. If you like, see the transpiler [here](https://github.com/omarjuice/algo-viz/tree/master/runner/transpile)
 
 Here is an example of the output:
 ![transpiled](https://res.cloudinary.com/omarjuice/image/upload/v1562786375/algo-viz/transpiled.png)
