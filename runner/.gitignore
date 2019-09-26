@@ -12,3 +12,4 @@ run.js
 vm.js
 debug.txt
 .env
+endpoint.js

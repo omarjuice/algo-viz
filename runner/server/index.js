@@ -7,11 +7,17 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const cors = require('cors')
 const path = require('path');
+const fs = require('fs')
 const app = express();
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'test' ? 8080 : 3001)
 const env = process.env.NODE_ENV
 
 
+fs.writeFileSync('endpoint.js',
+    env === 'production'
+        ? `module.exports = "http://algo-viz.herokuapp.com/execute"`
+        : `module.exports = "http://localhost:${PORT}/execute"`
+)
 
 
 

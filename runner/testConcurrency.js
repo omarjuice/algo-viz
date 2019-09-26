@@ -1,6 +1,6 @@
 const axios = require('axios')
 const funcs = require('./execute/tests/funcs')
-
+const ENDPOINT = require('./endpoint')
 
 const responses = []
 const start = Date.now()
@@ -8,8 +8,10 @@ let count = 0
 for (const name in funcs) {
     count++
     responses.push(axios
-        .post(process.env.ENDPOINT, {
+        .post(ENDPOINT, {
             code: funcs[name]
+        }, {
+            withCredentials: true
         })
     )
 }
