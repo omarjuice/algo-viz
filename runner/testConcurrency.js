@@ -1,6 +1,10 @@
 const axios = require('axios')
 const funcs = require('./execute/tests/funcs')
-const ENDPOINT = require('./endpoint')
+const ENDPOINT = process.env.ENDPOINT
+
+if (!ENDPOINT) {
+    throw new Error('Endpoint must be specified.')
+}
 
 const responses = []
 const start = Date.now()
