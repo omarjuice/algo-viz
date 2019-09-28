@@ -1,8 +1,8 @@
 const expect = require('expect')
 const request = require('supertest')
-const { init } = require('../')
-const funcs = require('../../execute/tests/funcs')
-const execSync = require('../../execute/execSync')
+const { init } = require('..')
+const funcs = require('../../runner/js/execute/tests/funcs')
+const execSync = require('../../runner/js/execute/execSync')
 
 let agent;
 before(async () => {

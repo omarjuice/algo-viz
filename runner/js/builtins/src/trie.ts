@@ -1,4 +1,4 @@
-import { Runner } from './'
+import { Runner } from '.'
 
 function instantiateTrie(runner: Runner) {
     return class Trie {

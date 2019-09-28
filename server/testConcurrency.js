@@ -2,6 +2,9 @@ const axios = require('axios')
 const funcs = require('./execute/tests/funcs')
 const ENDPOINT = process.env.ENDPOINT
 
+
+
+
 if (!ENDPOINT) {
     throw new Error('Endpoint must be specified.')
 }
