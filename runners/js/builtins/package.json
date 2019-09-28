@@ -1,0 +1,23 @@
+{
+  "name": "algo-viz-node-bultins",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "export NODE_ENV=test && mocha -r ts-node/register **/*.test.ts",
+    "compile": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.7",
+    "expect": "^24.8.0",
+    "mocha": "^6.1.4"
+  },
+  "dependencies": {
+    "typescript": "3.5.3",
+    "@types/node": "^12.6.3",
+    "ts-node": "^8.3.0"
+  }
+}

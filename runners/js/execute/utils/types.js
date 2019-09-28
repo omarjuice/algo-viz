@@ -1,0 +1,17 @@
+module.exports = {
+    DECLARATION: 'DECLARATION',
+    ASSIGNMENT: 'ASSIGNMENT',
+    EXPRESSION: 'EXPRESSION',
+    THIS: 'THIS',
+    CALL: 'CALL',
+    DELETE: 'DELETE',
+    METHOD: 'METHOD',
+    RETURN: 'RETURN',
+    BLOCK: 'BLOCK',
+    FUNC: 'FUNC',
+    PROGRAM: 'PROGRAM',
+    GET: 'GET',
+    SET: 'SET',
+    CLEAR: 'CLEAR',
+    ERROR: 'ERROR'
+}
