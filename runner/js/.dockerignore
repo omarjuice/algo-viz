@@ -7,6 +7,8 @@ debug.txt
 Dockerfile
 .dockerignore
 .gitignore
+package-lock.json
+
 
 builtins/node_modules
 builtins/src

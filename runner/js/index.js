@@ -8,12 +8,3 @@ execute()
 
 
 
-console.log(
-    fs.readdirSync('./'),
-    fs.readdirSync('builtins'),
-    fs.readdirSync('execute'),
-    fs.readdirSync('transpile'),
-
-);
-
-
