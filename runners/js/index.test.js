@@ -1,7 +1,7 @@
 const expect = require('expect')
 const execute = require('./')
 
-describe.only('VM code execution', () => {
+describe('VM code execution', () => {
     it('Should run code in a VM', async () => {
         process.env.CODE = `function twoNumberSum(array, targetSum) {
             const hash = {}

@@ -13,3 +13,4 @@ vm.js
 debug.txt
 .env
 endpoint.js
+vmbench.js

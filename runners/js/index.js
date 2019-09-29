@@ -1,3 +1,10 @@
+const start = Date.now()
+
+console.log(
+    'SPIN TIME',
+    start - Number(process.env.START_TIME)
+);
+
 const fs = require('fs')
 const execute = require('./execute')
 const transpile = require('./transpile')
@@ -8,20 +15,14 @@ const env = process.env.NODE_ENV
 const prod = env === 'production'
 
 function exec() {
-    const code = process.env.CODE || `
-function boo(array, targetSum) {
-    const hash = {}
-for(let number of array){
-        if(hash[number]){
-            return number > hash[number] ? [hash[number], number] : [number, hash[number]]
+    const code = fs.readFileSync(`volume/${process.env.FILENAME}`, { encoding: 'utf8' })
+    if (!code) {
+        throw new Error('No code provided.')
     }
-    hash[targetSum - number] = number;
-}
-return []
-}
-boo([5,4,3,2,1], 5)
-`
+
     const transpiled = transpile(code, input)
+
+
 
     const { _name } = input
 
@@ -32,11 +33,15 @@ boo([5,4,3,2,1], 5)
 }
 
 
+
 if (env !== 'test') {
-    exec()
-    process.exit(1)
+    const data = exec()
+    fs.writeFileSync(`volume/${process.env.FILENAME}`, data)
+
 
 }
+
+console.log('EXECUTION TIME', Date.now() - start);
 module.exports = exec
 
 
