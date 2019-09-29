@@ -1,6 +1,4 @@
 require('dotenv').config()
-const version = parseInt(process.versions.node.split('.')[0])
-process.env.VERSION = version
 const express = require('express')
 const mongo = require('mongodb').MongoClient;
 const session = require('express-session');
@@ -27,22 +25,6 @@ app.use(express.static(path.join(__dirname, "..", "..", "client/build")));
 
 
 
-let execute;
-if (version >= 11) {
-    execute = require('../runner/js/execute')
-    console.log(`
-    ****************************************
-    NODE version >= 11 or greater detected. Defaulting to concurrent sandbox execution.
-    ****************************************
-    `)
-} else {
-    execute = require('../runner/js/execute/execSync')
-    console.log(`
-    ****************************************
-    NODE version < 11 detected. Defaulting to single threaded execution without sandboxing.
-    ****************************************
-    `)
-}
 
 
 

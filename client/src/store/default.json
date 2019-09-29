@@ -1,1 +1,381 @@
-{"steps":[{"type":"PROGRAM","scope":[null,0],"value":"_lod02"},{"scope":[null,0],"type":"CALL","name":[31,48],"value":"___jchdg"},{"scope":[null,0],"type":"CALL","name":[16,49],"value":"___fm8gb"},{"type":"DECLARATION","varName":"hello","scope":[null,0],"block":true,"name":[2,50],"value":"___fm8gb"},{"scope":[null,0],"type":"CALL","name":[80,97],"value":"___vpkc3"},{"scope":[null,0],"type":"CALL","name":[65,98],"value":"___le8g6"},{"type":"DECLARATION","varName":"world","scope":[null,0],"block":true,"name":[51,98],"value":"___le8g6"},{"scope":[null,0],"type":"CALL","name":[126,146],"value":"___j6d0e"},{"scope":[null,0],"type":"CALL","name":[152,172],"value":"___i1kl5"},{"scope":[null,0],"type":"CALL","name":[178,198],"value":"___sajbd"},{"scope":[null,0],"type":"EXPRESSION","name":[120,200],"value":"___bolhc"},{"type":"DECLARATION","varName":"welcome","scope":[null,0],"block":true,"name":[104,200],"value":"___bolhc"},{"scope":[null,0],"type":"EXPRESSION","name":[228,234],"value":"___aogk3"},{"type":"GET","object":"___aogk3","access":0,"value":"🤓"},{"scope":[null,0],"type":"CALL","name":[220,235],"value":"___lm465"},{"type":"DECLARATION","varName":"emote","scope":[null,0],"block":true,"name":[206,235],"value":"___lm465"},{"type":"DECLARATION","varName":"message","scope":[null,0],"block":true,"name":[241,288],"value":"See the ℹ️ for a guide ----->"}],"objects":{"___jchdg":{"0":"H","1":"E","2":"L","3":"L","4":"O","length":5},"___afml6":{"value":"O","next":"_lod02"},"___rbmm9":{"value":"L","next":"___afml6"},"___dd19d":{"value":"L","next":"___rbmm9"},"___re775":{"value":"E","next":"___dd19d"},"___fm8gb":{"value":"H","next":"___re775"},"___vpkc3":{"0":"W","1":"O","2":"R","3":"L","4":"D","length":5},"___z4bf9":{"next":"_lod02","prev":"___xj463","value":"D"},"___xj463":{"next":"___z4bf9","prev":"___gi6ig","value":"L"},"___gi6ig":{"next":"___xj463","prev":"___lmk1l","value":"R"},"___lmk1l":{"next":"___gi6ig","prev":"___le8g6","value":"O"},"___le8g6":{"next":"___lmk1l","prev":"_lod02","value":"W"},"___j6d0e":{"0":"W","1":"E","2":"L","3":"C","4":"O","5":"M","6":"E","7":" ","length":8},"___i1kl5":{"0":" ","1":" ","2":" ","3":"T","4":"O","5":" ","6":" ","7":" ","length":8},"___sajbd":{"0":"A","1":"L","2":"G","3":"O","4":"-","5":"V","6":"I","7":"Z","length":8},"___bolhc":{"0":"___j6d0e","1":"___i1kl5","2":"___sajbd","length":3},"___aogk3":{"0":"🤓","length":1},"___lm465":{"0":"🤓"}},"types":{"_ujme1":"undefined","_lod02":"null","_h16h4":"NaN","_pnj76":"Infinity","_tdkca":"-Infinity","___jchdg":"Array","___afml6":"Viz.SLL","___rbmm9":"Viz.SLL","___dd19d":"Viz.SLL","___re775":"Viz.SLL","___fm8gb":"Viz.SLL","___vpkc3":"Array","___z4bf9":"Viz.DLL","___xj463":"Viz.DLL","___gi6ig":"Viz.DLL","___lmk1l":"Viz.DLL","___le8g6":"Viz.DLL","___j6d0e":"Array","___i1kl5":"Array","___sajbd":"Array","___bolhc":"Array","___aogk3":"Array","___lm465":"Set"},"objectIndex":{"1":["___jchdg"],"2":["___fm8gb","___re775","___dd19d","___rbmm9","___afml6"],"4":["___vpkc3"],"5":["___le8g6","___lmk1l","___gi6ig","___xj463","___z4bf9"],"7":["___j6d0e"],"8":["___i1kl5"],"9":["___sajbd"],"10":["___bolhc"],"12":["___aogk3"],"14":["___lm465"]},"code":"\n\nconst hello = Viz.SLL.create('HELLO'.split(''));\nconst world = Viz.DLL.create('WORLD'.split(''))\n    \nconst welcome = [\n    'WELCOME '.split(''),\n    '   TO   '.split(''),\n    'ALGO-VIZ'.split('')\n]\n    \nconst emote = new Set(['🤓'])\n    \nconst message = 'See the ℹ️ for a guide ----->'\n\n","version":"1"}
+{
+    "steps": [
+        {
+            "type": "PROGRAM",
+            "scope": [
+                null,
+                0
+            ],
+            "value": "_hjkln"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                31,
+                48
+            ],
+            "value": "___sf4o9"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                16,
+                49
+            ],
+            "value": "___vn07f"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "hello",
+            "scope": [
+                null,
+                0
+            ],
+            "block": true,
+            "name": [
+                8,
+                13
+            ],
+            "value": "___vn07f"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                80,
+                97
+            ],
+            "value": "___kf95m"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                65,
+                98
+            ],
+            "value": "___o1ipj"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "world",
+            "scope": [
+                null,
+                0
+            ],
+            "block": true,
+            "name": [
+                57,
+                62
+            ],
+            "value": "___o1ipj"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                126,
+                146
+            ],
+            "value": "___t9blb"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                152,
+                172
+            ],
+            "value": "___dmg45"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                178,
+                198
+            ],
+            "value": "___scijh"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                120,
+                200
+            ],
+            "value": "___a1p1m"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "welcome",
+            "scope": [
+                null,
+                0
+            ],
+            "block": true,
+            "name": [
+                110,
+                117
+            ],
+            "value": "___a1p1m"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "EXPRESSION",
+            "name": [
+                228,
+                234
+            ],
+            "value": "___gmhbk"
+        },
+        {
+            "type": "GET",
+            "object": "___gmhbk",
+            "access": 0,
+            "value": "🤓"
+        },
+        {
+            "scope": [
+                null,
+                0
+            ],
+            "type": "CALL",
+            "name": [
+                220,
+                235
+            ],
+            "value": "___z8eo5"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "emote",
+            "scope": [
+                null,
+                0
+            ],
+            "block": true,
+            "name": [
+                212,
+                217
+            ],
+            "value": "___z8eo5"
+        },
+        {
+            "type": "DECLARATION",
+            "varName": "message",
+            "scope": [
+                null,
+                0
+            ],
+            "block": true,
+            "name": [
+                247,
+                254
+            ],
+            "value": "See the ℹ️ for a guide ----->"
+        }
+    ],
+    "objects": {
+        "___sf4o9": {
+            "0": "H",
+            "1": "E",
+            "2": "L",
+            "3": "L",
+            "4": "O",
+            "length": 5
+        },
+        "___ti6n9": {
+            "value": "O",
+            "next": "_hjkln"
+        },
+        "___tfd6j": {
+            "value": "L",
+            "next": "___ti6n9"
+        },
+        "___oe0m4": {
+            "value": "L",
+            "next": "___tfd6j"
+        },
+        "___i2nk1": {
+            "value": "E",
+            "next": "___oe0m4"
+        },
+        "___vn07f": {
+            "value": "H",
+            "next": "___i2nk1"
+        },
+        "___kf95m": {
+            "0": "W",
+            "1": "O",
+            "2": "R",
+            "3": "L",
+            "4": "D",
+            "length": 5
+        },
+        "___fdp7p": {
+            "next": "_hjkln",
+            "prev": "___x2blk",
+            "value": "D"
+        },
+        "___x2blk": {
+            "next": "___fdp7p",
+            "prev": "___b4i65",
+            "value": "L"
+        },
+        "___b4i65": {
+            "next": "___x2blk",
+            "prev": "___zif1i",
+            "value": "R"
+        },
+        "___zif1i": {
+            "next": "___b4i65",
+            "prev": "___o1ipj",
+            "value": "O"
+        },
+        "___o1ipj": {
+            "next": "___zif1i",
+            "prev": "_hjkln",
+            "value": "W"
+        },
+        "___t9blb": {
+            "0": "W",
+            "1": "E",
+            "2": "L",
+            "3": "C",
+            "4": "O",
+            "5": "M",
+            "6": "E",
+            "7": " ",
+            "length": 8
+        },
+        "___dmg45": {
+            "0": " ",
+            "1": " ",
+            "2": " ",
+            "3": "T",
+            "4": "O",
+            "5": " ",
+            "6": " ",
+            "7": " ",
+            "length": 8
+        },
+        "___scijh": {
+            "0": "A",
+            "1": "L",
+            "2": "G",
+            "3": "O",
+            "4": "-",
+            "5": "V",
+            "6": "I",
+            "7": "Z",
+            "length": 8
+        },
+        "___a1p1m": {
+            "0": "___t9blb",
+            "1": "___dmg45",
+            "2": "___scijh",
+            "length": 3
+        },
+        "___gmhbk": {
+            "0": "🤓",
+            "length": 1
+        },
+        "___z8eo5": {}
+    },
+    "types": {
+        "_ydl7c": "undefined",
+        "_hjkln": "null",
+        "_k6l5g": "NaN",
+        "_t5f1c": "Infinity",
+        "_tl98n": "-Infinity",
+        "___sf4o9": "Array",
+        "___ti6n9": "Viz.SLL",
+        "___tfd6j": "Viz.SLL",
+        "___oe0m4": "Viz.SLL",
+        "___i2nk1": "Viz.SLL",
+        "___vn07f": "Viz.SLL",
+        "___kf95m": "Array",
+        "___fdp7p": "Viz.DLL",
+        "___x2blk": "Viz.DLL",
+        "___b4i65": "Viz.DLL",
+        "___zif1i": "Viz.DLL",
+        "___o1ipj": "Viz.DLL",
+        "___t9blb": "Array",
+        "___dmg45": "Array",
+        "___scijh": "Array",
+        "___a1p1m": "Array",
+        "___gmhbk": "Array",
+        "___z8eo5": "Set"
+    },
+    "objectIndex": {
+        "1": [
+            "___sf4o9"
+        ],
+        "2": [
+            "___vn07f",
+            "___i2nk1",
+            "___oe0m4",
+            "___tfd6j",
+            "___ti6n9"
+        ],
+        "4": [
+            "___kf95m"
+        ],
+        "5": [
+            "___o1ipj",
+            "___zif1i",
+            "___b4i65",
+            "___x2blk",
+            "___fdp7p"
+        ],
+        "7": [
+            "___t9blb"
+        ],
+        "8": [
+            "___dmg45"
+        ],
+        "9": [
+            "___scijh"
+        ],
+        "10": [
+            "___a1p1m"
+        ],
+        "12": [
+            "___gmhbk"
+        ],
+        "14": [
+            "___z8eo5"
+        ]
+    },
+    "code": "\n\nconst hello = Viz.SLL.create('HELLO'.split(''));\nconst world = Viz.DLL.create('WORLD'.split(''))\n    \nconst welcome = [\n    'WELCOME '.split(''),\n    '   TO   '.split(''),\n    'ALGO-VIZ'.split('')\n]\n    \nconst emote = new Set(['🤓'])\n    \nconst message = 'See the ℹ️ for a guide ----->'\n\n"
+}
