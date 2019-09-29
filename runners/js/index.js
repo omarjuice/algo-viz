@@ -3,7 +3,12 @@ const execute = require('./execute')
 const transpile = require('./transpile')
 const input = { _name: null, references: {} }
 const env = process.env.NODE_ENV
-const code = process.env.CODE || `
+
+
+const prod = env === 'production'
+
+function exec() {
+    const code = process.env.CODE || `
 function boo(array, targetSum) {
     const hash = {}
 for(let number of array){
@@ -16,22 +21,23 @@ return []
 }
 boo([5,4,3,2,1], 5)
 `
+    const transpiled = transpile(code, input)
 
-const prod = env === 'production'
-
-
-const transpiled = transpile(code, input)
-
-const { _name } = input
+    const { _name } = input
 
 
-!prod && fs.writeFile('transpiled.js', transpiled, () => { })
+    !prod && fs.writeFile('transpiled.js', transpiled, () => { })
 
-execute(_name, transpiled, code)
+    return execute(_name, transpiled, code)
+}
 
 
+if (env !== 'test') {
+    exec()
+    process.exit(1)
 
-process.exit(1)
+}
+module.exports = exec
 
 
 

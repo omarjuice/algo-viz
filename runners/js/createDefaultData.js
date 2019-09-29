@@ -1,5 +1,7 @@
-const execSync = require('./execute/execSync')
 const fs = require('fs')
+const execute = require('./execute')
+const transpile = require('./transpile')
+const input = { _name: null, references: {} }
 const code = `
 
 const hello = Viz.SLL.create('HELLO'.split(''));
@@ -18,6 +20,16 @@ const message = 'See the ℹ️ for a guide ----->'
 `
 
 
-execSync(code).then(data => {
-    fs.writeFileSync('../client/src/store/default.json', data)
-})
+
+
+const transpiled = transpile(code, input)
+
+const { _name } = input
+
+
+
+const data = execute(_name, transpiled, code)
+
+
+fs.writeFileSync('../../client/src/store/default.json', data)
+

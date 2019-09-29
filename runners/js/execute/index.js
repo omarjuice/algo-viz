@@ -11,6 +11,8 @@ module.exports = function (_name, transpiled, code) {
         vm.runInNewContext(transpiled, {
             [_name]: runner,
             Viz: instantiateViz(runner)
+        }, {
+            timeout: 5000
         })
     } catch (error) {
         console.log(error);

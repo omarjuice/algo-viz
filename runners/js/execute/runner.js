@@ -105,6 +105,7 @@ class Runner {
                 prev.batch = [info]
             } else {
                 prev.batch.push(info)
+                if (prev.batch.length > this.limit) throw new Error('Step limit of 30000 exceeded')
             }
         } else {
             this.steps.push(info)
