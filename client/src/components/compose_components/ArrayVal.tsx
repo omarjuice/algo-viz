@@ -46,8 +46,7 @@ const ArrayVal: React.FC<Props> = observer(({ array, index, objectId, size, rati
         if (!store.structs.bindings.has(value)) {
             const type = store.viz.types[value];
             const parent = store.structs.pointers.get(value).top;
-            const grandParent = parent ? store.structs.pointers.get(parent.id).top : null
-            if ((!grandParent || store.viz.types[grandParent.id] === 'Array') && type === 'Array' && parent && parent.id === objectId && parent.key === index) {
+            if (type === 'Array' && parent && parent.id === objectId && parent.key === index) {
                 return (
                     <div className={`array-line ${className}`}>
                         <ArrayChild setChildren={setChildren} className={className} objectId={value} ratio={ratio} anim={anim} />

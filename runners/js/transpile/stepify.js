@@ -71,7 +71,7 @@ module.exports = function (input) {
                                 funcName = path.parent.callee.name + '(callback-' + idx + ')'
                             }
                         } else if (t.isClassMethod(path.node)) {
-                            const parent = path.findParent(p => t.isClassDeclaration(p))
+                            const parent = path.findParent(p => t.isClassDeclaration(p) || t.isClassExpression(p))
                             if (t.isIdentifier(parent.node.id)) {
                                 if (t.isIdentifier(path.node.key)) {
                                     funcName = parent.node.id.name + '.' + path.node.key.name
