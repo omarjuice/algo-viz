@@ -2,7 +2,7 @@ const vm = require('vm')
 const { default: instantiateViz } = require('../builtins/dist');
 const Runner = require('./runner')
 const util = require('util')
-const version = process.env.DATA_VERSION
+const version = process.env.DATA_VERSION;
 const prod = process.env.NODE_ENV === 'production'
 const fs = require('fs')
 module.exports = function (_name, transpiled, code) {
@@ -15,7 +15,6 @@ module.exports = function (_name, transpiled, code) {
             timeout: 5000
         })
     } catch (error) {
-        console.log(error);
         runner.ignore(true)
         runner.steps.push({
             type: 'ERROR',

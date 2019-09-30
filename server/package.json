@@ -7,7 +7,8 @@
     "test": "export NODE_ENV=test && mocha './{,!(node_modules)/**}/*.test.js'",
     "create-default": "node createDefaultData.js",
     "dev": "export NODE_ENV=development && node server",
-    "start": "export NODE_ENV=production && node server"
+    "start": "export NODE_ENV=production && node server",
+    "d": "export NODE_ENV=production && node js/index.js"
   },
   "engines": {
     "node": "12.9.0"

@@ -1,26 +1,19 @@
-const start = Date.now()
-
-console.log(
-    'SPIN TIME',
-    start - Number(process.env.START_TIME)
-);
-
 const fs = require('fs')
 const execute = require('./execute')
 const transpile = require('./transpile')
 const input = { _name: null, references: {} }
 const env = process.env.NODE_ENV
-
+const file = process.env.FILENAME
 
 const prod = env === 'production'
 
 function exec() {
-    const code = fs.readFileSync(`volume/${process.env.FILENAME}`, { encoding: 'utf8' })
+    const code = fs.readFileSync(file, { encoding: 'utf8' })
     if (!code) {
         throw new Error('No code provided.')
     }
 
-    const transpiled = transpile(code, input)
+    let transpiled = transpile(code, input)
 
 
 
@@ -35,13 +28,14 @@ function exec() {
 
 
 if (env !== 'test') {
-    const data = exec()
-    fs.writeFileSync(`volume/${process.env.FILENAME}`, data)
-
-
+    try {
+        const data = exec()
+        fs.writeFileSync(file, data)
+    } catch (e) {
+        fs.writeFileSync(file, e)
+    }
 }
 
-console.log('EXECUTION TIME', Date.now() - start);
 module.exports = exec
 
 
