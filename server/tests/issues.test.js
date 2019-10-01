@@ -9,7 +9,7 @@ before(async () => {
     app = server;
     db = database;
 
-    db.dropCollection('issues')
+    db.dropCollection('issues').catch(e => { })
     return
 })
 

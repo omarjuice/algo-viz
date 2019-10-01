@@ -69,6 +69,7 @@ class Runner {
         this._ignore = false
         this.ignore = (bool) => this._ignore = bool
 
+
     }
 
 
@@ -78,6 +79,8 @@ class Runner {
         if (info.type === TYPES.THIS) {
             return this.virtualize(val)
         }
+
+
         if (info.type === TYPES.EXPRESSION || info.type === TYPES.CALL) {
             const call = this.callStack[this.callStack.length - 1]
             if (call && call.type === TYPES.METHOD && call.kind === 'constructor') {
@@ -101,11 +104,13 @@ class Runner {
         info.value = this.stringify(val)
         if ([TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN].includes(info.type)) {
             const prev = this.steps[this.steps.length - 1];
-            if (!('batch' in prev)) {
-                prev.batch = [info]
-            } else {
-                prev.batch.push(info)
-                if (prev.batch.length > this.limit) throw new Error('Step limit of 30000 exceeded')
+            if (this.steps.length > 0) {
+                if (!('batch' in prev)) {
+                    prev.batch = [info]
+                } else {
+                    prev.batch.push(info)
+                    if (prev.batch.length > this.limit) throw new Error('Step limit of 30000 exceeded')
+                }
             }
         } else {
             this.steps.push(info)

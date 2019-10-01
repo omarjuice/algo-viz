@@ -1,7 +1,7 @@
 const ASThelpers = require('./ast-helpers')
 const t = require('@babel/types')
+const template = require('@babel/core').template
 const TYPES = require('../execute/utils/types')
-
 module.exports = function (input) {
     return function () {
         let Node,
@@ -15,34 +15,59 @@ module.exports = function (input) {
             traverseAssignments,
             createId;
 
-        // const thisArgNode = t.conditionalExpression(
-        //     t.binaryExpression("===", t.thisExpression(), t.identifier('global')),
-        //     t.nullLiteral(),
+
+        const thisArgNode = t.thisExpression()
+        // t.conditionalExpression(
+        //     t.binaryExpression(
+        //         "===",
+        //         t.thisExpression(),
+        //         t.identifier('global')
+        //     ),
+        //     t.identifier('undefined'),
         //     t.thisExpression()
         // )
-        const thisArgNode = t.thisExpression()
         return {
             visitor: {
-                Program(path, { file: { code: original }, opts }) {
-                    Node = path.node.constructor
-                    code = original
-                    input.references = { ...input.references, ...path.scope.references }
-                    const helpers = ASThelpers({ t, input, code, Node })
-                    _name = input._name
-                    traverseParameters = helpers.traverseParameters
-                    traverseDeclarations = helpers.traverseDeclarations
-                    traverseAssignments = helpers.traverseAssignments
-                    proxy = helpers.proxy
-                    isBarredObject = helpers.isBarredObject
-                    getScope = helpers.getScope
-                    createId = helpers.createId
+                Program: {
+                    enter(path, { file: { code: original }, opts }) {
+                        Node = path.node.constructor
+                        code = original
+                        input.references = { ...input.references, ...path.scope.references }
+                        const helpers = ASThelpers({ t, input, code, Node })
+                        _name = input._name
+                        traverseParameters = helpers.traverseParameters
+                        traverseDeclarations = helpers.traverseDeclarations
+                        traverseAssignments = helpers.traverseAssignments
+                        proxy = helpers.proxy
+                        isBarredObject = helpers.isBarredObject
+                        getScope = helpers.getScope
+                        createId = helpers.createId
 
-                    //strict mode enforcement
-                    path.node.body.unshift(
-                        t.stringLiteral("use strict"),
-                        proxy(t.nullLiteral(), { type: TYPES.PROGRAM, scope: getScope(path) })
-                    )
+                        //strict mode enforcement
+
+
+
+                        path.node.body.unshift(
+                            proxy(t.nullLiteral(), { type: TYPES.PROGRAM, scope: getScope(path) })
+                        )
+
+                        path.node.body.unshift(
+                            t.nullLiteral()
+                        )
+
+                        path.node.body.unshift(
+                            t.stringLiteral("use strict"),
+                        )
+                    },
+                    exit(path) {
+                        const declareGlobal = template(`
+                            const global = this
+                        `)
+
+                        path.node.body[1] = declareGlobal({})
+                    },
                 },
+
                 Function: {
                     enter(path, { opts }) {
 

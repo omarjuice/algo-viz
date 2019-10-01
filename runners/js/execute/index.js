@@ -8,10 +8,12 @@ const fs = require('fs')
 module.exports = function (_name, transpiled, code) {
     const runner = new Runner(_name)
     try {
-        vm.runInNewContext(transpiled, {
+        const sandBox = {
             [_name]: runner,
-            Viz: instantiateViz(runner)
-        }, {
+            Viz: instantiateViz(runner),
+        }
+
+        vm.runInNewContext(transpiled, sandBox, {
             timeout: 5000
         })
     } catch (error) {

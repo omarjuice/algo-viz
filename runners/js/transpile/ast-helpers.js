@@ -75,6 +75,9 @@ module.exports = function ({ t = types, input, code, Node }) {
             const id = declaration.get("id");
             const decs = []
             if (t.isIdentifier(id)) {
+                if (!id.node.start) {
+                    return
+                }
                 const details = {
                     type: TYPES.DECLARATION,
                     varName: id.node.name,

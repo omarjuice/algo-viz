@@ -4,13 +4,13 @@
   "description": "## _Work In Progress_",
   "dataVersion": 1,
   "scripts": {
-    "server": "export DATA_VERSION=$npm_package_dataVersion && npm run dev --prefix runner",
+    "server": "export DATA_VERSION=$npm_package_dataVersion && npm run dev --prefix server",
     "client": "export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build-client": "export DATA_VERSION=$npm_package_dataVersion && npm run create-default --prefix runner && export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm run build --prefix client",
-    "postinstall": "npm install --prefix client && npm install --prefix runner && npm install --prefix builtins/js && npm run compile --prefix builtins/js && npm run build-client",
+    "build-client": "export DATA_VERSION=$npm_package_dataVersion && npm run create-default --prefix runners/js && export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm run build --prefix client",
+    "postinstall": "npm install --prefix client && npm install --prefix server && npm install --prefix runners/js/builtins && npm run compile --prefix runners/js/builtins && npm run build-client",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export DATA_VERSION=$npm_package_dataVersion && npm start --prefix runner"
+    "start": "export DATA_VERSION=$npm_package_dataVersion && npm start --prefix server"
   },
   "engines": {
     "node": "12.9.0"

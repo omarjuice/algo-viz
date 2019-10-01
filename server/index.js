@@ -6,6 +6,7 @@ const MongoStore = require('connect-mongo')(session);
 const cors = require('cors')
 const path = require('path');
 const app = express();
+const execute = require('./js')
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'test' ? 8080 : 3001)
 const env = process.env.NODE_ENV
 
@@ -37,6 +38,8 @@ async function initialize() {
     const Issues = database.collection('issues');
 
 
+
+
     app.use(session({
         store: new MongoStore({ url: env === 'production' ? mongoUri : mongoUri + '/' + dbName }),
         secret: process.env.SESSION_SECRET || 'secret',
@@ -47,13 +50,18 @@ async function initialize() {
         }
     }));
 
+    app.get('/', (req, res) => {
+        res.send('OK')
+    })
     app.post('/execute', (req, res, next) => {
         const { code } = req.body;
         execute(code)
             .then(result => {
+                // console.log(result);
                 res.send(JSON.parse(result))
             })
             .catch(e => {
+                // console.log(e);
                 if (e.isRunnerError) {
                     Issues.insertOne({
                         date: new Date(),
