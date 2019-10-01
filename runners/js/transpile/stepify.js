@@ -43,19 +43,9 @@ module.exports = function (input) {
                         )
 
                         path.node.body.unshift(
-                            t.nullLiteral()
-                        )
-
-                        path.node.body.unshift(
                             t.stringLiteral("use strict"),
                         )
-                    },
-                    exit(path) {
-                        // const declareGlobal = template(`
-                        //     // const global = ${_name}.sg(this);
-                        // `)({})
-                        // path.node.body[1] = declareGlobal
-                    },
+                    }
                 },
 
                 Function: {

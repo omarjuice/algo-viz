@@ -212,6 +212,7 @@ describe('RECONSTRUCT', () => {
             `
             await testRunner(func)
         })
+
     })
 })
 describe('DECONSTRUCT(reverse)', () => {

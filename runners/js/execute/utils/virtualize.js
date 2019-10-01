@@ -3,13 +3,15 @@ function virtualize(object) {
     if (object === this) return undefined;
     const runner = this
     if (!object || typeof object !== 'object') return object
+
+    const constructorName = object.constructor.name
     if (
-        object instanceof Map ||
-        object instanceof Set ||
-        object instanceof String ||
-        object instanceof RegExp ||
-        object instanceof Date ||
-        object instanceof Error
+        constructorName === 'Map' ||
+        constructorName === 'Set' ||
+        constructorName === 'String' ||
+        constructorName === 'RegExp' ||
+        constructorName === 'Date' ||
+        constructorName === 'Error'
     ) {
         return object
     }

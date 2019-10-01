@@ -44,7 +44,7 @@ class Runner {
         this.name = name
 
         // types that will have an object property
-        this.objectTypes = [TYPES.PROP_ASSIGNMENT, TYPES.METHODCALL, TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.IN]
+        this.objectTypes = [TYPES.DELETE, TYPES.SET, TYPES.GET, TYPES.METHOD, TYPES.CLEAR]
 
 
         // keeping references to literal values because they are  not JSONable and `null` is used as an empty value

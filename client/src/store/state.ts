@@ -5,7 +5,6 @@ import { RootStore } from ".";
 type activeId = {
     name: string
     value: any
-    color?: string
 }
 
 class StateStore {
@@ -267,14 +266,7 @@ class StateStore {
     @computed get activeIds(): activeId[][] {
         const s = this.scopeStack;
         const identifiers: activeId[][] = [[]]
-        const activeObjs: string[] = []
-        if (this.callStack.length && this.callStack[this.callStack.length - 1].object) {
-            identifiers[0][0] = {
-                name: 'this',
-                value: this.callStack[this.callStack.length - 1].object,
-                color: this.root.settings.valueColors['native']
-            }
-        }
+
         for (const scope of s) {
             if (scope === null) continue;
             const ids = this.identifiers[scope]
@@ -285,12 +277,8 @@ class StateStore {
                     name: id,
                     value: values[values.length - 1]
                 }
-                identifiers[identifiers.length - 1].push(
-                    info
-                )
-                if (info.value in this.root.structs.objects) {
-                    activeObjs.push(info.value)
-                }
+                identifiers[identifiers.length - 1].push(info)
+
                 if (identifiers[identifiers.length - 1].length > 4) {
                     identifiers.push([])
                 }

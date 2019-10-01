@@ -14,13 +14,13 @@ function reassignMutative() {
         const { get, has, set, delete: mapDelete, clear, forEach } = obj
         Object.defineProperty(obj, 'get', {
             value: function (key) {
-                const result = this.has(key)
+                const result = obj.has(key)
                 if (result) {
-                    const val = get.call(this, key)
+                    const val = get.call(obj, key)
                     return ignore ? val : runner.__(val, {
                         type: TYPES.GET,
 
-                        object: runner.stringify(this),
+                        object: runner.stringify(obj),
                         access: runner.stringify(key)
                     })
                 } else {
@@ -31,10 +31,10 @@ function reassignMutative() {
         })
         Object.defineProperty(obj, 'set', {
             value: function (key, value) {
-                const result = set.call(this, key, value)
+                const result = set.call(obj, key, value)
                 runner.__(value, {
                     type: TYPES.SET,
-                    object: runner.stringify(this),
+                    object: runner.stringify(obj),
                     access: runner.stringify(key)
                 })
                 return result
@@ -43,12 +43,12 @@ function reassignMutative() {
         })
         Object.defineProperty(obj, 'delete', {
             value: function (key) {
-                const result = mapDelete.call(this, key)
+                const result = mapDelete.call(obj, key)
                 if (result) {
                     runner.__(result, {
                         type: TYPES.DELETE,
 
-                        object: runner.stringify(this),
+                        object: runner.stringify(obj),
                         access: runner.stringify(key)
                     })
                 }
@@ -58,10 +58,10 @@ function reassignMutative() {
         })
         Object.defineProperty(obj, 'clear', {
             value: function () {
-                clear.call(this)
+                clear.call(obj)
                 runner.__(undefined, {
                     type: TYPES.CLEAR,
-                    object: runner.stringify(this),
+                    object: runner.stringify(obj),
                 })
             },
             ..._definePropertyParams
@@ -75,13 +75,13 @@ function reassignMutative() {
                         runner.__(val, {
                             type: TYPES.GET,
 
-                            object: runner.stringify(this),
+                            object: runner.stringify(obj),
                             access: runner.stringify(key)
                         })
                         return cb.call(args[1] || null, val, key, ..._args)
                     }
                 }
-                return forEach.call(this, ...args)
+                return forEach.call(obj, ...args)
             },
             ..._definePropertyParams
         })
@@ -90,11 +90,11 @@ function reassignMutative() {
         const { has, add, clear, delete: setDelete, forEach } = obj
         Object.defineProperty(obj, 'has', {
             value: function (key) {
-                const result = has.call(this, key)
+                const result = has.call(obj, key)
                 if (result) {
                     return runner.__(result, {
                         type: TYPES.GET,
-                        object: runner.stringify(this),
+                        object: runner.stringify(obj),
                         access: runner.stringify(key)
                     })
                 } else {
@@ -105,10 +105,10 @@ function reassignMutative() {
         })
         Object.defineProperty(obj, 'add', {
             value: function (val) {
-                const result = add.call(this, val)
+                const result = add.call(obj, val)
                 runner.__(val, {
                     type: TYPES.SET,
-                    object: runner.stringify(this),
+                    object: runner.stringify(obj),
                     access: runner.stringify(val)
                 })
                 return result
@@ -117,21 +117,21 @@ function reassignMutative() {
         })
         Object.defineProperty(obj, 'clear', {
             value: function () {
-                clear.call(this)
+                clear.call(obj)
                 runner.__(undefined, {
                     type: TYPES.CLEAR,
-                    object: runner.stringify(this),
+                    object: runner.stringify(obj),
                 })
             },
             ..._definePropertyParams
         })
         Object.defineProperty(obj, 'delete', {
             value: function (key) {
-                const result = setDelete.call(this, key)
+                const result = setDelete.call(obj, key)
                 if (result) {
                     runner.__(result, {
                         type: TYPES.DELETE,
-                        object: runner.stringify(this),
+                        object: runner.stringify(obj),
                         access: runner.stringify(key)
                     })
                 }
@@ -147,13 +147,13 @@ function reassignMutative() {
                         runner.__(val, {
                             type: TYPES.GET,
 
-                            object: runner.stringify(this),
+                            object: runner.stringify(obj),
                             access: runner.stringify(key)
                         })
                         return cb.call(args[1] || null, key, val, ..._args)
                     }
                 }
-                return forEach.call(this, ...args)
+                return forEach.call(obj, ...args)
             },
             ..._definePropertyParams
         })

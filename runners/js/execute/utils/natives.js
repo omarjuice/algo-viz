@@ -42,10 +42,7 @@ const NATIVE_OBJECTS_NAMES = [
     'Intl',
     'global',
 ]
-const natives = new Set()
-for (let i = 0, name = NATIVE_OBJECTS_NAMES[i]; i < NATIVE_OBJECTS_NAMES.length; name = NATIVE_OBJECTS_NAMES[i++]) {
-    natives.add(name)
-}
+const natives = new Set(NATIVE_OBJECTS_NAMES)
 
 
 module.exports = natives

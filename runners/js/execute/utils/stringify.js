@@ -25,7 +25,7 @@ module.exports = function (obj) {
             this.objectIndex[this.steps.length] = []
         };
         this.objectIndex[this.steps.length].push(newId)
-        if (obj instanceof Map) {
+        if (obj.constructor.name === 'Map') {
             // maps can have object keys, we need to stringify those too.
 
             // Map & Set virtualization needs a refactor
@@ -38,7 +38,7 @@ module.exports = function (obj) {
 
             this.reassignMapMethods(obj)
             this.objects[newId] = copy
-        } else if (obj instanceof Set) {
+        } else if (obj.constructor.name === 'Set') {
             // same for sets
             const copy = {}
             let i = 0
