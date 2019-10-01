@@ -6,7 +6,7 @@
   "scripts": {
     "test": "export NODE_ENV=test && mocha './{,!(node_modules)/**}/*.test.js'",
     "create-default": "node createDefaultData.js",
-    "dev": "export NODE_ENV=development && node index",
+    "dev": "export NODE_ENV=development && nodemon --ignore 'data/*' index",
     "start": "export NODE_ENV=production && node index",
     "d": "export NODE_ENV=development && node js/index.js",
     "p": "export NODE_ENV=production && node js/index.js"

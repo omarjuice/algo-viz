@@ -100,19 +100,4 @@ async function run(code) {
 
 module.exports = run
 
-const start = Date.now()
 
-for (let i = 0; i < 1; i++) {
-    run(
-        `
-        const arr = new Array(5).fill(1)
-    ` ,
-        'twoNumberSum'
-    ).then((result) => {
-        console.log(Date.now() - start);
-    }).catch(e => {
-        console.log(Date.now() - start);
-        console.log('ERROR: ', e);
-    })
-
-}

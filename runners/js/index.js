@@ -22,7 +22,6 @@ function exec() {
     }
 
     let transpiled = transpile(code, input)
-    console.log(transpiled);
     const { _name } = input
 
 

@@ -16,16 +16,16 @@ module.exports = function (input) {
             createId;
 
 
-        const thisArgNode = t.thisExpression()
-        // t.conditionalExpression(
-        //     t.binaryExpression(
-        //         "===",
-        //         t.thisExpression(),
-        //         t.identifier('global')
-        //     ),
-        //     t.identifier('undefined'),
-        //     t.thisExpression()
-        // )
+        const thisArgNode = t.conditionalExpression(
+            t.binaryExpression(
+                "===",
+                t.thisExpression(),
+                t.identifier('global')
+            ),
+            t.identifier('undefined'),
+            t.thisExpression()
+        )
+
         return {
             visitor: {
                 Program: {
