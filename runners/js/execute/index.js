@@ -28,7 +28,6 @@ module.exports = function (_name, transpiled, code) {
         const data = JSON.stringify({
             steps, objects, types, objectIndex, code, version
         })
-        !prod && fs.writeFileSync('executed.json', data)
         return data
     } catch (e) {
 

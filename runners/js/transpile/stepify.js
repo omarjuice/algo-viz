@@ -16,15 +16,7 @@ module.exports = function (input) {
             createId;
 
 
-        const thisArgNode = t.conditionalExpression(
-            t.binaryExpression(
-                "===",
-                t.thisExpression(),
-                t.identifier('global')
-            ),
-            t.identifier('undefined'),
-            t.thisExpression()
-        )
+
 
         return {
             visitor: {
@@ -43,9 +35,8 @@ module.exports = function (input) {
                         getScope = helpers.getScope
                         createId = helpers.createId
 
+
                         //strict mode enforcement
-
-
 
                         path.node.body.unshift(
                             proxy(t.nullLiteral(), { type: TYPES.PROGRAM, scope: getScope(path) })
@@ -60,11 +51,10 @@ module.exports = function (input) {
                         )
                     },
                     exit(path) {
-                        const declareGlobal = template(`
-                            const global = this
-                        `)
-
-                        path.node.body[1] = declareGlobal({})
+                        // const declareGlobal = template(`
+                        //     // const global = ${_name}.sg(this);
+                        // `)({})
+                        // path.node.body[1] = declareGlobal
                     },
                 },
 
@@ -77,7 +67,7 @@ module.exports = function (input) {
                         const params = [];
 
                         path.get("params").forEach(traverseParameters(path, params))
-
+                        let isSuperClass = false
                         const isClassMethod = t.isClassMethod(path.node)
                         let funcName;
                         if (path.node.id) {
@@ -97,6 +87,9 @@ module.exports = function (input) {
                             }
                         } else if (t.isClassMethod(path.node)) {
                             const parent = path.findParent(p => t.isClassDeclaration(p) || t.isClassExpression(p))
+                            if (parent && parent.node.superClass) {
+                                isSuperClass = true
+                            }
                             if (t.isIdentifier(parent.node.id)) {
                                 if (t.isIdentifier(path.node.key)) {
                                     funcName = parent.node.id.name + '.' + path.node.key.name
@@ -119,17 +112,19 @@ module.exports = function (input) {
                         if (isClassMethod) {
                             details.kind = path.node.kind
                         }
-                        details.object = thisArgNode
 
                         const newNode = proxy(t.nullLiteral(), details)
                         if (t.isBlockStatement(path.node.body)) {
                             const block = path.node.body
-                            block.body = [newNode, ...params.filter(p => p), ...block.body]
+
                             if (isClassMethod) {
-                                block.body.unshift(proxy(t.nullLiteral(), {
+                                const blockNode = proxy(t.nullLiteral(), {
                                     type: TYPES.BLOCK,
                                     scope: t.arrayExpression([t.numericLiteral(path.scope.parent.parent.uid), t.numericLiteral(path.scope.parent.uid)])
-                                }))
+                                })
+                                block.body = [blockNode, newNode, ...params.filter(p => p), ...block.body]
+                            } else {
+                                block.body = [newNode, ...params.filter(p => p), ...block.body]
                             }
                             if (!t.isReturnStatement(block.body[block.body.length - 1])) {
                                 block.body.push(t.returnStatement(t.identifier('undefined')))
@@ -144,11 +139,7 @@ module.exports = function (input) {
                         }
                     }
                 },
-                ClassDeclaration(path) {
-                    if (path.node.superClass) {
-                        throw new Error('Class extension is not supported yet.')
-                    };
-                },
+
                 BlockStatement(path) {
                     if (!t.isFunction(path.parent)) {
                         // we need this for scope chain traversal
@@ -168,7 +159,6 @@ module.exports = function (input) {
                             scope: getScope(parent),
                             funcName: parent.node.funcName,
                             funcID: parent.node.funcID,
-                            object: thisArgNode
                         })
                     }
                 },
@@ -323,6 +313,7 @@ module.exports = function (input) {
                         if (t.isMemberExpression(path) && path.node.object.name === _name) return
                         if (t.isUpdateExpression(path)) return
                         if (t.isThisExpression(path)) return
+                        if (t.isSuper(path)) return
                         if (t.isLiteral(path)) return
                         if (t.isCallExpression(path) || t.isNewExpression(path)) return
                         if (t.isUnaryExpression(path)) return

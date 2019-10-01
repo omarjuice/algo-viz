@@ -79,11 +79,29 @@ describe('VM code execution', function () {
 
 
     })
-    it('natives', async () => {
+    it('custom test', async () => {
         process.env.CODE = `
-        function hello(){
-
+        class SLL {
+            constructor(v) {
+                this.value = v
+            }
         }
+        
+        class L extends SLL {
+            constructor(v) {
+                const b = (func) => {
+                    func()
+                }
+        
+                b(() => super())
+                this.r = Math.random()
+            }
+        }
+        
+        
+        const l = new L(5)
+        
+        console.log(l);
     `
         let body = execute()
         require('fs').writeFileSync('executed.json', body)

@@ -25,7 +25,7 @@ function exec() {
     const { _name } = input
 
 
-    !prod && fs.writeFile(`${vol}/${file}.transpiled.js`, transpiled, () => { })
+    !prod && fs.writeFile(env === 'development' ? `${vol}/${file}.transpiled.js` : 'transpiled.js', transpiled, () => { })
 
     return execute(_name, transpiled, code)
 }

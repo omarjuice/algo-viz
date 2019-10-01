@@ -16,7 +16,6 @@ class Runner {
         this.objects = {}
 
         // the constructors of objects, used to skip stringification until the object is intantiated
-        this.constructors = new Map()
 
         //record of already virtualized objects so each unique object has only one virtualized version
         this.proxies = new Map()
@@ -25,7 +24,7 @@ class Runner {
         this.objectIndex = {}
 
         // callStack for determining the type of function we are currently in
-        this.callStack = []
+        this.calls = 0
 
         this.virtualize = virtualize
 
@@ -81,24 +80,13 @@ class Runner {
         }
 
 
-        if (info.type === TYPES.EXPRESSION || info.type === TYPES.CALL) {
-            const call = this.callStack[this.callStack.length - 1]
-            if (call && call.type === TYPES.METHOD && call.kind === 'constructor') {
-                return this.virtualize(val)
-            }
+        if ([TYPES.FUNC, TYPES.METHOD].includes(info.type)) {
+            this.calls++
         }
-        if ([TYPES.FUNC, TYPES.METHOD, TYPES.RETURN].includes(info.type)) {
-            this._f(info)
+        if (info.type === TYPES.RETURN) {
+            this.calls--
         }
-
-
         if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
-
-            if (this.constructors.has(info.object)) {
-                const [allow] = this.constructors.get(info.object)
-                info.object = this.stringify(info.object)
-                if (!allow) return this.virtualize(val)
-            }
             info.object = this.stringify(info.object)
         }
         info.value = this.stringify(val)
@@ -116,55 +104,8 @@ class Runner {
             this.steps.push(info)
         }
         if (this.steps.length > this.limit) throw new Error('Step limit of 30000 exceeded')
-        if (this.callStack.length > 500) throw new Error('Maximum callstack size of 500 exceeded')
+        if (this.calls > 500) throw new Error('Maximum callstack size of 500 exceeded')
         return this.virtualize(val)
-    }
-
-    _f(info) {
-        // for function invocations and returns
-        // is the currently executing function a constructor ?
-        // if so, we want to avoid stringifying the object until the constructor has finished running
-
-        if (info.type === TYPES.RETURN) {
-            const call = this.callStack.pop()
-            if (call.type === TYPES.METHOD) {
-                if (call.kind === 'constructor') {
-                    const [, id] = this.constructors.get(call.object)
-                    this.constructors.set(call.object, [true, id])
-                    this.constructors.set(this.virtualize(call.object), [true, id])
-                }
-            }
-            if (call.object) {
-                call.object = this.stringify(call.object)
-            } else {
-                call.object = null
-            }
-            if (info.object) {
-                info.object = this.stringify(info.object)
-            } else {
-                info.object = null
-            }
-
-        } else {
-            if (info.type === TYPES.METHOD) {
-                if (info.kind === 'constructor') {
-                    const id = this.genId(5, 3)
-                    this.constructors.set(info.object, [false, id])
-                    this.constructors.set((this.virtualize), [false, id])
-                }
-            }
-            if (info.type === TYPES.FUNC) {
-                if (info.object) {
-                    info.object = this.stringify(info.object)
-                } else {
-                    info.object = null
-                }
-            }
-            this.callStack.push(info)
-
-        }
-
-
     }
 
 

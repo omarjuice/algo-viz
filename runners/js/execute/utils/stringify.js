@@ -19,12 +19,7 @@ module.exports = function (obj) {
             }
         }
         let newId = this.genId(5, 3)
-        if (this.constructors.has(obj)) {
-            const [flag, id] = this.constructors.get(obj)
-            if (!flag) return id
-            newId = id
-            this.constructors.delete(obj)
-        }
+
         this.map.set(obj, newId)
         if (!this.objectIndex[this.steps.length]) {
             this.objectIndex[this.steps.length] = []

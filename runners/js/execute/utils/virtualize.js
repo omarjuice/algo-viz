@@ -27,13 +27,10 @@ function virtualize(object) {
     if (runner.map.has(object)) {
         runner.map.set(proxy, this.map.get(object))
     } else {
-        if (runner.constructors.has(object)) {
-            const [, id] = runner.constructors.get(object)
-            runner.map.set(proxy, id)
-        } else {
-            const id = runner.stringify(object)
-            runner.map.set(proxy, id)
-        }
+
+        const id = runner.stringify(object)
+        runner.map.set(proxy, id)
+
     }
     return proxy
 }

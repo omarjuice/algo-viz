@@ -186,6 +186,32 @@ describe('RECONSTRUCT', () => {
             const func = funcs.BST
             await testRunner(func)
         })
+        it('case #5: class Extension', async () => {
+
+            const func = `
+                class SLL{
+                    constructor(v){
+                        this.value = v
+                        this.next = null
+                    }
+                }
+                class L extends SLL {
+                    constructor(v) {
+                        const b = (func) => {
+                            func()
+                        }
+
+                        b(() => super(v))
+                        this.r = 10001
+                    }
+                }
+
+
+                new L(5)
+
+            `
+            await testRunner(func)
+        })
     })
 })
 describe('DECONSTRUCT(reverse)', () => {
