@@ -68,7 +68,6 @@ async function run(code) {
                             reject(err)
                     }
                 } else {
-                    console.log(stdout);
                     resolve(stdout)
                 }
             })
@@ -83,7 +82,7 @@ async function run(code) {
                 if (data[0] === '{') {
                     resolve(data)
                 } else {
-                    reject(data)
+                    reject(new Error(data))
                 }
 
             }

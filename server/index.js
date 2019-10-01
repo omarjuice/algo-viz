@@ -61,7 +61,6 @@ async function initialize() {
                 res.send(JSON.parse(result))
             })
             .catch(e => {
-                // console.log(e);
                 if (e.isRunnerError) {
                     Issues.insertOne({
                         date: new Date(),
