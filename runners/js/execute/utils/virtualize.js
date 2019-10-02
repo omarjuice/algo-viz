@@ -6,6 +6,7 @@ function virtualize(object) {
 
     const constructorName = object.constructor.name
     if (
+        object === runner.global ||
         constructorName === 'Map' ||
         constructorName === 'Set' ||
         constructorName === 'String' ||
@@ -15,6 +16,7 @@ function virtualize(object) {
     ) {
         return object
     }
+
     if (runner.proxies.has(object)) {
         return runner.proxies.get(object)[0]
     }
@@ -39,7 +41,7 @@ function virtualize(object) {
 
 function isVirtualProperty(object, property) {
     const definition = Reflect.getOwnPropertyDescriptor(object, property)
-    return !!definition && typeof property !== 'symbol' && property[0] !== '_'
+    return !!definition && typeof property !== 'symbol' && property[0] !== '_' && definition.enumerable === true
 }
 function convert(val) {
     if (typeof val !== 'string') return val

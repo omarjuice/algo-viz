@@ -70,7 +70,22 @@ class Runner {
 
 
     }
+    setGlobal(ref) {
+        this.global = ref
+        const id = this.genId(5, 4)
 
+        this.map.set(ref, id)
+        this.types[id] = "global"
+
+        Object.getOwnPropertyNames(ref).forEach(key => {
+            const val = ref[key]
+            if (!this.map.has(val)) {
+                const id = this.genId(5, 4)
+                this.map.set(val, id)
+                this.types[id] = key
+            }
+        })
+    }
 
     __(val, info) {
         // main

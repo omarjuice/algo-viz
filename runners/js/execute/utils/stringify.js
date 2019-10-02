@@ -1,5 +1,4 @@
 const checkTypedArray = require('./checkTypedArray')
-const natives = require('./natives')
 module.exports = function (obj) {
     if (this.map.has(obj)) {
         return this.map.get(obj)
@@ -85,10 +84,7 @@ module.exports = function (obj) {
         if (typeof obj === 'function') {
             if (this.map.has(obj)) return this.map.get(obj)
             const name = obj.name && obj.name[0] !== '_' ? obj.name : 'function'
-            let id;
-            while (!id || (id in this.objects)) {
-                id = this.genId(5, natives.has(name) ? 4 : 2)
-            }
+            let id = this.genId(5, 2)
             this.types[id] = `[Function: ${name}]`
             this.map.set(obj, id)
             return id

@@ -12,7 +12,10 @@ module.exports = function (_name, transpiled, code) {
             [_name]: runner,
             Viz: instantiateViz(runner),
         }
-
+        Object.defineProperty(sandBox, _name, {
+            value: runner,
+            enumerable: false
+        })
         vm.runInNewContext(transpiled, sandBox, {
             timeout: 5000
         })

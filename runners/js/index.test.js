@@ -81,12 +81,9 @@ describe('VM code execution', function () {
     })
     it.only('custom test', async () => {
         process.env.CODE = `
-        const set = new Set()
+        const names = Object.getOwnPropertyNames(this)
 
-        set.add(1)
-        set.add(2)
-
-        set.clear()
+        const objects = names.map(n => this[n])
     `
         let body = execute()
         require('fs').writeFileSync('executed.json', body)

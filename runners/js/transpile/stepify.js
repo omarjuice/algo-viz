@@ -45,8 +45,16 @@ module.exports = function (input) {
                         path.node.body.unshift(
                             t.stringLiteral("use strict"),
                         )
+                    },
+                    exit(path) {
+                        path.node.body.unshift(
+                            template(
+                                `${_name}.setGlobal(this)`
+                            )({})
+                        )
                     }
                 },
+
 
                 Function: {
                     enter(path, { opts }) {
