@@ -53,37 +53,41 @@ async function run(code) {
     })
     const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} ${timeout} -v ${path}:/usr/src/app/${folderName} exec-js`
 
-    console.log(cmd)
     const file = `${path}/${name}`
     await new Promise((resolve, reject) => {
         exec(
             cmd,
             (err, stdout) => {
                 if (err) {
+                    let errData = ''
                     switch (err.code) {
                         case 125:
-                            reject(new Error('Container start failure.'));
+                            errData += 'Container start failure.'
                         case 126:
-                            reject(new Error('Container start failure.'));
+                            errData += 'Container start failure.'
                         case 127:
-                            reject(new Error('Container start failure.'));
+                            errData += 'Container start failure.'
                         case 137:
-                            reject(new Error('Memory limit exceeded.'));
+                            errData += 'Memory limit exceeded.'
                         default:
-                            reject(err)
+                            errData += ' Execution failed.'
                     }
+                    fs.writeFile(file, errData, () => {
+                        resolve()
+                    })
                 } else {
                     resolve(stdout)
                 }
             })
-    }).catch(e => {
-        fs.unlink(file, () => { })
-        throw (e)
     })
 
     return await new Promise((resolve, reject) => {
 
         fs.readFile(file, 'utf8', (err, data) => {
+            if (NODE_ENV !== 'development') {
+                fs.unlink(file, () => { })
+                names.delete(name)
+            }
             if (err) {
                 reject(err)
             } else {
@@ -92,11 +96,6 @@ async function run(code) {
                 } else {
                     reject(new Error(data))
                 }
-
-            }
-            if (NODE_ENV !== 'development') {
-                fs.unlink(file, () => { })
-                names.delete(name)
             }
         })
     })
