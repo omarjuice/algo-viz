@@ -97,7 +97,6 @@ declare namespace Viz {
         interface FuncType extends Generic {
             funcName: string
             funcID: string
-            object: null | string
         }
         interface VarType extends Generic {
             varName: string
