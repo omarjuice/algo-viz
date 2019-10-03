@@ -38,7 +38,7 @@ async function run(code) {
     const env = `-e NODE_ENV=${NODE_ENV === 'development' ? NODE_ENV : 'production'}`
     const version = `-e DATA_VERSION=${DATA_VERSION}`
     const volume = `-e VOLUME='${folderName}'`
-    const mem = `--memory=32m`
+    const mem = `--memory=128m`
     const cpus = `--cpus=1`
     const timeout = `--stop-timeout=${process.env.EXECUTION_TIMEOUT / 1000 || 5}`
     const path = DATA_PATH + folderName
@@ -52,6 +52,9 @@ async function run(code) {
         })
     })
     const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} ${timeout} -v ${path}:/usr/src/app/${folderName} exec-js`
+
+    console.log(cmd)
+    const file = `${path}/${name}`
     await new Promise((resolve, reject) => {
         exec(
             cmd,
@@ -73,10 +76,13 @@ async function run(code) {
                     resolve(stdout)
                 }
             })
+    }).catch(e => {
+        fs.unlink(file, () => { })
+        throw (e)
     })
 
     return await new Promise((resolve, reject) => {
-        const file = `${path}/${name}`
+
         fs.readFile(file, 'utf8', (err, data) => {
             if (err) {
                 reject(err)
