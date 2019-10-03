@@ -39,6 +39,8 @@ async function run(code) {
     const version = `-e DATA_VERSION=${DATA_VERSION}`
     const volume = `-e VOLUME='${folderName}'`
     const mem = `--memory=32m`
+    const cpus = `--cpus=1`
+    const timeout = `--stop-timeout=${process.env.EXECUTION_TIMEOUT / 1000 || 5}`
     const path = DATA_PATH + folderName
     await new Promise((resolve, reject) => {
         fs.writeFile(`${path}/${name}`, code, (e) => {
@@ -49,7 +51,7 @@ async function run(code) {
             }
         })
     })
-    const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} -v ${path}:/usr/src/app/${folderName} exec-js`
+    const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} ${timeout} -v ${path}:/usr/src/app/${folderName} exec-js`
     await new Promise((resolve, reject) => {
         exec(
             cmd,

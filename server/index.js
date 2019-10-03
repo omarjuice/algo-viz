@@ -7,13 +7,13 @@ const cors = require('cors')
 const path = require('path');
 const app = express();
 const execute = require('./js')
-const PORT = process.env.PORT || (process.env.NODE_ENV === 'test' ? 8080 : 3001)
 const env = process.env.NODE_ENV
+const PORT = process.env.PORT || (env === 'test' ? 8080 : env === 'production' ? 3000 : 3001)
 
 
 
 
-if (process.env.NODE_ENV === 'development') {
+if (env === 'development') {
     app.use(cors({
         origin: 'http://localhost:3000',
         credentials: true
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, "..", "..", "client/build")));
+app.use(express.static(path.join(__dirname, "..", "client/build")));
 
 
 
@@ -50,9 +50,7 @@ async function initialize() {
         }
     }));
 
-    app.get('/', (req, res) => {
-        res.send('OK')
-    })
+
     app.post('/execute', (req, res, next) => {
         const { code } = req.body;
         execute(code)
@@ -100,9 +98,9 @@ async function initialize() {
         }
     })
 
-    if (process.env.NODE_ENV === 'production') {
+    if (env === 'production') {
         app.get("/", (req, res, next) => {
-            res.sendFile(path.join(__dirname, "..", "..", "client/build/index.html"));
+            res.sendFile(path.join(__dirname, "..", "client/build/index.html"));
         });
     }
     app.use((err, req, res, next) => {
