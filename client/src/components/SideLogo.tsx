@@ -20,9 +20,7 @@ const SideLogo: React.FC = observer(() => {
                     return <ValDisplay key={i} color={store.settings.configColors['Step Slider Track']} size={50} anim={[false, false]} textDisplay={c} highlight={false} objectId={c} />
                 })}
             </div>
-            <div className="has-text-centered">
-                <ValDisplay color={store.settings.configColors['Step Slider Track']} size={50} anim={[false, false]} textDisplay={'-'} highlight={false} objectId={'-'} />
-            </div>
+
             <div className="has-text-centered">
                 {'VIZ'.split('').map((c, i) => {
                     return <ValDisplay key={i} color={store.settings.configColors['Step Slider Track']} size={50} anim={[false, false]} textDisplay={c} highlight={false} objectId={c} />
