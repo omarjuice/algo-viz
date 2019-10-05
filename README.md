@@ -10,6 +10,23 @@ A tutorial is available within the application.
 
 ### The application will take user code and execute it to transform it into a visualization of the involved data structures and expressions. 
 
+
+## Table of Contents
+* [The Runner](#How-it-works)
+    * [Accepting Code](#Accepting-Code)
+    * [Transforming Code](#Transforming-Code)
+    * [Running the Code](#Running-the-Code)
+* [The Visualizer](#Visualizing-the-algorithm)
+    * [Technologies](#The-technologies)
+    * [State Management](#State-management)
+        * [The iterator](#The-iterator)
+        * ['state'](#'state')
+        * [structures](#structures)
+    * [View Rendering](#View-Rendering)
+* [Security Measures](#Security-Measures)
+* [Architecture and Scaling](#Architecture-and-Scaling)
+
+
 ![data structures](https://res.cloudinary.com/omarjuice/image/upload/v1566855817/algo-viz-tutorial/builtins.png)
 ![recursion](https://res.cloudinary.com/omarjuice/image/upload/v1566930111/algo-viz-tutorial/nthFib.png)
 
@@ -122,7 +139,5 @@ The current security configuration relies on containerization. When code is send
 
 This configuration is secure to a great extent. However, nothing is ever totally secure. Upon scaling, greater security can be acheived by opting to make the code running function a dedicated microservice. That way, the code can be run on entirely different machines.
 
-
-
-
-
+### Architecture and Scaling
+_To be done_
