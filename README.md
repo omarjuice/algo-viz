@@ -118,7 +118,9 @@ Regarding rendering custom structures (Binary Tree, Linked List, anything under 
 
 
 ### Security measures
-The security configuration uses a combination of Node 12's worker_threads module and [vm2](https://github.com/patriksimek/vm2). A determined attacker could still wreak havoc. At this level of scale, it is not a huge concern because there is literally no purpose in attacking this application other than to be annoying. Still, I intend to migrate to more sophisticated and language/runtime agnostic security measures (containerization, virtual machines, etc.) in the future since algo-viz is built with the ultimate goal of supporting multiple languages.
+The current security configuration relies on containerization. When code is send to be run, the server spins up a container (with Docker). The container has limited access to memory and CPU and privileges. Inside the container is where both the transpilation and execution processes happen. The container writes the result or errors to a data volume that is shared with the host. For JavaScript specifically, the transpiled code runs in an instance Node's Virtual Machine module. Efforts will be made to use a similar configuration with other languages.
+
+This configuration is secure to a great extent. However, nothing is ever totally secure. Upon scaling, greater security can be acheived by opting to make the code running function a dedicated microservice. That way, the code can be run on entirely different machines.
 
 
 
