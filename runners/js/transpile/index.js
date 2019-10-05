@@ -1,6 +1,5 @@
 const stepify = require('./stepify')
 const babel = require('@babel/core')
-
 module.exports = function transpile(func, input) {
     const { code } = babel.transform(func, {
         plugins: [

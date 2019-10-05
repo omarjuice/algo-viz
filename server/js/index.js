@@ -59,7 +59,7 @@ async function run(code) {
             cmd,
             (err, stdout) => {
                 if (err) {
-                    let errData = ''
+                    let errData = 'ContainerError: '
                     switch (err.code) {
                         case 125:
                             errData += 'Container start failure.'
@@ -94,7 +94,18 @@ async function run(code) {
                 if (data[0] === '{') {
                     resolve(data)
                 } else {
-                    reject(new Error(data))
+                    const error = new Error(data)
+
+                    if (data.startsWith('TranspilerError')) {
+
+                        error.isTranspilerError = true
+                    } else if (data.startsWith('ContainerError')) {
+                        error.isContainerError = true
+                    } else if (data.startsWith('RunnerError')) {
+                        error.isRunnerError = true
+                    }
+                    reject(error)
+
                 }
             }
         })

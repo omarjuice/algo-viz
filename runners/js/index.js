@@ -8,6 +8,14 @@ const file = process.env.FILENAME
 const vol = process.env.VOLUME
 const prod = env === 'production'
 
+class TranspilerError extends Error {
+    constructor(error) {
+        super(error.message)
+        this.name = 'TranspilerError'
+    }
+
+}
+
 
 function exec() {
     let code;
@@ -21,7 +29,18 @@ function exec() {
         throw new Error('No code provided.')
     }
 
-    let transpiled = transpile(code, input)
+    let transpiled;
+
+    try {
+        transpiled = transpile(code, input)
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            throw e
+        } else {
+            throw new TranspilerError(e)
+        }
+
+    }
     const { _name } = input
 
 

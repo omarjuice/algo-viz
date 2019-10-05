@@ -5,6 +5,15 @@ const util = require('util')
 const version = process.env.DATA_VERSION;
 const prod = process.env.NODE_ENV === 'production'
 const fs = require('fs')
+
+
+class RunnerError extends Error {
+    constructor(error) {
+        super(error.message)
+        this.name = 'RunnerError'
+    }
+}
+
 module.exports = function (_name, transpiled, code) {
     const runner = new Runner(_name)
     try {
@@ -33,7 +42,6 @@ module.exports = function (_name, transpiled, code) {
         })
         return data
     } catch (e) {
-
         try {
             const getCircularReplacer = () => {
                 const seen = new Set();
@@ -51,9 +59,9 @@ module.exports = function (_name, transpiled, code) {
             const data = JSON.stringify({ steps, objects, types, objectIndex, code, version }, getCircularReplacer());
             return data
         } catch (e) {
-            !prod && require('fs').writeFileSync('debug.txt', util.inspect({ steps, objects, types, objectIndex }))
-            e.isRunnerError = true;
-            throw e
+
+            !prod && fs.writeFileSync('debug.txt', util.inspect({ steps, objects, types, objectIndex }))
+            throw new RunnerError(e)
         }
     }
 }
