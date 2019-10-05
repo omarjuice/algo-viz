@@ -4,15 +4,13 @@ function virtualize(object) {
     const runner = this
     if (!object || typeof object !== 'object') return object
 
-    const constructorName = object.constructor.name
     if (
         object === runner.global ||
-        constructorName === 'Map' ||
-        constructorName === 'Set' ||
-        constructorName === 'String' ||
-        constructorName === 'RegExp' ||
-        constructorName === 'Date' ||
-        constructorName === 'Error'
+        object instanceof (runner.global ? runner.global.Map : Map) ||
+        object instanceof (runner.global ? runner.global.Set : Set) ||
+        object instanceof (runner.global ? runner.global.String : String) ||
+        object instanceof (runner.global ? runner.global.RegExp : RegExp) ||
+        object instanceof (runner.global ? runner.global.Date : Date)
     ) {
         return object
     }

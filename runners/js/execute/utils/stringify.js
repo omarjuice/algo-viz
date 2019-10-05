@@ -24,7 +24,7 @@ module.exports = function (obj) {
             this.objectIndex[this.steps.length] = []
         };
         this.objectIndex[this.steps.length].push(newId)
-        if (obj.constructor.name === 'Map') {
+        if (obj instanceof (this.global ? this.global.Map : Map)) {
             // maps can have object keys, we need to stringify those too.
 
             // Map & Set virtualization needs a refactor
@@ -37,7 +37,7 @@ module.exports = function (obj) {
 
             this.reassignMapMethods(obj)
             this.objects[newId] = copy
-        } else if (obj.constructor.name === 'Set') {
+        } else if (obj instanceof (this.global ? this.global.Set : Set)) {
             // same for sets
             const copy = {}
             let i = 0
@@ -74,7 +74,11 @@ module.exports = function (obj) {
         }
 
         let type = obj.constructor.name
-        if (obj instanceof RegExp || obj instanceof String || obj instanceof Date) {
+        if (
+            obj instanceof (this.global ? this.global.String : String) ||
+            obj instanceof (this.global ? this.global.RegExp : RegExp) ||
+            obj instanceof (this.global ? this.global.Date : Date)
+        ) {
             type = 'Object'
         }
         if (this.Viz && this.Viz[type] && this.Viz[type] === obj.constructor) type = 'Viz.' + type

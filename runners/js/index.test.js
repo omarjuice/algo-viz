@@ -79,7 +79,7 @@ describe('VM code execution', function () {
 
 
     })
-    it.only('custom test', async () => {
+    it('custom test', async () => {
         process.env.CODE = `
         const names = Object.getOwnPropertyNames(this)
 

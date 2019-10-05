@@ -49,7 +49,11 @@ module.exports = function (input) {
                     exit(path) {
                         path.node.body.unshift(
                             template(
-                                `${_name}.setGlobal(this)`
+                                `try{
+                                    ${_name}.setGlobal(this || global)
+                                }catch(e){
+                                    if(${process.env.NODE_ENV === 'production'})throw e
+                                }`
                             )({})
                         )
                     }
