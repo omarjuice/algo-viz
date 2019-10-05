@@ -20,7 +20,7 @@ A tutorial is available within the application.
     * [Technologies](#The-technologies)
     * [State Management](#State-management)
         * [The iterator](#The-iterator)
-        * ['state'](#'state')
+        * ['state'](#Scoping,-Variables,-and-the-Callstack)
         * [structures](#structures)
     * [View Rendering](#View-Rendering)
 * [Security Measures](#Security-Measures)
@@ -115,7 +115,7 @@ This turned out to be extremely complex. In fact, there is more code related to 
 The iterator controls what step in the visualization the state is currently on. This is where the user(developer!) has control.
 Users can play and pause the code. Doing this will make the iterator begin iterating through the steps at a set interval. The iterator also makes sure that rendering is complete for a particular step before executing the next one. The speed of the iterator can be customized. Even the speeds of individual step types (CALL, DECLARATION, GET, etc.) can be customized. When paused, the iterator can be controlled one step at a time (next or previous). That means that, yes, the execution CAN be viewed in reverse. The iterator passes the details of the current step to the 'state' management(#2 above) and the structures management.
 
-#### 'state'
+#### Scoping, Variables, and the Callstack
 It was difficult to come up with a name for something that encompasses so many things. You might ask "Well, why didn't you break those things out into different pieces of state?" To answer that, this piece of state is esentially responsible for the callstack and which scopes are active, and thereby which variables are visualized for that particular step. This is important not only for displaying the exact values of variables, but for determining which objects show up on the screen (only objects with variable bindings accessible by the currently executing scope will be visible). The callstack, scope chain, and active identifiers are deeply connected and inseparable. To manage them, 'state' uses a simple stack-based algorithm that can be executed in reverse. A stack-based algorithm was perfect for, well, managing a bunch of stacks...
 
 #### structures
