@@ -20,7 +20,7 @@ A tutorial is available within the application.
     * [Technologies](#The-technologies)
     * [State Management](#State-management)
         * [The iterator](#The-iterator)
-        * ['state'](#Scoping,-Variables,-and-the-Callstack)
+        * ['state'](#scoping-variables-and-the-callstack)
         * [structures](#structures)
     * [View Rendering](#View-Rendering)
 * [Security Measures](#Security-Measures)
