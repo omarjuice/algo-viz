@@ -21,6 +21,9 @@ describe('VM code execution', function () {
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
+        expect(typeof body.objectIndex).toBe('object')
+        expect(typeof body.runtime).toBe('number')
+
     })
     it('Can access custom builtins', async () => {
         process.env.CODE = `const result = Viz.SLL.create([1,2,3,4,5]);`
@@ -29,6 +32,8 @@ describe('VM code execution', function () {
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
+        expect(typeof body.objectIndex).toBe('object')
+        expect(typeof body.runtime).toBe('number')
     })
     it('Can cannot access restricted objects', async () => {
         process.env.CODE = `const result = process;`
@@ -37,6 +42,8 @@ describe('VM code execution', function () {
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
+        expect(typeof body.objectIndex).toBe('object')
+        expect(typeof body.runtime).toBe('number')
         expect(body.steps[body.steps.length - 1].type).toBe('ERROR')
     })
     it('respects timeouts', async () => {
@@ -47,6 +54,8 @@ describe('VM code execution', function () {
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
+        expect(typeof body.objectIndex).toBe('object')
+        expect(typeof body.runtime).toBe('number')
 
         expect(body.steps[body.steps.length - 1].type).toBe('ERROR')
     })
@@ -75,6 +84,8 @@ describe('VM code execution', function () {
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
+        expect(typeof body.objectIndex).toBe('object')
+        expect(typeof body.runtime).toBe('number')
 
 
 
@@ -91,6 +102,8 @@ describe('VM code execution', function () {
         expect(Array.isArray(body.steps)).toBe(true)
         expect(typeof body.objects).toBe('object')
         expect(typeof body.types).toBe('object')
+        expect(typeof body.objectIndex).toBe('object')
+        expect(typeof body.runtime).toBe('number')
 
 
 

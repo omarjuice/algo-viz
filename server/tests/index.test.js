@@ -12,7 +12,7 @@ before(async () => {
 })
 
 
-describe('SERVER', function () {
+describe.only('SERVER', function () {
     this.timeout(20000)
     it('should return 200', done => {
         agent
@@ -41,6 +41,7 @@ describe('SERVER', function () {
             .end(done)
     })
     it('can handle multiple concurrent requests', async () => {
+
         const responses = []
         const start = Date.now()
         for (const name in funcs) {
@@ -59,6 +60,7 @@ describe('SERVER', function () {
             expect(Array.isArray(body.steps)).toBe(true)
             expect(typeof body.objects).toBe('object')
             expect(typeof body.types).toBe('object')
+            console.log((body.runtime));
         }
         console.log((end - start) / results.reduce((a, v) => a + v.body.steps.length, 0) / results.length);
     })

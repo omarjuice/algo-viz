@@ -97,7 +97,6 @@ async function run(code) {
                     const error = new Error(data)
 
                     if (data.startsWith('TranspilerError')) {
-
                         error.isTranspilerError = true
                     } else if (data.startsWith('ContainerError')) {
                         error.isContainerError = true

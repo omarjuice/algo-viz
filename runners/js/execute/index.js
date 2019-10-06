@@ -16,6 +16,8 @@ class RunnerError extends Error {
 
 module.exports = function (_name, transpiled, code) {
     const runner = new Runner(_name)
+    let start;
+    let end;
     try {
         const sandBox = {
             [_name]: runner,
@@ -25,10 +27,14 @@ module.exports = function (_name, transpiled, code) {
             value: runner,
             enumerable: false
         })
+        start = Date.now()
         vm.runInNewContext(transpiled, sandBox, {
             timeout: 5000
         })
+        end = Date.now()
+
     } catch (error) {
+        end = Date.now()
         runner.ignore(true)
         runner.steps.push({
             type: 'ERROR',
@@ -38,7 +44,7 @@ module.exports = function (_name, transpiled, code) {
     const { steps, objects, types, objectIndex } = runner
     try {
         const data = JSON.stringify({
-            steps, objects, types, objectIndex, code, version
+            steps, objects, types, objectIndex, code, version, runtime: end - start
         })
         return data
     } catch (e) {
@@ -56,7 +62,7 @@ module.exports = function (_name, transpiled, code) {
                 };
             };
 
-            const data = JSON.stringify({ steps, objects, types, objectIndex, code, version }, getCircularReplacer());
+            const data = JSON.stringify({ steps, objects, types, objectIndex, code, version, runtime: end - start }, getCircularReplacer());
             return data
         } catch (e) {
 

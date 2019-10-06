@@ -7,6 +7,7 @@ export default class VizStore {
     @observable objects: { [objectId: string]: Object };
     @observable types: { [objectId: string]: string };
     @observable objectIndex: { [index: string]: string[] };
+    @observable runtime: number
     root: RootStore
     constructor(store: RootStore, data: Viz.Data) {
         this.root = store
@@ -15,6 +16,7 @@ export default class VizStore {
         this.objects = data.objects
         this.types = data.types
         this.objectIndex = data.objectIndex
+        this.runtime = data.runtime
     }
 }
 

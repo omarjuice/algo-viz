@@ -132,6 +132,13 @@ const Navbar: React.FC = observer(() => {
 
 
                     <div className="navbar-end">
+                        {typeof store.viz.runtime === 'number' && <div className="navbar-item">
+                            <span style={{
+                                color: store.settings.configColors["Text"]
+                            }}>
+                                Runtime:{' '} {store.viz.runtime} ms
+                            </span>
+                        </div>}
                         <div className="navbar-item">
                             <button onClick={() => store.startTutorial()} className="button is-warning is-small">
                                 <figure style={{ marginTop: '-3px' }} className="image is-4by4">

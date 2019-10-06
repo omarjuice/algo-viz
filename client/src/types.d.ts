@@ -185,6 +185,7 @@ declare namespace Viz {
         objectIndex: { [index: string]: string[] }
         version: number
         code: string
+        runtime: number
     }
     type DisplayProps = {
         color: string

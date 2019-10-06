@@ -68,6 +68,7 @@ class Runner {
         this._ignore = false
         this.ignore = (bool) => this._ignore = bool
 
+        this.numSteps = 0
 
     }
     setGlobal(ref) {
@@ -112,13 +113,13 @@ class Runner {
                     prev.batch = [info]
                 } else {
                     prev.batch.push(info)
-                    if (prev.batch.length > this.limit) throw new Error('Step limit of 30000 exceeded')
                 }
             }
         } else {
             this.steps.push(info)
         }
-        if (this.steps.length > this.limit) throw new Error('Step limit of 30000 exceeded')
+        this.numSteps++
+        if (this.numSteps > this.limit) throw new Error('Step limit exceeded.')
         if (this.calls > 500) throw new Error('Maximum callstack size of 500 exceeded')
         return this.virtualize(val)
     }
