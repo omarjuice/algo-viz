@@ -328,11 +328,7 @@ class Structures {
     }
 
     @action prev(step: Viz.Step.Any) {
-        if (this.root.iterator.index in this.root.viz.objectIndex) {
-            this.root.viz.objectIndex[this.root.iterator.index].forEach(obj => {
-                this.removeObject(obj)
-            })
-        }
+
         if (step.type === 'SET') {
             const { object, access } = step
             const key = access
@@ -386,6 +382,11 @@ class Structures {
             }
         }
         if (this.root.allowRender) this.setBindings()
+        if (this.root.iterator.index in this.root.viz.objectIndex) {
+            this.root.viz.objectIndex[this.root.iterator.index].forEach(obj => {
+                this.removeObject(obj)
+            })
+        }
 
     }
     scrollIntoView(type: 'get' | 'set', object: string) {
