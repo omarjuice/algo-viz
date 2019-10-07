@@ -137,8 +137,8 @@ export const structInfo: Viz.structSettings = {
 }
 
 const configColorDefaults: Viz.configColors = {
-    'Background': '#0b1423',
-    'Navbar': '#4a4a4a',
+    'Primary Background': '#0b1423',
+    'Secondary Background': '#4a4a4a',
     'Call Stack': '#ffa500',
     'Code': '#f5f5f5',
     'Code Highlight': '#98fb98',

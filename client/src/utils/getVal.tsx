@@ -8,7 +8,7 @@ const getVal = (value: any, displayProps: Viz.DisplayProps, type: Viz.valType, i
     if (type === 'null') {
         displayProps.color = displayProps.color || 'transparent';
     } else if (type === 'object') {
-        displayProps.color = displayProps.color || store.settings.configColors['Background']
+        displayProps.color = displayProps.color || store.settings.configColors["Primary Background"]
         if (includePointer) {
             displayProps.component = <Pointer active={!!displayProps.anim[0]} id={value} size={displayProps.size * 3} isInsideDisplay={true} />;
         } else {

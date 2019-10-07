@@ -59,15 +59,14 @@ async function initialize() {
                 res.send(JSON.parse(result))
             })
             .catch(e => {
-                if (e.isRunnerError || e.isTranspilerError || e.isContainerError) {
+                if (e.isRunnerError || e.isTranspilerError) {
                     Issues.insertOne({
                         date: new Date(),
                         description: JSON.stringify(e),
                         code
                     })
-                    if (e.isRunnerError) next(new Error('The runner made a fatal mistake with your code. It will be investigated ASAP. In the meantime, please do not run the same code again.'))
-                    if (e.isTranspilerError) next(new Error('The transpiler made a fatal mistake with your code. It will be investigated ASAP. In the meantime, please do not run the same code again.'))
-                    if (e.isContainerError) next(new Error('Container start error. Please try again.'))
+                    if (e.isRunnerError) return next(new Error('The runner made a fatal mistake with your code. It will be investigated ASAP. In the meantime, please do not run the same code again.'))
+                    if (e.isTranspilerError) return next(new Error('The transpiler made a fatal mistake with your code. It will be investigated ASAP. In the meantime, please do not run the same code again.'))
                 } else {
                     next(e)
                 }

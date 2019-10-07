@@ -11,8 +11,13 @@ const Language: React.FC = observer(() => {
         <div>
             <div className="columns is-multiline">
                 <div className="column is-half">
-                    <div className="box has-background-dark has-text-light"
-                        style={{ border: '5px outset ' + store.settings.configColors['Step Slider Track'] }}>
+                    <div className="box"
+                        style={{
+                            border: '5px outset ' + store.settings.configColors['Step Slider Track'],
+                            color: store.settings.configColors["Code Highlight"],
+                            backgroundColor: store.settings.configColors["Secondary Background"]
+
+                        }}>
                         <div className="columns ">
                             <div className="column is-half has-text-centered has-text-weight-bold">
                                 JavaScript
@@ -28,8 +33,12 @@ const Language: React.FC = observer(() => {
                 </div>
                 <div className="column is-half">
                     <Tooltip overlay={'Coming when I have a job...'} placement={'bottom'}>
-                        <div className="box has-background-dark has-text-grey"
-                            style={{ border: '5px solid #363636' }}>
+                        <div className="box"
+                            style={{
+                                border: '5px solid ' + store.settings.configColors["Secondary Background"],
+                                color: store.settings.configColors["Code"],
+                                backgroundColor: store.settings.configColors["Secondary Background"]
+                            }}>
                             <div className="columns ">
                                 <div className="column is-half has-text-centered has-text-weight-bold">
                                     Python

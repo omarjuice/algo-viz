@@ -15,7 +15,7 @@ class ConfigSettings extends Component {
                     return (
                         <div key={name}>
                             <div className="columns">
-                                <div className="column has-text-white">
+                                <div className="column" style={{ color: store.settings.configColors["Text"] }}>
                                     {name}
                                 </div>
                                 <div className="column">

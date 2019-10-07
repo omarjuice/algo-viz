@@ -191,7 +191,7 @@ class Tutorial extends Component {
                 <h1 className="title is-4 has-text-centered">
                     {this.titles[5]}
                 </h1>
-               <div style={{backgroundColor: store.settings.configColors["Background"]}}>
+               <div style={{backgroundColor: store.settings.configColors["Primary Background"]}}>
                {Object.keys(store.settings.config).map((name) => {
                     const n = name as Viz.configTypes
                     return (
@@ -476,7 +476,7 @@ class Tutorial extends Component {
             <div className={`modal ${store.tutorial && 'is-active'}`}>
                 <div className="modal-background" onClick={() => store.stopTutorial()} />
                 <div  className="modal-card" style={{ backgroundColor: '#111111', height: '90vh' }}>
-                    <header style={{ backgroundColor: store.settings.configColors['Navbar'] }} className="modal-card-head">
+                    <header style={{ backgroundColor: store.settings.configColors["Secondary Background"] }} className="modal-card-head">
                         <p className="modal-card-title">Tutorial</p>
                         <button onClick={() => store.stopTutorial()} className="delete" aria-label="close"></button>
                     </header>
@@ -494,7 +494,9 @@ class Tutorial extends Component {
                     </section>
                     <footer className="modal-card-foot" style={{
                         display: 'flex',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        backgroundColor: store.settings.configColors["Secondary Background"]
+                        
                     }}>
                            <div className="buttons has-addons is-centered">
                             <button

@@ -54,7 +54,7 @@ const ValDisplay: React.FC<Viz.DisplayProps> = observer(({ color, size, anim, te
         </defs>
         <circle cx="50" cy="50" r="50" fill={highlight ? `url(#${gradId})` : color} style={{ transition: 'fill 500ms' }} stroke={color} />
         {component || <text x={50} y={50}
-            fill={textColor || store.settings.configColors['Background']} fontSize={text && text.length > 0 ? text.length <= 3 ? 50 : 40 : 50} fontWeight={'bold'}
+            fill={textColor || store.settings.configColors["Primary Background"]} fontSize={text && text.length > 0 ? text.length <= 3 ? 50 : 40 : 50} fontWeight={'bold'}
             dominantBaseline="middle" textAnchor="middle" >
             {text}
         </text>}

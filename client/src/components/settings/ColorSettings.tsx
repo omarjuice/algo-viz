@@ -7,7 +7,9 @@ class ColorSettings extends Component {
     state = {
         active: ''
     }
-    skipSet: Set<string> = new Set(['Background', 'Text', 'Navbar', 'other'])
+    skipSet: Set<string> = new Set(
+        ['other']
+    )
     handleClick = (name: string) => {
         this.setState({ active: this.state.active === name ? '' : name })
     }
@@ -15,7 +17,7 @@ class ColorSettings extends Component {
 
         const { valueColors, valueColorDefaults, configColors, configColorDefaults } = store.settings
         return (
-            <div style={{ backgroundColor: configColors['Background'] }} className="color-settings-panel">
+            <div style={{ backgroundColor: configColors["Primary Background"] }} className="color-settings-panel">
                 {Object.keys(valueColors).map((n) => {
                     const name = n as Viz.valueColor
                     if (this.skipSet.has(name)) return null;
@@ -23,13 +25,13 @@ class ColorSettings extends Component {
 
                     return (
                         <React.Fragment key={name}>
-                            <div className="columns is-multiline" style={{ color: configColors['Text'], backgroundColor: configColors['Background'] }}>
+                            <div className="columns is-multiline" style={{ color: configColors['Text'], backgroundColor: configColors["Primary Background"] }}>
                                 <div className="column is-one-third has-text-left has-text-weight-bold">
                                     {name}
                                 </div>
                                 <div className="column is-one-third has-text-centered">
                                     <button
-                                        style={{ backgroundColor: defaults[name], color: configColors['Background'] }}
+                                        style={{ backgroundColor: defaults[name], color: configColors["Primary Background"] }}
                                         onClick={() => colors[name] = defaults[name]}
                                         className="button is-small has-text-weight-bold">
                                         Default
@@ -67,13 +69,13 @@ class ColorSettings extends Component {
                     const [colors, defaults] = [configColors, configColorDefaults]
                     return (
                         <React.Fragment key={name}>
-                            <div className="columns is-multiline" style={{ color: configColors['Text'], backgroundColor: configColors['Background'] }}>
+                            <div className="columns is-multiline" style={{ color: configColors['Text'], backgroundColor: configColors["Primary Background"] }}>
                                 <div className="column is-one-third has-text-left has-text-weight-bold">
                                     {name}
                                 </div>
                                 <div className="column is-one-third has-text-centered">
                                     <button
-                                        style={{ backgroundColor: defaults[name], color: configColors['Background'] }}
+                                        style={{ backgroundColor: defaults[name], color: configColors["Primary Background"] }}
                                         onClick={() => colors[name] = defaults[name]}
                                         className="button is-small has-text-weight-bold">
                                         Default

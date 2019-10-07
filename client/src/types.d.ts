@@ -52,7 +52,7 @@ declare namespace Viz {
         [key in configTypes]: boolean
     }
     type configColor = (
-        'Background' | 'Navbar' | 'Call Stack' |
+        'Primary Background' | 'Secondary Background' | 'Call Stack' |
         'Code' | 'Code Highlight' | 'Step Slider Track' |
         'Step Slider Rail' | 'Step Slider Handle' |
         'Step Type' | 'Text' | 'Line Pointer' | 'Arc Pointer' |

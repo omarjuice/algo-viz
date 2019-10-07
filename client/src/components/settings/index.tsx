@@ -31,8 +31,8 @@ class Settings extends React.Component {
         return (
             <div className={`modal ${store.settings.editing && 'is-active'}`} >
                 <div className="modal-background" onClick={() => store.settings.stopEdit()}></div>
-                <div className="modal-card" style={{ backgroundColor: store.settings.configColors['Background'] }}>
-                    <header style={{ backgroundColor: store.settings.configColors['Navbar'] }} className="modal-card-head">
+                <div className="modal-card" style={{ backgroundColor: store.settings.configColors['Primary Background'] }}>
+                    <header style={{ backgroundColor: store.settings.configColors["Secondary Background"] }} className="modal-card-head">
                         <p className="modal-card-title">Settings</p>
                         <button onClick={() => store.settings.stopEdit()} className="delete" aria-label="close"></button>
                     </header>
@@ -53,7 +53,7 @@ class Settings extends React.Component {
                         </ul>
                     </div>
 
-                    <section className="modal-card-body" style={{ transition: 'height 500ms' }}>
+                    <section className="modal-card-body" style={{ transition: 'height 500ms', backgroundColor: store.settings.configColors["Primary Background"] }}>
                         {this.panelComponents[this.state.panel]}
                     </section>
 

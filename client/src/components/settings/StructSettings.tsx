@@ -152,18 +152,19 @@ class StructSettings extends Component<Props> {
         const { structColors } = settings
         const style: React.CSSProperties = {
             border: `5px solid ${structColors[name]}`,
-            color: "white",
+            backgroundColor: store.settings.configColors['Secondary Background'],
+            color: store.settings.configColors['Text']
         }
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
         const isBuiltin = /Viz\./g.test(name);
         const isNative = ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
-            <div className="box has-background-dark has-text-light" style={style}>
+            <div className="box" style={style}>
 
                 <div className="columns">
                     <div className="column has-text-left">
-                        <h1 className="title is-6 has-text-light has-text-weight-bold">{name}</h1>
+                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>{name}</h1>
                     </div>
                     <div className="column">
                         {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small has-text-weight-bold">
@@ -179,7 +180,7 @@ class StructSettings extends Component<Props> {
                 </div>
                 {this.state.editing && (
                     <div>
-                        <h1 className="title is-6 has-text-light">
+                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>
                             Children
                         </h1>
                         <DraggableList
@@ -203,7 +204,7 @@ class StructSettings extends Component<Props> {
                             </div>
                         </div>}
                         <hr />
-                        <h1 className="title is-6 has-text-light">
+                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>
                             Pointers
                         </h1>
                         <ul className="list">
@@ -241,14 +242,14 @@ class StructSettings extends Component<Props> {
                         </div>
                         <hr />
                         <div>
-                            <h1 className="title is-6 has-text-light">
+                            <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>
                                 Display Key
                             </h1>
                             <input className="input" type="text" value={this.state.main} onChange={isBuiltin ? undefined : (e) => this.changeMain(e.target.value)} />
                         </div>
                         <hr />
                         <div>
-                            <h1 className="title is-6 has-text-light">
+                            <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>
                                 Number of Children
                             </h1>
 
@@ -267,6 +268,14 @@ class StructSettings extends Component<Props> {
                                 }
                                 value={Number(this.state.numChildren)}
                                 onChange={isBuiltin ? undefined : (v) => v === 0 ? this.toggleNumChildren() : this.setState({ numChildren: v })}
+                                trackStyle={{
+                                    backgroundColor: settings.configColors['Step Slider Track'],
+                                    height: 5
+                                }}
+                                railStyle={{
+                                    backgroundColor: settings.configColors['Step Slider Rail'],
+                                    height: 5
+                                }}
                             />
                         </div>
                         <br />

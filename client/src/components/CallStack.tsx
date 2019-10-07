@@ -19,7 +19,7 @@ const renderItem = (item: stackItem, height: number, props: React.CSSProperties)
             placement={'left'}
             trigger={['hover']} defaultVisible={false} >
             <li style={{
-                color: store.settings.configColors['Background'],
+                color: store.settings.configColors["Primary Background"],
                 position: 'relative',
                 zIndex: i as number,
                 height: `${height}px`,

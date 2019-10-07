@@ -11,7 +11,7 @@ const Navbar: React.FC = observer(() => {
 
     return (
         <div>
-            <nav className="navbar has-background-dark" role="navigation" aria-label="main navigation">
+            <nav className="navbar" role="navigation" aria-label="main navigation" style={{ backgroundColor: store.settings.configColors["Secondary Background"] }}>
                 <div className="navbar-brand">
                     {!store.editor.active && store.ready && (
                         <>
@@ -103,15 +103,17 @@ const Navbar: React.FC = observer(() => {
                     <div className="navbar-start">
                         {!store.editor.active &&
                             (<>
-                                <div className="navbar-item has-dropdown is-hoverable has-background-light">
+                                <div className="navbar-item has-dropdown is-hoverable" style={{ backgroundColor: store.settings.configColors["Secondary Background"] }}>
                                     <a href="#/" className="navbar-link">
                                         <figure style={{ marginTop: '2px' }} className="image is-32x32">
                                             <img height={30} width={30} src={process.env.PUBLIC_URL + '/tachometer-alt-solid.svg'} alt="" />
                                         </figure>
                                     </a>
-                                    <div className="navbar-dropdown has-background-dark">
+                                    <div className="navbar-dropdown" style={{ backgroundColor: store.settings.configColors["Secondary Background"] }}>
                                         <div className="select">
-                                            <select className="select has-background-dark has-text-white" value={type} onChange={(e) => setType(e.target.value)}>
+                                            <select className="select has-text-white"
+                                                style={{ backgroundColor: store.settings.configColors["Secondary Background"] }}
+                                                value={type} onChange={(e) => setType(e.target.value)}>
                                                 {Object.keys(store.settings.speeds).map(type => {
                                                     return <option key={type} value={type}>{type}</option>
                                                 })}

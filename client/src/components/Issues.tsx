@@ -28,12 +28,12 @@ class Issues extends Component<{}, State> {
         return (
             <div className={`modal ${store.api.issueForm && 'is-active'}`}>
                 <div className="modal-background" onClick={() => store.api.stopPostingIssue()} />
-                <div className="modal-card" style={{ backgroundColor: store.settings.configColors['Background'] }}>
-                    <header style={{ backgroundColor: store.settings.configColors['Navbar'] }} className="modal-card-head">
+                <div className="modal-card" style={{ backgroundColor: store.settings.configColors["Primary Background"] }}>
+                    <header style={{ backgroundColor: store.settings.configColors["Secondary Background"] }} className="modal-card-head">
                         <p className="modal-card-title">Report a Bug</p>
                         <button onClick={() => store.api.stopPostingIssue()} className="delete" aria-label="close"></button>
                     </header>
-                    <section className="modal-card-body">
+                    <section className="modal-card-body" style={{ backgroundColor: store.settings.configColors["Primary Background"] }}>
                         <form className="form">
                             <h1 className="title is-6 has-text-white">
                                 Please describe the issue:

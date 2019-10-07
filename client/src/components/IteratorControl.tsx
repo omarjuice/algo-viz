@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, Observer } from 'mobx-react';
 import store from '../store/index';
 import Slider, { Handle } from 'rc-slider';
 import Tooltip from 'rc-tooltip'
@@ -19,17 +19,19 @@ const handle = (props: any) => {
             placement="top"
             key={index}
         >
-            <Handle value={value} {...restProps} style={{
-                borderColor: store.settings.configColors['Step Slider Handle'],
-                height: 14,
-                width: 14,
-                marginLeft: -5,
-                marginTop: -2,
-                backgroundColor: 'black'
-            }} />
+            <Observer>
+                {() => <Handle value={value} {...restProps} style={{
+                    borderColor: store.settings.configColors['Step Slider Handle'],
+                    height: 14,
+                    width: 14,
+                    marginLeft: -5,
+                    marginTop: -2,
+                    backgroundColor: store.settings.configColors["Primary Background"]
+                }} />}
+            </Observer>
         </Tooltip>
     );
-};
+}
 const IteratorContol: React.FC = observer(() => {
     const { iterator, settings } = store
     return (

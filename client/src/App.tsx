@@ -32,7 +32,7 @@ class App extends React.Component {
         <Settings />
         <Issues />
         <Tutorial />
-        <div className="app ">
+        <div className="app " style={{ backgroundColor: store.settings.configColors["Primary Background"] }}>
           <Navbar />
           <div className="columns is-multiline is-paddingless">
             {store.api.ok && <>

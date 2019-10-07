@@ -14,7 +14,7 @@ const SwitchButton: React.FC<Props> = observer(({ size, toggled, onClick }) => {
         width: size,
         height: size / 2,
         borderRadius: '10%',
-        backgroundColor: toggled ? store.settings.configColors['Code Highlight'] : store.settings.configColors['Navbar'],
+        backgroundColor: toggled ? store.settings.configColors['Code Highlight'] : store.settings.configColors["Secondary Background"],
         transition: 'background-color 200ms'
     }
     return (
