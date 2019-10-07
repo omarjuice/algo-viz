@@ -15,7 +15,8 @@ type State = {
     main: string
     numChildren: number
     numKeys: number
-    pointers: { [key: string]: boolean }
+    pointers: { [key: string]: boolean },
+    deleting: boolean
 }
 type childType = 'single' | 'multiple'
 type pointerType = childType
@@ -30,7 +31,8 @@ class StructSettings extends Component<Props> {
         main: '',
         numChildren: null,
         numKeys: 0,
-        pointers: {}
+        pointers: {},
+        deleting: false
     }
     componentDidMount() {
         const struct = store.settings.structSettings[this.props.name]
@@ -146,6 +148,11 @@ class StructSettings extends Component<Props> {
         })
 
     }
+    toggleDelete = (bool: boolean) => {
+        this.setState({
+            deleting: bool
+        })
+    }
     render() {
         const { name } = this.props
         const { settings } = store
@@ -170,8 +177,8 @@ class StructSettings extends Component<Props> {
                     <div className="column has-text-left">
                         <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>{name}</h1>
                     </div>
-                    <div className="column">
-                        {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing })} className="button is-small has-text-weight-bold">
+                    <div className="column has-text-centered">
+                        {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing, deleting: false })} className="button is-small has-text-weight-bold">
                             {this.state.editing ? 'Cancel' : 'Edit'}
                         </button>}
                     </div>
@@ -182,7 +189,27 @@ class StructSettings extends Component<Props> {
                         <input type="color" value={structSettings.textColor} onChange={(e) => structSettings.textColor = e.target.value} />
                     </div>}
                     <div className="column has-text-right">
-                        {!isNative && !isBuiltin && <button className="delete" onClick={() => settings.deleteStruct(name)}></button>}
+                        {!isNative && !isBuiltin && (
+                            this.state.deleting ?
+                                <div className="columns">
+                                    <div className="column is-one-third">
+                                        Sure?
+                                    </div>
+                                    <div className="column is-one-third">
+                                        <button onClick={() => settings.deleteStruct(name)} className="button is-small">
+                                            Yes
+                                        </button>
+                                    </div>
+                                    <div className="column is-one-third">
+                                        <button onClick={() => this.toggleDelete(false)} className="button is-small">
+                                            No
+                                        </button>
+                                    </div>
+
+
+                                </div>
+                                : <button className="delete" onClick={() => this.toggleDelete(true)}></button>
+                        )}
                     </div>
                 </div>
                 {this.state.editing && (

@@ -124,6 +124,14 @@ const Navbar: React.FC = observer(() => {
                                             max={10}
                                             value={store.settings.speeds[type as Viz.configurable] || 0}
                                             onChange={(v) => { store.settings.changeSpeed(type, v) }}
+                                            trackStyle={{
+                                                backgroundColor: store.settings.configColors['Step Slider Track'],
+                                                height: 5
+                                            }}
+                                            railStyle={{
+                                                backgroundColor: store.settings.configColors['Step Slider Rail'],
+                                                height: 5
+                                            }}
                                         />
                                     </div>
 
