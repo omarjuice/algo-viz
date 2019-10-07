@@ -77,12 +77,18 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
         flexDirection: orientation
     }
 
-    const color = store.settings.structColors[type] || 'white'
+    const { color } = store.settings.structSettings[type]
 
     const active = pointed || store.structs.activePointers[objectId]
     const rotation = 90
 
-    const braceStyle: React.CSSProperties = { transform: `rotate(${rotation}deg)`, color, position: "relative", zIndex: 5, transition: `transform .5s` }
+    const braceStyle: React.CSSProperties = {
+        transform: `rotate(${rotation}deg)`,
+        color,
+        position: "relative",
+        zIndex: 5,
+        transition: `transform .5s`
+    }
     if (active) {
         braceStyle.transform += ' scale(2)'
     }

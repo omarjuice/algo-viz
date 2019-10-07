@@ -72,7 +72,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
     const rerenderTrigger = [config['Callstack'], config["Code Display"], config["Step View"], config['Identifiers'], ...store.numStructs, store.widths.data]
 
     const width = store.windowWidth * ((store.structsWidth >= 10 ? store.structsWidth / 24 : .5)) * ratio
-    const color = store.settings.structColors[type]
+    const { color, textColor } = settings
 
     const styles: React.CSSProperties = {
         width,
@@ -229,7 +229,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
         size,
         anim,
         textDisplay: "",
-        textColor: store.settings.configColors["Primary Background"],
+        textColor,
         highlight: store.structs.activePointers[objectId]
     }
     return (

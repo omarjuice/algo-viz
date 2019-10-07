@@ -149,9 +149,13 @@ class StructSettings extends Component<Props> {
     render() {
         const { name } = this.props
         const { settings } = store
-        const { structColors } = settings
+
+        const structSettings = settings.structSettings[name]
+
+
+
         const style: React.CSSProperties = {
-            border: `5px solid ${structColors[name]}`,
+            border: `5px solid ${structSettings.color}`,
             backgroundColor: store.settings.configColors['Secondary Background'],
             color: store.settings.configColors['Text']
         }
@@ -172,8 +176,11 @@ class StructSettings extends Component<Props> {
                         </button>}
                     </div>
                     <div className="column has-text-centered">
-                        <input type="color" value={structColors[name]} onChange={(e) => structColors[name] = e.target.value} />
+                        <input type="color" value={structSettings.color} onChange={(e) => structSettings.color = e.target.value} />
                     </div>
+                    {!isNative && <div className="column has-text-centered">
+                        <input type="color" value={structSettings.textColor} onChange={(e) => structSettings.textColor = e.target.value} />
+                    </div>}
                     <div className="column has-text-right">
                         {!isNative && !isBuiltin && <button className="delete" onClick={() => settings.deleteStruct(name)}></button>}
                     </div>

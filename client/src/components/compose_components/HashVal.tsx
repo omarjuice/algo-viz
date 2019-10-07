@@ -104,17 +104,19 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 placement={'right'}
                 trigger={['hover']} visible={store.settings.config.tooltips ? visible || hovered : hovered} defaultVisible={false} >
                 <div style={{ overflowX: 'visible' }} className="columns is-paddingless is-multiline">
-                    {type !== 'Set' && <div style={{ overflowX: 'visible' }} className={`column ${type === 'Map' ? 'has-text-right' : 'has-text-centered'}`}>
-                        < p style={{
-                            color: (displayProps.anim[0] || displayProps.anim[1]) ? 'white' : store.settings.structColors[type],
-                            fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
-                        }}
-                            className={`is-size-6`}>
-                            {type === 'Map' ?
-                                getVal(prop, { ...displayProps }, getType(prop)) :
-                                <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
-                        </p>
-                    </div>}
+                    {type !== 'Set' &&
+                        <div style={{ overflowX: 'visible' }} className={`column ${type === 'Map' ? 'has-text-right' : 'has-text-centered'}`}>
+                            < p style={{
+                                color: (displayProps.anim[0] || displayProps.anim[1]) ? 'white' : store.settings.structSettings[type].color,
+                                fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
+                            }}
+                                className={`is-size-6`}>
+                                {type === 'Map' ?
+                                    getVal(prop, { ...displayProps }, getType(prop)) :
+                                    <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
+                            </p>
+                        </div>
+                    }
                     <div style={{ overflowX: 'visible' }} className={`column ${type === 'Map' ? 'has-text-left' : type === 'Set' ? 'has-text-centered' : ''}`}>
                         {getVal(value, displayProps, valType)}
                     </div>

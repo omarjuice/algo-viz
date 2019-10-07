@@ -90,7 +90,7 @@ const ArrayStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poi
     //IMPORTANT! The next two lines trigger a rerender when the layout changes so that line and arc pointers can adjust
 
     const size = Math.max(Math.round(ratio * 5), 3)
-    const color = store.settings.structColors['Array']
+    const { color } = store.settings.structSettings['Array']
     const active = pointed || store.structs.activePointers[objectId];
     const bkgExtend = active ? `${Math.min(len * valSize * 2 + 100, 2000)}px` : '20px'
     const styles: React.CSSProperties = {

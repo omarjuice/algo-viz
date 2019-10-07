@@ -22,9 +22,7 @@ declare namespace Viz {
     type speeds = {
         [key in Viz.configurable]: number;
     };
-    type structColors = {
-        [key: string]: string
-    }
+
     type order = {
         pos: number
         isMultiple: boolean
@@ -37,6 +35,8 @@ declare namespace Viz {
             main: string,
             numChildren: null | number
             pointers: { [key: string]: boolean }
+            textColor: string
+            color: string
         }
     }
     type valueColor = "special" | "number" | "string" | "boolean" | "other" | "native" | "func"
@@ -67,7 +67,6 @@ declare namespace Viz {
         configColors: configColors
         background: string
         speeds: speeds
-        structColors: structColors
         structSettings: structSettings
         config: configSettings
     }

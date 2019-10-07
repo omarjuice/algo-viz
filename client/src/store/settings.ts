@@ -3,6 +3,11 @@ import { RootStore } from ".";
 
 const SETTINGS_VERSION = 'settings'
 
+const randomColor = (): string => {
+    const color = (Math.floor(Math.random() * (16777215))).toString(16).padStart(6, '0');
+    return '#' + color
+}
+
 export const structInfo: Viz.structSettings = {
     "Viz.BST": {
         order: {
@@ -17,9 +22,12 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'value',
         numChildren: 2,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
 
-        }
+        },
+
     },
     "Viz.DLL": {
         order: {
@@ -30,6 +38,8 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'value',
         numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
             prev: false
         }
@@ -43,6 +53,8 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'value',
         numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
         }
     },
@@ -59,6 +71,8 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'value',
         numChildren: 2,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
 
         }
@@ -72,6 +86,8 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'length',
         numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
             end: false
         }
@@ -85,6 +101,8 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'value',
         numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
             prev: false
         }
@@ -98,6 +116,8 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'display',
         numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {
 
         }
@@ -115,12 +135,16 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'key',
         numChildren: null,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {}
     },
     "Viz.Leaf": {
         order: {},
         main: 'value',
         numChildren: null,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {}
     },
     "Viz.Trie": {
@@ -132,9 +156,24 @@ export const structInfo: Viz.structSettings = {
         },
         main: 'value',
         numChildren: null,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {}
+    },
+    default: {
+        order: {},
+        main: 'value',
+        numChildren: null,
+        color: randomColor(),
+        textColor: '#0b1423',
         pointers: {}
     }
 }
+
+Object.defineProperty(structInfo, 'default', {
+    value: structInfo['default'],
+    enumerable: false
+})
 
 const configColorDefaults: Viz.configColors = {
     'Primary Background': '#0b1423',
@@ -180,12 +219,7 @@ class Settings {
         CLEAR: 3
     }
     @observable editing: boolean = false
-    @observable structColors: Viz.structColors = {
-        Array: '#FFFFFF',
-        Object: '#FFFFFF',
-        Map: '#4682B4',
-        Set: '#FF69B4'
-    }
+
     @observable structSettings: Viz.structSettings = {}
     @observable config: Viz.configSettings = {
         'Callstack': true,
@@ -204,37 +238,66 @@ class Settings {
         const settings = window.localStorage.getItem(SETTINGS_VERSION)
         if (settings) {
             const all: Viz.AllSettings = JSON.parse(settings)
-            // syncObjects(this, all)
-            this.valueColors = { ...this.valueColors, ...all.valueColors };
-            this.configColors = { ...this.configColors, ...all.configColors };
+            //@ts-ignore
+            const valueColors: Viz.valueColors = {}
+            for (const key in this.valueColors) {
+                //@ts-ignore
+                valueColors[key] = key in all.valueColors ? all.valueColors[key] : this.valueColors[key]
+            }
+            this.valueColors = valueColors
+
+            //@ts-ignore
+            const configColors: Viz.configColors = {}
+
+            for (const key in this.configColors) {
+                //@ts-ignore
+                configColors[key] = key in all.configColors ? all.configColors[key] : this.configColors[key]
+            }
+            this.configColors = configColors
+
+
+
             this.speeds = { ...this.speeds, ...all.speeds }
-            this.structColors = { ...this.structColors, ...all.structColors }
-            this.structSettings = all.structSettings;
+
+
+
+
+
+
+            //@ts-ignore
+            const structSettings: Viz.structSettings = {}
+
+            for (const objType in all.structSettings) {
+                //@ts-ignore
+                const objSettings = {}
+                for (const key in structInfo.default) {
+                    //@ts-ignore
+                    objSettings[key] = key in all.structSettings[objType] ? all.structSettings[objType][key] : structInfo.default[key]
+                }
+                //@ts-ignore
+                structSettings[objType] = objSettings
+            }
+            this.structSettings = structSettings
+
+
             this.config = { ...this.config, ...all.config }
-        }
-        this.structSettings['Array'] = {
-            order: {},
-            main: 'value',
-            numChildren: null,
-            pointers: {}
-        }
-        this.structSettings['Object'] = {
-            order: {},
-            main: 'value',
-            numChildren: null,
-            pointers: {}
-        }
-        this.structSettings['Map'] = {
-            order: {},
-            main: 'value',
-            numChildren: null,
-            pointers: {}
-        }
-        this.structSettings['Set'] = {
-            order: {},
-            main: 'value',
-            numChildren: null,
-            pointers: {}
+
+            const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
+
+            for (const [t, defaultColor] of unconfigurables) {
+                this.structSettings[t] = {
+                    order: {},
+                    main: 'value',
+                    numChildren: null,
+                    pointers: {},
+                    color: all.structSettings[t].color || defaultColor,
+                    textColor: this.configColors["Primary Background"]
+                }
+            }
+
+
+
+
         }
 
         for (const name in structInfo) {
@@ -245,14 +308,10 @@ class Settings {
                     ...structInfo[name].pointers
                 }
             }
-
-
-            if (!this.structColors[name]) {
-                this.setColor(name)
-            }
         }
 
         this.root = store
+
         window.onbeforeunload = () => {
             delete this.root
             window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(this))
@@ -277,9 +336,7 @@ class Settings {
     }
     @action addStruct(structType: string) {
         const restricted = ['Object', 'Array', 'Map', 'Set']
-        if (!(structType in this.structColors)) {
-            this.setColor(structType)
-        }
+
         if (restricted.includes(structType)) return
 
         if (!(structType in this.structSettings)) {
@@ -287,21 +344,21 @@ class Settings {
                 order: {},
                 main: 'value',
                 numChildren: null,
-                pointers: {}
+                pointers: {},
+                color: randomColor(),
+                textColor: this.configColors["Primary Background"]
             }
         }
 
     }
     @action setColor(structType: string, color?: string) {
         if (!color) {
-            const newColor = (Math.floor(Math.random() * (16777215))).toString(16).padStart(6, '0');
-            color = '#' + newColor
-
+            color = randomColor()
         }
-        this.structColors[structType] = color
+        this.structSettings[structType].color = color
+        this.structSettings[structType].textColor = this.configColors["Primary Background"]
     }
     @action deleteStruct(structType: string) {
-        delete this.structColors[structType]
         delete this.structSettings[structType]
     }
 }

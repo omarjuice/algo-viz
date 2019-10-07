@@ -23,7 +23,7 @@ const Pointer: React.FC<Props> = observer(({ active, id, size, isInsideDisplay =
         }
     }, [isActive, id])
     const type = store.viz.types[id]
-    const color = store.settings.structColors[type]
+    const { color } = store.settings.structSettings[type]
     const strokeWidth = isInsideDisplay ? size / 2 : size * 2
     return <svg width={size} height={size}
         onMouseEnter={() => {

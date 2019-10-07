@@ -30,7 +30,7 @@ class Structures {
             const cloned: Viz.Structure = new Map()
             const type = this.root.viz.types[id]
             if (!type) return
-            if (!this.root.settings.structColors[type] || !this.root.settings.structSettings[type]) {
+            if (!this.root.settings.structSettings[type]) {
                 this.root.settings.addStruct(type)
             }
             if (type === 'Array') {
