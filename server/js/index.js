@@ -38,7 +38,7 @@ async function run(code) {
     const env = `-e NODE_ENV=${NODE_ENV === 'development' ? NODE_ENV : 'production'}`
     const version = `-e DATA_VERSION=${DATA_VERSION}`
     const volume = `-e VOLUME='${folderName}'`
-    const mem = `--memory=128m`
+    const mem = `--memory=64m`
     const cpus = `--cpus=1`
     const timeout = `--stop-timeout=${process.env.EXECUTION_TIMEOUT / 1000 || 5}`
     const path = DATA_PATH + folderName
