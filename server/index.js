@@ -36,6 +36,7 @@ async function initialize() {
     const client = await mongo.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
     const database = client.db(dbName);
     const Issues = database.collection('issues');
+    const Submissions = database.collection('submissions')
 
 
 
@@ -55,7 +56,6 @@ async function initialize() {
         const { code } = req.body;
         execute(code)
             .then(result => {
-                // console.log(result);
                 res.send(JSON.parse(result))
             })
             .catch(e => {
@@ -82,6 +82,16 @@ async function initialize() {
         } catch (e) {
             console.log(e);
         }
+        try {
+            Submissions.insertOne({
+                date: new Date(),
+                submitter: req.session.id,
+                code
+            })
+        } catch (e) {
+            console.log(e);
+        }
+
     })
 
     app.post('/issues', async (req, res, next) => {

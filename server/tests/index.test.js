@@ -12,7 +12,7 @@ before(async () => {
 })
 
 
-describe.only('SERVER', function () {
+describe('SERVER', function () {
     this.timeout(20000)
     it('should return 200', done => {
         agent
