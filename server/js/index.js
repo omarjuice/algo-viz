@@ -76,6 +76,9 @@ async function run(code) {
                         resolve()
                     })
                 } else {
+                    if (NODE_ENV === 'development') {
+                        console.log(stdout);
+                    }
                     resolve(stdout)
                 }
             })

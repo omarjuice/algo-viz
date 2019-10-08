@@ -1,11 +1,11 @@
-const checkTypedArray = require('./checkTypedArray')
 module.exports = function (obj) {
+
     if (this.map.has(obj)) {
         return this.map.get(obj)
     }
     if (obj && typeof obj === 'object') {
         // we want to ignore native objects
-        checkTypedArray(obj)
+        this.checkBanned(obj)
         //Typed arrays cannot be virtualized :(
 
         if (!Array.isArray(obj)) {
@@ -65,7 +65,9 @@ module.exports = function (obj) {
             for (const key in obj) {
                 if (key[0] === '_') continue;
                 const def = Reflect.getOwnPropertyDescriptor(obj, key)
-
+                if (!def) {
+                    continue;
+                }
                 copy[key] = this.stringify(obj[key])
                 if (def.get && !def.set) continue;
                 obj[key] = this.virtualize(obj[key])
@@ -74,6 +76,9 @@ module.exports = function (obj) {
         }
 
         let type = obj.constructor.name
+        if (!type) {
+            this.throw(new Error('Class name not found. All classes must have a name.'))
+        }
         if (
             obj instanceof (this.global ? this.global.String : String) ||
             obj instanceof (this.global ? this.global.RegExp : RegExp) ||

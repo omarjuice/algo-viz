@@ -22,6 +22,7 @@ class Structures {
         this.root = store
         const objs = this.root.viz.objects
         for (const id in objs) {
+            console.log(id);
             if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this, id))
             if (!this.children[id]) this.children[id] = new Set()
             if (!this.childKeyMemo[id]) this.childKeyMemo[id] = new Map()
@@ -86,7 +87,6 @@ class Structures {
                     }
                 }
             }
-
             this.inactiveObjects[id] = cloned
             this.activePointers[id] = false
         }

@@ -3,6 +3,10 @@ const TYPES = require('./utils/types')
 const randomString = require('./utils/randomString')
 const reassignMutative = require('./utils/reassignMutative')
 const virtualize = require('./utils/virtualize')
+const checkBanned = require('./utils/checkBanned')
+
+const intentional = Symbol('intentional')
+
 class Runner {
     constructor(name, code, limit = 30000) {
         this.limit = limit
@@ -41,6 +45,8 @@ class Runner {
         // a function used to flatten object references into JSONable structures, we pass it those values to avoid repetition
         this.stringify = stringify.bind(this)
 
+
+
         this.name = name
 
         // types that will have an object property
@@ -70,6 +76,8 @@ class Runner {
 
         this.numSteps = 0
 
+        this.intentional = Symbol('intentional')
+
     }
     setGlobal(ref) {
         this.global = ref
@@ -86,42 +94,64 @@ class Runner {
                 this.types[id] = key
             }
         })
+        this.checkBanned = checkBanned(this)
     }
 
     __(val, info) {
         // main
-        if (this._ignore) return val
-        if (info.type === TYPES.THIS) {
-            return this.virtualize(val)
-        }
-
-
-        if ([TYPES.FUNC, TYPES.METHOD].includes(info.type)) {
-            this.calls++
-        }
-        if (info.type === TYPES.RETURN) {
-            this.calls--
-        }
-        if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
-            info.object = this.stringify(info.object)
-        }
-        info.value = this.stringify(val)
-        if ([TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN].includes(info.type)) {
-            const prev = this.steps[this.steps.length - 1];
-            if (this.steps.length > 0) {
-                if (!('batch' in prev)) {
-                    prev.batch = [info]
-                } else {
-                    prev.batch.push(info)
-                }
+        try {
+            if (this._ignore) return val
+            if (info.type === TYPES.THIS) {
+                return this.virtualize(val)
             }
-        } else {
-            this.steps.push(info)
+
+
+            if ([TYPES.FUNC, TYPES.METHOD].includes(info.type)) {
+                this.calls++
+            }
+            if (info.type === TYPES.RETURN) {
+                this.calls--
+            }
+            if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
+                info.object = this.stringify(info.object)
+            }
+            info.value = this.stringify(val)
+            if ([TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN].includes(info.type)) {
+                const prev = this.steps[this.steps.length - 1];
+                if (this.steps.length > 0) {
+                    if (!('batch' in prev)) {
+                        prev.batch = [info]
+                    } else {
+                        prev.batch.push(info)
+                    }
+                }
+            } else {
+                this.steps.push(info)
+            }
+            this.numSteps++
+            if (this.numSteps > this.limit) this.throw(new Error('Step limit exceeded.'))
+            if (this.calls > 500) this.throw(new Error('Maximum callstack size of 500 exceeded'))
+            val = this.virtualize(val)
+
+
+            return val
+        } catch (e) {
+            if (e[this.intentional]) {
+                throw e
+            } else {
+                class RunnerError extends Error {
+                    constructor(message) {
+                        super(message)
+                        this.name = 'RunnerError'
+                    }
+                }
+                throw new RunnerError(e.message)
+            }
         }
-        this.numSteps++
-        if (this.numSteps > this.limit) throw new Error('Step limit exceeded.')
-        if (this.calls > 500) throw new Error('Maximum callstack size of 500 exceeded')
-        return this.virtualize(val)
+    }
+    throw(error) {
+        error[this.intentional] = true
+        throw error
     }
 
 

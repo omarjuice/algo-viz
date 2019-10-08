@@ -16,6 +16,8 @@ class RunnerError extends Error {
 
 module.exports = function (_name, transpiled, code) {
     const runner = new Runner(_name)
+    const intentional = Symbol('intentional')
+    runner.intentional = intentional
     let start;
     let end;
     try {
@@ -34,6 +36,12 @@ module.exports = function (_name, transpiled, code) {
         end = Date.now()
 
     } catch (error) {
+        if (!error[intentional] && error.name === 'RunnerError') {
+            throw new RunnerError(error)
+        }
+        if (!prod) {
+            console.log(error);
+        }
         end = Date.now()
         runner.ignore(true)
         runner.steps.push({

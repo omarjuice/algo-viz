@@ -1,5 +1,5 @@
 const expect = require('expect')
-const checkTypedArray = require('../utils/checkTypedArray')
+const checkBanned = require('../utils/checkBanned')
 const Runner = require('../runner')
 describe('UTILS', () => {
 
@@ -20,12 +20,14 @@ describe('UTILS', () => {
 
         it('does not throw errors', () => {
             const runner = new Runner('_name')
+            runner.setGlobal(global)
             expect(() => runner.stringify(new Circular)).not.toThrow()
 
 
         })
         it('Primitive values remain intact, refs are created for objects', () => {
             const runner = new Runner('_name')
+            runner.setGlobal(global)
             const obj = new Circular
             runner.stringify(obj)
             const copy = runner.objects[runner.map.get(obj)]
@@ -39,31 +41,36 @@ describe('UTILS', () => {
             }
         })
     })
-    describe('checkTypedArray', () => {
+    describe('checkBanned', () => {
+
+        const runner = new Runner('_name')
+        runner.setGlobal(global)
+        const check = checkBanned(runner)
+
         it('Should not throw for regular array', () => {
-            expect(() => checkTypedArray(new Array(10))).not.toThrow()
+            expect(() => check(new Array(10))).not.toThrow()
         })
         it('Should throw for typed arrays', () => {
-            expect(() => checkTypedArray(new Int32Array(10))).toThrow()
-            expect(() => checkTypedArray(new Int16Array(10))).toThrow()
-            expect(() => checkTypedArray(new Int8Array(10))).toThrow()
-            expect(() => checkTypedArray(new Uint32Array(10))).toThrow()
-            expect(() => checkTypedArray(new Uint16Array(10))).toThrow()
-            expect(() => checkTypedArray(new Uint8Array(10))).toThrow()
-            expect(() => checkTypedArray(new Uint8ClampedArray(10))).toThrow()
-            expect(() => checkTypedArray(new Float32Array(10))).toThrow()
-            expect(() => checkTypedArray(new BigInt64Array(10))).toThrow()
-            expect(() => checkTypedArray(new BigUint64Array(10))).toThrow()
-            expect(() => checkTypedArray(new Float64Array(10))).toThrow()
+            expect(() => check(new Int32Array(10))).toThrow()
+            expect(() => check(new Int16Array(10))).toThrow()
+            expect(() => check(new Int8Array(10))).toThrow()
+            expect(() => check(new Uint32Array(10))).toThrow()
+            expect(() => check(new Uint16Array(10))).toThrow()
+            expect(() => check(new Uint8Array(10))).toThrow()
+            expect(() => check(new Uint8ClampedArray(10))).toThrow()
+            expect(() => check(new Float32Array(10))).toThrow()
+            expect(() => check(new BigInt64Array(10))).toThrow()
+            expect(() => check(new BigUint64Array(10))).toThrow()
+            expect(() => check(new Float64Array(10))).toThrow()
         })
         it('does not throw for array like objects and other things', () => {
             function func() {
-                expect(() => checkTypedArray(arguments)).not.toThrow()
+                expect(() => check(arguments)).not.toThrow()
             }
             func()
 
-            expect(() => checkTypedArray({})).not.toThrow()
-            expect(() => checkTypedArray('Int8Array')).not.toThrow()
+            expect(() => check({})).not.toThrow()
+            expect(() => check('Int8Array')).not.toThrow()
         })
 
     })

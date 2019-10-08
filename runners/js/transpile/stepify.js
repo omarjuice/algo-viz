@@ -69,7 +69,6 @@ module.exports = function (input) {
                         const params = [];
 
                         path.get("params").forEach(traverseParameters(path, params))
-                        let isSuperClass = false
                         const isClassMethod = t.isClassMethod(path.node)
                         let funcName;
                         if (path.node.id) {
@@ -89,9 +88,7 @@ module.exports = function (input) {
                             }
                         } else if (t.isClassMethod(path.node)) {
                             const parent = path.findParent(p => t.isClassDeclaration(p) || t.isClassExpression(p))
-                            if (parent && parent.node.superClass) {
-                                isSuperClass = true
-                            }
+
                             if (t.isIdentifier(parent.node.id)) {
                                 if (t.isIdentifier(path.node.key)) {
                                     funcName = parent.node.id.name + '.' + path.node.key.name
