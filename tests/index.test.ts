@@ -5,7 +5,7 @@ let browser: Browser, page: Page;
 before(async () => {
     browser = await puppeteer.launch({
         headless: false,
-        slowMo: 500
+        slowMo: 100
     })
     page = await browser.newPage()
     await page.goto('http://localhost:3000')
@@ -15,12 +15,10 @@ before(async () => {
 })
 
 
-after(async () => {
-    await page.close()
-})
 
 
-describe('Launch', () => {
+describe('Launch', function () {
+    this.timeout(50000)
     it('Should render', async () => {
         expect(await page.$('.app')).toBeTruthy()
     })
