@@ -1,6 +1,7 @@
 import React from 'react';
 import store from '../../store';
 import Pointer from './Pointer';
+import { observer } from 'mobx-react';
 
 type Props = {
     value: any,
@@ -9,7 +10,7 @@ type Props = {
     size?: number
 }
 
-const ValText: React.FC<Props> = ({ value, type, textOnly = false, size = 30 }) => {
+const ValText: React.FC<Props> = observer(({ value, type, textOnly = false, size = 30 }) => {
     let color: string;
     if (type === 'null') return null
     if (type === 'object') {
@@ -33,7 +34,7 @@ const ValText: React.FC<Props> = ({ value, type, textOnly = false, size = 30 }) 
 
     return <span style={{ color, fontSize: `${(value.length > 20 ? 100 / value.length : 100)}%` }}>{value}</span>
 
-}
+})
 
 export default ValText
 
