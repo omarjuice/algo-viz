@@ -288,6 +288,8 @@ class Settings {
 
 
         }
+        const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
+
 
         for (const [t, defaultColor] of unconfigurables) {
             this.structSettings[t] = {
@@ -309,7 +311,6 @@ class Settings {
                 }
             }
         }
-        const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
 
 
         this.root = store
