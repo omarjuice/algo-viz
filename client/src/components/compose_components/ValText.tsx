@@ -14,6 +14,7 @@ const ValText: React.FC<Props> = ({ value, type, textOnly = false, size = 30 }) 
     if (type === 'null') return null
     if (type === 'object') {
         const objType: string = store.viz.types[value]
+        console.log(objType);
         color = store.settings.structSettings[objType].color
         if (!textOnly) {
             return <Pointer size={size} id={value} active={false} />
