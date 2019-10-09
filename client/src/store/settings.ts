@@ -297,7 +297,7 @@ class Settings {
                 main: 'value',
                 numChildren: null,
                 pointers: {},
-                color: t in this.structSettings ? this.structSettings[t].color : defaultColor,
+                color: t in this.structSettings && this.structSettings[t].color ? this.structSettings[t].color : defaultColor,
                 textColor: this.configColors["Primary Background"]
             }
         }
