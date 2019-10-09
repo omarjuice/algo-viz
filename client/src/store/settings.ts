@@ -305,8 +305,8 @@ class Settings {
         for (const name in structInfo) {
             this.structSettings[name] = {
                 ...structInfo[name],
-                color: this.structSettings[name].color,
-                textColor: this.structSettings[name].textColor,
+                color: name in this.structSettings ? this.structSettings[name].color : structInfo[name].color,
+                textColor: name in this.structSettings ? this.structSettings[name].textColor : structInfo[name].textColor,
                 pointers: {
                     ...(this.structSettings[name] || { pointers: {} }).pointers,
                     ...structInfo[name].pointers
