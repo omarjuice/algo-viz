@@ -1,0 +1,23 @@
+{
+  "name": "algo-viz-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.test.js",
+  "scripts": {
+    "test": "mocha -r ts-node/register **/*.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.7",
+    "@types/puppeteer": "^1.20.1",
+    "expect": "^24.9.0",
+    "mocha": "^6.2.1",
+    "puppeteer": "^1.20.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {}
+}
