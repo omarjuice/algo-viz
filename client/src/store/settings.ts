@@ -282,18 +282,7 @@ class Settings {
 
             this.config = { ...this.config, ...all.config }
 
-            const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
 
-            for (const [t, defaultColor] of unconfigurables) {
-                this.structSettings[t] = {
-                    order: {},
-                    main: 'value',
-                    numChildren: null,
-                    pointers: {},
-                    color: all.structSettings[t].color || defaultColor,
-                    textColor: this.configColors["Primary Background"]
-                }
-            }
 
 
 
@@ -307,6 +296,18 @@ class Settings {
                     ...(this.structSettings[name] || { pointers: {} }).pointers,
                     ...structInfo[name].pointers
                 }
+            }
+        }
+        const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
+
+        for (const [t, defaultColor] of unconfigurables) {
+            this.structSettings[t] = {
+                order: {},
+                main: 'value',
+                numChildren: null,
+                pointers: {},
+                color: t in this.structSettings ? this.structSettings[t].color : defaultColor,
+                textColor: this.configColors["Primary Background"]
             }
         }
 
