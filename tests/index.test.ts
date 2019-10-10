@@ -131,7 +131,7 @@ class AppPage {
         await this.page.evaluate(function (n) {
             //@ts-ignore
             window.setNumChildren(n)
-        }, ds.numChildren)
+        }, ds.numChildren).catch(e => e)
         await this.page.click('.finished-editing')
         await this.page.click('.close-settings')
     }
@@ -201,7 +201,7 @@ before(async () => {
         ]
     })
     const p = await browser.newPage()
-    await p.goto('http://localhost:3000')
+    await p.goto('https://algoviz.io')
     page = new AppPage(p, browser)
     await new Promise((r) => {
         setTimeout(r, 1000)
