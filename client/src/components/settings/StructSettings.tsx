@@ -43,6 +43,21 @@ class StructSettings extends Component<Props> {
             numKeys: Object.keys(struct.order).length,
             pointers: { ...struct.pointers }
         })
+        if (process.env.NODE_ENV === 'development') {
+            //@ts-ignore
+            window.setNumChildren = (n) => {
+                n = Number(n)
+                this.setState({
+                    numChildren: n === 0 ? null : n
+                })
+            }
+        }
+    }
+    componentWillUnmount() {
+        if (process.env.NODE_ENV === 'development') {
+            //@ts-ignore
+            delete window.setNumChildren
+        }
     }
     addKey = () => {
         const newKey = this.state.newKeyName
@@ -171,14 +186,15 @@ class StructSettings extends Component<Props> {
         const isBuiltin = /Viz\./g.test(name);
         const isNative = ['Array', 'Object', 'Set', 'Map'].includes(name)
         return (
-            <div className="box" style={style}>
+            <div className={`box struct-settings-${name}`} style={style}>
 
                 <div className="columns">
                     <div className="column has-text-left">
                         <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>{name}</h1>
                     </div>
                     <div className="column has-text-centered">
-                        {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing, deleting: false })} className="button is-small has-text-weight-bold">
+                        {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing, deleting: false })}
+                            className="button is-small toggle-edit has-text-weight-bold">
                             {this.state.editing ? 'Cancel' : 'Edit'}
                         </button>}
                     </div>
@@ -231,10 +247,10 @@ class StructSettings extends Component<Props> {
 
                         {!isBuiltin && <div className="columns">
                             <div className="column">
-                                <input type="text" className="input" onChange={(e) => this.setState({ newKeyName: e.target.value })} value={this.state.newKeyName} />
+                                <input type="text" className="input add-child-input" onChange={(e) => this.setState({ newKeyName: e.target.value })} value={this.state.newKeyName} />
                             </div>
                             <div className="column has-text-right">
-                                <button className="button is-primary" disabled={!this.state.newKeyName} onClick={this.addKey}>Add Child</button>
+                                <button className="button is-primary add-child-button" disabled={!this.state.newKeyName} onClick={this.addKey}>Add Child</button>
                             </div>
                         </div>}
                         <hr />
@@ -248,7 +264,7 @@ class StructSettings extends Component<Props> {
                                     <li key={key} className="list-item">
                                         <div className="columns ">
                                             <div className="column">
-                                                <select onChange={configurable ? (e) => this.configPointer(key, e.target.value as pointerType) : undefined}
+                                                <select id={`${key}-select`} onChange={configurable ? (e) => this.configPointer(key, e.target.value as pointerType) : undefined}
                                                     value={this.state.pointers[key] ? "multiple" : "single"} className="select">
                                                     <option value={'single'}>single</option>
                                                     <option value={'multiple'}>multiple</option>
@@ -268,10 +284,10 @@ class StructSettings extends Component<Props> {
 
                         <div className="columns">
                             <div className="column">
-                                <input type="text" className="input" onChange={(e) => this.setState({ newPointerName: e.target.value })} value={this.state.newPointerName} />
+                                <input type="text" className="input add-pointer-input" onChange={(e) => this.setState({ newPointerName: e.target.value })} value={this.state.newPointerName} />
                             </div>
                             <div className="column has-text-right">
-                                <button className="button is-primary" disabled={!this.state.newPointerName} onClick={this.addPointer}>Add Pointer</button>
+                                <button className="button is-primary add-pointer-button" disabled={!this.state.newPointerName} onClick={this.addPointer}>Add Pointer</button>
                             </div>
                         </div>
                         <hr />
@@ -279,7 +295,7 @@ class StructSettings extends Component<Props> {
                             <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>
                                 Display Key
                             </h1>
-                            <input className="input" type="text" value={this.state.main} onChange={isBuiltin ? undefined : (e) => this.changeMain(e.target.value)} />
+                            <input className="input display-key-input" type="text" value={this.state.main} onChange={isBuiltin ? undefined : (e) => this.changeMain(e.target.value)} />
                         </div>
                         <hr />
                         <div>
@@ -314,7 +330,7 @@ class StructSettings extends Component<Props> {
                         </div>
                         <br />
                         <div className="has-text-centered">
-                            <button onClick={this.submit} className="button is-link">
+                            <button onClick={this.submit} className="button is-link finished-editing">
                                 Finished Editing {name}
                             </button>
                         </div>

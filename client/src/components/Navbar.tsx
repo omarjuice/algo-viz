@@ -17,7 +17,7 @@ const Navbar: React.FC = observer(() => {
                         <>
                             <div className="navbar-item">
                                 <button
-                                    className="button is-small"
+                                    className="button is-small play-pause-button"
                                     onClick={() => iterator.iterating ? iterator.pause() : iterator.play()}
                                 >
                                     {<figure style={{ marginTop: '-3px' }} className="image is-4by4">
@@ -25,7 +25,7 @@ const Navbar: React.FC = observer(() => {
                                     </figure>}
                                 </button>
                             </div>
-                            <div className="navbar-item">
+                            <div className="navbar-item slow-prev-button">
                                 <button
                                     className="button is-small "
                                     onClick={() => iterator.iterating ? iterator.slower() : iterator.exec(false)}
@@ -42,7 +42,7 @@ const Navbar: React.FC = observer(() => {
                             </div>
                             <div className="navbar-item ">
                                 <button
-                                    className="button is-small "
+                                    className="button is-small fast-next-button"
                                     onClick={() => iterator.iterating ? iterator.faster() : iterator.exec(true)}
                                     disabled={iterator.iterating ? store.iterator.speed === store.iterator.maxSpeed : store.iterator.index >= store.viz.steps.length - 1}
                                 >
@@ -59,7 +59,7 @@ const Navbar: React.FC = observer(() => {
                     )}
                     {store.editor.active && (
                         <>
-                            <div className="navbar-item ">
+                            <div className="navbar-item submit-code-button">
                                 <button
                                     onClick={() => store.editor.submit()}
                                     className={`button is-primary ${store.api.loading && 'is-loading'}`}
@@ -76,7 +76,7 @@ const Navbar: React.FC = observer(() => {
                             {!store.editor.active ? (
                                 <button onClick={() => {
                                     store.editor.toggle()
-                                }} className={`button is-small`}>
+                                }} className={`button is-small open-editor-button`}>
                                     <figure style={{ marginTop: '-3px' }} className="image is-4by4">
                                         <img src={process.env.PUBLIC_URL + '/baseline-code-24px.svg'} alt="" />
                                     </figure>
@@ -85,7 +85,7 @@ const Navbar: React.FC = observer(() => {
                             ) : (
                                     <button onClick={() => {
                                         store.editor.toggle()
-                                    }} className="delete" />
+                                    }} className="delete close-editor-button" />
 
                                 )}
                         </div>
@@ -164,7 +164,7 @@ const Navbar: React.FC = observer(() => {
                             </button>
                         </div>
                         <div className="navbar-item">
-                            <button onClick={() => store.settings.startEdit()} className="button is-link is-small">
+                            <button onClick={() => store.settings.startEdit()} className="button is-link is-small open-settings">
                                 <figure style={{ marginTop: '-1.5px' }} className="image is-4by4">
                                     <img src={process.env.PUBLIC_URL + '/baseline-settings-20px.svg'} alt="" />
                                 </figure>
