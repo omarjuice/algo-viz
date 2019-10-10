@@ -170,7 +170,7 @@ class PointerQueue {
                 const grandParent = this.parents[parent]
                 const type = this.types[grandParent];
                 if (!hashTypes.includes(type) && type !== 'Array') {
-                    return 2
+                    return 3
                 }
             }
         }

@@ -135,6 +135,53 @@ class AppPage {
         await this.page.click('.finished-editing')
         await this.page.click('.close-settings')
     }
+    async normalFlow(incremental: boolean, speed = 5) {
+        const stepTotal = await this.stepTotal()
+        let stepNumber = await this.currentStep()
+
+        expect(typeof stepTotal).toBe('number')
+        expect(stepNumber).toBe(0)
+
+        if (incremental) {
+            while (stepNumber < stepTotal) {
+                await this.nextFast()
+                stepNumber = await this.currentStep()
+                await this.checkForCrash()
+            }
+            while (stepNumber > 0) {
+                await this.prevSlow()
+                stepNumber = await this.currentStep()
+                await this.checkForCrash()
+            }
+        }
+
+        await this.playPause()
+        const stepNo = this.waitForStep(Math.floor(stepTotal / 2))
+        if (speed > 0) {
+            for (let i = 0; i < speed; i++) {
+                await this.nextFast()
+            }
+        }
+        if (speed < 0) {
+            for (let i = speed; i < 0; i++) {
+                await this.prevSlow()
+            }
+        }
+        await this.checkForCrash()
+        await stepNo
+        await this.playPause()
+        await time(100)
+
+        const final = this.waitForStep(stepTotal)
+
+        await this.playPause()
+        await final
+        await this.playPause()
+
+        await this.waitForStep(2)
+        await this.checkForCrash()
+
+    }
 }
 
 
@@ -176,46 +223,7 @@ after(async () => {
 
 
 
-const normalFlow = async (incremental: boolean) => {
-    const stepTotal = await page.stepTotal()
-    let stepNumber = await page.currentStep()
 
-    expect(typeof stepTotal).toBe('number')
-    expect(stepNumber).toBe(0)
-
-    if (incremental) {
-        while (stepNumber < stepTotal) {
-            await page.nextFast()
-            stepNumber = await page.currentStep()
-            await page.checkForCrash()
-        }
-        while (stepNumber > 0) {
-            await page.prevSlow()
-            stepNumber = await page.currentStep()
-            await page.checkForCrash()
-        }
-    }
-
-    await page.playPause()
-    const stepNo = page.waitForStep(Math.floor(stepTotal / 2))
-    const increases = 5
-    for (let i = 0; i < increases; i++) {
-        await page.nextFast()
-    }
-    await page.checkForCrash()
-    await stepNo
-    await page.playPause()
-
-    const final = page.waitForStep(stepTotal)
-
-    await page.playPause()
-    await final
-    await page.playPause()
-
-    await page.waitForStep(10)
-    await page.checkForCrash()
-
-}
 
 
 describe('Launch', function () {
@@ -223,7 +231,7 @@ describe('Launch', function () {
         await page.checkForCrash()
     })
     it('Normal flow', async () => {
-        await normalFlow(true)
+        await page.normalFlow(true)
     })
     describe('TwoSum', () => {
         it('->', async () => {
@@ -242,7 +250,7 @@ describe('Launch', function () {
            `
             )
 
-            await normalFlow(false)
+            await page.normalFlow(false)
         })
     })
     describe('Fibonacci', () => {
@@ -259,7 +267,7 @@ describe('Launch', function () {
             getNthFib(10)
            `
             )
-            await normalFlow(false)
+            await page.normalFlow(false)
         })
     })
     describe('BST', () => {
@@ -306,7 +314,7 @@ describe('Launch', function () {
                 displayKey: 'value',
                 numChildren: 2
             })
-            await normalFlow(false)
+            await page.normalFlow(false)
         })
     })
 
@@ -341,9 +349,111 @@ describe('Launch', function () {
             riverSizes(matrix, rivers)`
             )
 
-            await normalFlow(false)
+            await page.normalFlow(false)
         })
     })
+    describe('Weird stuff', () => {
+        it('->', async () => {
+            await page.submitCode(
+                `const arr = [1,2,3];
+                 arr[10] = 100
+                 arr.length = 5
+                
+                `
+            )
+
+            await page.normalFlow(false, -2)
+        })
+    })
+    describe('Tree Children reassignment', () => {
+        it('->', async () => {
+            await page.submitCode(
+                `class Tree{
+                    constructor(name){
+                        this.name = name
+                        this.children = []
+                    }
+                    add(name){
+                        this.children.push(new Tree(name))
+                        return this
+                    }
+                }
+                const tree = new Tree('A');
+                tree.add('B').add('C').add('D');
+                const ch = tree.children;
+                tree.children = [];
+                tree.add('E').add('F');
+                const tree2 = new Tree('G'); 
+                tree2.children = ch;
+                [tree.children, tree2.children] = [tree2.children, tree.children];
+                `
+            )
+            await page.defineDS({
+                name: 'Tree',
+                children: [{
+                    name: 'children',
+                    type: 'multiple'
+                }],
+                pointers: [],
+                displayKey: 'name',
+                numChildren: 0
+            })
+            await page.normalFlow(false, 5)
+        })
+    })
+    describe('Big linked list', () => {
+        it('->', async () => {
+            await page.submitCode(
+                `const list = Viz.SLL.create(Viz.array.sortedInts(18, false));
+
+                let current = list;
+
+                while(current.next){
+                    current.value
+                    current = current.next
+                }
+
+                current.next = list;
+                
+                for (let i = 0; i < 18; i++){
+                    current = current.next;
+                }
+
+                `
+            )
+
+            await page.normalFlow(false, 5)
+        })
+    })
+    describe('Binary Tree invert & BFS', () => {
+        it('->', async () => {
+            await page.submitCode(
+                `
+                const tree = Viz.BTree.create(Viz.array.sortedInts(31, false), 'binary');
+
+function invert(tree) {
+    if (tree) [tree.left, tree.right] = [invert(tree.right), invert(tree.left)];
+    return tree;
+}
+invert(tree);
+
+    const queue = new Viz.Queue([tree]);
+    const vals = [];
+
+    while(queue.length){
+        const {left, right, value} = queue.shift();
+        vals.push(value);
+        if(left) queue.push(left);
+        if(right) queue.push(right);
+    }
+
+                `
+            )
+
+            await page.normalFlow(false, 5)
+        })
+    })
+
 
 
 
