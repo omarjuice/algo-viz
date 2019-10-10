@@ -32,8 +32,10 @@ const StepView: React.FC = observer(() => {
 
             }
             {' '}
-            <span style={style}>{index}/{store.viz.steps.length - 1}:</span>
-            <span style={style}>{step.type}</span>
+            <span className='step-number' style={style}>{index}</span>
+            /
+            <span className='step-total' style={style}>{store.viz.steps.length - 1}</span>
+            <span className='step-type' style={style}>:{step.type}</span>
             {' '}
             {!error && !(errorExists && index === store.viz.steps.length - 1) ? (
                 <div style={style}>

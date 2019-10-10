@@ -79,7 +79,7 @@ class DraggableList extends React.Component<Props> {
                                             )} className="columns is-paddingless draggable-item list-item has-background-gray">
                                             <div className="column is-paddingless">
                                                 <div className="select is-small">
-                                                    <select onChange={this.props.isConfigurable ? (e) => this.props.changeType(item.key, e.target.value as childType) : undefined}
+                                                    <select id={`${item.key}-select`} onChange={this.props.isConfigurable ? (e) => this.props.changeType(item.key, e.target.value as childType) : undefined}
                                                         value={item.isMultiple ? 'multiple' : 'single'}>
                                                         <option value={'single'}>single</option>
                                                         <option value={'multiple'}>multiple</option>

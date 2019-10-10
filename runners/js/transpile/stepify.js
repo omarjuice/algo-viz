@@ -18,10 +18,12 @@ module.exports = function (input) {
 
 
 
+
         return {
             visitor: {
                 Program: {
                     enter(path, { file: { code: original }, opts }) {
+
                         Node = path.node.constructor
                         code = original
                         input.references = { ...input.references, ...path.scope.references }

@@ -370,5 +370,10 @@ module.exports = {
     }
         const array = [20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]
         mergeSort(array, 0, array.length - 1)
+    `,
+        parenthesized: `
+    const arr  = parseInt('5');
+
+    (1+1)
     `
 }

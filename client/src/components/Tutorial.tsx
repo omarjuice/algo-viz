@@ -402,7 +402,7 @@ class Tutorial extends Component {
                 <div>
                    Here are some things to be aware of:
                     <br/>
-                   1. <b>Typed Arrays</b> are not supported.
+                   1. <b>Typed Arrays, WeakMaps, and WeakSets</b> are not supported.
                    <br/>
                    2. <b>Getters and setters</b> will be invoked from outside of your code 
                    <br/>
@@ -412,7 +412,6 @@ class Tutorial extends Component {
                     <br/>
                     4. <b>Asynchronous APIs</b> (setImmediate, setTimeout, etc.) are unavailable.
                     <br/>
-                    5. <b>Class extension</b> is not currently supported but will be in the future.
                 </div>
             </div>
         ),

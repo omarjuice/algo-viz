@@ -286,18 +286,12 @@ class Settings {
 
 
 
-        }
 
-        for (const name in structInfo) {
-            this.structSettings[name] = {
-                ...structInfo[name],
-                pointers: {
-                    ...(this.structSettings[name] || { pointers: {} }).pointers,
-                    ...structInfo[name].pointers
-                }
-            }
+
+
         }
         const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
+
 
         for (const [t, defaultColor] of unconfigurables) {
             this.structSettings[t] = {
@@ -305,10 +299,23 @@ class Settings {
                 main: 'value',
                 numChildren: null,
                 pointers: {},
-                color: t in this.structSettings ? this.structSettings[t].color : defaultColor,
+                color: t in this.structSettings && this.structSettings[t].color ? this.structSettings[t].color : defaultColor,
                 textColor: this.configColors["Primary Background"]
             }
         }
+
+        for (const name in structInfo) {
+            this.structSettings[name] = {
+                ...structInfo[name],
+                color: name in this.structSettings ? this.structSettings[name].color : structInfo[name].color,
+                textColor: name in this.structSettings ? this.structSettings[name].textColor : structInfo[name].textColor,
+                pointers: {
+                    ...(this.structSettings[name] || { pointers: {} }).pointers,
+                    ...structInfo[name].pointers
+                }
+            }
+        }
+
 
         this.root = store
 

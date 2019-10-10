@@ -11,3 +11,5 @@ runners/volume
 builtins
 
 /runner
+
+/client/public/fetch.js

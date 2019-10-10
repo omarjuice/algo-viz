@@ -11,7 +11,7 @@
     "install-all": "npm install --prefix client && npm install --prefix server && npm install --prefix runners/js/builtins",
     "postinstall": "npm run install-all && npm run compile --prefix runners/js/builtins && npm run build-client && npm run build-containers",
     "build-containers": "docker build -t exec-js runners/js && docker system prune -f",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run dev && npm test --prefix tests",
     "start": "export DATA_VERSION=$npm_package_dataVersion && npm start --prefix server"
   },
   "engines": {
