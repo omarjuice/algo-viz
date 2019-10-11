@@ -1,28 +1,58 @@
 import ast
+import asttokens
 
 
-def exec(code):
+def transform(code):
+
+    # tok = asttokens.LineNumbers(code).
+
+    tokens = asttokens.ASTTokens(code)
     tree = ast.parse(code,  mode="exec")
-    transformer = Transformer(tree)
+    tokens.mark_tokens(tree)
+
+    transformer = Transformer(tree, tokens)
     transformed = transformer.visit(tree)
     return tree
 
 
-class Transformer(ast.NodeTransformer):
-    def __init__(self, tree):
-        self.scopes = Scopes(tree)
+def obj_to_node(obj):
+    if isinstance(obj, str):
+        return ast.Str(obj)
+    if isinstance(obj, (int, float, complex)):
+        return ast.Num(obj)
+    if isinstance(obj, (tuple, list)):
+        return ast.Tuple(
+            elts=[obj_to_node(el) for el in obj]
+        )
+    if obj == None:
+        return ast.Name('None')
+    if isinstance(obj, dict):
+        dict_keys = []
+        dict_values = []
+        for key, value in obj.items():
+            dict_keys.append(ast.Str(key))
+            dict_values.append(obj_to_node(value))
+        return ast.Dict(
+            keys=dict_keys,
+            values=dict_values
+        )
 
-    def proxy(self, node, expr=False):
-        scope, parent = self.scopes.get_scope(node)
+
+class Transformer(ast.NodeTransformer):
+    def __init__(self, tree: ast.Module, tokens: asttokens.ASTTokens):
+        self.scopes = Scopes(tree)
+        self.tokens = tokens
+
+    def proxy(self, node, details, expr=False):
+        details['scope'] = self.scopes.get_scope(node)
+        details['name'] = self.tokens.get_text_range(node)
+        details = obj_to_node(details)
+
         call_node = ast.Call(
             func=ast.Name(id='_WRAPPER', ctx=ast.Load()),
             args=[
-                node, ast.Tuple(
-                    elts=[
-                        ast.Num(scope),
-                        ast.Num(parent)
-                    ]
-                )
+                node,
+                details
             ],
             keywords=[]
         )
@@ -41,29 +71,33 @@ class Transformer(ast.NodeTransformer):
     def visit_Call(self, node):
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node, False), node
+            self.proxy(node, {}), node
         )
 
     def visit_BinOp(self, node):
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node), node
+            self.proxy(node, {}), node
         )
 
     def visit_Compare(self, node):
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node), node
+            self.proxy(node, {}), node
         )
 
     def visit_IfExp(self, node):
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node), node
+            self.proxy(node, {}), node
         )
 
     def visit_FunctionDef(self, node):
         self.scopes.add_scope(node)
+        self.generic_visit(node)
+        return node
+
+    def visit_Dict(self, node):
         self.generic_visit(node)
         return node
 
