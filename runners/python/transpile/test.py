@@ -39,21 +39,36 @@ k = (1,2)
     'ops': '''
 z = a + b + (c if g > 5 else 10)
 ''',
-    'obj': '''
+    'loop': '''
+
 obj = {
     'a': 1,
     'b': (1,2),
     'c': 'string'
 }
 
-    '''
+arr = [(a,b) for a,b in obj.items()]
+
+
+    ''',
+    'assignments': '''
+
+def g():
+    a = 1
+    b,c = 2,6
+
+    a = b = 10
+    (a,b) = [3,4]
+
+g()
+'''
 }
 
 
-transpiled = unparse(transform(
-    funcs['friends']
+code = funcs['assignments']
 
-))
+
+transpiled = unparse(transform(code))
 
 
 open('transpiled.py', "w+").write(transpiled)
@@ -63,7 +78,7 @@ def _WRAPPER(val, info):
 
     start, end = info['name']
 
-    print(info['type'], ':', funcs['friends'][start:end])
+    print(info['type'], ':', code[start:end])
     print('>>>', val)
     return val
 

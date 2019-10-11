@@ -37,17 +37,42 @@ def obj_to_node(obj):
         )
 
 
+def is_proxy(node):
+    if hasattr(node, 'func') and hasattr(node.func, 'id') and node.func.id == '_WRAPPER':
+        return True
+    else:
+        return False
+
+
 class Transformer(ast.NodeTransformer):
     def __init__(self, tree: ast.Module, tokens: asttokens.ASTTokens):
         self.scopes = Scopes(tree)
         self.tokens = tokens
+        self.insertions = []
 
         for t in expression_types:
-            setattr(self, 'visit_' + t, self.visit_expr)
+            key = 'visit_' + t
+            setattr(self, key, self.visit_expr)
+
+        for t in ['Tuple', 'List']:
+            key = 'visit_' + t
+            setattr(self, key, self.visit_list_or_tuple)
+
+    def get_assignment_details(self, name):
+        return {
+            'scope': self.scopes.get_scope(name),
+            'name': self.tokens.get_text_range(name),
+            'type': self.scopes.add_identifier(name),
+            'varName': name.id,
+            'block': False
+        }
 
     def proxy(self, node, details, expr=False):
-        details['scope'] = self.scopes.get_scope(node)
-        details['name'] = self.tokens.get_text_range(node)
+
+        if not 'scope' in details:
+            details['scope'] = self.scopes.get_scope(node)
+        if not 'name' in details:
+            details['name'] = self.tokens.get_text_range(node)
         details = obj_to_node(details)
 
         call_node = ast.Call(
@@ -78,23 +103,23 @@ class Transformer(ast.NodeTransformer):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
 
-    def visit_Tuple(self, node):
+    def visit_list_or_tuple(self, node):
         parent = self.scopes.parents[node]
         if isinstance(parent, ast.Assign) and node in parent.targets:
             self.generic_visit(node)
             return node
-        else:
-            return self.visit_expr(node)
-
-    def visit_List(self, node):
-        parent = self.scopes.parents[node]
-        if isinstance(parent, ast.Assign) and node in parent.targets:
+        elif isinstance(parent, ast.For) and node == parent.target:
+            self.generic_visit(node)
+            return node
+        elif isinstance(parent, ast.comprehension) and node == parent.target:
             self.generic_visit(node)
             return node
         else:
             return self.visit_expr(node)
 
     def visit_Call(self, node):
+        if is_proxy(node):
+            return node
         self.generic_visit(node)
         return ast.copy_location(
             self.proxy(node, {
@@ -102,11 +127,27 @@ class Transformer(ast.NodeTransformer):
             }), node
         )
 
-    def visit_BinOp(self, node):
+    def visit_Assign(self, node):
         self.generic_visit(node)
-        return ast.copy_location(
-            self.proxy(node, {}), node
-        )
+        assignments = []
+        for target in reversed(node.targets):
+            if isinstance(target, ast.Name):
+                assignments.append(target)
+            elif isinstance(target, ast.Tuple):
+                for tar in target.elts:
+                    if isinstance(tar, ast.Name):
+                        assignments.append(tar)
+        parent = self.scopes.parents[node]
+        idx = parent.body.index(node)
+        for name in reversed(assignments):
+            new_name = ast.Name(id=name.id, ctx=ast.Load())
+            new_node = self.proxy(
+                new_name,
+                self.get_assignment_details(name),
+                expr=True
+            )
+            parent.body.insert(idx + 1, new_node)
+        return node
 
     def visit_FunctionDef(self, node):
         self.scopes.add_scope(node)
@@ -123,6 +164,7 @@ class Scopes:
         self.next_scope = 1
         self.scope_chain[0] = Scope(None)
         self.scope_map[tree] = 0
+        self.identifiers = set()
 
         for node in tree.body:
             self.parents[node] = tree
@@ -144,17 +186,27 @@ class Scopes:
     def get_scope(self, node):
         if node not in self.scope_map:
             self.scope_map[node] = self.get_scope(self.parents[node])[0]
-
         scope = self.scope_map[node]
         parent = self.scope_chain[scope].parent
 
         return (scope, parent)
+
+    def add_identifier(self, node):
+        scope_id = self.get_scope(node)[0]
+        scope = self.scope_chain[scope_id]
+
+        if node.id not in scope.identifiers:
+            scope.identifiers.add(node.id)
+            return TYPES.DECLARATION
+        else:
+            return TYPES.ASSIGNMENT
 
 
 class Scope:
     def __init__(self, parent):
         self.parent = parent
         self.children = set()
+        self.identifiers = set()
 
     def add_child(self, child):
         self.children.add(child)
