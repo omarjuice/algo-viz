@@ -8,7 +8,6 @@ def transform(code):
     tokens = asttokens.ASTTokens(code)
     tree = ast.parse(code,  mode="exec")
     tokens.mark_tokens(tree)
-
     transformer = Transformer(tree, tokens)
     transformed = transformer.visit(tree)
     return tree
@@ -35,6 +34,17 @@ def obj_to_node(obj):
             keys=dict_keys,
             values=dict_values
         )
+
+
+def flat_map_assignments(targets, depth=0):
+    assignments = []
+    for target in (reversed(targets) if depth == 0 else targets):
+        if isinstance(target, ast.Name):
+            assignments.append(target)
+        elif isinstance(target, (ast.Tuple, ast.List)):
+            for name in flat_map_assignments(target.elts, depth=depth+1):
+                assignments.append(name)
+    return (assignments)
 
 
 def is_proxy(node):
@@ -103,19 +113,25 @@ class Transformer(ast.NodeTransformer):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
 
-    def visit_list_or_tuple(self, node):
+    def should_proxy_list_or_tuple(self, node):
         parent = self.scopes.parents[node]
         if isinstance(parent, ast.Assign) and node in parent.targets:
-            self.generic_visit(node)
-            return node
+            return False
         elif isinstance(parent, ast.For) and node == parent.target:
-            self.generic_visit(node)
-            return node
+            return False
         elif isinstance(parent, ast.comprehension) and node == parent.target:
+            return False
+        elif isinstance(parent, (ast.List, ast.Tuple)):
+            return self.should_proxy_list_or_tuple(parent)
+        else:
+            return True
+
+    def visit_list_or_tuple(self, node):
+        if self.should_proxy_list_or_tuple(node):
+            return self.visit_expr(node)
+        else:
             self.generic_visit(node)
             return node
-        else:
-            return self.visit_expr(node)
 
     def visit_Call(self, node):
         if is_proxy(node):
@@ -129,14 +145,8 @@ class Transformer(ast.NodeTransformer):
 
     def visit_Assign(self, node):
         self.generic_visit(node)
-        assignments = []
-        for target in reversed(node.targets):
-            if isinstance(target, ast.Name):
-                assignments.append(target)
-            elif isinstance(target, ast.Tuple):
-                for tar in target.elts:
-                    if isinstance(tar, ast.Name):
-                        assignments.append(tar)
+        assignments = flat_map_assignments(node.targets)
+
         parent = self.scopes.parents[node]
         idx = parent.body.index(node)
         for name in reversed(assignments):
@@ -147,6 +157,19 @@ class Transformer(ast.NodeTransformer):
                 expr=True
             )
             parent.body.insert(idx + 1, new_node)
+        return node
+
+    def visit_For(self, node):
+        self.generic_visit(node)
+        assignments = flat_map_assignments([node.target])
+        for name in reversed(assignments):
+            new_name = ast.Name(id=name.id, ctx=ast.Load())
+            new_node = self.proxy(
+                new_name,
+                self.get_assignment_details(name),
+                expr=True
+            )
+            node.body.insert(0, new_node)
         return node
 
     def visit_FunctionDef(self, node):

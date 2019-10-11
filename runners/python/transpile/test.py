@@ -41,13 +41,8 @@ z = a + b + (c if g > 5 else 10)
 ''',
     'loop': '''
 
-obj = {
-    'a': 1,
-    'b': (1,2),
-    'c': 'string'
-}
-
-arr = [(a,b) for a,b in obj.items()]
+for a,b, (c,d) in [[1,2, [3,4]]]:
+    a + b + c + d
 
 
     ''',
@@ -55,17 +50,19 @@ arr = [(a,b) for a,b in obj.items()]
 
 def g():
     a = 1
-    b,c = 2,6
+    b = 6
 
     a = b = 10
-    (a,b) = [3,4]
+
+    (a,b,(c,d)) = [1,2,[3,4]]
+
 
 g()
 '''
 }
 
 
-code = funcs['assignments']
+code = funcs['loop']
 
 
 transpiled = unparse(transform(code))
