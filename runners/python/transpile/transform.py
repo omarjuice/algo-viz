@@ -1,10 +1,9 @@
 import ast
 import asttokens
+from proxy_types import TYPES, expression_types
 
 
 def transform(code):
-
-    # tok = asttokens.LineNumbers(code).
 
     tokens = asttokens.ASTTokens(code)
     tree = ast.parse(code,  mode="exec")
@@ -43,6 +42,9 @@ class Transformer(ast.NodeTransformer):
         self.scopes = Scopes(tree)
         self.tokens = tokens
 
+        for t in expression_types:
+            setattr(self, 'visit_' + t, self.visit_expr)
+
     def proxy(self, node, details, expr=False):
         details['scope'] = self.scopes.get_scope(node)
         details['name'] = self.tokens.get_text_range(node)
@@ -63,15 +65,41 @@ class Transformer(ast.NodeTransformer):
         else:
             return call_node
 
+    def visit_expr(self, node):
+        self.generic_visit(node)
+        return ast.copy_location(
+            self.proxy(node, {
+                'type': TYPES.EXPRESSION
+            }), node
+        )
+
     def generic_visit(self, node):
         for child in ast.iter_child_nodes(node):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
 
+    def visit_Tuple(self, node):
+        parent = self.scopes.parents[node]
+        if isinstance(parent, ast.Assign) and node in parent.targets:
+            self.generic_visit(node)
+            return node
+        else:
+            return self.visit_expr(node)
+
+    def visit_List(self, node):
+        parent = self.scopes.parents[node]
+        if isinstance(parent, ast.Assign) and node in parent.targets:
+            self.generic_visit(node)
+            return node
+        else:
+            return self.visit_expr(node)
+
     def visit_Call(self, node):
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node, {}), node
+            self.proxy(node, {
+                'type': TYPES.CALL
+            }), node
         )
 
     def visit_BinOp(self, node):
@@ -80,24 +108,8 @@ class Transformer(ast.NodeTransformer):
             self.proxy(node, {}), node
         )
 
-    def visit_Compare(self, node):
-        self.generic_visit(node)
-        return ast.copy_location(
-            self.proxy(node, {}), node
-        )
-
-    def visit_IfExp(self, node):
-        self.generic_visit(node)
-        return ast.copy_location(
-            self.proxy(node, {}), node
-        )
-
     def visit_FunctionDef(self, node):
         self.scopes.add_scope(node)
-        self.generic_visit(node)
-        return node
-
-    def visit_Dict(self, node):
         self.generic_visit(node)
         return node
 

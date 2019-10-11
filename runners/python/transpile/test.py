@@ -31,6 +31,9 @@ class Solution:
 
 Solution().findCircleNum([[1,1],[1,1]])
 
+k = (1,2)
+[j,k] = 3,4
+
     ''',
 
     'ops': '''
@@ -60,7 +63,7 @@ def _WRAPPER(val, info):
 
     start, end = info['name']
 
-    print(funcs['friends'][start:end])
+    print(info['type'], ':', funcs['friends'][start:end])
     print('>>>', val)
     return val
 
