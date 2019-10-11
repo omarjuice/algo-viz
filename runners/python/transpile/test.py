@@ -1,4 +1,4 @@
-from main import transform
+from transform import exec
 from astunparse import unparse
 
 
@@ -36,8 +36,9 @@ z = a + b + (c if g > 5 else 10)
 }
 
 
-transpiled = unparse(transform(
-    funcs['ops']
+transpiled = unparse(exec(
+    funcs['friends']
 ))
+
 
 open('transpiled.py', "w+").write(transpiled)
