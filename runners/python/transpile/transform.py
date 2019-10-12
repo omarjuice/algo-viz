@@ -3,6 +3,7 @@ import asttokens
 from random import choice
 import string
 from proxy_types import TYPES, expression_types
+from astunparse import unparse
 
 
 def transform(code):
@@ -66,7 +67,7 @@ class Transformer(ast.NodeTransformer):
         self.scopes = Scopes(tree)
         self.tokens = tokens
         self.insertions = []
-
+        self.tree = tree
         for t in expression_types:
             key = 'visit_' + t
             setattr(self, key, self.visit_expr)
@@ -254,6 +255,7 @@ class Transformer(ast.NodeTransformer):
 
         for new_node in new_nodes:
             node.body.insert(0, new_node)
+
         node.body.insert(0, self.proxy(
             ast.NameConstant(value=None),
             {
@@ -272,7 +274,6 @@ class Transformer(ast.NodeTransformer):
                     'funcName': node.name,
                     'funcID': getattr(node, 'funcID'),
                     'scope': self.scopes.get_scope(node),
-
                 },
                 expr=True, is_generated=True))
         return node
@@ -289,6 +290,59 @@ class Transformer(ast.NodeTransformer):
                              },
                              expr=True, is_generated=True)
                          )
+        return node
+
+    def visit_Lambda(self, node):
+        self.scopes.add_scope(node)
+        scope = self.scopes.get_scope(node)
+        self.generic_visit(node)
+        funcID = create_id(4, 1)
+        args = []
+        for argument in node.args.args:
+            args.append(argument)
+
+        if node.args.vararg:
+            args.append(node.args.vararg)
+
+        body = [self.proxy(
+            ast.NameConstant(value=None),
+            {
+                'type': TYPES.FUNC,
+                'funcName': funcID,
+                'funcID': funcID,
+                'scope': scope,
+            },
+            expr=True, is_generated=True)]
+
+        for name in args:
+            new_name = ast.Name(id=name.arg, ctx=ast.Load())
+            new_node = self.proxy(
+                new_name,
+                {
+                    'scope': scope,
+                    'name': self.tokens.get_text_range(name),
+                    'type': self.scopes.add_identifier(name, scope[1]),
+                    'varName': name.arg,
+                    'block': False
+                },
+            )
+            body.append(new_node)
+
+        body.append(self.proxy(
+            node.body, {
+                'type': TYPES.RETURN,
+                'funcName': funcID,
+                'funcID': funcID,
+                'scope': scope
+            }
+        ))
+        body = ast.List(elts=body)
+
+        subscript = ast.Subscript()
+        subscript.value = body
+        subscript.slice = ast.Index(value=ast.Num(-1))
+
+        node.body = subscript
         return node
 
     def visit_Return(self, node):
