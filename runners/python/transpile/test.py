@@ -73,7 +73,10 @@ class S:
         1 + 1
 ''',
     'generator': '''
-a = {i:i for i in range(5)}
+(a): int = 1
+
+a += 1+1
+# b = f"sin({a})"
 '''
 }
 

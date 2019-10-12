@@ -78,7 +78,6 @@ class Transformer(ast.NodeTransformer):
             'type': TYPES.PROGRAM,
             'scope': self.scopes.get_scope(tree)
         }))
-        print(ast.dump(tree))
 
     def get_assignment_details(self, name):
         return {
@@ -147,6 +146,12 @@ class Transformer(ast.NodeTransformer):
             self.generic_visit(node)
             return node
 
+    def visit_UnaryOp(self, node):
+        if isinstance(node.op, (ast.Not, ast.Invert)):
+            return self.visit_expr(node)
+        else:
+            return node
+
     def visit_Call(self, node):
         if is_proxy(node):
             return node
@@ -173,6 +178,37 @@ class Transformer(ast.NodeTransformer):
             parent.body.insert(idx + 1, new_node)
         return node
 
+    def visit_AnnAssign(self, node):
+        self.generic_visit(node)
+        if isinstance(node.target, ast.Name):
+            parent = self.scopes.parents[node]
+            idx = parent.body.index(node)
+            new_name = ast.Name(id=node.target.id, ctx=ast.Load())
+            new_node = self.proxy(
+                new_name,
+                self.get_assignment_details(node.target),
+                expr=True
+            )
+            parent.body.insert(idx + 1, new_node)
+        return node
+
+    def visit_AugAssign(self, node):
+        self.generic_visit(node)
+        if isinstance(node.target, ast.Name):
+            parent = self.scopes.parents[node]
+            idx = parent.body.index(node)
+            new_name = ast.Name(id=node.target.id, ctx=ast.Load())
+
+            details = self.get_assignment_details(node.target)
+            details['type'] = TYPES.ASSIGNMENT
+            new_node = self.proxy(
+                new_name,
+                details,
+                expr=True
+            )
+            parent.body.insert(idx + 1, new_node)
+        return node
+
     def visit_For(self, node):
         self.generic_visit(node)
         assignments = flat_map_assignments([node.target])
@@ -187,7 +223,6 @@ class Transformer(ast.NodeTransformer):
         return node
 
     def visit_FunctionDef(self, node):
-
         self.scopes.add_scope(node)
         scope = self.scopes.get_scope(node)
         args = []

@@ -25,6 +25,6 @@ TYPES = ProxyTypes()
 
 
 expression_types = [
-    'Set', 'Dict', 'Not', 'Invert', 'BinOp',
-    'BoolOp', 'Compare', 'IfExp'
+    'Set', 'Dict', 'Invert', 'BinOp',
+    'BoolOp', 'Compare', 'IfExp', 'Bytes', 'JoinedStr'
 ]
