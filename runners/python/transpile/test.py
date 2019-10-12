@@ -58,11 +58,18 @@ def g():
 
 
 g()
+''',
+    'func': '''
+class K:
+    def func(self,a,b,c=5,*d):
+        self = 5
+        return self
+K().func(1,2,3,4,5,6)
 '''
 }
 
 
-code = funcs['loop']
+code = funcs['func']
 
 
 transpiled = unparse(transform(code))
@@ -73,9 +80,9 @@ open('transpiled.py', "w+").write(transpiled)
 
 def _WRAPPER(val, info):
 
-    start, end = info['name']
+    start, end = info.get('name', (0, 0))
 
-    print(info['type'], ':', code[start:end])
+    print(info['type'], ':', code[start:end] or info['funcName'])
     print('>>>', val)
     return val
 

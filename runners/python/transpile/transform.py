@@ -1,5 +1,7 @@
 import ast
 import asttokens
+from random import choice
+import string
 from proxy_types import TYPES, expression_types
 
 
@@ -11,6 +13,11 @@ def transform(code):
     transformer = Transformer(tree, tokens)
     transformed = transformer.visit(tree)
     return tree
+
+
+def create_id(l=3, num_=1):
+    lettersAndDigits = string.ascii_letters + string.digits
+    return ''.join('_' for i in range(num_)) + ''.join(choice(lettersAndDigits) for i in range(l))
 
 
 def obj_to_node(obj):
@@ -77,12 +84,14 @@ class Transformer(ast.NodeTransformer):
             'block': False
         }
 
-    def proxy(self, node, details, expr=False):
+    def proxy(self, node, details, expr=False, is_generated=False):
 
-        if not 'scope' in details:
-            details['scope'] = self.scopes.get_scope(node)
-        if not 'name' in details:
-            details['name'] = self.tokens.get_text_range(node)
+        if not is_generated:
+            if not 'scope' in details:
+                details['scope'] = self.scopes.get_scope(node)
+            if not 'name' in details:
+                details['name'] = self.tokens.get_text_range(node)
+
         details = obj_to_node(details)
 
         call_node = ast.Call(
@@ -173,8 +182,83 @@ class Transformer(ast.NodeTransformer):
         return node
 
     def visit_FunctionDef(self, node):
+
+        self.scopes.add_scope(node)
+        scope = self.scopes.get_scope(node)
+        args = []
+        for argument in node.args.args:
+            args.append(argument)
+
+        if node.args.vararg:
+            args.append(node.args.vararg)
+
+        setattr(node, 'funcID',  create_id(4, 1))
+
+        new_nodes = []
+        for name in reversed(args):
+            new_name = ast.Name(id=name.arg, ctx=ast.Load())
+            new_node = self.proxy(
+                new_name,
+                {
+                    'scope': scope,
+                    'name': self.tokens.get_text_range(name),
+                    'type': self.scopes.add_identifier(name, scope[0]),
+                    'varName': name.arg,
+                    'block': False
+                },
+                expr=True
+            )
+            new_nodes.append(new_node)
+
+        self.generic_visit(node)
+
+        for new_node in new_nodes:
+            node.body.insert(0, new_node)
+
+        node.body.insert(0, self.proxy(
+            ast.Name(id="None", ctx=ast.Load),
+            {
+                'type': TYPES.FUNC,
+                'funcName': node.name,
+                'funcID': getattr(node, 'funcID'),
+                'scope': self.scopes.get_scope(node),
+
+            },
+            expr=True, is_generated=True))
+        if node.body and not isinstance(node.body[-1], ast.Return):
+            node.body.append(self.proxy(
+                ast.Name(id="None", ctx=ast.Load),
+                {
+                    'type': TYPES.RETURN,
+                    'funcName': node.name,
+                    'funcID': getattr(node, 'funcID'),
+                    'scope': self.scopes.get_scope(node),
+
+                },
+                expr=True, is_generated=True))
+        return node
+
+    def visit_ClassDef(self, node):
         self.scopes.add_scope(node)
         self.generic_visit(node)
+        return(node)
+
+    def visit_Return(self, node):
+        self.generic_visit(node)
+        parent = node
+        while not isinstance(parent, ast.FunctionDef):
+            parent = self.scopes.parents[parent]
+
+        funcID = getattr(parent, 'funcID')
+        funcName = parent.name
+
+        node.value = self.proxy(node.value or ast.Name("None"), {
+            'type': TYPES.RETURN,
+            'funcName': funcName,
+            'funcID': funcID,
+            'scope': self.scopes.get_scope(parent)
+        })
+
         return node
 
 
@@ -214,12 +298,16 @@ class Scopes:
 
         return (scope, parent)
 
-    def add_identifier(self, node):
-        scope_id = self.get_scope(node)[0]
+    def add_identifier(self, node, scope_id=None):
+        if scope_id == None:
+            scope_id = self.get_scope(node)[0]
         scope = self.scope_chain[scope_id]
-
-        if node.id not in scope.identifiers:
-            scope.identifiers.add(node.id)
+        if isinstance(node, ast.arg):
+            name = node.arg
+        else:
+            name = node.id
+        if name not in scope.identifiers:
+            scope.identifiers.add(name)
             return TYPES.DECLARATION
         else:
             return TYPES.ASSIGNMENT
