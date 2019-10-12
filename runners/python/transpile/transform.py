@@ -74,6 +74,11 @@ class Transformer(ast.NodeTransformer):
         for t in ['Tuple', 'List']:
             key = 'visit_' + t
             setattr(self, key, self.visit_list_or_tuple)
+        tree.body.insert(0, self.proxy(ast.NameConstant(value=None), {
+            'type': TYPES.PROGRAM,
+            'scope': self.scopes.get_scope(tree)
+        }))
+        print(ast.dump(tree))
 
     def get_assignment_details(self, name):
         return {
@@ -202,7 +207,7 @@ class Transformer(ast.NodeTransformer):
                 {
                     'scope': scope,
                     'name': self.tokens.get_text_range(name),
-                    'type': self.scopes.add_identifier(name, scope[0]),
+                    'type': self.scopes.add_identifier(name, scope[1]),
                     'varName': name.arg,
                     'block': False
                 },
@@ -214,9 +219,8 @@ class Transformer(ast.NodeTransformer):
 
         for new_node in new_nodes:
             node.body.insert(0, new_node)
-
         node.body.insert(0, self.proxy(
-            ast.Name(id="None", ctx=ast.Load),
+            ast.NameConstant(value=None),
             {
                 'type': TYPES.FUNC,
                 'funcName': node.name,
@@ -227,7 +231,7 @@ class Transformer(ast.NodeTransformer):
             expr=True, is_generated=True))
         if node.body and not isinstance(node.body[-1], ast.Return):
             node.body.append(self.proxy(
-                ast.Name(id="None", ctx=ast.Load),
+                ast.NameConstant(value=None),
                 {
                     'type': TYPES.RETURN,
                     'funcName': node.name,
@@ -241,7 +245,16 @@ class Transformer(ast.NodeTransformer):
     def visit_ClassDef(self, node):
         self.scopes.add_scope(node)
         self.generic_visit(node)
-        return(node)
+        node.body.insert(0,
+                         self.proxy(
+                             ast.NameConstant(value=None),
+                             {
+                                 'type': TYPES.BLOCK,
+                                 'scope': self.scopes.get_scope(node),
+                             },
+                             expr=True, is_generated=True)
+                         )
+        return node
 
     def visit_Return(self, node):
         self.generic_visit(node)
@@ -252,7 +265,7 @@ class Transformer(ast.NodeTransformer):
         funcID = getattr(parent, 'funcID')
         funcName = parent.name
 
-        node.value = self.proxy(node.value or ast.Name("None"), {
+        node.value = self.proxy(node.value or ast.NameConstant(value=None), {
             'type': TYPES.RETURN,
             'funcName': funcName,
             'funcID': funcID,
@@ -292,15 +305,15 @@ class Scopes:
 
     def get_scope(self, node):
         if node not in self.scope_map:
-            self.scope_map[node] = self.get_scope(self.parents[node])[0]
+            self.scope_map[node] = self.get_scope(self.parents[node])[1]
         scope = self.scope_map[node]
         parent = self.scope_chain[scope].parent
 
-        return (scope, parent)
+        return (parent, scope)
 
     def add_identifier(self, node, scope_id=None):
         if scope_id == None:
-            scope_id = self.get_scope(node)[0]
+            scope_id = self.get_scope(node)[1]
         scope = self.scope_chain[scope_id]
         if isinstance(node, ast.arg):
             name = node.arg

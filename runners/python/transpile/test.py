@@ -65,11 +65,20 @@ class K:
         self = 5
         return self
 K().func(1,2,3,4,5,6)
+''',
+    'class': '''
+class S:
+    z = 1
+    def __init__(self):
+        1 + 1
+''',
+    'generator': '''
+a = {i:i for i in range(5)}
 '''
 }
 
 
-code = funcs['func']
+code = funcs['generator']
 
 
 transpiled = unparse(transform(code))
@@ -82,7 +91,7 @@ def _WRAPPER(val, info):
 
     start, end = info.get('name', (0, 0))
 
-    print(info['type'], ':', code[start:end] or info['funcName'])
+    print(info['type'], ':', code[start:end] or info.get('funcName'))
     print('>>>', val)
     return val
 
