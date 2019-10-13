@@ -6,20 +6,16 @@ from proxy_types import TYPES, expression_types
 from astunparse import unparse
 
 
-def transform(code):
-
+def transform(code, input):
     tokens = asttokens.ASTTokens(code)
     tree = ast.parse(code,  mode="exec")
     tokens.mark_tokens(tree)
     transformer = Transformer(tree, tokens)
+    input[0] = transformer.proxy_name
     transformed = transformer.visit(tree)
     ast.fix_missing_locations(tree)
+
     return tree
-
-
-def create_id(l=3, num_=1):
-    lettersAndDigits = string.ascii_letters + string.digits
-    return ''.join('_' for i in range(num_)) + ''.join(choice(lettersAndDigits) for i in range(l))
 
 
 def obj_to_node(obj):
@@ -45,6 +41,10 @@ def obj_to_node(obj):
         )
 
 
+def is_proxy(node):
+    return hasattr(node, '_proxy')
+
+
 def flat_map_assignments(targets, depth=0):
     assignments = []
     for target in (reversed(targets) if depth == 0 else targets):
@@ -56,19 +56,14 @@ def flat_map_assignments(targets, depth=0):
     return (assignments)
 
 
-def is_proxy(node):
-    if hasattr(node, 'func') and hasattr(node.func, 'id') and node.func.id == '_WRAPPER':
-        return True
-    else:
-        return False
-
-
 class Transformer(ast.NodeTransformer):
     def __init__(self, tree: ast.Module, tokens: asttokens.ASTTokens):
         self.scopes = Scopes(tree)
         self.tokens = tokens
         self.insertions = []
         self.tree = tree
+        self.ids = {""}
+        self.proxy_name = self.create_id(5, 1)
         for t in expression_types:
             key = 'visit_' + t
             setattr(self, key, self.visit_expr)
@@ -80,6 +75,17 @@ class Transformer(ast.NodeTransformer):
             'type': TYPES.PROGRAM,
             'scope': self.scopes.get_scope(tree)
         }, expr=True))
+
+    def create_id(self, l=3, num_=1):
+        lettersAndDigits = string.ascii_letters + string.digits
+        id = ""
+
+        while id in self.ids:
+            id = ''.join('_' for i in range(num_)) + \
+                ''.join(choice(lettersAndDigits) for i in range(l))
+
+        self.ids.add(id)
+        return id
 
     def get_assignment_details(self, name):
         return {
@@ -101,17 +107,22 @@ class Transformer(ast.NodeTransformer):
         details = obj_to_node(details)
 
         call_node = ast.Call(
-            func=ast.Name(id='_WRAPPER', ctx=ast.Load()),
+            func=ast.Attribute(value=ast.Name(
+                id=self.proxy_name, ctx=ast.Load()), attr="__", ctx=ast.Load()),
             args=[
                 node,
                 details
             ],
             keywords=[]
         )
+
+        setattr(call_node, '_proxy', True)
         if expr:
-            return ast.Expr(
+            n = ast.Expr(
                 value=call_node
             )
+            setattr(n, '_proxy', True)
+            return n
         else:
             return call_node
 
@@ -234,7 +245,7 @@ class Transformer(ast.NodeTransformer):
         if node.args.vararg:
             args.append(node.args.vararg)
 
-        setattr(node, 'funcID',  create_id(4, 1))
+        setattr(node, 'funcID',  self.create_id(4, 1))
 
         new_nodes = []
         for name in reversed(args):
@@ -297,7 +308,7 @@ class Transformer(ast.NodeTransformer):
         self.scopes.add_scope(node)
         scope = self.scopes.get_scope(node)
         self.generic_visit(node)
-        funcID = create_id(4, 1)
+        funcID = self.create_id(4, 1)
         args = []
         for argument in node.args.args:
             args.append(argument)

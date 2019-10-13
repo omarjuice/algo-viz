@@ -86,55 +86,63 @@ def findRepeatedDnaSequences(s: str):
         seen = {}
         output = []
         for i in range(len(s) - 9):
-            
+
             seq = s[i:i+10]
             if seq in seen and seen[seq] == 1:
                 output.append(seq)
                 seen[seq] += 1
             elif seq not in seen:
                 seen[seq] = 1
-         
-            
+
+
         return output
 findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT")
-'''
+''',
+
 }
+
+
+class TestRunner:
+    def __(self, val, info):
+        assert hasattr(TYPES, info['type'])
+        if info['type'] == TYPES.PROGRAM:
+            assert info['scope'] == (None, 0)
+        else:
+            inst = isinstance(info['scope'], tuple)
+            l = len(info['scope']) == 2
+            assert inst and l
+
+        if info['type'] == TYPES.DECLARATION:
+            assert isinstance(info['block'], bool)
+            assert info['block'] == False
+        if info['type'] == TYPES.ASSIGNMENT:
+            assert isinstance(info['name'], tuple)
+            assert isinstance(info['varName'], str)
+        if info['type'] in [TYPES.FUNC, TYPES.RETURN]:
+            assert isinstance(info['funcName'], str)
+            assert isinstance(info['funcID'], str)
+
+        # start, end = info.get('name', (0, 0))
+        # print(info['type'], ':', code[start:end] or info.get('funcName'))
+        # print('>>>', val)
+
+        return val
 
 
 for name, code in funcs.items():
 
     try:
-        tree = transform(code)
+        input = [""]
+        tree = transform(code, input)
         transpiled = unparse(tree)
+
+        _name = input[0]
 
         open('transpiled.py', "w+").write(transpiled)
 
-        def _WRAPPER(val, info):
-            assert hasattr(TYPES, info['type'])
-            if info['type'] == TYPES.PROGRAM:
-                assert info['scope'] == (None, 0)
-            else:
-                inst = isinstance(info['scope'], tuple)
-                l = len(info['scope']) == 3
-                assert inst and l
+        # globals()[_name] = TestRunner()
 
-            if info['type'] == TYPES.DECLARATION:
-                assert isinstance(info['block'], bool)
-                assert info['block'] == False
-            if info['type'] == TYPES.ASSIGNMENT:
-                assert isinstance(info['name'], tuple)
-                assert isinstance(info['varName'], str)
-            if info['type'] in [TYPES.FUNC, TYPES.RETURN]:
-                assert isinstance(info['funcName'], str)
-                assert isinstance(info['funcID'], str)
-
-            # start, end = info.get('name', (0, 0))
-
-            # print(info['type'], ':', code[start:end] or info.get('funcName'))
-            # print('>>>', val)
-            return val
-
-        exec(transpiled)
+        exec(transpiled, {_name: TestRunner()})
         print(f"✔ {name}")
     except Exception as e:
         print(f"✖ {name} -> {e}")
