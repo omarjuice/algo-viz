@@ -13,6 +13,7 @@ def transform(code):
     tokens.mark_tokens(tree)
     transformer = Transformer(tree, tokens)
     transformed = transformer.visit(tree)
+    ast.fix_missing_locations(tree)
     return tree
 
 
@@ -28,10 +29,10 @@ def obj_to_node(obj):
         return ast.Num(obj)
     if isinstance(obj, (tuple, list)):
         return ast.Tuple(
-            elts=[obj_to_node(el) for el in obj]
+            elts=[obj_to_node(el) for el in obj], ctx=ast.Load()
         )
     if obj == None:
-        return ast.Name('None')
+        return ast.NameConstant(None)
     if isinstance(obj, dict):
         dict_keys = []
         dict_values = []
@@ -78,7 +79,7 @@ class Transformer(ast.NodeTransformer):
         tree.body.insert(0, self.proxy(ast.NameConstant(value=None), {
             'type': TYPES.PROGRAM,
             'scope': self.scopes.get_scope(tree)
-        }))
+        }, expr=True))
 
     def get_assignment_details(self, name):
         return {

@@ -1,6 +1,6 @@
 from transform import transform
 from astunparse import unparse
-
+from proxy_types import TYPES
 
 funcs = {
     'friends': '''
@@ -31,14 +31,10 @@ class Solution:
 
 Solution().findCircleNum([[1,1],[1,1]])
 
-k = (1,2)
-[j,k] = 3,4
 
     ''',
 
-    'ops': '''
-z = a + b + (c if g > 5 else 10)
-''',
+
     'loop': '''
 
 for a,b, (c,d) in [[1,2, [3,4]]]:
@@ -86,22 +82,21 @@ a(1,2,3,4,5,6,7,8,9,10)
 '''
 }
 
-code = funcs['lambda']
 
+for name, code in funcs.items():
 
-transpiled = unparse(transform(code))
+    tree = transform(code)
+    transpiled = unparse(tree)
 
+    open('transpiled.py', "w+").write(transpiled)
 
-open('transpiled.py', "w+").write(transpiled)
+    def _WRAPPER(val, info):
+        if info['type'] == 'PROGRAM':
+            assert info['scope'] == (None, 0)
 
+        # start, end = info.get('name', (0, 0))
 
-def _WRAPPER(val, info):
-
-    start, end = info.get('name', (0, 0))
-
-    print(info['type'], ':', code[start:end] or info.get('funcName'))
-    print('>>>', val)
-    return val
-
-
-exec(transpiled)
+        # print(info['type'], ':', code[start:end] or info.get('funcName'))
+        # print('>>>', val)
+        return val
+    exec(transpiled)
