@@ -5,6 +5,8 @@ import string
 from proxy_types import TYPES, expression_types
 from astunparse import unparse
 
+lettersAndDigits = string.ascii_letters + string.digits
+
 
 def transform(code, input):
     tokens = asttokens.ASTTokens(code)
@@ -77,7 +79,7 @@ class Transformer(ast.NodeTransformer):
         }, expr=True))
 
     def create_id(self, l=3, num_=1):
-        lettersAndDigits = string.ascii_letters + string.digits
+
         id = ""
 
         while id in self.ids:

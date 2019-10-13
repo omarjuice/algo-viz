@@ -99,6 +99,13 @@ def findRepeatedDnaSequences(s: str):
 findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT")
 ''',
 
+    'bad': '''
+import collections
+
+a = dir()
+
+'''
+
 }
 
 
@@ -142,7 +149,7 @@ for name, code in funcs.items():
 
         # globals()[_name] = TestRunner()
 
-        exec(transpiled, {_name: TestRunner()})
+        exec(transpiled, {_name: TestRunner(), 'dir': None, 'open': None}, {})
         print(f"✔ {name}")
     except Exception as e:
         print(f"✖ {name} -> {e}")
