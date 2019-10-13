@@ -1,6 +1,6 @@
 from transpile import transform
 from astunparse import unparse
-from proxy_types import TYPES
+from wrapper_types import TYPES
 
 funcs = {
     'friends': '''

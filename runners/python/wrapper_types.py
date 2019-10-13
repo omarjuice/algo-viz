@@ -1,4 +1,4 @@
-class ProxyTypes:
+class WrapperTypes:
     def __init__(self):
         self.PROGRAM = 'PROGRAM'
 
@@ -21,7 +21,7 @@ class ProxyTypes:
         self.ERROR = 'ERROR'
 
 
-TYPES = ProxyTypes()
+TYPES = WrapperTypes()
 
 
 expression_types = [

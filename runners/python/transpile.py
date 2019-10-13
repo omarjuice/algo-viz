@@ -2,7 +2,7 @@ import ast
 import asttokens
 from random import choice
 import string
-from proxy_types import TYPES, expression_types
+from wrapper_types import TYPES, expression_types
 from astunparse import unparse
 
 lettersAndDigits = string.ascii_letters + string.digits
@@ -13,7 +13,7 @@ def transform(code, input):
     tree = ast.parse(code,  mode="exec")
     tokens.mark_tokens(tree)
     transformer = Transformer(tree, tokens)
-    input[0] = transformer.proxy_name
+    input[0] = transformer.wrapper_name
     transformed = transformer.visit(tree)
     ast.fix_missing_locations(tree)
 
@@ -43,8 +43,8 @@ def obj_to_node(obj):
         )
 
 
-def is_proxy(node):
-    return hasattr(node, '_proxy')
+def is_wrapper(node):
+    return hasattr(node, '_wrapper')
 
 
 def flat_map_assignments(targets, depth=0):
@@ -65,7 +65,7 @@ class Transformer(ast.NodeTransformer):
         self.insertions = []
         self.tree = tree
         self.ids = {""}
-        self.proxy_name = self.create_id(5, 1)
+        self.wrapper_name = self.create_id(5, 1)
         for t in expression_types:
             key = 'visit_' + t
             setattr(self, key, self.visit_expr)
@@ -73,7 +73,7 @@ class Transformer(ast.NodeTransformer):
         for t in ['Tuple', 'List']:
             key = 'visit_' + t
             setattr(self, key, self.visit_list_or_tuple)
-        tree.body.insert(0, self.proxy(ast.NameConstant(value=None), {
+        tree.body.insert(0, self.wrapper(ast.NameConstant(value=None), {
             'type': TYPES.PROGRAM,
             'scope': self.scopes.get_scope(tree)
         }, expr=True))
@@ -98,7 +98,7 @@ class Transformer(ast.NodeTransformer):
             'block': False
         }
 
-    def proxy(self, node, details, expr=False, is_generated=False):
+    def wrapper(self, node, details, expr=False, is_generated=False):
 
         if not is_generated:
             if not 'scope' in details:
@@ -110,7 +110,7 @@ class Transformer(ast.NodeTransformer):
 
         call_node = ast.Call(
             func=ast.Attribute(value=ast.Name(
-                id=self.proxy_name, ctx=ast.Load()), attr="__", ctx=ast.Load()),
+                id=self.wrapper_name, ctx=ast.Load()), attr="__", ctx=ast.Load()),
             args=[
                 node,
                 details
@@ -118,12 +118,12 @@ class Transformer(ast.NodeTransformer):
             keywords=[]
         )
 
-        setattr(call_node, '_proxy', True)
+        setattr(call_node, '_wrapper', True)
         if expr:
             n = ast.Expr(
                 value=call_node
             )
-            setattr(n, '_proxy', True)
+            setattr(n, '_wrapper', True)
             return n
         else:
             return call_node
@@ -131,7 +131,7 @@ class Transformer(ast.NodeTransformer):
     def visit_expr(self, node):
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node, {
+            self.wrapper(node, {
                 'type': TYPES.EXPRESSION
             }), node
         )
@@ -141,7 +141,7 @@ class Transformer(ast.NodeTransformer):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
 
-    def should_proxy_list_or_tuple(self, node):
+    def should_wrapper_list_or_tuple(self, node):
         parent = self.scopes.parents[node]
         if isinstance(parent, ast.Assign) and node in parent.targets:
             return False
@@ -150,12 +150,12 @@ class Transformer(ast.NodeTransformer):
         elif isinstance(parent, ast.comprehension) and node == parent.target:
             return False
         elif isinstance(parent, (ast.List, ast.Tuple)):
-            return self.should_proxy_list_or_tuple(parent)
+            return self.should_wrapper_list_or_tuple(parent)
         else:
             return True
 
     def visit_list_or_tuple(self, node):
-        if self.should_proxy_list_or_tuple(node):
+        if self.should_wrapper_list_or_tuple(node):
             return self.visit_expr(node)
         else:
             self.generic_visit(node)
@@ -168,11 +168,11 @@ class Transformer(ast.NodeTransformer):
             return node
 
     def visit_Call(self, node):
-        if is_proxy(node):
+        if is_wrapper(node):
             return node
         self.generic_visit(node)
         return ast.copy_location(
-            self.proxy(node, {
+            self.wrapper(node, {
                 'type': TYPES.CALL
             }), node
         )
@@ -185,7 +185,7 @@ class Transformer(ast.NodeTransformer):
         idx = parent.body.index(node)
         for name in reversed(assignments):
             new_name = ast.Name(id=name.id, ctx=ast.Load())
-            new_node = self.proxy(
+            new_node = self.wrapper(
                 new_name,
                 self.get_assignment_details(name),
                 expr=True
@@ -199,7 +199,7 @@ class Transformer(ast.NodeTransformer):
             parent = self.scopes.parents[node]
             idx = parent.body.index(node)
             new_name = ast.Name(id=node.target.id, ctx=ast.Load())
-            new_node = self.proxy(
+            new_node = self.wrapper(
                 new_name,
                 self.get_assignment_details(node.target),
                 expr=True
@@ -216,7 +216,7 @@ class Transformer(ast.NodeTransformer):
 
             details = self.get_assignment_details(node.target)
             details['type'] = TYPES.ASSIGNMENT
-            new_node = self.proxy(
+            new_node = self.wrapper(
                 new_name,
                 details,
                 expr=True
@@ -229,7 +229,7 @@ class Transformer(ast.NodeTransformer):
         assignments = flat_map_assignments([node.target])
         for name in reversed(assignments):
             new_name = ast.Name(id=name.id, ctx=ast.Load())
-            new_node = self.proxy(
+            new_node = self.wrapper(
                 new_name,
                 self.get_assignment_details(name),
                 expr=True
@@ -252,7 +252,7 @@ class Transformer(ast.NodeTransformer):
         new_nodes = []
         for name in reversed(args):
             new_name = ast.Name(id=name.arg, ctx=ast.Load())
-            new_node = self.proxy(
+            new_node = self.wrapper(
                 new_name,
                 {
                     'scope': scope,
@@ -270,7 +270,7 @@ class Transformer(ast.NodeTransformer):
         for new_node in new_nodes:
             node.body.insert(0, new_node)
 
-        node.body.insert(0, self.proxy(
+        node.body.insert(0, self.wrapper(
             ast.NameConstant(value=None),
             {
                 'type': TYPES.FUNC,
@@ -281,7 +281,7 @@ class Transformer(ast.NodeTransformer):
             },
             expr=True, is_generated=True))
         if node.body and not isinstance(node.body[-1], ast.Return):
-            node.body.append(self.proxy(
+            node.body.append(self.wrapper(
                 ast.NameConstant(value=None),
                 {
                     'type': TYPES.RETURN,
@@ -296,7 +296,7 @@ class Transformer(ast.NodeTransformer):
         self.scopes.add_scope(node)
         self.generic_visit(node)
         node.body.insert(0,
-                         self.proxy(
+                         self.wrapper(
                              ast.NameConstant(value=None),
                              {
                                  'type': TYPES.BLOCK,
@@ -318,7 +318,7 @@ class Transformer(ast.NodeTransformer):
         if node.args.vararg:
             args.append(node.args.vararg)
 
-        body = [self.proxy(
+        body = [self.wrapper(
             ast.NameConstant(value=None),
             {
                 'type': TYPES.FUNC,
@@ -330,7 +330,7 @@ class Transformer(ast.NodeTransformer):
 
         for name in args:
             new_name = ast.Name(id=name.arg, ctx=ast.Load())
-            new_node = self.proxy(
+            new_node = self.wrapper(
                 new_name,
                 {
                     'scope': scope,
@@ -342,7 +342,7 @@ class Transformer(ast.NodeTransformer):
             )
             body.append(new_node)
 
-        body.append(self.proxy(
+        body.append(self.wrapper(
             node.body, {
                 'type': TYPES.RETURN,
                 'funcName': funcID,
@@ -368,7 +368,7 @@ class Transformer(ast.NodeTransformer):
         funcID = getattr(parent, 'funcID')
         funcName = parent.name
 
-        node.value = self.proxy(node.value or ast.NameConstant(value=None), {
+        node.value = self.wrapper(node.value or ast.NameConstant(value=None), {
             'type': TYPES.RETURN,
             'funcName': funcName,
             'funcID': funcID,

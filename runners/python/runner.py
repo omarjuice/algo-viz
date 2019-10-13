@@ -51,7 +51,8 @@ class Runner:
         return id
 
     def virtualize(self, obj):
-        return obj
+        if obj == self:
+            return None
 
     def stringify(self, obj):
         if (id(obj)) in self.map:
@@ -75,8 +76,6 @@ class Runner:
             if isinstance(obj, dict):
                 copy = {}
                 for key, value in obj.items():
-                    if key[0] == '_':
-                        continue
                     copy[key] = self.stringify(value)
                     obj[key] = self.virtualize(value)
                 self.objects[new_id] = copy
@@ -110,8 +109,6 @@ class Runner:
             else:
                 copy = {}
                 for key, value in obj.__dict__.items():
-                    if key[0] == '_':
-                        continue
                     copy[key] = self.stringify(value)
                     obj.__dict__[key] = self.virtualize(value)
                 self.objects[new_id] = copy
@@ -129,7 +126,9 @@ class Runner:
 #     def __init__(self):
 #         self.name = 'NAME'
 #         self.age = 5
-#         self.employed = False
+#         self.employed = {
+#             'Yesh': False
+#         }
 #         self.func = lambda: 0
 
 #     def get_info(self):
@@ -139,7 +138,7 @@ class Runner:
 # obj = K()
 
 
-# objs = [[1, 2, 3, 4], ('a', 'b'), {'this', 'is', 'a', 'set'}, {
+# objs = [[1, 2, 3, 4, [5, 6]], ('a', 'b'), {'this', 'is', 'a', 'set'}, {
 #     'x': 1, 'y': 2, 'z': 3}, K()]
 
 
