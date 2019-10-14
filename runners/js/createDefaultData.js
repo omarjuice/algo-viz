@@ -31,5 +31,5 @@ const { _name } = input
 const data = execute(_name, transpiled, code)
 
 
-fs.writeFileSync('../../client/src/store/default.json', data)
+fs.writeFileSync('../../client/src/store/default_javascript.json', data)
 

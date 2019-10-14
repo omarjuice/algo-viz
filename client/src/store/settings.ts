@@ -368,13 +368,13 @@ class Settings {
                 configColors: this.configColors,
                 config: this.config,
             }
-            if (this.root.language === 'javascript') {
+            if (lang === 'javascript') {
                 storageSettings.jsStructSettings = this.structSettings
             } else {
                 storageSettings.pyStructSettings = this.structSettings
             }
 
-            window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(this))
+            window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(storageSettings))
         }
     }
 

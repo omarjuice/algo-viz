@@ -25,5 +25,5 @@ TYPES = WrapperTypes()
 
 expression_types = [
     'Set', 'Dict', 'Invert', 'BinOp',
-    'BoolOp', 'Compare', 'IfExp', 'Bytes', 'JoinedStr'
+    'BoolOp', 'Compare', 'IfExp', 'Bytes', 'JoinedStr', 'ListComp', 'SetComp', 'DictComp'
 ]

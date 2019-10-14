@@ -8,7 +8,7 @@ class ColorSettings extends Component {
         active: ''
     }
     skipSet: Set<string> = new Set(
-        ['other']
+
     )
     handleClick = (name: string) => {
         this.setState({ active: this.state.active === name ? '' : name })

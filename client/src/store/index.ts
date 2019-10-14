@@ -7,7 +7,8 @@ import ApiStore from './api';
 import Editor from './editor';
 import Structures from './structures';
 import Settings from './settings';
-import defaultData from './default.json'
+import defaultJSData from './default_javascript.json'
+import defaultPYData from './default_python.json'
 
 type widths = {
     array: number
@@ -51,8 +52,13 @@ export class RootStore {
         if (data && Number(data.version) === Number(process.env.REACT_APP_DATA_VERSION)) {
             this.initialize(data)
         } else {
-            // @ts-ignore
-            this.initialize(defaultData as Viz.Data)
+            if (this.language === "javascript") {
+                // @ts-ignore
+                this.initialize(defaultJSData as Viz.Data)
+            } else if (this.language === 'python') {
+                // @ts-ignore
+                this.initialize(defaultPYData as Viz.Data)
+            }
         }
         this.editor = new Editor(this, this.viz ? this.viz.code.trim() : '')
 
@@ -61,6 +67,7 @@ export class RootStore {
         }
         this.iterator.play();
         this.iterator.pause()
+
 
     }
     @action initialize(data: Viz.Data) {

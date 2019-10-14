@@ -27,7 +27,7 @@ const ValText: React.FC<Props> = observer(({ value, type, textOnly = false, size
     if (type === 'string') {
         value = `"${value}"`
     }
-    if (type === 'func' || type === 'native' || type === 'special') {
+    if (type === 'func' || type === 'native' || type === 'special' || type === 'other') {
         value = store.viz.types[value]
     }
     value = String(value)

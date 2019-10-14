@@ -17,7 +17,7 @@ class Input extends Component {
             <MonacoEditor
                 width={store.windowWidth * .5}
                 height={store.windowHeight * .91}
-                language="javascript"
+                language={store.language}
                 theme="vs-dark"
                 editorDidMount={(editor) => {
                     editor.updateOptions({
