@@ -117,37 +117,3 @@ class Runner:
             self.types[new_id] = type_name
             self.gc.append(obj)
             return new_id
-
-
-# r = Runner('name', "1+1")
-
-
-# class K:
-#     def __init__(self):
-#         self.name = 'NAME'
-#         self.age = 5
-#         self.employed = {
-#             'Yesh': False
-#         }
-#         self.func = lambda: 0
-
-#     def get_info(self):
-#         return (self.name, self.age, self.employed)
-
-
-# obj = K()
-
-
-# objs = [[1, 2, 3, 4, [5, 6]], ('a', 'b'), {'this', 'is', 'a', 'set'}, {
-#     'x': 1, 'y': 2, 'z': 3}, K()]
-
-
-# for obj in objs:
-#     r.stringify(obj)
-
-# print(r.map)
-
-# for _id in r.map:
-#     __id = r.map[_id]
-#     if __id in r.objects:
-#         print(r.types[__id], r.objects[__id])
