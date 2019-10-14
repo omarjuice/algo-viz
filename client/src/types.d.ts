@@ -1,5 +1,8 @@
 declare namespace Viz {
-    type valType = 'null' | 'boolean' | 'string' | 'special' | 'func' | 'object' | 'native' | 'number'
+
+    type language = 'javascript' | 'python'
+
+    type valType = 'null' | 'boolean' | 'string' | 'special' | 'func' | 'object' | 'native' | 'number' | 'other'
     type scope = null | [null | number, number]
     type name = [number, number]
     type pointers = Map<string, (string | number)[]>
@@ -65,10 +68,13 @@ declare namespace Viz {
     interface AllSettings {
         valueColors: valueColors
         configColors: configColors
-        background: string
         speeds: speeds
-        structSettings: structSettings
+        structSettings?: structSettings
         config: configSettings
+    }
+    interface StoredSettings extends AllSettings {
+        jsStructSettings?: structSettings
+        pyStructSettings?: structSettings
     }
 
 

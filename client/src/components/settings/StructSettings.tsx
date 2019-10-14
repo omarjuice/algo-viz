@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import store from '../../store';
 import DraggableList from './DraggableList'
 import Slider from 'rc-slider'
-import { structInfo } from '../../store/settings';
+import { jsStructInfo, pyStructInfo } from '../../store/settings';
 type Props = {
     name: string
 }
@@ -171,7 +171,7 @@ class StructSettings extends Component<Props> {
     render() {
         const { name } = this.props
         const { settings } = store
-
+        const structInfo = store.language === 'javascript' ? jsStructInfo : store.language === 'python' ? pyStructInfo : {}
         const structSettings = settings.structSettings[name]
 
 
@@ -184,7 +184,7 @@ class StructSettings extends Component<Props> {
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
         const isBuiltin = /Viz\./g.test(name);
-        const isNative = ['Array', 'Object', 'Set', 'Map'].includes(name)
+        const isNative = settings.unconfigurables.has(name)
         return (
             <div className={`box struct-settings-${name}`} style={style}>
 

@@ -15,12 +15,12 @@ const Structs: React.FC = observer(() => {
     const ids = store.structs.bindings
     let i = 0;
     ids.forEach((id) => {
-        if (store.viz.types[id] === 'Array') {
+        if (store.settings.arrayTypes.has(store.viz.types[id])) {
             arrays.push(
                 <ArrayStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
             )
 
-        } else if (['Object', 'Map', 'Set'].includes(store.viz.types[id])) {
+        } else if (store.settings.hashTypes.has(store.viz.types[id])) {
             objects.push(
                 <HashStruct key={id} pointed={false} ratio={1} structure={store.structs.objects[id]} objectId={id} />
             )

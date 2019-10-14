@@ -201,7 +201,7 @@ before(async () => {
         ]
     })
     const p = await browser.newPage()
-    await p.goto('https://algoviz.io')
+    await p.goto('http://localhost:3000')
     page = new AppPage(p, browser)
     await new Promise((r) => {
         setTimeout(r, 1000)

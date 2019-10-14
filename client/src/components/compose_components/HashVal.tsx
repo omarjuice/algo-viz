@@ -39,26 +39,26 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         type
     }
     const valType = getType(value)
-    if (typeof value === 'string' && value in store.structs.objects && store.viz.types[value] === 'Array') {
+    if (typeof value === 'string' && value in store.structs.objects && store.settings.arrayTypes.has(store.viz.types[value])) {
         const parent = store.structs.pointers.get(value).top
 
         if (parent && parent.id === objectId && parent.key === prop) {
             return (
                 <div className={`columns is-paddingless is-multiline ${className}`}>
-                    {type !== 'Set' && <div className={`column ${type === 'Map' && 'has-text-right'}`}>
+                    {!store.settings.setTypes.has(type) && <div className={`column ${store.settings.mapTypes.has(type) && 'has-text-right'}`}>
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
-                            {type === 'Map' && prop in store.structs.objects ?
+                            {store.settings.mapTypes.has(type) && prop in store.structs.objects ?
                                 <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
                                 :
                                 <Tooltip overlay={() => (
                                     <div className="has-text-weight-bold">
-                                        {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                                            {type === 'Map' ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
+                                        {!store.settings.setTypes.has(type) && <span style={{ fontSize: 9 }}>
+                                            {store.settings.mapTypes.has(type) ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
                                         </span>}
                                         <ValText value={value} type={valType} textOnly={true} />
                                     </div >
                                 )}>
-                                    {type === 'Map' ?
+                                    {store.settings.mapTypes.has(type) ?
                                         getVal(prop, { ...displayProps }, getType(prop)) :
                                         <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                                 </Tooltip>}
@@ -95,8 +95,8 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         >
             <Tooltip overlay={() => (
                 <div className="has-text-weight-bold">
-                    {type !== 'Set' && <span style={{ fontSize: 9 }}>
-                        {type === 'Map' ? <ValText textOnly={true} value={prop} type={getType(prop)} /> : String(prop)}:{' '}
+                    {!store.settings.setTypes.has(type) && <span style={{ fontSize: 9 }}>
+                        {store.settings.mapTypes.has(type) ? <ValText textOnly={true} value={prop} type={getType(prop)} /> : String(prop)}:{' '}
                     </span>}
                     <ValText value={value} type={valType} textOnly={true} />
                 </div >
@@ -104,20 +104,20 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                 placement={'right'}
                 trigger={['hover']} visible={store.settings.config.tooltips ? visible || hovered : hovered} defaultVisible={false} >
                 <div style={{ overflowX: 'visible' }} className="columns is-paddingless is-multiline">
-                    {type !== 'Set' &&
-                        <div style={{ overflowX: 'visible' }} className={`column ${type === 'Map' ? 'has-text-right' : 'has-text-centered'}`}>
+                    {!store.settings.setTypes.has(type) &&
+                        <div style={{ overflowX: 'visible' }} className={`column ${store.settings.mapTypes.has(type) ? 'has-text-right' : 'has-text-centered'}`}>
                             < p style={{
                                 color: (displayProps.anim[0] || displayProps.anim[1]) ? 'white' : store.settings.structSettings[type].color,
                                 fontWeight: (displayProps.anim[0] || displayProps.anim[1]) ? 'bold' : 'normal'
                             }}
                                 className={`is-size-6`}>
-                                {type === 'Map' ?
+                                {store.settings.mapTypes.has(type) ?
                                     getVal(prop, { ...displayProps }, getType(prop)) :
                                     <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
                             </p>
                         </div>
                     }
-                    <div style={{ overflowX: 'visible' }} className={`column ${type === 'Map' ? 'has-text-left' : type === 'Set' ? 'has-text-centered' : ''}`}>
+                    <div style={{ overflowX: 'visible' }} className={`column ${store.settings.mapTypes.has(type) ? 'has-text-left' : store.settings.setTypes.has(type) ? 'has-text-centered' : ''}`}>
                         {getVal(value, displayProps, valType)}
                     </div>
                 </div>

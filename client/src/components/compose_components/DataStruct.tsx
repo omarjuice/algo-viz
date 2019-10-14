@@ -141,8 +141,8 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                 if (order && order.isMultiple) {
                     const object = store.structs.objects[value]
                     const type = store.viz.types[value]
-                    if (['Object', 'Array', 'Map'].includes(type)) {
-                        if (type === 'Array') {
+                    if (store.settings.viableParents.has(type)) {
+                        if (store.settings.arrayTypes.has(type)) {
                             childrenInArray = true
                         }
                         for (const key of object.keys()) {
@@ -150,7 +150,7 @@ const DataStruct: React.FC<Props> = observer(({ structure, objectId, ratio, rend
                             if (typeof info.value === 'string' && info.value in store.structs.objects) {
                                 children.push({
                                     order,
-                                    key: type === 'Array' ? Number(key) : key,
+                                    key: store.settings.arrayTypes.has(type) ? Number(key) : key,
                                     child: info.value,
                                     parent: object
                                 })

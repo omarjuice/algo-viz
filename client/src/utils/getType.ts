@@ -19,6 +19,9 @@ export default function getType(value: any): Viz.valType {
         if (count === 4) {
             return 'native'
         }
+        if (count === 5) {
+            return "other"
+        }
     }
     return typeof value as Viz.valType
 }

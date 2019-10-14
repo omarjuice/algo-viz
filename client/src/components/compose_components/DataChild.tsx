@@ -54,11 +54,11 @@ class DataChild extends React.Component<Props>{
             prop
         }
         let element;
-        if (!['Array', 'Object', 'Map', 'Set'].includes(type)) {
+        if (!store.settings.unconfigurables.has(type)) {
             element = <DataStruct depthMultiplier={depthMultiplier} setDepth={setDepth} depth={depth} idx={idx} isList={isList} renderId={this.renderId} objectId={objectId} ratio={ratio} structure={store.structs.objects[objectId]} />
-        } else if (type === 'Array') {
+        } else if (store.settings.arrayTypes.has(type)) {
             element = <ArrayStruct renderId={this.renderId} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
-        } else if (type === 'Object' || type === 'Map' || type === 'Set') {
+        } else if (store.settings.hashTypes.has(type)) {
             element = <HashStruct renderId={this.renderId} objectId={objectId} ratio={ratio} pointed={false} structure={store.structs.objects[objectId]} />
         } else {
             element = null

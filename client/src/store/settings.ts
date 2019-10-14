@@ -8,7 +8,7 @@ const randomColor = (): string => {
     return '#' + color
 }
 
-export const structInfo: Viz.structSettings = {
+export const jsStructInfo: Viz.structSettings = {
     "Viz.BST": {
         order: {
             left: {
@@ -169,9 +169,12 @@ export const structInfo: Viz.structSettings = {
         pointers: {}
     }
 }
+export const pyStructInfo: Viz.structSettings = {
 
-Object.defineProperty(structInfo, 'default', {
-    value: structInfo['default'],
+}
+
+Object.defineProperty(jsStructInfo, 'default', {
+    value: jsStructInfo['default'],
     enumerable: false
 })
 
@@ -236,10 +239,18 @@ class Settings {
 
     }
     @observable root: RootStore
+
+    @observable unconfigurables: Set<string> = new Set()
+    @observable hashTypes: Set<string> = new Set()
+    @observable arrayTypes: Set<string> = new Set()
+    @observable setTypes: Set<string> = new Set()
+    @observable mapTypes: Set<string> = new Set()
+    @observable viableParents: Set<string> = new Set()
     constructor(store: RootStore) {
+        const lang = store.language
         const settings = window.localStorage.getItem(SETTINGS_VERSION)
         if (settings) {
-            const all: Viz.AllSettings = JSON.parse(settings)
+            const all: Viz.StoredSettings = JSON.parse(settings)
             //@ts-ignore
             const valueColors: Viz.valueColors = {}
             for (const key in this.valueColors) {
@@ -263,35 +274,62 @@ class Settings {
 
 
 
-
-
-
             //@ts-ignore
             const structSettings: Viz.structSettings = {}
 
-            for (const objType in all.structSettings) {
-                //@ts-ignore
-                const objSettings = {}
-                for (const key in structInfo.default) {
-                    //@ts-ignore
-                    objSettings[key] = key in all.structSettings[objType] ? all.structSettings[objType][key] : structInfo.default[key]
-                }
-                //@ts-ignore
-                structSettings[objType] = objSettings
+            let strSettings: 'jsStructSettings' | 'pyStructSettings' | null
+
+            if (lang === 'javascript' && 'jsStructSettings' in all) {
+                strSettings = 'jsStructSettings'
+            } else if (lang === 'python' && 'pyStructSettings' in all) {
+                strSettings = 'pyStructSettings'
             }
-            this.structSettings = structSettings
+
+            if (strSettings) {
+                for (const objType in all[strSettings]) {
+                    //@ts-ignore
+                    const objSettings = {}
+                    for (const key in jsStructInfo.default) {
+                        //@ts-ignore
+                        objSettings[key] = key in all[strSettings][objType] ? all[strSettings][objType][key] : jsStructInfo.default[key]
+                    }
+                    //@ts-ignore
+                    structSettings[objType] = objSettings
+                }
+                this.structSettings = structSettings
+            }
 
 
             this.config = { ...this.config, ...all.config }
 
-
-
-
-
-
         }
-        const unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
+        let unconfigurables: [string, string][];
 
+        if (lang === 'javascript') {
+            unconfigurables = [['Array', '#FFFFFF'], ['Object', '#FFFFFF'], ['Map', '#4682B4'], ['Set', '#FF69B4']]
+            this.arrayTypes.add('Array')
+            this.setTypes.add('Set')
+            this.hashTypes.add('Map')
+            this.hashTypes.add('Object')
+            this.hashTypes.add('Set')
+            this.mapTypes.add('Map')
+            this.viableParents.add('Array')
+            this.viableParents.add('Object')
+            this.viableParents.add('Map')
+
+        } else if (lang === 'python') {
+            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4']]
+            this.arrayTypes.add('list')
+            this.setTypes.add('set')
+            this.hashTypes.add('dict')
+            this.hashTypes.add('set')
+            this.mapTypes.add('dict')
+            this.viableParents.add('list')
+            this.viableParents.add('dict')
+        }
+        for (const [t] of unconfigurables) {
+            this.unconfigurables.add(t)
+        }
 
         for (const [t, defaultColor] of unconfigurables) {
             this.structSettings[t] = {
@@ -304,16 +342,19 @@ class Settings {
             }
         }
 
-        for (const name in structInfo) {
-            this.structSettings[name] = {
-                ...structInfo[name],
-                color: name in this.structSettings ? this.structSettings[name].color : structInfo[name].color,
-                textColor: name in this.structSettings ? this.structSettings[name].textColor : structInfo[name].textColor,
-                pointers: {
-                    ...(this.structSettings[name] || { pointers: {} }).pointers,
-                    ...structInfo[name].pointers
+        if (lang === 'javascript') {
+            for (const name in jsStructInfo) {
+                this.structSettings[name] = {
+                    ...jsStructInfo[name],
+                    color: name in this.structSettings ? this.structSettings[name].color : jsStructInfo[name].color,
+                    textColor: name in this.structSettings ? this.structSettings[name].textColor : jsStructInfo[name].textColor,
+                    pointers: {
+                        ...(this.structSettings[name] || { pointers: {} }).pointers,
+                        ...jsStructInfo[name].pointers
+                    }
                 }
             }
+
         }
 
 
@@ -321,6 +362,18 @@ class Settings {
 
         window.onbeforeunload = () => {
             delete this.root
+            const storageSettings: Viz.StoredSettings = {
+                speeds: this.speeds,
+                valueColors: this.valueColors,
+                configColors: this.configColors,
+                config: this.config,
+            }
+            if (this.root.language === 'javascript') {
+                storageSettings.jsStructSettings = this.structSettings
+            } else {
+                storageSettings.pyStructSettings = this.structSettings
+            }
+
             window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(this))
         }
     }
@@ -342,9 +395,9 @@ class Settings {
         }
     }
     @action addStruct(structType: string) {
-        const restricted = ['Object', 'Array', 'Map', 'Set']
 
-        if (restricted.includes(structType)) return
+
+        if (this.unconfigurables.has(structType)) return
 
         if (!(structType in this.structSettings)) {
             this.structSettings[structType] = {

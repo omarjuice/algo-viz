@@ -15,6 +15,7 @@ type widths = {
     data: number
 }
 export class RootStore {
+    @observable language: Viz.language
     @observable tutorial: boolean = false
     @observable settings: Settings
     @observable viz: VizStore
@@ -37,9 +38,16 @@ export class RootStore {
     minWidth = 850
     constructor() {
         this.api = new ApiStore(this)
+        const language: Viz.language = window.localStorage.getItem('language') as Viz.language
+        if (language) {
+            this.language = language
+        } else {
+            this.language = 'javascript'
+        }
         this.settings = new Settings(this)
-        const data = JSON.parse(window.localStorage.getItem('data'))
 
+
+        const data = JSON.parse(window.localStorage.getItem('data_' + this.language))
         if (data && Number(data.version) === Number(process.env.REACT_APP_DATA_VERSION)) {
             this.initialize(data)
         } else {
@@ -108,6 +116,10 @@ export class RootStore {
     }
     @action stopTutorial() {
         this.tutorial = false
+    }
+    @action setLanguage(language: Viz.language) {
+        window.localStorage.setItem('language', language)
+        window.location.reload()
     }
 }
 

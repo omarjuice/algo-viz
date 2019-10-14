@@ -33,7 +33,7 @@ class Structures {
             if (!this.root.settings.structSettings[type]) {
                 this.root.settings.addStruct(type)
             }
-            if (type === 'Array') {
+            if (this.root.settings.arrayTypes.has(type)) {
                 for (let i = 0; i < obj['length']; i++) {
                     const val = obj[i]
                     cloned.set(i, {
@@ -50,7 +50,7 @@ class Structures {
                     set: false,
                     value: obj['length']
                 })
-            } else if (type === 'Map') {
+            } else if (this.root.settings.mapTypes.has(type)) {
                 let count = 0;
                 while (count in obj) {
                     const [key, value] = obj[count++];
@@ -63,7 +63,7 @@ class Structures {
                         this.childKeyMemo[id].set(key, value)
                     }
                 }
-            } else if (type === 'Set') {
+            } else if (this.root.settings.setTypes.has(type)) {
                 let count = 0;
                 while (count in obj) {
                     const value = obj[count++];
@@ -162,7 +162,7 @@ class Structures {
         if (id !== parent) {
             const parentType = this.root.viz.types[parent]
             const isChild = key in this.root.settings.structSettings[parentType].order
-            if (!isChild && !['Object', 'Map', 'Array'].includes(parentType)) return
+            if (!isChild && !this.root.settings.viableParents.has(parentType)) return
             if (!this.pointers.has(id)) this.pointers.set(id, new PointerQueue(this, id))
             if (!this.children[id]) this.children[id] = new Set()
             if (!(id in this.parents)) this.parents[id] = null
@@ -224,7 +224,7 @@ class Structures {
                 this.switchOff(prop, 'get')
                 this.switchOff(prop, 'set')
             }
-            if (this.root.viz.types[object] === 'Array') {
+            if (this.root.settings.arrayTypes.has(this.root.viz.types[object])) {
                 const len = this.objects[object].get('length');
                 if (typeof key === 'number') {
                     if (key >= len.value) {
@@ -281,7 +281,7 @@ class Structures {
             if (value) {
                 const original = this.objects[object].get(key).value
                 step.prev = original
-                if (this.root.viz.types[object] !== 'Array') {
+                if (!this.root.settings.arrayTypes.has(this.root.viz.types[object])) {
                     this.objects[object].delete(key)
                 } else {
                     this.objects[object].get(key).value = null
@@ -318,6 +318,7 @@ class Structures {
 
             this.gets[object] = this.objects[object].get(key)
             const t = this.root.viz.types[object]
+            //????
             if (!['Array', 'Map', 'Set'].includes(t)) {
                 this.gets[object].value = step.value;
             }
@@ -376,7 +377,7 @@ class Structures {
             const { object, access } = step
             const key = access
             const prop = this.objects[object].get(key)
-            if (this.root.viz.types[object] !== 'Array') {
+            if (!this.root.settings.arrayTypes.has(this.root.viz.types[object])) {
                 prop.value = step.value
             }
         }

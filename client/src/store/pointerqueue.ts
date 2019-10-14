@@ -2,6 +2,7 @@ import { observable, computed, action } from "mobx";
 import Structures from './structures';
 type types = { [key: string]: string }
 type parents = { [id: string]: string }
+type baseTypes = 'unconfigurables' | 'hashTypes' | 'arrayTypes' | 'setTypes' | 'mapTypes' | 'viableParents'
 class PointerQueue {
     @observable heap: Viz.objectPointer[] = []
     parents: parents
@@ -9,8 +10,20 @@ class PointerQueue {
     map: { [id: string]: Map<string | number, number> }
     id: string
     structs: Structures
+    baseTypes: {
+        [key in baseTypes]: Set<string>
+    }
     constructor(structs: Structures, id: string) {
         this.types = structs.root.viz.types;
+        const settings = structs.root.settings
+        this.baseTypes = {
+            unconfigurables: settings.unconfigurables,
+            hashTypes: settings.hashTypes,
+            arrayTypes: settings.arrayTypes,
+            mapTypes: settings.mapTypes,
+            setTypes: settings.setTypes,
+            viableParents: settings.viableParents
+        }
         this.parents = structs.parents;
         this.structs = structs;
         this.id = id
@@ -138,43 +151,43 @@ class PointerQueue {
         return this;
     }
     private getAffinity(parent: string, child: string): number {
-        const hashTypes = ['Object', 'Map', 'Set']
         const parentType = this.types[parent]
         const childType = this.types[child]
         if (parentType === childType) {
-            if (parentType === 'Array') {
-                return 2
-            }
-            if (hashTypes.includes(parentType)) {
+            if (this.baseTypes.hashTypes.has(parentType)) {
                 return 0
             }
             return 4
         }
-        if (!hashTypes.includes(parentType) && !hashTypes.includes(childType) && parentType !== 'Array' && childType !== 'Array') {
+        if (this.baseTypes.arrayTypes.has(parentType) && this.baseTypes.arrayTypes.has(childType)) {
+            return 2
+        }
+
+        if (!this.baseTypes.unconfigurables.has(parentType) && !!this.baseTypes.unconfigurables.has(childType)) {
             return 3
         }
-        if (childType === 'Array') {
-            if (hashTypes.includes(parentType)) {
+        if (this.baseTypes.arrayTypes.has(childType)) {
+            if (this.baseTypes.hashTypes.has(parentType)) {
                 return 1
             }
             return 3
         }
-        if (hashTypes.includes(childType)) {
-            if (!hashTypes.includes(parentType) && parentType !== 'Array') {
+        if (this.baseTypes.hashTypes.has(childType)) {
+            if (!this.baseTypes.unconfigurables.has(parentType)) {
                 return 3
             }
             return 0
         }
-        if (parentType === 'Array') {
+        if (this.baseTypes.arrayTypes.has(parentType)) {
             if (this.parents[parent]) {
                 const grandParent = this.parents[parent]
                 const type = this.types[grandParent];
-                if (!hashTypes.includes(type) && type !== 'Array') {
+                if (!this.baseTypes.unconfigurables.has(type)) {
                     return 3
                 }
             }
         }
-        if (['Object', 'Map'].includes(parentType)) {
+        if (this.baseTypes.hashTypes.has(parentType) && !this.baseTypes.setTypes.has(parentType)) {
             if (this.parents[parent]) return 2
         }
 
