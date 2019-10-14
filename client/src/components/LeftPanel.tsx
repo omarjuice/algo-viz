@@ -3,6 +3,7 @@ import store from '../store'
 import { observer } from 'mobx-react';
 import Input from './Input';
 import Code from './Code';
+
 import IteratorContol from './IteratorControl';
 
 const LeftPanel: React.FC = observer(() => {
@@ -16,7 +17,7 @@ const LeftPanel: React.FC = observer(() => {
                 :
                 store.ready && (
                     <>
-                        {activeCodePanel && <Code />}
+                        {activeCodePanel && (<Code />)}
                         <IteratorContol />
                     </>
                 )

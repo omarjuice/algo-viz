@@ -201,7 +201,7 @@ const valueColorDefaults: Viz.valueColors = {
     number: '#4682b4',
     string: '#ffff00',
     boolean: '#00ff00',
-    other: '#000000',
+    other: '#ff69b4',
     func: '#ffffff',
     native: '#ff3860'
 }
@@ -246,6 +246,8 @@ class Settings {
     @observable setTypes: Set<string> = new Set()
     @observable mapTypes: Set<string> = new Set()
     @observable viableParents: Set<string> = new Set()
+    @observable jsStructSettings: Viz.structSettings = {}
+    @observable pyStructSettings: Viz.structSettings = {}
     constructor(store: RootStore) {
         const lang = store.language
         const settings = window.localStorage.getItem(SETTINGS_VERSION)
@@ -283,6 +285,13 @@ class Settings {
                 strSettings = 'jsStructSettings'
             } else if (lang === 'python' && 'pyStructSettings' in all) {
                 strSettings = 'pyStructSettings'
+            }
+
+            if (all.jsStructSettings) {
+                this.jsStructSettings = all['jsStructSettings']
+            }
+            if (all.pyStructSettings) {
+                this.pyStructSettings = all['pyStructSettings']
             }
 
             if (strSettings) {
@@ -370,8 +379,10 @@ class Settings {
             }
             if (lang === 'javascript') {
                 storageSettings.jsStructSettings = this.structSettings
+                storageSettings.pyStructSettings = this.pyStructSettings
             } else {
                 storageSettings.pyStructSettings = this.structSettings
+                storageSettings.jsStructSettings = this.jsStructSettings
             }
 
             window.localStorage.setItem(SETTINGS_VERSION, JSON.stringify(storageSettings))

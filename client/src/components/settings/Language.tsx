@@ -1,5 +1,4 @@
 import React from 'react';
-import Tooltip from 'rc-tooltip';
 import store from '../../store';
 import { observer } from 'mobx-react';
 

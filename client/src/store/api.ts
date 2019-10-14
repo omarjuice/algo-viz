@@ -35,7 +35,7 @@ class ApiStore {
             const res = await axios.post('/execute', { code }, { withCredentials: true })
             const data: Viz.Data = res.data
             this.root.initialize(data)
-            window.localStorage.setItem('data', JSON.stringify(data))
+            window.localStorage.setItem('data_' + this.root.language, JSON.stringify(data))
             this.error = null
             this.loading = false
             this.ok = true

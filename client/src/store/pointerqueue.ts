@@ -154,7 +154,7 @@ class PointerQueue {
         const parentType = this.types[parent]
         const childType = this.types[child]
         if (parentType === childType) {
-            if (this.baseTypes.hashTypes.has(parentType)) {
+            if (this.baseTypes.unconfigurables.has(parentType)) {
                 return 0
             }
             return 4
