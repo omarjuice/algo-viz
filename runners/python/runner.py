@@ -1,6 +1,7 @@
-from proxy_types import TYPES
+from wrapper_types import TYPES
 import string
 from random import choice
+from proxy import GenericProxy, ListProxy, DictProxy, SetProxy
 
 lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
@@ -27,8 +28,6 @@ class Runner:
 
         self.calls = 0
 
-        self.virtualize = lambda x: x
-
         self.name = name
 
         self.gc = []
@@ -51,8 +50,29 @@ class Runner:
         return id
 
     def virtualize(self, obj):
-        if obj == self:
-            return None
+        t = type(obj)
+        proxy = None
+        if t in primitives:
+            return obj
+        elif id(obj) in self.proxies:
+            return self.proxies[obj][0]
+        elif t == list:
+            proxy = ListProxy(obj)
+        elif t == dict:
+            proxy = DictProxy(obj)
+        elif t == set:
+            proxy = SetProxy(obj)
+        else:
+            proxy = GenericProxy(obj)
+        self.proxies[id(obj)] = (proxy, False)
+        self.proxies[id(proxy)] = (proxy, True)
+        if id(obj) in self.map:
+            self.map[id(proxy)] = self.map[id(obj)]
+        else:
+            _id = self.stringify(obj)
+            self.map[id(proxy)] = id
+
+        return proxy
 
     def stringify(self, obj):
         if (id(obj)) in self.map:
