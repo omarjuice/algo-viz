@@ -110,7 +110,7 @@ function virtualizeArray(object, runner) {
                 prop = target.length - 1
             }
             const val = target[prop]
-            const isVirtual = typeof prop === 'number' && prop >= 0 && prop < target.length
+            const isVirtual = Number.isInteger(prop) && prop >= 0 && prop < target.length
             if (isVirtual) {
                 runner.__(val, {
                     type: TYPES.GET,
@@ -127,7 +127,7 @@ function virtualizeArray(object, runner) {
             }
             const len = target.length;
             target[prop] = runner.virtualize(value)
-            const isNumber = typeof prop === 'number';
+            const isNumber = Number.isInteger(prop);
             const isVirtual = (isNumber && prop >= 0) || prop === 'length'
             if (len !== target.length) {
                 runner.__(target.length, {
@@ -146,7 +146,7 @@ function virtualizeArray(object, runner) {
         },
         deleteProperty(target, prop) {
             prop = convert(prop)
-            const isVirtual = typeof prop === 'number' && prop >= 0 && prop < target.length
+            const isVirtual = Number.isInteger(prop) && prop >= 0 && prop < target.length
             if (!isVirtual) return delete target[prop]
             return runner.__(delete target[prop], {
                 type: TYPES.DELETE,

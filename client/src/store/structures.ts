@@ -306,12 +306,13 @@ class Structures {
             }
             if (allowRender) {
                 const prop = this.objects[object].get(key)
+                if (!prop) {
+                    console.log(key);
+                }
                 if (this.gets[object] === prop) {
                     this.gets[object].get = false
                 }
-                if (!prop) {
-                    // console.log(key);
-                }
+
                 prop.get = true
                 this.switchOff(prop, 'set')
             }
