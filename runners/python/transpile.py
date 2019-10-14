@@ -141,7 +141,7 @@ class Transformer(ast.NodeTransformer):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
 
-    def should_wrapper_list_or_tuple(self, node):
+    def should_wrap_list_or_tuple(self, node):
         parent = self.scopes.parents[node]
         if isinstance(parent, ast.Assign) and node in parent.targets:
             return False
@@ -150,12 +150,12 @@ class Transformer(ast.NodeTransformer):
         elif isinstance(parent, ast.comprehension) and node == parent.target:
             return False
         elif isinstance(parent, (ast.List, ast.Tuple)):
-            return self.should_wrapper_list_or_tuple(parent)
+            return self.should_wrap_list_or_tuple(parent)
         else:
             return True
 
     def visit_list_or_tuple(self, node):
-        if self.should_wrapper_list_or_tuple(node):
+        if self.should_wrap_list_or_tuple(node):
             return self.visit_expr(node)
         else:
             self.generic_visit(node)
@@ -261,9 +261,12 @@ class Transformer(ast.NodeTransformer):
                     'varName': name.arg,
                     'block': False
                 },
-                expr=True
             )
-            new_nodes.append(new_node)
+            assn = ast.Assign()
+            assn.targets = [ast.Name(id=name.arg, ctx=ast.Store)]
+            assn.value = new_node
+            setattr(assn, '_wrapper', True)
+            new_nodes.append(assn)
 
         self.generic_visit(node)
 
@@ -340,6 +343,7 @@ class Transformer(ast.NodeTransformer):
                     'block': False
                 },
             )
+
             body.append(new_node)
 
         body.append(self.wrapper(

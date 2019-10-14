@@ -99,12 +99,6 @@ def findRepeatedDnaSequences(s: str):
 findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT")
 ''',
 
-    'bad': '''
-import collections
-
-a = dir()
-
-'''
 
 }
 
