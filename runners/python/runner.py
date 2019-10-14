@@ -1,12 +1,13 @@
 from wrapper_types import TYPES
 import string
 from random import choice
-from proxy import GenericProxy, ListProxy, DictProxy, SetProxy
+from proxy import generic_proxy, list_proxy, dict_proxy, set_proxy
 
 lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
 fnc = type(range)
-primitives = {int, str, bool, rng, slice, float, complex, fnc, bytes}
+primitives = {int, str, bool, rng, slice,
+              float, complex, fnc, bytes, type(None)}
 
 
 class Runner:
@@ -39,6 +40,13 @@ class Runner:
         ellips_literal = self.gen_id(5, 1)
         self.map[Ellipsis] = '...'
 
+        self.num_steps = 0
+
+        self.GenericProxy = generic_proxy(self)
+        self.ListProxy = list_proxy(self)
+        self.DictProxy = dict_proxy(self)
+        self.SetProxy = set_proxy(self)
+
     def gen_id(self, l=3, num_=2):
 
         id = None
@@ -55,15 +63,15 @@ class Runner:
         if t in primitives:
             return obj
         elif id(obj) in self.proxies:
-            return self.proxies[obj][0]
+            return self.proxies[id(obj)][0]
         elif t == list:
-            proxy = ListProxy(obj)
+            proxy = self.ListProxy(obj)
         elif t == dict:
-            proxy = DictProxy(obj)
+            proxy = self.DictProxy(obj)
         elif t == set:
-            proxy = SetProxy(obj)
+            proxy = self.SetProxy(obj)
         else:
-            proxy = GenericProxy(obj)
+            proxy = self.GenericProxy(obj)
         self.proxies[id(obj)] = (proxy, False)
         self.proxies[id(proxy)] = (proxy, True)
         if id(obj) in self.map:
@@ -73,6 +81,35 @@ class Runner:
             self.map[id(proxy)] = id
 
         return proxy
+
+    def __(self, val, info):
+        # if(self.ignore) return val
+        t = info['type']
+        if t in [TYPES.FUNC, TYPES.METHOD]:
+            self.calls += 1
+        if t in [TYPES.DELETE, TYPES.SET, TYPES.GET]:
+
+            info['object'] = self.stringify(info['object'])
+        info['value'] = self.stringify(val)
+
+        if t in [TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN]:
+            prev = self.steps[-1]
+            if 'batch' not in prev:
+                prev['batch'] = [info]
+            else:
+                prev['batch'].append(info)
+        else:
+            self.steps.append(info)
+
+        self.num_steps += 1
+        if self.num_steps > self.limit:
+            ...
+        if self.calls > 500:
+            ...
+
+        # print(val, info)
+
+        return self.virtualize(val)
 
     def stringify(self, obj):
         if (id(obj)) in self.map:

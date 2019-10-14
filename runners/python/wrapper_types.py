@@ -7,7 +7,6 @@ class WrapperTypes:
         self.EXPRESSION = 'EXPRESSION'
         self.CALL = 'CALL'
 
-        self.SELF = 'SELF'
         self.FUNC = 'FUNC'
         self.METHOD = 'METHOD'
         self.RETURN = 'RETURN'
