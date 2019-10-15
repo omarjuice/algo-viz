@@ -26,13 +26,14 @@ def execute():
 
     try:
         exec(transpiled, {_name: runner,
-                          'dir': None, 'open': None}, {})
+                          'dir': None, 'open': None})
     except Exception as e:
         runner.steps.append({
             'type': 'ERROR',
             'error': str(e)
         })
-    runtime = int((time() - start) / 1000)
+    runtime = int((time() - start) * 1000)
+
     return json.dumps(
         {
             'steps': runner.steps,
