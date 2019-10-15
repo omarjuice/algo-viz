@@ -6,7 +6,7 @@ const MongoStore = require('connect-mongo')(session);
 const cors = require('cors')
 const path = require('path');
 const app = express();
-const execute = require('./js')
+const execute = require('./execute')
 const env = process.env.NODE_ENV
 const PORT = process.env.PORT || (env === 'test' ? 8080 : env === 'production' ? 3000 : 3001)
 
@@ -53,8 +53,8 @@ async function initialize() {
 
 
     app.post('/execute', (req, res, next) => {
-        const { code } = req.body;
-        execute(code)
+        const { code, language } = req.body;
+        execute(code, language)
             .then(result => {
                 res.send(JSON.parse(result))
             })

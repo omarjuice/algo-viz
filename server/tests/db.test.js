@@ -42,7 +42,8 @@ describe('Database', () => {
             request(app)
                 .post('/execute')
                 .send({
-                    code
+                    code,
+                    language: 'javascript'
                 })
                 .expect(200)
                 .expect(() => {

@@ -17,14 +17,6 @@ const randomString = (l = 3) => {
 
 
 
-const genName = (l = 3) => {
-    let name;
-    do {
-        name = randomString(l)
-    } while (names.has(name))
-    return name
-
-}
 
 
 
@@ -32,10 +24,24 @@ const genName = (l = 3) => {
 const names = new Set()
 
 
-async function run(code) {
+const genName = (l = 3) => {
+    let name;
+    do {
+        name = randomString(l)
+    } while (names.has(name))
+    names.add(name)
+    return name
+
+}
+
+
+async function execute(code, language) {
+    if (!['javascript', 'python'].includes(language)) {
+        throw new Error(`Langauge ${language} not available.`)
+    }
     const name = genName(6)
     const fileName = `-e FILENAME='${name}'`
-    const env = `-e NODE_ENV=${NODE_ENV === 'development' ? NODE_ENV : 'production'}`
+    const env = `-e ENV='${NODE_ENV === 'development' ? NODE_ENV : 'production'}'`
     const version = `-e DATA_VERSION=${DATA_VERSION}`
     const volume = `-e VOLUME='${folderName}'`
     const mem = `--memory=64m`
@@ -51,7 +57,7 @@ async function run(code) {
             }
         })
     })
-    const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} ${timeout} -v ${path}:/usr/src/app/${folderName} exec-js`
+    const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} ${timeout} -v ${path}:/usr/src/app/${folderName} ${language}`
 
     const file = `${path}/${name}`
     await new Promise((resolve, reject) => {
@@ -117,6 +123,6 @@ async function run(code) {
 }
 
 
-module.exports = run
+module.exports = execute
 
 

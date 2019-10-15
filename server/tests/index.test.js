@@ -20,10 +20,11 @@ describe('SERVER', function () {
             .expect(200)
             .end(done)
     })
-    it('Posting code returns results', done => {
+    it('Posting javascript code returns results', done => {
         agent
             .post('/execute')
             .send({
+                language: 'javascript',
                 code: `
                 class MyClass{
                     constructor(){
@@ -40,6 +41,58 @@ describe('SERVER', function () {
             })
             .end(done)
     })
+    it('Posting python code returns results', done => {
+        agent
+            .post('/execute')
+            .send({
+                language: 'python',
+                code: `directions = [(1,0), (0,1), (-1,0), (0,-1)]
+class Solution(object):
+    def pacificAtlantic(self, matrix):
+    
+                            
+                        
+        if not matrix: return []
+        po_set = set()
+        ao_set = set()
+        def dfs(r,c, s):
+                            
+            if (r,c) in s: return
+            s.add((r,c))
+            for v, h in directions:
+                i = r + v
+                j = c + h
+                if i >= len(matrix) or i < 0: continue
+                if j >= len(matrix[i]) or j < 0: continue
+                val = matrix[i][j]
+                if val >= matrix[r][c]:
+                    dfs(i,j,s)
+                                    
+                                
+                            
+        for r in range(len(matrix)):
+            dfs(r,0, po_set)
+            dfs(r, len(matrix[0]) - 1, ao_set)
+                                
+        for c in range(len(matrix[0])):
+            dfs(0, c, po_set)
+            dfs(len(matrix) - 1, c, ao_set)
+                            
+        return list(po_set & ao_set)
+
+Solution().pacificAtlantic(
+    [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]
+)
+                        `
+            })
+            .expect(200)
+            .expect(({ body }) => {
+                expect(Array.isArray(body.steps)).toBe(true)
+                expect(typeof body.objects).toBe('object')
+                expect(typeof body.types).toBe('object')
+            })
+            .end(done)
+    })
     it('can handle multiple concurrent requests', async () => {
 
         const responses = []
@@ -48,6 +101,7 @@ describe('SERVER', function () {
             responses.push(agent
                 .post('/execute')
                 .send({
+                    language: 'javascript',
                     code: funcs[name]
                 })
             )
