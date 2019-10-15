@@ -3,7 +3,7 @@ const { default: instantiateViz } = require('../builtins/dist');
 const Runner = require('./runner')
 const util = require('util')
 const version = process.env.DATA_VERSION;
-const prod = process.env.NODE_ENV === 'production'
+const prod = process.env.ENV === 'production'
 const fs = require('fs')
 
 

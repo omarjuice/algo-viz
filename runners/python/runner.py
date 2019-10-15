@@ -7,7 +7,7 @@ lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
 fnc = type(range)
 primitives = {int, str, bool, rng, slice,
-              float, complex, fnc, bytes, type(None)}
+              float, complex, fnc, bytes, type(None), tuple}
 
 
 class Runner:
@@ -88,8 +88,8 @@ class Runner:
         if t in [TYPES.FUNC, TYPES.METHOD]:
             self.calls += 1
         if t in [TYPES.DELETE, TYPES.SET, TYPES.GET]:
-
             info['object'] = self.stringify(info['object'])
+            info['access'] = self.stringify(info['access'])
         info['value'] = self.stringify(val)
 
         if t in [TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN]:
@@ -116,7 +116,7 @@ class Runner:
             return self.map[(id(obj))]
         t = type(obj)
         if t in primitives:
-            if t in {rng, slice, fnc}:
+            if t in {rng, slice, fnc, tuple}:
                 _id = self.gen_id(5, 5)
                 self.map[obj] = _id
                 self.types[_id] = str(obj)
@@ -133,6 +133,7 @@ class Runner:
             if isinstance(obj, dict):
                 copy = {}
                 for key, value in obj.items():
+                    key = self.stringify(key)
                     copy[key] = self.stringify(value)
                     obj[key] = self.virtualize(value)
                 self.objects[new_id] = copy
@@ -143,14 +144,6 @@ class Runner:
                     val = obj[i]
                     copy[i] = self.stringify(val)
                     obj[i] = self.virtualize(val)
-                copy['length'] = len(obj)
-                self.objects[new_id] = copy
-            elif isinstance(obj, tuple):
-                copy = {}
-                for i in range(len(obj)):
-                    val = obj[i]
-                    copy[i] = self.stringify(val)
-
                 copy['length'] = len(obj)
                 self.objects[new_id] = copy
             elif isinstance(obj, set):

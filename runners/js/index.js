@@ -3,7 +3,7 @@ const fs = require('fs')
 const execute = require('./execute')
 const transpile = require('./transpile')
 const input = { _name: null, references: {} }
-const env = process.env.NODE_ENV
+const env = process.env.ENV
 const file = process.env.FILENAME
 const vol = process.env.VOLUME
 const prod = env === 'production'

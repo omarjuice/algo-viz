@@ -32,7 +32,7 @@ class ApiStore {
         try {
             code = '\n' + code + '\n'
             this.loading = true
-            const res = await axios.post('/execute', { code }, { withCredentials: true })
+            const res = await axios.post('/execute', { code, language: this.root.language }, { withCredentials: true })
             const data: Viz.Data = res.data
             this.root.initialize(data)
             window.localStorage.setItem('data_' + this.root.language, JSON.stringify(data))
@@ -40,6 +40,7 @@ class ApiStore {
             this.loading = false
             this.ok = true
         } catch (e) {
+            console.log(e);
             if (e.response) {
                 this.error = e.response.data.toString()
             } else {

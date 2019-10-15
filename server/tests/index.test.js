@@ -41,17 +41,18 @@ describe('SERVER', function () {
             })
             .end(done)
     })
-    it('Posting python code returns results', done => {
+    it.only('Posting python code returns results', done => {
         agent
             .post('/execute')
             .send({
                 language: 'python',
-                code: `directions = [(1,0), (0,1), (-1,0), (0,-1)]
+                code: `
+
 class Solution(object):
-    def pacificAtlantic(self, matrix):
-    
-                            
-                        
+    def __init__(self):
+        self.directions = [(1,0), (0,1), (-1,0), (0,-1)]
+
+    def pacificAtlantic(self, matrix):         
         if not matrix: return []
         po_set = set()
         ao_set = set()
@@ -59,7 +60,7 @@ class Solution(object):
                             
             if (r,c) in s: return
             s.add((r,c))
-            for v, h in directions:
+            for v, h in self.directions:
                 i = r + v
                 j = c + h
                 if i >= len(matrix) or i < 0: continue
@@ -87,6 +88,7 @@ Solution().pacificAtlantic(
             })
             .expect(200)
             .expect(({ body }) => {
+                require('fs').writeFileSync('executed.json', JSON.stringify(body))
                 expect(Array.isArray(body.steps)).toBe(true)
                 expect(typeof body.objects).toBe('object')
                 expect(typeof body.types).toBe('object')

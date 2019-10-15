@@ -307,10 +307,18 @@ class Structures {
             if (allowRender) {
                 const prop = this.objects[object].get(key)
                 if (!prop) {
-                    console.log(key);
+                    if (this.root.language === 'python') {
+                        return
+                    }
                 }
-                if (this.gets[object] === prop) {
-                    this.gets[object].get = false
+
+                try {
+                    if (this.gets[object] === prop) {
+                        this.gets[object].get = false
+                    }
+                } catch (e) {
+                    console.log(object, access)
+                    throw e
                 }
 
                 prop.get = true
@@ -378,7 +386,7 @@ class Structures {
             const { object, access } = step
             const key = access
             const prop = this.objects[object].get(key)
-            if (!this.root.settings.arrayTypes.has(this.root.viz.types[object])) {
+            if (prop && !this.root.settings.arrayTypes.has(this.root.viz.types[object])) {
                 prop.value = step.value
             }
         }
