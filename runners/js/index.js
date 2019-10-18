@@ -19,7 +19,6 @@ class TranspilerError extends Error {
 
 function exec() {
     let code;
-
     if (env === 'test') {
         code = process.env.CODE
     } else {
@@ -42,7 +41,6 @@ function exec() {
 
     }
     const { _name } = input
-
 
     !prod && fs.writeFile(env === 'development' ? `${vol}/${file}.transpiled.js` : 'transpiled.js', transpiled, () => { })
 

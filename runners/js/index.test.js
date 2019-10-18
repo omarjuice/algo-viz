@@ -90,13 +90,41 @@ describe('VM code execution', function () {
 
 
     })
-    it('custom test', async () => {
-        process.env.CODE = `
-        const names = Object.getOwnPropertyNames(this)
 
-        const objects = names.map(n => this[n])
+    it.only('custom test', async () => {
+        process.env.CODE = `
+        class BTree{
+            constructor(value){
+                this.value = value
+                this.left = null
+                this.right = null
+            }
+        }
+        const btree = new BTree('P')
+        {
+            const queue = [btree]
+            let numNodes = 30
+            while(numNodes > 0){
+                const node = queue.shift()
+                node.left = new BTree('L')
+                node.right = new BTree('R')
+                numNodes -= 2
+                queue.push(node.left, node.right)
+            }
+        }
+        function invert(tree){
+            if(tree){
+                invert(tree.left)
+                invert(tree.right)
+                const temp = tree.right
+                tree.right = tree.left
+                tree.left = temp
+            }
+        }
+        invert(btree)
     `
         let body = execute()
+
         require('fs').writeFileSync('executed.json', body)
         body = JSON.parse(body)
         expect(Array.isArray(body.steps)).toBe(true)

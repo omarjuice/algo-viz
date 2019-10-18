@@ -7,7 +7,7 @@ lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
 fnc = type(range)
 primitives = {int, str, bool, rng, slice,
-              float, complex, fnc, bytes, type(None), tuple}
+              float, complex, fnc, bytes, type(None), tuple, type(lambda: 0), type([].append)}
 
 
 class Runner:
@@ -116,7 +116,7 @@ class Runner:
             return self.map[(id(obj))]
         t = type(obj)
         if t in primitives:
-            if t in {rng, slice, fnc, tuple}:
+            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append)}:
                 _id = self.gen_id(5, 5)
                 self.map[obj] = _id
                 self.types[_id] = str(obj)
