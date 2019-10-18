@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 sample.json
 
-/src/store/default.json
+/src/store/default*.json
