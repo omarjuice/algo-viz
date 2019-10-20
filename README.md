@@ -2,7 +2,7 @@
 
 ## Visualize algorithms and data structures
 
-## [Deployed here](https://algo-viz.herokuapp.com)
+## [Deployed here](https://algoviz.io)
 
 ## [Video Overview](https://www.linkedin.com/posts/omarjameer_algorithms-datastructures-javascript-activity-6572991787336515584-5nyr)
 

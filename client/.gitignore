@@ -23,6 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 sample.json
 
-/src/store/default.json
-/src/store/default_javascript.json
-/src/store/default_python.json
+/src/store/default*.json

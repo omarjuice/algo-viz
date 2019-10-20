@@ -388,7 +388,7 @@ class Tutorial extends Component {
                     As I figure out how to make the editor's auto-complete work with the type definitions of the builtins,
                     please refer to this file for documentation:
                     <br />
-                    <a className="has-text-weight-bold" href="https://github.com/omarjuice/algo-viz/blob/master/builtins/js/types.d.ts" target="_blank" rel="noopener noreferrer">
+                    <a className="has-text-weight-bold" href="https://github.com/omarjuice/algo-viz/blob/master/runners/js/builtins/types.d.ts" target="_blank" rel="noopener noreferrer">
                         Builtin Type Definitions
                     </a>
                 </div>
