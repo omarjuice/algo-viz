@@ -119,7 +119,10 @@ class Runner:
             if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append)}:
                 _id = self.gen_id(5, 5)
                 self.map[obj] = _id
-                self.types[_id] = str(obj)
+                if t == tuple:
+                    self.types[_id] = str(obj)[1:-1].replace(" ", "").strip()
+                else:
+                    self.types[_id] = str(obj)
                 return _id
             else:
                 return obj

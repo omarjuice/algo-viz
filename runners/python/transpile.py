@@ -137,6 +137,7 @@ class Transformer(ast.NodeTransformer):
         )
 
     def generic_visit(self, node):
+
         for child in ast.iter_child_nodes(node):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
@@ -211,7 +212,12 @@ class Transformer(ast.NodeTransformer):
         self.generic_visit(node)
         if isinstance(node.target, ast.Name):
             parent = self.scopes.parents[node]
-            idx = parent.body.index(node)
+            body = parent.body
+            try:
+                idx = body.index(node)
+            except ValueError:
+                body = parent.orelse
+                idx = body.index(node)
             new_name = ast.Name(id=node.target.id, ctx=ast.Load())
 
             details = self.get_assignment_details(node.target)
@@ -221,7 +227,7 @@ class Transformer(ast.NodeTransformer):
                 details,
                 expr=True
             )
-            parent.body.insert(idx + 1, new_node)
+            body.insert(idx + 1, new_node)
         return node
 
     def visit_For(self, node):
@@ -355,7 +361,6 @@ class Transformer(ast.NodeTransformer):
             }
         ))
         body = ast.List(elts=body)
-
         subscript = ast.Subscript()
         subscript.value = body
         subscript.slice = ast.Index(value=ast.Num(-1))
@@ -379,6 +384,10 @@ class Transformer(ast.NodeTransformer):
             'scope': self.scopes.get_scope(parent)
         })
 
+        return node
+
+    def visit_Import(self, node):
+        print(ast.dump(node))
         return node
 
 
