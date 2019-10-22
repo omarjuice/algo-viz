@@ -90,11 +90,33 @@ describe('VM code execution', function () {
 
 
     })
-    it('custom test', async () => {
+    it.only('custom test', async () => {
         process.env.CODE = `
-        const names = Object.getOwnPropertyNames(this)
+        let ret;
+let current;
+class MyBST{
 
-        const objects = names.map(n => this[n])
+}
+{
+   const tree = eval(\`
+
+    const bst = Viz.BTree.create(Viz.array.sortedInts(31, false), 'binary')
+    function traverse(tree){
+        if (!tree){
+            return
+        }
+        traverse(tree.left)
+        tree.__proto__ = MyBST
+        traverse(tree.right)
+        return tree
+    }
+    traverse(bst)
+    \`)
+
+
+}
+
+
     `
         let body = execute()
         require('fs').writeFileSync('executed.json', body)
