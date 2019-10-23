@@ -13,37 +13,43 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
         }
         static create(elems: any[], method: 'inOrder' | 'binary') {
             if (!Array.isArray(elems)) throw new Error('Viz.BTree.create: elems must be an array')
-            if (!elems.length) throw new Error('Viz.BTree.create: elems must have a length of at least 1')
+            if (!elems.length) return null
             if (method !== 'inOrder' && method !== 'binary') throw new Error(`Viz.BTree.create: Method must be "inOrder" or "binary". Received ${method}`)
             runner.ignore(true)
             elems = [...elems]
             runner.ignore(false)
             if (method === 'inOrder') {
-                const btree = new BTree(elems[0])
-                const queue = [btree]
-                for (let i = 1; i < elems.length; i += 2) {
-                    const current = queue.shift()
-                    if (current) {
-                        if (i in elems && elems[i] !== null) {
-                            current.left = new BTree(elems[i])
-                            queue.push(current.left)
-                        } else {
-                            queue.push(null)
+                const tree = new BTree(elems[0])
+                let cur, next;
+                const dq = [tree]
+                let size = 0, index = 1;
+                while (dq.length) {
+                    size = dq.length
+                    for (let i = 0; i < size; i++) {
+                        cur = dq.shift()
+                        for (let j = index; j < index + 2 && j < elems.length; j++) {
+                            if (elems[j] === null) {
+                                if (j % 2 === 1) {
+                                    cur.left = null
+                                } else {
+                                    cur.right = null
+                                }
+                            } else {
+                                next = new BTree(elems[j])
+                                dq.push(next)
+                                if (j % 2 === 1) {
+                                    cur.left = next
+                                } else {
+                                    cur.right = next
+                                }
+                            }
                         }
-                        if (i + 1 in elems && elems[i + 1] !== null) {
-                            current.right = new BTree(elems[i + 1])
-                            queue.push(current.right)
-                        } else {
-                            queue.push(null)
-                        }
-                    } else {
-                        queue.push(null, null)
+                        index += 2
                     }
                 }
-
-
-                return btree
+                return tree
             } else if (method === 'binary') {
+
                 function helper(elems: any[], left: number, right: number) {
                     if (left >= right) {
                         return null
