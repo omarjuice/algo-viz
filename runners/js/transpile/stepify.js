@@ -65,7 +65,7 @@ module.exports = function (input) {
                 Function: {
                     enter(path, { opts }) {
 
-                        if (path.node.async && opts.disallow.async) throw new Error('async functions are disallowed')
+                        if (path.node.async && opts.disallow.async) throw new SyntaxError('async functions are disallowed')
 
                         //put the params as declarations
                         const params = [];
@@ -308,6 +308,9 @@ module.exports = function (input) {
                             type: TYPES.THIS
                         }))
                     }
+                },
+                TryStatement() {
+                    throw new SyntaxError('Try statements are not allowed.')
                 },
                 Expression: {
                     exit(path) {
