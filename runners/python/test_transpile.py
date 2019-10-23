@@ -101,32 +101,10 @@ findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT")
 
     'import': '''
 
-def intervalIntersection(A, B):
-        i = 0
-        j = 0
-        intersect = []
-        while i < len(A) and j < len(B):
-            start = max(A[i][0], B[j][0])
-            end = min(A[i][1], B[j][1])
-            if end - start >= 0:
-                intersect.append((start, end))
-
-            if A[i][1] < B[i][1]:
-                i += 1
-            elif A[i][1] > B[i][1]:
-                j += 1
-            else:
-                i += 1
-                j += 1
-        return intersect
-
-
-a = [[0,2],[5,10],[13,23],[24,25]]
-b = [[1,5],[8,12],[15,24],[25,26]]
-
-intervalIntersection(a,b)
+from x import *
 
 ''',
+
 
 
 }
@@ -163,14 +141,14 @@ for name, code in funcs.items():
     if name != 'import':
         continue
     try:
-        input = [""]
+        input = ["", {}]
         tree = transform(code, input)
         transpiled = unparse(tree)
 
-        _name = input[0]
+        _name, inputs = input
 
         open('transpiled.py', "w+").write(transpiled)
-
+        print(inputs)
         # globals()[_name] = TestRunner()
 
         # exec(transpiled, {_name: TestRunner(), 'dir': None, 'open': None}, {})

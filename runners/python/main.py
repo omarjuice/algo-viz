@@ -21,11 +21,11 @@ def type_override(obj):
 def execute():
     code = open(f'{VOL}/{FILENAME}', 'r').read()
 
-    input = [""]
+    input = ["", {}]
     tree = transform(code, input)
     transpiled = unparse(tree)
 
-    _name = input[0]
+    _name, imports = input
 
     # open('transpiled.py', "w+").write(transpiled)
 
@@ -33,7 +33,7 @@ def execute():
     start = time()
 
     try:
-        exec(transpiled, global_sandbox.create(_name, runner))
+        exec(transpiled, global_sandbox.create(_name, runner, imports))
     except Exception as e:
         runner.steps.append({
             'type': 'ERROR',

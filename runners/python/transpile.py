@@ -14,6 +14,7 @@ def transform(code, input):
     tokens.mark_tokens(tree)
     transformer = Transformer(tree, tokens)
     input[0] = transformer.wrapper_name
+    input[1] = transformer.imports
     transformed = transformer.visit(tree)
     ast.fix_missing_locations(tree)
 
@@ -66,6 +67,7 @@ class Transformer(ast.NodeTransformer):
         self.tree = tree
         self.ids = {""}
         self.wrapper_name = self.create_id(5, 1)
+        self.imports = []
         for t in expression_types:
             key = 'visit_' + t
             setattr(self, key, self.visit_expr)
@@ -387,8 +389,30 @@ class Transformer(ast.NodeTransformer):
         return node
 
     def visit_Import(self, node):
-        print(ast.dump(node))
-        return node
+        for imp in node.names:
+            info = {
+                'type': 'import',
+                'module': imp.name,
+                'alias': imp.asname
+            }
+            self.imports.append(info)
+
+        return None
+
+    def visit_ImportFrom(self, node):
+        module_name = node.module
+        names = []
+        for imp in node.names:
+            names.append({
+                'name': imp.name,
+                'alias': imp.asname
+            })
+        self.imports.append({
+            'type': 'from',
+            'module': module_name,
+            'names': names
+        })
+        return None
 
 
 class Scopes:

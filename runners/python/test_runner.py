@@ -144,6 +144,10 @@ Solution().pacificAtlantic(
 ''',
     'tuple': '''
 a = (1,1)
+''',
+    'import': '''
+
+from bisect import b
 '''
 
 
@@ -151,41 +155,40 @@ a = (1,1)
 
 
 for name, code in funcs.items():
-    try:
-        input = [""]
-        tree = transform(code, input)
-        transpiled = unparse(tree)
+    # try:
+    #     input = ["", {}]
+    #     tree = transform(code, input)
+    #     transpiled = unparse(tree)
 
-        _name = input[0]
+    #     _name, imports = input
 
-        open('transpiled.py', "w+").write(transpiled)
+    #     open('transpiled.py', "w+").write(transpiled)
 
-        exec(transpiled, {_name: Runner(_name, code),
-                          'dir': None, 'open': None}, {})
-        print(f"✔ {name}")
-    except Exception as e:
-        print(f"✖ {name} -> {e}")
-    # if name != 'PA':
-    #     continue
-    # input = [""]
-    # tree = transform(code, input)
-    # transpiled = unparse(tree)
+    #     exec(transpiled, global_sandbox.create(_name, runner, imports))
+    #     print(f"✔ {name}")
+    # except Exception as e:
+        # print(f"✖ {name} -> {e}")
+    if name != 'import':
+        continue
+    input = ["", {}]
+    tree = transform(code, input)
+    transpiled = unparse(tree)
 
-    # _name = input[0]
+    _name, imports = input
 
-    # open('transpiled.py', "w+").write(transpiled)
-    # runner = Runner(_name, code)
-    # exec(transpiled, global_sandbox.create(_name, runner))
+    open('transpiled.py', "w+").write(transpiled)
+    runner = Runner(_name, code)
+    exec(transpiled, global_sandbox.create(_name, runner, imports))
 
-    # open('executed.json', 'w+').write(
-    #     json.dumps(
-    #         {
-    #             'steps': runner.steps,
-    #             'objects': runner.objects,
-    #             'types': runner.types,
-    #             'objectIndex': runner.objectIndex,
-    #             'dataVersion': 1
-    #         }
-    #     )
-    # )
-    # print(f"✔ {name}")
+    open('executed.json', 'w+').write(
+        json.dumps(
+            {
+                'steps': runner.steps,
+                'objects': runner.objects,
+                'types': runner.types,
+                'objectIndex': runner.objectIndex,
+                'dataVersion': 1
+            }
+        )
+    )
+    print(f"✔ {name}")
