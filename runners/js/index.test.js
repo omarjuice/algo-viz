@@ -90,38 +90,33 @@ describe('VM code execution', function () {
 
 
     })
-
     it.only('custom test', async () => {
         process.env.CODE = `
-        class BTree{
-            constructor(value){
-                this.value = value
-                this.left = null
-                this.right = null
-            }
+        let ret;
+let current;
+class MyBST{
+
+}
+{
+   const tree = eval(\`
+
+    const bst = Viz.BTree.create(Viz.array.sortedInts(31, false), 'binary')
+    function traverse(tree){
+        if (!tree){
+            return
         }
-        const btree = new BTree('P')
-        {
-            const queue = [btree]
-            let numNodes = 30
-            while(numNodes > 0){
-                const node = queue.shift()
-                node.left = new BTree('L')
-                node.right = new BTree('R')
-                numNodes -= 2
-                queue.push(node.left, node.right)
-            }
-        }
-        function invert(tree){
-            if(tree){
-                invert(tree.left)
-                invert(tree.right)
-                const temp = tree.right
-                tree.right = tree.left
-                tree.left = temp
-            }
-        }
-        invert(btree)
+        traverse(tree.left)
+        tree.__proto__ = MyBST
+        traverse(tree.right)
+        return tree
+    }
+    traverse(bst)
+    \`)
+
+
+}
+
+
     `
         let body = execute()
 

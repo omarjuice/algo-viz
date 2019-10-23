@@ -30,19 +30,19 @@ app.use(express.static(path.join(__dirname, "..", "client/build")));
 
 
 async function initialize() {
-
+    let hasError;
     const mongoUri = env === 'production' ? process.env.MONGO_URI : 'mongodb://localhost:27017';
     const dbName = env === 'test' ? 'algo_viz_test' : 'algo_viz'
-    const client = await mongo.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
-    const database = client.db(dbName);
-    const Issues = database.collection('issues');
-    const Submissions = database.collection('submissions')
+    const client = await mongo.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true }).catch(e => hasError = true)
+    const database = !hasError && client.db(dbName);
+    const Issues = !hasError && database.collection('issues');
+    const Submissions = !hasError && database.collection('submissions')
 
 
 
 
     app.use(session({
-        store: new MongoStore({ url: env === 'production' ? mongoUri : mongoUri + '/' + dbName }),
+        store: !hasError ? new MongoStore({ url: env === 'production' ? mongoUri : mongoUri + '/' + dbName }) : null,
         secret: process.env.SESSION_SECRET || 'secret',
         resave: false,
         saveUninitialized: true,
