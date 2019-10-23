@@ -3,11 +3,19 @@ from time import time
 from runner import Runner
 from transpile import transform
 from astunparse import unparse
+import global_sandbox
 import json
 ENV = os.getenv('ENV')
 FILENAME = os.getenv('FILENAME')
 VOL = os.getenv('VOLUME')
 DATA_VERSION = os.getenv('DATA_VERSION')
+
+
+def type_override(obj):
+    if isinstance(obj, ObjectProxy):
+        return type(obj.__wrapped__)
+    else:
+        return type(obj)
 
 
 def execute():
@@ -25,8 +33,7 @@ def execute():
     start = time()
 
     try:
-        exec(transpiled, {_name: runner,
-                          'dir': None, 'open': None})
+        exec(transpiled, global_sandbox.create(_name, runner))
     except Exception as e:
         runner.steps.append({
             'type': 'ERROR',
