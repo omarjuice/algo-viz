@@ -30,6 +30,7 @@ import SwitchButton from './settings/SwitchButton';
 class Tutorial extends Component {
     imageUrl = (name: string) => `https://res.cloudinary.com/omarjuice/image/upload/v1566858014/algo-viz-tutorial/${name}.png`;
     titles = [
+        'About',
         'Getting Started',
         'Submitting code',
         'Visualizing: Playing and Pausing',
@@ -67,8 +68,56 @@ class Tutorial extends Component {
             </div>
         ),(
             <div>
+                <h1 className="title is-4 has-text-centered">
+                    About
+                </h1>
+                {/* <h1 className="title is-5 has-text-centered">
+                    The Developer
+                </h1> */}
+                <div>
+                    Hey! My name is Omar. I made AlgoViz to:
+                    <br/>
+                    <br/>
+                    <b>Level 1:</b> Help visual learners understand code
+                    <br/>
+                    <b>Level 2:</b> Help engineers pass their interviews by creating robust visualizations of Algorithms and Data Structures directly from code
+                    <br/>
+                    <br/>
+                    I would love to hear your thoughts. Feel free to reach out to me here:{' '} 
+                    
+                    <div className="columns is-centered">
+                        <div className="column is-narrow">
+                            <a href="https://www.linkedin.com/in/omarjameer/" target="_blank" rel="noopener noreferrer">
+                                <figure className="image is-64x64">
+                                    <img src={process.env.PUBLIC_URL + '/linkedin-brands.svg'} alt="" />
+                                </figure>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div>
+                    I hope that AlgoViz helps you in some way. If, not please let me know how it can be improved.
+                    This project is totally open source.
+                    You can find the source code here:
+                </div>
+                <div className="columns is-centered">
+                    <div className="column is-narrow">
+                        <a href="https://github.com/omarjuice/algo-viz" target="_blank" rel="noopener noreferrer">
+                            <figure className="image is-64x64">
+                                <img src={process.env.PUBLIC_URL + '/github-brands.svg'} alt="" />
+                            </figure>
+                        </a>
+                    </div>
+                </div>
+               
+            </div>
+        ),
+        
+        (
+            <div>
             <h1 className="title is-4 has-text-centered">
-                {this.titles[0]}
+                {this.titles[1]}
             </h1>
             <figure className="image is-16by9">
                 <img src={this.imageUrl('nthFib')} alt="" />
@@ -84,7 +133,7 @@ class Tutorial extends Component {
         ,
         (<div>
             <h1 className="title is-4 has-text-centered">
-                {this.titles[1]}
+                {this.titles[2]}
             </h1>
             <figure className="image is-16by9">
                 <img src={this.imageUrl('coding')} alt="" />
@@ -106,7 +155,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[2]}
+                    {this.titles[3]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('playing')} alt="" />
@@ -129,7 +178,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[3]}
+                    {this.titles[4]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('playing2')} alt="" />
@@ -168,7 +217,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[4]}
+                    {this.titles[5]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('speeds')} alt="" />
@@ -189,7 +238,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[5]}
+                    {this.titles[6]}
                 </h1>
                <div style={{backgroundColor: store.settings.configColors["Primary Background"]}}>
                {Object.keys(store.settings.config).map((name) => {
@@ -256,7 +305,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[6]}
+                    {this.titles[7]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('structs')} alt="" />
@@ -274,7 +323,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[7]}
+                    {this.titles[8]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('children')} alt="" />
@@ -290,7 +339,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[8]}
+                    {this.titles[9]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('multi_children')} alt="" />
@@ -310,7 +359,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[9]}
+                    {this.titles[10]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('numChildren')} alt="" />
@@ -336,7 +385,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[10]}
+                    {this.titles[11]}
                 </h1>
                 <figure className="image is-16by9">
                     <img src={this.imageUrl('pointers')} alt="" />
@@ -396,7 +445,7 @@ class Tutorial extends Component {
         ), (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[13]}
+                    {this.titles[14]}
                 </h1>
 
                 <div>
@@ -418,7 +467,7 @@ class Tutorial extends Component {
         (
             <div>
                 <h1 className="title is-4 has-text-centered">
-                    {this.titles[14]}
+                    {this.titles[15]}
                 </h1>
 
                 <div>
@@ -435,28 +484,7 @@ class Tutorial extends Component {
                 </div>
             </div>
         ),
-        (
-            <div>
-                <h1 className="title is-4 has-text-centered">
-                    Enjoy!
-                </h1>
-
-                <div>
-                    I hope that Algo-viz helps you in some way. If, not please let me know how it can be improved.
-                    This project is totally open source.
-                    You can find the source code here:
-                </div>
-                <div className="columns is-centered">
-                    <div className="column is-narrow">
-                        <a href="https://github.com/omarjuice/algo-viz" target="_blank" rel="noopener noreferrer">
-                            <figure className="image is-64x64">
-                                <img src={process.env.PUBLIC_URL + '/github-brands.svg'} alt="" />
-                            </figure>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        )
+        
 
 
 
