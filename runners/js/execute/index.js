@@ -18,8 +18,7 @@ module.exports = function (_name, transpiled, code) {
     const runner = new Runner(_name)
     const intentional = Symbol('intentional')
     runner.intentional = intentional
-    let start;
-    let end;
+    let runtime;
     try {
         const sandBox = {
             [_name]: runner,
@@ -29,11 +28,10 @@ module.exports = function (_name, transpiled, code) {
             value: runner,
             enumerable: false
         })
-        start = Date.now()
         vm.runInNewContext(transpiled, sandBox, {
             timeout: 5000
         })
-        end = Date.now()
+        runtime = Date.now() - runner.start
 
     } catch (error) {
         if (!error[intentional] && error.name === 'RunnerError') {
@@ -42,7 +40,7 @@ module.exports = function (_name, transpiled, code) {
         if (!prod) {
             console.log(error);
         }
-        end = Date.now()
+        runtime = Date.now() - runner.start
         runner.ignore(true)
         runner.steps.push({
             type: 'ERROR',
@@ -52,7 +50,7 @@ module.exports = function (_name, transpiled, code) {
     const { steps, objects, types, objectIndex } = runner
     try {
         const data = JSON.stringify({
-            steps, objects, types, objectIndex, code, version, runtime: end - start
+            steps, objects, types, objectIndex, code, version, runtime
         })
         return data
     } catch (e) {
@@ -70,7 +68,7 @@ module.exports = function (_name, transpiled, code) {
                 };
             };
 
-            const data = JSON.stringify({ steps, objects, types, objectIndex, code, version, runtime: end - start }, getCircularReplacer());
+            const data = JSON.stringify({ steps, objects, types, objectIndex, code, version, runtime }, getCircularReplacer());
             return data
         } catch (e) {
 
