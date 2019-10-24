@@ -80,6 +80,7 @@ class Runner {
 
     }
     setGlobal(ref) {
+        this.start = Date.now()
         this.global = ref
         const id = this.genId(5, 4)
 
