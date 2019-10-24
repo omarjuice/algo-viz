@@ -62,8 +62,9 @@ module.exports = function (obj) {
             this.objects[newId] = copy
         } else {
             const copy = {}
+            const isBaseObject = obj.constructor === this.global.Object
             for (const key in obj) {
-                if (key[0] === '_') continue;
+                if (key[0] === '_' && !isBaseObject) continue;
                 const def = Reflect.getOwnPropertyDescriptor(obj, key)
                 if (!def) {
                     continue;

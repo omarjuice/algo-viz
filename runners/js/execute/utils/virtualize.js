@@ -37,9 +37,10 @@ function virtualize(object) {
     return proxy
 }
 
-function isVirtualProperty(object, property) {
+function isVirtualProperty(object, property, runner) {
+    const isBaseObject = object.constructor === runner.global.Object
     const definition = Reflect.getOwnPropertyDescriptor(object, property)
-    return !!definition && typeof property !== 'symbol' && property[0] !== '_' && definition.enumerable === true
+    return !!definition && typeof property !== 'symbol' && (isBaseObject || property[0] !== '_') && definition.enumerable === true
 }
 function convert(val) {
     if (typeof val !== 'string') return val
@@ -57,7 +58,7 @@ function virtualizeObject(object, runner) {
             }
             const val = target[prop]
 
-            if (isVirtualProperty(target, prop))
+            if (isVirtualProperty(target, prop, runner))
                 runner.__(val, {
                     type: TYPES.GET,
                     object,
@@ -68,7 +69,7 @@ function virtualizeObject(object, runner) {
         set(target, prop, value) {
 
             target[prop] = runner.virtualize(value)
-            if (isVirtualProperty(target, prop))
+            if (isVirtualProperty(target, prop, runner))
                 runner.__(target[prop], {
                     type: TYPES.SET,
                     object,
@@ -77,7 +78,7 @@ function virtualizeObject(object, runner) {
             return true
         },
         deleteProperty(target, prop) {
-            if (!isVirtualProperty(target, prop)) return delete target[prop]
+            if (!isVirtualProperty(target, prop, runner)) return delete target[prop]
             return runner.__(delete target[prop], {
                 type: TYPES.DELETE,
                 object,
