@@ -207,6 +207,7 @@ const valueColorDefaults: Viz.valueColors = {
 }
 
 class Settings {
+    @observable dependentTypes: Set<string> = new Set()
     valueColorDefaults: Viz.valueColors = valueColorDefaults
     @observable valueColors: Viz.valueColors = { ...valueColorDefaults }
     configColorDefaults: Viz.configColors = configColorDefaults

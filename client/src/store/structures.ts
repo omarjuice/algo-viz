@@ -33,6 +33,7 @@ class Structures {
             if (!this.root.settings.structSettings[type]) {
                 this.root.settings.addStruct(type)
             }
+            this.root.settings.dependentTypes.add(type)
             if (this.root.settings.arrayTypes.has(type)) {
                 for (let i = 0; i < obj['length']; i++) {
                     const val = obj[i]

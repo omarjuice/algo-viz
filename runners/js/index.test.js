@@ -90,32 +90,27 @@ describe('VM code execution', function () {
 
 
     })
-    it.only('custom test', async () => {
+    it('Banned try statement', async () => {
         process.env.CODE = `
-        let ret;
-let current;
-class MyBST{
+            try{
+                
+            }catch(e){
 
-}
-{
-   const tree = eval(\`
+            }
 
-    const bst = Viz.BTree.create(Viz.array.sortedInts(31, false), 'binary')
-    function traverse(tree){
-        if (!tree){
-            return
+  
+    `
+        try {
+            let body = execute()
+        } catch (e) {
+            if (!(e instanceof SyntaxError)) {
+                throw e
+            }
         }
-        traverse(tree.left)
-        tree.__proto__ = MyBST
-        traverse(tree.right)
-        return tree
-    }
-    traverse(bst)
-    \`)
 
-
-}
-
+    })
+    it('custom test', async () => {
+        process.env.CODE = `
 
     `
         let body = execute()
