@@ -154,7 +154,7 @@ arr = [1,2,4,5]
 insort(arr, 3)
 ''',
     'f': '''
-a = open
+a = globals()
 '''
 
 }

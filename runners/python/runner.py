@@ -176,10 +176,14 @@ class Runner:
             return new_id
 
     def setGlobal(self, g):
+        _id = self.gen_id(5, 4)
+        self.map[id(g)] = _id
+        self.types[_id] = "global"
         for key in g:
             val = g[key]
             if val == None:
                 continue
-            _id = self.gen_id(5, 4)
+            num_ = 5 if hasattr(typing, key) else 4
+            _id = self.gen_id(5, num_)
             self.map[id(val)] = _id
             self.types[_id] = key
