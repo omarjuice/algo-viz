@@ -2,6 +2,7 @@ import React from 'react';
 import store from '../../store';
 import Pointer from './Pointer';
 import { observer } from 'mobx-react';
+import getType from '../../utils/getType';
 
 type Props = {
     value: any,
@@ -29,6 +30,18 @@ const ValText: React.FC<Props> = observer(({ value, type, textOnly = false, size
     }
     if (type === 'func' || type === 'native' || type === 'special' || type === 'other') {
         value = store.viz.types[value]
+    }
+    if (Array.isArray(value)) {
+        const nodes = []
+        let i = 0;
+        for (const item of value) {
+            nodes.push(<ValText value={item} type={getType(item)} textOnly={false} size={size / value.length} />)
+            if (i < value.length - 1) {
+                nodes.push(',')
+            }
+            i++
+        }
+        return <span style={{ color: store.settings.valueColors.other }}>({nodes})</span>
     }
     value = String(value)
 

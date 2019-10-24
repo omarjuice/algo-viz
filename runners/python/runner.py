@@ -78,7 +78,7 @@ class Runner:
             self.map[id(proxy)] = self.map[id(obj)]
         else:
             _id = self.stringify(obj)
-            self.map[id(proxy)] = id
+            self.map[id(proxy)] = _id
 
         return proxy
 
@@ -118,9 +118,12 @@ class Runner:
         if t in primitives:
             if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append)}:
                 _id = self.gen_id(5, 5)
-                self.map[obj] = _id
                 if t == tuple:
-                    self.types[_id] = str(obj)[1:-1].replace(" ", "").strip()
+                    self.map[id(obj)] = _id
+                    copy = []
+                    for item in obj:
+                        copy.append(self.stringify(item))
+                    self.types[_id] = copy
                 else:
                     self.types[_id] = str(obj)
                 return _id

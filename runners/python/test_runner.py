@@ -143,7 +143,7 @@ Solution().pacificAtlantic(
 )
 ''',
     'tuple': '''
-a = (1,1)
+a = (1,[])
 ''',
     'import': '''
 
@@ -168,7 +168,7 @@ for name, code in funcs.items():
     #     print(f"✔ {name}")
     # except Exception as e:
         # print(f"✖ {name} -> {e}")
-    if name != 'import':
+    if name != 'tuple':
         continue
     input = ["", {}]
     tree = transform(code, input)

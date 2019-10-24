@@ -23,7 +23,11 @@ const getVal = (value: any, displayProps: Viz.DisplayProps, type: Viz.valType, i
     if (type === 'boolean') {
         displayProps.textDisplay = value ? 'T' : 'F'
     } else if (type === 'string' || type === 'other') {
-        if (value.length <= 4) displayProps.textDisplay = value
+        if (typeof value === 'string' && value.length <= 4) {
+            displayProps.textDisplay = value
+        } else if (Array.isArray(value)) {
+            displayProps.textDisplay = null
+        }
     } else if (type === 'number') {
         const strVal = String(value)
         let len = strVal.length
