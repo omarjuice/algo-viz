@@ -105,6 +105,13 @@ from x import *
 
 ''',
 
+    'with': '''
+
+with x as (m,n,(o,p)):
+    ...
+
+'''
+
 
 
 }
@@ -138,7 +145,7 @@ class TestRunner:
 
 
 for name, code in funcs.items():
-    if name != 'import':
+    if name != 'with':
         continue
     try:
         input = ["", {}]

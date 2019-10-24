@@ -104,9 +104,9 @@ class Runner:
 
         self.num_steps += 1
         if self.num_steps > self.limit:
-            ...
+            raise Exception('Step limit exceeded.')
         if self.calls > 500:
-            ...
+            raise Exception('Maximum callstack size of 500 exceeded.')
 
         return self.virtualize(val)
 

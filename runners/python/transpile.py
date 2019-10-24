@@ -180,6 +180,8 @@ class Transformer(ast.NodeTransformer):
             return False
         elif isinstance(parent, (ast.List, ast.Tuple)):
             return self.should_wrap_list_or_tuple(parent)
+        elif isinstance(parent, (ast.withitem)) and node == parent.optional_vars:
+            return False
         else:
             return True
 
@@ -267,7 +269,19 @@ class Transformer(ast.NodeTransformer):
             )
             node.body.insert(0, new_node)
         return node
-
+    def visit_With(self, node):
+        self.generic_visit(node)
+        assignments = flat_map_assignments([item.optional_vars for item in node.items], depth=1)
+        for name in reversed(assignments):
+            new_name = ast.Name(id=name.id, ctx=ast.Load())
+            new_node = self.wrapper(
+                new_name,
+                self.get_assignment_details(name),
+                expr=True
+            )
+            node.body.insert(0, new_node)
+        return node
+        
     def visit_FunctionDef(self, node):
         self.scopes.add_scope(node)
         scope = self.scopes.get_scope(node)
