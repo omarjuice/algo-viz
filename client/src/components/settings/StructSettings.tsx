@@ -190,7 +190,7 @@ class StructSettings extends Component<Props> {
 
                 <div className="columns">
                     <div className="column has-text-left">
-                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"] }}>{name}</h1>
+                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"], hyphens: 'auto' }}>{name}</h1>
                     </div>
                     <div className="column has-text-centered">
                         {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing, deleting: false })}
@@ -205,7 +205,7 @@ class StructSettings extends Component<Props> {
                         <input type="color" value={structSettings.textColor} onChange={(e) => structSettings.textColor = e.target.value} />
                     </div>}
                     <div className="column has-text-right">
-                        {!isNative && !isBuiltin && (
+                        {!isNative && !isBuiltin && !settings.dependentTypes.has(name) && (
                             this.state.deleting ?
                                 <div className="columns">
                                     <div className="column is-one-third">
