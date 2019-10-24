@@ -147,9 +147,15 @@ a = (1,[])
 ''',
     'import': '''
 
-from bisect import b
-'''
+from bisect import insort
 
+arr = [1,2,4,5]
+
+insort(arr, 3)
+''',
+    'f': '''
+a = open
+'''
 
 }
 
@@ -161,14 +167,15 @@ for name, code in funcs.items():
     #     transpiled = unparse(tree)
 
     #     _name, imports = input
-
+    #     runner = Runner(_name, code)
     #     open('transpiled.py', "w+").write(transpiled)
 
     #     exec(transpiled, global_sandbox.create(_name, runner, imports))
     #     print(f"✔ {name}")
     # except Exception as e:
-        # print(f"✖ {name} -> {e}")
-    if name != 'tuple':
+    #     print(f"✖ {name} -> {e}")
+
+    if name != 'f':
         continue
     input = ["", {}]
     tree = transform(code, input)

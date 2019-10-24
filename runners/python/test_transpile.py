@@ -145,10 +145,9 @@ for name, code in funcs.items():
         tree = transform(code, input)
         transpiled = unparse(tree)
 
-        _name, inputs = input
+        _name, imports = input
 
         open('transpiled.py', "w+").write(transpiled)
-        print(inputs)
         # globals()[_name] = TestRunner()
 
         # exec(transpiled, {_name: TestRunner(), 'dir': None, 'open': None}, {})

@@ -1,5 +1,6 @@
 from proxy import ObjectProxy
 import importlib
+import typing
 white_listed_imports = {
     'bisect',
     # 'heapq',
@@ -64,4 +65,7 @@ def create(_name, runner, imports):
                 if nm not in exports:
                     raise Exception(f'{nm} is not exported from {name}.')
                 sandbox[alias] = getattr(mod, nm)
+
+    for n in dir(typing):
+        sandbox[n] = getattr(typing, n)
     return sandbox

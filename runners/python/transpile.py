@@ -16,6 +16,21 @@ def transform(code, input):
     input[0] = transformer.wrapper_name
     input[1] = transformer.imports
     transformed = transformer.visit(tree)
+    call_node = ast.Expr(
+            value=ast.Call(
+                func=ast.Attribute(value=ast.Name(
+                    id=transformer.wrapper_name, ctx=ast.Load()), attr="setGlobal", ctx=ast.Load()),
+                args=[
+                    ast.Call(
+                        func=ast.Name("globals"),
+                        args=[],
+                        keywords=[]
+                    )
+                ],
+                keywords=[]
+            )
+        )
+    transformed.body.insert(0,call_node)
     ast.fix_missing_locations(tree)
 
     return tree
@@ -59,6 +74,16 @@ def flat_map_assignments(targets, depth=0):
     return (assignments)
 
 
+def get_body_idx(parent, node):
+    body = parent.body
+    try:
+        idx = body.index(node)
+    except ValueError:
+        body = parent.orelse
+        idx = body.index(node)
+    return body, idx
+
+
 class Transformer(ast.NodeTransformer):
     def __init__(self, tree: ast.Module, tokens: asttokens.ASTTokens):
         self.scopes = Scopes(tree)
@@ -75,6 +100,7 @@ class Transformer(ast.NodeTransformer):
         for t in ['Tuple', 'List']:
             key = 'visit_' + t
             setattr(self, key, self.visit_list_or_tuple)
+
         tree.body.insert(0, self.wrapper(ast.NameConstant(value=None), {
             'type': TYPES.PROGRAM,
             'scope': self.scopes.get_scope(tree)
@@ -185,7 +211,7 @@ class Transformer(ast.NodeTransformer):
         assignments = flat_map_assignments(node.targets)
 
         parent = self.scopes.parents[node]
-        idx = parent.body.index(node)
+        body, idx = get_body_idx(parent, node)
         for name in reversed(assignments):
             new_name = ast.Name(id=name.id, ctx=ast.Load())
             new_node = self.wrapper(
@@ -193,7 +219,7 @@ class Transformer(ast.NodeTransformer):
                 self.get_assignment_details(name),
                 expr=True
             )
-            parent.body.insert(idx + 1, new_node)
+            body.insert(idx + 1, new_node)
         return node
 
     def visit_AnnAssign(self, node):
@@ -201,25 +227,22 @@ class Transformer(ast.NodeTransformer):
         if isinstance(node.target, ast.Name):
             parent = self.scopes.parents[node]
             idx = parent.body.index(node)
+            body, idx = get_body_idx(parent, node)
             new_name = ast.Name(id=node.target.id, ctx=ast.Load())
             new_node = self.wrapper(
                 new_name,
                 self.get_assignment_details(node.target),
                 expr=True
             )
-            parent.body.insert(idx + 1, new_node)
+            body.insert(idx + 1, new_node)
         return node
 
     def visit_AugAssign(self, node):
         self.generic_visit(node)
         if isinstance(node.target, ast.Name):
             parent = self.scopes.parents[node]
-            body = parent.body
-            try:
-                idx = body.index(node)
-            except ValueError:
-                body = parent.orelse
-                idx = body.index(node)
+            body, idx = get_body_idx(parent, node)
+
             new_name = ast.Name(id=node.target.id, ctx=ast.Load())
 
             details = self.get_assignment_details(node.target)

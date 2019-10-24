@@ -2,12 +2,13 @@ from wrapper_types import TYPES
 import string
 from random import choice
 from proxy import generic_proxy, list_proxy, dict_proxy, set_proxy
+import typing
 
 lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
 fnc = type(range)
 primitives = {int, str, bool, rng, slice,
-              float, complex, fnc, bytes, type(None), tuple, type(lambda: 0), type([].append)}
+              float, complex, fnc, bytes, type(None), tuple, type(lambda: 0), type([].append), typing._GenericAlias}
 
 
 class Runner:
@@ -34,11 +35,11 @@ class Runner:
         self.gc = []
 
         none_literal = self.gen_id(5, 1)
-        self.map[None] = none_literal
+        self.map[id(None)] = none_literal
         self.types[none_literal] = 'None'
 
         ellips_literal = self.gen_id(5, 1)
-        self.map[Ellipsis] = '...'
+        self.map[id(Ellipsis)] = '...'
 
         self.num_steps = 0
 
@@ -90,8 +91,8 @@ class Runner:
         if t in [TYPES.DELETE, TYPES.SET, TYPES.GET]:
             info['object'] = self.stringify(info['object'])
             info['access'] = self.stringify(info['access'])
-        info['value'] = self.stringify(val)
 
+        info['value'] = self.stringify(val)
         if t in [TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN]:
             prev = self.steps[-1]
             if 'batch' not in prev:
@@ -107,8 +108,6 @@ class Runner:
         if self.calls > 500:
             ...
 
-        # print(val, info)
-
         return self.virtualize(val)
 
     def stringify(self, obj):
@@ -116,7 +115,7 @@ class Runner:
             return self.map[(id(obj))]
         t = type(obj)
         if t in primitives:
-            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append)}:
+            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias}:
                 _id = self.gen_id(5, 5)
                 if t == tuple:
                     self.map[id(obj)] = _id
@@ -165,6 +164,8 @@ class Runner:
             else:
                 copy = {}
                 for key, value in obj.__dict__.items():
+                    if key[0] == '_':
+                        continue
                     copy[key] = self.stringify(value)
                     obj.__dict__[key] = self.virtualize(value)
                 self.objects[new_id] = copy
@@ -173,3 +174,12 @@ class Runner:
             self.types[new_id] = type_name
             self.gc.append(obj)
             return new_id
+
+    def setGlobal(self, g):
+        for key in g:
+            val = g[key]
+            if val == None:
+                continue
+            _id = self.gen_id(5, 4)
+            self.map[id(val)] = _id
+            self.types[_id] = key

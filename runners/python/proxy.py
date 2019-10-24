@@ -90,7 +90,6 @@ def generic_proxy(runner):
                 object.__delattr__(self, name)
 
             else:
-                print('DELETE', name)
                 runner.__(True, {
                     'type': TYPES.DELETE,
                     'object': self.__wrapped__,
@@ -290,7 +289,6 @@ def list_proxy(runner):
                                 'object': self.__wrapped__,
                                 'access': i
                             })
-                        print('SET', 'length', 0)
                         runner.__(0, {
                             'type': TYPES.SET,
                             'object': self.__wrapped__,
