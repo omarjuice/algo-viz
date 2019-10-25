@@ -155,6 +155,21 @@ insort(arr, 3)
 ''',
     'f': '''
 a = globals()
+''',
+
+    'comprehensions': '''
+
+
+arr = [[(i,j) for i in range(2)] for j in range(5)]
+
+
+z = [(a,b) for line in arr if 1+1 if 1 for (a,b) in line]
+
+''',
+
+    'generator': '''
+
+a = (num ** 2 for num in range(10))
 '''
 
 }
@@ -175,7 +190,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'f':
+    if name != 'generator':
         continue
     input = ["", {}]
     tree = transform(code, input)

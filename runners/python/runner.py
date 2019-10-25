@@ -7,8 +7,11 @@ import typing
 lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
 fnc = type(range)
+gen = type((1 for _ in range(1)))
 primitives = {int, str, bool, rng, slice,
-              float, complex, fnc, bytes, type(None), tuple, type(lambda: 0), type([].append), typing._GenericAlias}
+              float, complex, fnc, bytes, type(...),
+              type(None), tuple, type(lambda: 0),
+              type([].append), typing._GenericAlias, gen}
 
 
 class Runner:
@@ -39,7 +42,8 @@ class Runner:
         self.types[none_literal] = 'None'
 
         ellips_literal = self.gen_id(5, 1)
-        self.map[id(Ellipsis)] = '...'
+        self.map[id(...)] = ellips_literal
+        self.types[ellips_literal] = '...'
 
         self.num_steps = 0
 
@@ -115,7 +119,7 @@ class Runner:
             return self.map[(id(obj))]
         t = type(obj)
         if t in primitives:
-            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias}:
+            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias, gen}:
                 _id = self.gen_id(5, 5)
                 if t == tuple:
                     self.map[id(obj)] = _id

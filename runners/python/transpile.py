@@ -17,20 +17,20 @@ def transform(code, input):
     input[1] = transformer.imports
     transformed = transformer.visit(tree)
     call_node = ast.Expr(
-            value=ast.Call(
-                func=ast.Attribute(value=ast.Name(
-                    id=transformer.wrapper_name, ctx=ast.Load()), attr="setGlobal", ctx=ast.Load()),
-                args=[
-                    ast.Call(
-                        func=ast.Name("globals"),
-                        args=[],
-                        keywords=[]
-                    )
-                ],
-                keywords=[]
-            )
+        value=ast.Call(
+            func=ast.Attribute(value=ast.Name(
+                id=transformer.wrapper_name, ctx=ast.Load()), attr="setGlobal", ctx=ast.Load()),
+            args=[
+                ast.Call(
+                    func=ast.Name("globals"),
+                    args=[],
+                    keywords=[]
+                )
+            ],
+            keywords=[]
         )
-    transformed.body.insert(0,call_node)
+    )
+    transformed.body.insert(0, call_node)
     ast.fix_missing_locations(tree)
 
     return tree
@@ -117,13 +117,13 @@ class Transformer(ast.NodeTransformer):
         self.ids.add(id)
         return id
 
-    def get_assignment_details(self, name):
+    def get_assignment_details(self, name, block=False):
         return {
             'scope': self.scopes.get_scope(name),
             'name': self.tokens.get_text_range(name),
             'type': self.scopes.add_identifier(name),
             'varName': name.id,
-            'block': False
+            'block': block
         }
 
     def wrapper(self, node, details, expr=False, is_generated=False):
@@ -157,6 +157,8 @@ class Transformer(ast.NodeTransformer):
             return call_node
 
     def visit_expr(self, node):
+        if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp)):
+            self.scopes.add_scope(node)
         self.generic_visit(node)
         return ast.copy_location(
             self.wrapper(node, {
@@ -181,6 +183,8 @@ class Transformer(ast.NodeTransformer):
         elif isinstance(parent, (ast.List, ast.Tuple)):
             return self.should_wrap_list_or_tuple(parent)
         elif isinstance(parent, (ast.withitem)) and node == parent.optional_vars:
+            return False
+        elif isinstance(parent, ast.comprehension) and node == parent.target:
             return False
         else:
             return True
@@ -269,9 +273,13 @@ class Transformer(ast.NodeTransformer):
             )
             node.body.insert(0, new_node)
         return node
+
     def visit_With(self, node):
         self.generic_visit(node)
-        assignments = flat_map_assignments([item.optional_vars for item in node.items], depth=1)
+        assignments = flat_map_assignments(
+            [item.optional_vars for item in node.items],
+            depth=1
+        )
         for name in reversed(assignments):
             new_name = ast.Name(id=name.id, ctx=ast.Load())
             new_node = self.wrapper(
@@ -281,7 +289,39 @@ class Transformer(ast.NodeTransformer):
             )
             node.body.insert(0, new_node)
         return node
-        
+
+    def visit_comprehension(self, node):
+        self.generic_visit(node)
+        assignments = flat_map_assignments([node.target], depth=1)
+        elts = []
+        # elts.append(self.wrapper(
+        #     ast.NameConstant(None),
+        #     {
+        #         'type': TYPES.BLOCK,
+        #         'scope': self.scopes.get_scope(node),
+        #     },
+        # ))
+        for name in assignments:
+            new_name = ast.Name(id=name.id, ctx=ast.Load())
+            new_node = self.wrapper(
+                new_name,
+                self.get_assignment_details(name, True),
+            )
+            elts.append(new_node)
+        elts.append(ast.NameConstant(True))
+        assign_list_node = ast.List(elts=elts)
+
+        node.ifs.insert(0, ast.Subscript(
+            value=assign_list_node,
+            slice=ast.Index(value=ast.Num(-1))
+        ))
+        return node
+
+    def visit_GeneratorExp(self, node):
+        self.scopes.add_scope(node)
+        self.generic_visit(node)
+        return node
+
     def visit_FunctionDef(self, node):
         self.scopes.add_scope(node)
         scope = self.scopes.get_scope(node)

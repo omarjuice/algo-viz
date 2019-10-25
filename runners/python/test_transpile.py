@@ -110,6 +110,19 @@ from x import *
 with x as (m,n,(o,p)):
     ...
 
+''',
+
+    'comprehensions': '''
+
+arr = [[i for i in range(2)] for j in range(5)]
+
+
+z = [(a,b) for line in arr if 1+1 if 1 for (a,b) in line]
+
+
+
+
+
 '''
 
 
@@ -145,7 +158,7 @@ class TestRunner:
 
 
 for name, code in funcs.items():
-    if name != 'with':
+    if name != 'comprehensions':
         continue
     try:
         input = ["", {}]
