@@ -178,6 +178,15 @@ a = [i for i in range(1,21)]
 a[-5]
 
 del a[19:10:-2]
+''',
+    'set': '''
+s = {1,2,3}
+s2 = {1,2,3,4,5}
+
+s & s2
+
+
+
 '''
 
 }
@@ -198,7 +207,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'arr':
+    if name != 'set':
         continue
     input = ["", {}]
     tree = transform(code, input)

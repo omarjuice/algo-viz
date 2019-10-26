@@ -14,6 +14,14 @@ primitives = {int, str, bool, rng, slice,
               type([].append), typing._GenericAlias, gen}
 
 
+def _hash(obj):
+    try:
+        print(hash(obj))
+        return True
+    except Exception:
+        return False
+
+
 class Runner:
     def __init__(self, name, code, limit=30000):
         self.limit = limit
@@ -95,7 +103,6 @@ class Runner:
         if t in [TYPES.DELETE, TYPES.SET, TYPES.GET]:
             info['object'] = self.stringify(info['object'])
             info['access'] = self.stringify(info['access'])
-
         info['value'] = self.stringify(val)
         if t in [TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN]:
             prev = self.steps[-1]
@@ -115,14 +122,11 @@ class Runner:
         return self.virtualize(val)
 
     def stringify(self, obj):
-        if (id(obj)) in self.map:
-            return self.map[(id(obj))]
         t = type(obj)
         if t in primitives:
             if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias, gen}:
                 _id = self.gen_id(5, 5)
                 if t == tuple:
-                    self.map[id(obj)] = _id
                     copy = []
                     for item in obj:
                         copy.append(self.stringify(item))
@@ -133,6 +137,13 @@ class Runner:
             else:
                 return obj
         else:
+            try:
+                if obj in self.map:
+                    return self.map[obj]
+            except Exception:
+                memid = id(obj)
+                if memid in self.map:
+                    return self.map[memid]
             new_id = self.gen_id(5, 3)
             self.map[id(obj)] = new_id
             ln = len(self.steps)
@@ -184,11 +195,17 @@ class Runner:
         _id = self.gen_id(5, 4)
         self.map[id(g)] = _id
         self.types[_id] = "global"
+        seen = {}
         for key in g:
             val = g[key]
+
             if val == None:
                 continue
+
             num_ = 5 if hasattr(typing, key) else 4
             _id = self.gen_id(5, num_)
-            self.map[id(val)] = _id
+            try:
+                self.map[val] = _id
+            except Exception:
+                self.map[id(val)] = _id
             self.types[_id] = key

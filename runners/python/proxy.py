@@ -578,6 +578,61 @@ def set_proxy(runner):
             else:
                 return attr
 
+        def __le__(self, other):
+            ret = super().__le__(other)
+            for val in self:
+                if val not in other:
+                    break
+            return ret
+
+        def __ge__(self, other):
+            ret = super().__ge__(other)
+            for val in other:
+                if val not in self:
+                    break
+            return ret
+
+        def __or__(self, other):
+            ret = super().__or__(other)
+            for val in self:
+                pass
+            for val in other:
+                pass
+            return ret
+
+        def __and__(self, other):
+            ret = super().__and__(other)
+            s = self if len(self) < len(other) else other
+            o = self if len(self) >= len(other) else other
+            for v in s:
+                if v in o:
+                    pass
+            return ret
+
+        def __sub__(self, other):
+            ret = super().__sub__(other)
+            for v in self:
+                v in other
+
+            return ret
+        def __xor__(self, other):
+            ret = super().__xor__(other)
+            for v in self:
+                pass
+            for v in other:
+                pass
+            return ret
+        def __contains__(self, val):
+            has = super().__contains__(val)
+            print(has)
+            if has:
+                runner.__(val, {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': val
+                })
+            return has
+
         def __iter__(self):
             for val in self.__wrapped__:
                 runner.__(val, {

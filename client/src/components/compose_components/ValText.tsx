@@ -43,7 +43,12 @@ const ValText: React.FC<Props> = observer(({ value, type, textOnly = false, size
         }
         return <span style={{ color: store.settings.valueColors.other }}>({nodes})</span>
     }
-    value = String(value)
+    if (type === 'boolean' && store.language === 'python') {
+        value = value ? 'True' : 'False'
+    } else {
+        value = String(value)
+    }
+
 
     return <span style={{ color, fontSize: `${(value.length > 20 ? 100 / value.length : 100)}%` }}>{value}</span>
 

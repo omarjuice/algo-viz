@@ -38,7 +38,8 @@ def create(_name, runner, imports):
         'credits',
         'license',
         'help',
-        '__import__'
+        '__import__',
+        '__package__',
     ]
     for name in ban_list:
         sandbox[name] = None
