@@ -131,6 +131,15 @@ function virtualizeArray(object, runner) {
             const isNumber = Number.isInteger(prop);
             const isVirtual = (isNumber && prop >= 0) || prop === 'length'
             if (len !== target.length) {
+                if (target.length < len) {
+                    for (let i = target.length; i < len; i++) {
+                        runner.__(true, {
+                            type: TYPES.DELETE,
+                            object,
+                            access: i
+                        })
+                    }
+                }
                 runner.__(target.length, {
                     type: TYPES.SET,
                     object,

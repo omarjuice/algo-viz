@@ -124,21 +124,39 @@ def list_proxy(runner):
         def __setitem__(self, key, value):
             ln = len(self)
             super().__setitem__(key, value)
-            for i in range(len(self))[key]:
-                runner.__(self.__wrapped__[i], {
+            if ln == len(self):
+                for i in range(len(self))[key]:
+                    runner.__(self.__wrapped__[i], {
+                        'type': TYPES.SET,
+                        'object': self.__wrapped__,
+                        'access': i
+                    })
+            else:
+                runner.__(len(self), {
                     'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': 'length'
+                })
+                for i in range(len(self)):
+                    runner.__(self.__wrapped__[i], {
+                        'type': TYPES.SET,
+                        'object': self.__wrapped__,
+                        'access': i
+                    })
+
+        def __delitem__(self, key):
+            ln = len(self)
+            length = len(range(ln)[key])
+            for i in range(ln - length, ln):
+                runner.__(True, {
+                    'type': TYPES.DELETE,
                     'object': self.__wrapped__,
                     'access': i
                 })
-
-        def __delitem__(self, key):
             super().__delitem__(key)
             if isinstance(key, slice):
                 start = key.start if key.start != None else 0
-                stop = key.stop if key.stop != None else len(self)
-                step = key.step if key.step != None else 1
-                stop = stop if stop >= 0 else (len(self) + stop)
-                ...
+
                 runner.__(len(self), {
                     'type': TYPES.SET,
                     'object': self.__wrapped__,
