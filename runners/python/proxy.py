@@ -112,24 +112,11 @@ def list_proxy(runner):
     class ListProxy(ObjectProxy):
         def __getitem__(self, key):
             item = super().__getitem__(key)
-            if isinstance(key, slice):
-                start = key.start if key.start != None else 0
-                stop = key.stop if key.stop != None else len(self)
-                step = key.step if key.step != None else 1
-                stop = stop if stop >= 0 else (len(self) + stop)
-
-                for i in range(start, stop, step):
-                    runner.__(self.__wrapped__[i], {
-                        'type': TYPES.GET,
-                        'object': self.__wrapped__,
-                        'access': i
-                    })
-            else:
-                key = key if key >= 0 else (len(self) + (key))
-                runner.__(self.__wrapped__[key], {
+            for i in range(len(self))[key]:
+                runner.__(self.__wrapped__[i], {
                     'type': TYPES.GET,
                     'object': self.__wrapped__,
-                    'access': key
+                    'access': i
                 })
 
             return item
@@ -137,31 +124,11 @@ def list_proxy(runner):
         def __setitem__(self, key, value):
             ln = len(self)
             super().__setitem__(key, value)
-            if isinstance(key, slice):
-                start = key.start if key.start != None else 0
-                stop = key.stop if key.stop != None else len(self)
-                step = key.step if key.step != None else 1
-                stop = stop if stop >= 0 else (len(self) + stop)
-                ...
-                if len(self) != ln:
-                    runner.__(len(self), {
-                        'type': TYPES.SET,
-                        'object': self.__wrapped__,
-                        'access': 'length'
-                    })
-                for i in range(start, len(self)):
-                    runner.__(self.__wrapped__[i], {
-                        'type': TYPES.SET,
-                        'object': self.__wrapped__,
-                        'access': i
-                    })
-
-            else:
-                key = key if key >= 0 else (len(self) + (key))
-                runner.__(self.__wrapped__[key], {
+            for i in range(len(self))[key]:
+                runner.__(self.__wrapped__[i], {
                     'type': TYPES.SET,
                     'object': self.__wrapped__,
-                    'access': key
+                    'access': i
                 })
 
         def __delitem__(self, key):
