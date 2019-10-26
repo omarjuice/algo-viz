@@ -170,6 +170,14 @@ z = [(a,b) for line in arr if 1+1 if 1 for (a,b) in line]
     'generator': '''
 
 a = (num ** 2 for num in range(10))
+''',
+
+    'arr': '''
+a = [i for i in range(1,21)]
+
+a[-5]
+
+del a[19:10:-2]
 '''
 
 }
@@ -190,7 +198,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'generator':
+    if name != 'arr':
         continue
     input = ["", {}]
     tree = transform(code, input)

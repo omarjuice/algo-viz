@@ -133,11 +133,13 @@ function virtualizeArray(object, runner) {
             if (len !== target.length) {
                 if (target.length < len) {
                     for (let i = target.length; i < len; i++) {
-                        runner.__(true, {
-                            type: TYPES.DELETE,
-                            object,
-                            access: i
-                        })
+                        if (i in target) {
+                            runner.__(true, {
+                                type: TYPES.DELETE,
+                                object,
+                                access: i
+                            })
+                        }
                     }
                 }
                 runner.__(target.length, {

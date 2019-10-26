@@ -141,10 +141,11 @@ class Runner:
             self.objectIndex[ln].append(new_id)
             if isinstance(obj, dict):
                 copy = {}
+                i = 0
                 for key, value in obj.items():
-                    key = self.stringify(key)
-                    copy[key] = self.stringify(value)
+                    copy[i] = [self.stringify(key), self.stringify(value)]
                     obj[key] = self.virtualize(value)
+                    i += 1
                 self.objects[new_id] = copy
 
             elif isinstance(obj, (list)):
