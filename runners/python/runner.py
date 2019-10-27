@@ -1,4 +1,5 @@
 from wrapper_types import TYPES
+from util import ValueMap
 import string
 from random import choice
 from proxy import *
@@ -23,7 +24,7 @@ class Runner:
 
         self.steps = []
 
-        self.map = {}
+        self.map = ValueMap()
 
         self.objects = {}
 
@@ -37,14 +38,12 @@ class Runner:
 
         self.name = name
 
-        self.gc = []
-
         none_literal = self.gen_id(5, 1)
-        self.map[None] = none_literal
+        self.map.add(None, none_literal)
         self.types[none_literal] = 'None'
 
         ellips_literal = self.gen_id(5, 1)
-        self.map[...] = ellips_literal
+        self.map.add(..., ellips_literal)
         self.types[ellips_literal] = '...'
 
         self.num_steps = 0
@@ -84,17 +83,16 @@ class Runner:
             proxy = self.GenericProxy(obj)
         self.proxies[id(obj)] = (proxy, False)
         self.proxies[id(proxy)] = (proxy, True)
-        if id(obj) in self.map:
-            self.map[id(proxy)] = self.map[id(obj)]
+        if self.map.has(obj):
+            self.map.add(proxy, self.map.get(obj))
         else:
             _id = self.stringify(obj)
-            self.map[id(proxy)] = _id
+            self.map.add(proxy, id)
 
         return proxy
 
     def __(self, val, info):
         # if(self.ignore) return val
-        print(self.types[self.map[None]])
         t = info['type']
         if t in [TYPES.FUNC, TYPES.METHOD]:
             self.calls += 1
@@ -120,6 +118,8 @@ class Runner:
         return self.virtualize(val)
 
     def stringify(self, obj):
+        if self.map.has(obj):
+            return self.map.get(obj)
         t = type(obj)
         if t in primitives:
             if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias, gen, chain}:
@@ -135,15 +135,9 @@ class Runner:
             else:
                 return obj
         else:
-            try:
-                if obj in self.map:
-                    return self.map[obj]
-            except Exception:
-                memid = id(obj)
-                if memid in self.map:
-                    return self.map[memid]
+
             new_id = self.gen_id(5, 3)
-            self.map[id(obj)] = new_id
+            self.map.add(obj, new_id)
             ln = len(self.steps)
             if ln not in self.objectIndex:
                 self.objectIndex[ln] = []
@@ -187,12 +181,11 @@ class Runner:
                 self.objects[new_id] = {}
             type_name = t.__name__
             self.types[new_id] = type_name
-            self.gc.append(obj)
             return new_id
 
     def setGlobal(self, g):
         _id = self.gen_id(5, 4)
-        self.map[id(g)] = _id
+        self.map.add(g, _id)
         self.types[_id] = "global"
         seen = {}
         for key in g:
@@ -203,8 +196,5 @@ class Runner:
 
             num_ = 5 if hasattr(typing, key) else 4
             _id = self.gen_id(5, num_)
-            try:
-                self.map[val] = _id
-            except Exception:
-                self.map[id(val)] = _id
+            self.map.add(val, _id)
             self.types[_id] = key
