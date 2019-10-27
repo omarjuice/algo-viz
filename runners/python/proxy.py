@@ -840,5 +840,4 @@ def ordereddict_proxy(runner):
                     'access': key
             })
             return result
-
     return OrderedDictProxy
