@@ -1,7 +1,7 @@
 class ValueMap:
     def __init__(self):
         self.map = {}
-        self.gc = []
+        self.gc = []  # prevents garbage collection
 
     def add(self, key, val):
         try:

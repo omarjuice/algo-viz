@@ -328,14 +328,15 @@ class Settings {
             this.viableParents.add('Map')
 
         } else if (lang === 'python') {
-            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4'], ['Counter', '#4682B4']]
+            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4'], ['Counter', '#4682B4'], ['OrderedDict', '#21AF74']]
             this.arrayTypes.add('list')
             this.setTypes.add('set')
             this.hashTypes.add('dict')
             this.hashTypes.add('Counter')
+            this.hashTypes.add('OrderedDict')
             this.hashTypes.add('set')
             this.mapTypes.add('dict')
-            this.mapTypes.add('Counter')
+            this.mapTypes.add('OrderedDict')
             this.viableParents.add('list')
             this.viableParents.add('dict')
         }

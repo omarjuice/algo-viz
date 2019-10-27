@@ -194,6 +194,14 @@ c = collections.Counter('abc')
 a = None
 
 
+''',
+    'ordereddict': '''
+from collections import OrderedDict
+
+d = OrderedDict()
+
+for i,c in enumerate('abcde'):
+    d[i] = c
 '''
 
 }
@@ -214,7 +222,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'counter':
+    if name != 'ordereddict':
         continue
     input = ["", {}]
     tree = transform(code, input)

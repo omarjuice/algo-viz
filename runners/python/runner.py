@@ -3,7 +3,7 @@ from util import ValueMap
 import string
 from random import choice
 from proxy import *
-from collections import Counter
+from collections import Counter, OrderedDict
 from itertools import chain
 import typing
 
@@ -11,10 +11,10 @@ lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
 fnc = type(range)
 gen = type((1 for _ in range(1)))
-primitives = {int, str, bool, rng, slice,
-              float, complex, fnc, bytes, type(...),
-              type(None), tuple, type(lambda: 0),
-              type([].append), typing._GenericAlias, gen, chain}
+
+primitives = {int, str, bool, float, complex, bytes, type(None)}
+others = {rng, slice, fnc, tuple, type(lambda: 0), type(
+    [].append), typing._GenericAlias, gen, chain}
 
 
 class Runner:
@@ -53,6 +53,7 @@ class Runner:
         self.DictProxy = dict_proxy(self)
         self.SetProxy = set_proxy(self)
         self.CounterProxy = counter_proxy(self)
+        self.OrderedDictProxy = ordereddict_proxy(self)
 
     def gen_id(self, l=3, num_=2):
 
@@ -79,6 +80,8 @@ class Runner:
             proxy = self.SetProxy(obj)
         elif t == Counter:
             proxy = self.CounterProxy(obj)
+        elif t == OrderedDict:
+            proxy = self.OrderedDictProxy(obj)
         else:
             proxy = self.GenericProxy(obj)
         self.proxies[id(obj)] = (proxy, False)
@@ -118,31 +121,27 @@ class Runner:
         return self.virtualize(val)
 
     def stringify(self, obj):
-        if self.map.has(obj):
-            return self.map.get(obj)
+
         t = type(obj)
         if t in primitives:
-            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias, gen, chain}:
-                _id = self.gen_id(5, 5)
-                if t == tuple:
-                    copy = []
-                    for item in obj:
-                        copy.append(self.stringify(item))
-                    self.types[_id] = copy
-                else:
-                    self.types[_id] = str(obj)
-                return _id
+            return obj
+        elif t in others:
+            _id = self.gen_id(5, 5)
+            if t == tuple:
+                copy = []
+                for item in obj:
+                    copy.append(self.stringify(item))
+                self.types[_id] = copy
             else:
-                return obj
+                self.types[_id] = str(obj)
+            return _id
         else:
-
+            if self.map.has(obj):
+                return self.map.get(obj)
             new_id = self.gen_id(5, 3)
             self.map.add(obj, new_id)
-            ln = len(self.steps)
-            if ln not in self.objectIndex:
-                self.objectIndex[ln] = []
-            self.objectIndex[ln].append(new_id)
-            if isinstance(obj, (dict, Counter)):
+
+            if isinstance(obj, (dict, Counter, OrderedDict)):
                 copy = {}
                 i = 0
                 for key, value in obj.items():
@@ -178,7 +177,15 @@ class Runner:
                     obj.__dict__[key] = self.virtualize(value)
                 self.objects[new_id] = copy
             else:
-                self.objects[new_id] = {}
+                new_id = self.gen_id(5, 5)
+                self.map.add(obj, new_id)
+                self.types[new_id] = str(obj)
+                return new_id
+
+            ln = len(self.steps)
+            if ln not in self.objectIndex:
+                self.objectIndex[ln] = []
+            self.objectIndex[ln].append(new_id)
             type_name = t.__name__
             self.types[new_id] = type_name
             return new_id

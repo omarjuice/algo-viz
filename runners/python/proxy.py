@@ -830,3 +830,16 @@ def counter_proxy(runner):
                     'access': key
                 })
     return CounterProxy
+def ordereddict_proxy(runner):
+    class OrderedDictProxy(runner.DictProxy):
+        def popitem(self, *args, **kwargs):
+            result = super().__getattr__('popitem')(*args, **kwargs)
+            key, val = result
+            runner.__(True, {
+                    'type': TYPES.DELETE,
+                    'object': self.__wrapped__,
+                    'access': key
+            })
+            return result
+
+    return OrderedDictProxy
