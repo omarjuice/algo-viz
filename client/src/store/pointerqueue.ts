@@ -175,21 +175,22 @@ class PointerQueue {
             }
             return 3
         }
+        if (this.baseTypes.arrayTypes.has(parentType)) {
+            if (this.parents[parent]) {
+                const grandParent = this.parents[parent]
+                const grandParentType = this.types[grandParent];
+                if (!this.baseTypes.unconfigurables.has(grandParentType)) {
+                    return 3
+                }
+            }
+        }
         if (this.baseTypes.hashTypes.has(childType)) {
             if (!this.baseTypes.unconfigurables.has(parentType)) {
                 return 3
             }
             return 0
         }
-        if (this.baseTypes.arrayTypes.has(parentType)) {
-            if (this.parents[parent]) {
-                const grandParent = this.parents[parent]
-                const type = this.types[grandParent];
-                if (!this.baseTypes.unconfigurables.has(type)) {
-                    return 3
-                }
-            }
-        }
+
         if (this.baseTypes.hashTypes.has(parentType) && !this.baseTypes.setTypes.has(parentType)) {
             if (this.parents[parent]) return 2
         }

@@ -202,8 +202,13 @@ d = OrderedDict()
 
 for i,c in enumerate('abcde'):
     d[i] = c
-'''
+''',
+    'createclass': '''
+from collections import namedtuple
 
+Point = namedtuple('Point', ['x', 'y'])
+
+'''
 }
 
 
@@ -222,7 +227,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'ordereddict':
+    if name != 'createclass':
         continue
     input = ["", {}]
     tree = transform(code, input)

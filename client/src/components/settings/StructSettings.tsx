@@ -183,7 +183,7 @@ class StructSettings extends Component<Props> {
         }
         const keys = Object.keys(this.state.order)
         const pointers = Object.keys(this.state.pointers)
-        const isBuiltin = /Viz\./g.test(name);
+        const isBuiltin = name in structInfo;
         const isNative = settings.unconfigurables.has(name)
         return (
             <div className={`box struct-settings-${name}`} style={style}>

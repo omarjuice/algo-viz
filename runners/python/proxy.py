@@ -451,7 +451,6 @@ def dict_proxy(runner):
             for key in self.__wrapped__:
                 self[key]
             return result
-
         def values(self, *args, **kwargs):
             result = super().__getattr__('values')(*args, **kwargs)
             for key in self.__wrapped__:

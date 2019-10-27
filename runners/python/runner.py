@@ -3,7 +3,7 @@ from util import ValueMap
 import string
 from random import choice
 from proxy import *
-from collections import Counter, OrderedDict
+from collections import Counter, OrderedDict, defaultdict
 from itertools import chain
 import typing
 
@@ -14,7 +14,7 @@ gen = type((1 for _ in range(1)))
 
 primitives = {int, str, bool, float, complex, bytes, type(None)}
 others = {rng, slice, fnc, tuple, type(lambda: 0), type(
-    [].append), typing._GenericAlias, gen, chain}
+    [].append), typing._GenericAlias, gen, chain, type}
 
 
 class Runner:
@@ -57,24 +57,24 @@ class Runner:
 
     def gen_id(self, l=3, num_=2):
 
-        id = None
+        _id = None
 
-        while not id or id in self.types:
-            id = ''.join('_' for i in range(num_)) + \
+        while not _id or _id in self.types:
+            _id = ''.join('_' for i in range(num_)) + \
                 ''.join(choice(lettersAndDigits) for i in range(l))
 
-        return id
+        return _id
 
     def virtualize(self, obj):
         t = type(obj)
         proxy = None
-        if t in primitives:
+        if t in primitives or t in others:
             return obj
         elif id(obj) in self.proxies:
             return self.proxies[id(obj)][0]
         elif t == list:
             proxy = self.ListProxy(obj)
-        elif t == dict:
+        elif t == dict or t == defaultdict:
             proxy = self.DictProxy(obj)
         elif t == set:
             proxy = self.SetProxy(obj)
@@ -90,7 +90,7 @@ class Runner:
             self.map.add(proxy, self.map.get(obj))
         else:
             _id = self.stringify(obj)
-            self.map.add(proxy, id)
+            self.map.add(proxy, _id)
 
         return proxy
 
@@ -117,21 +117,19 @@ class Runner:
             raise Exception('Step limit exceeded.')
         if self.calls > 500:
             raise Exception('Maximum callstack size of 500 exceeded.')
-
         return self.virtualize(val)
 
     def stringify(self, obj):
-
         t = type(obj)
         if t in primitives:
             return obj
         elif t in others:
             _id = self.gen_id(5, 5)
             if t == tuple:
-                copy = []
+                c = []
                 for item in obj:
-                    copy.append(self.stringify(item))
-                self.types[_id] = copy
+                    c.append(self.stringify(item))
+                self.types[_id] = c
             else:
                 self.types[_id] = str(obj)
             return _id

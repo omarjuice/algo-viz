@@ -169,8 +169,21 @@ export const jsStructInfo: Viz.structSettings = {
         pointers: {}
     }
 }
-export const pyStructInfo: Viz.structSettings = {
 
+export const pyStructInfo: Viz.structSettings = {
+    ChainMap: {
+        order: {
+            maps: {
+                pos: 1,
+                isMultiple: true
+            }
+        },
+        main: null,
+        numChildren: null,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {}
+    }
 }
 
 Object.defineProperty(jsStructInfo, 'default', {
@@ -328,17 +341,21 @@ class Settings {
             this.viableParents.add('Map')
 
         } else if (lang === 'python') {
-            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4'], ['Counter', '#4682B4'], ['OrderedDict', '#21AF74']]
+            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4'], ['Counter', '#4682B4'], ['OrderedDict', '#21AF74'], ['defaultdict', '#800080']]
             this.arrayTypes.add('list')
             this.setTypes.add('set')
             this.hashTypes.add('dict')
             this.hashTypes.add('Counter')
             this.hashTypes.add('OrderedDict')
+            this.hashTypes.add('defaultdict')
             this.hashTypes.add('set')
             this.mapTypes.add('dict')
+            this.mapTypes.add('defaultdict')
             this.mapTypes.add('OrderedDict')
             this.viableParents.add('list')
             this.viableParents.add('dict')
+            this.viableParents.add('defaultdict')
+            this.viableParents.add('OrderedDict')
         }
         for (const [t] of unconfigurables) {
             this.unconfigurables.add(t)
@@ -354,20 +371,22 @@ class Settings {
                 textColor: this.configColors["Primary Background"]
             }
         }
-
+        let structInfo;
         if (lang === 'javascript') {
-            for (const name in jsStructInfo) {
-                this.structSettings[name] = {
-                    ...jsStructInfo[name],
-                    color: name in this.structSettings ? this.structSettings[name].color : jsStructInfo[name].color,
-                    textColor: name in this.structSettings ? this.structSettings[name].textColor : jsStructInfo[name].textColor,
-                    pointers: {
-                        ...(this.structSettings[name] || { pointers: {} }).pointers,
-                        ...jsStructInfo[name].pointers
-                    }
+            structInfo = jsStructInfo
+        } else if (lang === 'python') {
+            structInfo = pyStructInfo
+        }
+        for (const name in structInfo) {
+            this.structSettings[name] = {
+                ...structInfo[name],
+                color: name in this.structSettings ? this.structSettings[name].color : structInfo[name].color,
+                textColor: name in this.structSettings ? this.structSettings[name].textColor : structInfo[name].textColor,
+                pointers: {
+                    ...(this.structSettings[name] || { pointers: {} }).pointers,
+                    ...structInfo[name].pointers
                 }
             }
-
         }
 
 
