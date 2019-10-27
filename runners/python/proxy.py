@@ -208,146 +208,162 @@ def list_proxy(runner):
                         'access': i
                     })
 
+        def append(self, *args, **kwargs):
+            l = len(self)
+            result = super().__getattr__('append')(*args, **kwargs)
+            runner.__(len(self), {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': 'length'
+            })
+            for i in range(l, len(self)):
+                runner.__(self.__wrapped__[i], {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            return result
+
+        def extend(self, *args, **kwargs):
+            l = len(self)
+            result = super().__getattr__('extend')(*args, **kwargs)
+            runner.__(len(self), {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': 'length'
+            })
+            for i in range(l, len(self)):
+                runner.__(self.__wrapped__[i], {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            return result
+
+        def pop(self, *args, **kwargs):
+            result = super().__getattr__('pop')(*args, **kwargs)
+            idx = len(self) - 1 if len(args) == 0 else args[0]
+            idx = idx if idx >= 0 else (len(self) + (idx) + 1)
+            runner.__(result, {
+                'type': TYPES.GET,
+                'object': self.__wrapped__,
+                'access': idx
+            })
+            runner.__(True, {
+                'type': TYPES.DELETE,
+                'object': self.__wrapped__,
+                'access': idx
+            })
+            runner.__(len(self), {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': 'length'
+            })
+            return result
+
+        def sort(self, *args, **kwargs):
+            result = super().__getattr__('sort')(*args, **kwargs)
+            for i, n in enumerate(self.__wrapped__):
+                runner.__(n, {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            return result
+
+        def insert(self, *args, **kwargs):
+            idx = args[0]
+            idx = idx if idx >= 0 else (len(self) + (idx) - 1)
+            ln = len(self)
+            result = super().__getattr__('insert')(*args, **kwargs)
+            runner.__(len(self), {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': 'length'
+            })
+            if idx > ln:
+                runner.__(args[i], {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': ln
+                })
+
+            else:
+                for i in range(idx, len(self)):
+                    runner.__(self.__wrapped__[i], {
+                        'type': TYPES.SET,
+                        'object': self.__wrapped__,
+                        'access': i
+                    })
+            return result
+
+        def clear(self, *args, **kwargs):
+            ln = len(self)
+            result = super().__getattr__('clear')(*args, **kwargs)
+            for i in range(ln):
+                runner.__(True, {
+                    'type': TYPES.DELETE,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            runner.__(0, {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': 'length'
+            })
+            return result
+
+        def copy(self, *args, **kwargs):
+            result = super().__getattr__('copy')(*args, **kwargs)
+            for i, n in enumerate(self.__wrapped__):
+                runner.__(n, {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            return result
+
+        def count(self, *args, **kwargs):
+            result = super().__getattr__('count')(*args, **kwargs)
+            for i, n in enumerate(self.__wrapped__):
+                runner.__(n, {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            return result
+
+        def index(self, *args, **kwargs):
+            result = super().__getattr__('index')(*args, **kwargs)
+            start = 0 if len(args) <= 1 else args[1]
+            for i in range(start, result + 1):
+                runner.__(self.__wrapped__[i], {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
+            return result
+
+        def remove(self, *args, **kwargs):
+            idx = self.index(args[0])
+            self.pop(idx)
+            return None
+
+        def reverse(self, *args, **kwargs):
+            l, r = 0, len(self) - 1
+            while l < r:
+                self[l], self[r] = self[r], self[l]
+                l += 1
+                r -= 1
+
         def __getattr__(self, name):
             attr = super().__getattr__(name)
             t = type(attr).__name__
             if t == 'method' or t == 'builtin_function_or_method' or 'function':
-                if name == 'append' or name == 'extend':
-                    def wrapped_method(*args, **kwargs):
-                        l = len(self)
-                        result = attr(*args, **kwargs)
-                        runner.__(len(self), {
-                            'type': TYPES.SET,
-                            'object': self.__wrapped__,
-                            'access': 'length'
-                        })
-                        for i in range(l, len(self)):
-                            runner.__(self.__wrapped__[i], {
-                                'type': TYPES.SET,
-                                'object': self.__wrapped__,
-                                'access': i
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'pop':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        idx = len(self) - 1 if len(args) == 0 else args[0]
-                        idx = idx if idx >= 0 else (len(self) + (idx) + 1)
-                        runner.__(result, {
-                            'type': TYPES.GET,
-                            'object': self.__wrapped__,
-                            'access': idx
-                        })
-                        runner.__(True, {
-                            'type': TYPES.DELETE,
-                            'object': self.__wrapped__,
-                            'access': idx
-                        })
-                        runner.__(len(self), {
-                            'type': TYPES.SET,
-                            'object': self.__wrapped__,
-                            'access': 'length'
-                        })
-                        return result
-                    return wrapped_method
-                elif name == 'sort':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        for i, n in enumerate(self.__wrapped__):
-                            runner.__(n, {
-                                'type': TYPES.SET,
-                                'object': self.__wrapped__,
-                                'access': i
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'insert':
-                    def wrapped_method(*args, **kwargs):
-                        idx = args[0]
-                        idx = idx if idx >= 0 else (len(self) + (idx) - 1)
-                        ln = len(self)
-                        result = attr(*args, **kwargs)
-                        runner.__(len(self), {
-                            'type': TYPES.SET,
-                            'object': self.__wrapped__,
-                            'access': 'length'
-                        })
-                        if idx > ln:
-                            runner.__(args[i], {
-                                'type': TYPES.SET,
-                                'object': self.__wrapped__,
-                                'access': ln
-                            })
-
-                        else:
-                            for i in range(idx, len(self)):
-                                runner.__(self.__wrapped__[i], {
-                                    'type': TYPES.SET,
-                                    'object': self.__wrapped__,
-                                    'access': i
-                                })
-                        return result
-                    return wrapped_method
-                elif name == 'clear':
-                    def wrapped_method(*args, **kwargs):
-                        ln = len(self)
-                        result = attr(*args, **kwargs)
-                        for i in range(ln):
-                            runner.__(True, {
-                                'type': TYPES.DELETE,
-                                'object': self.__wrapped__,
-                                'access': i
-                            })
-                        runner.__(0, {
-                            'type': TYPES.SET,
-                            'object': self.__wrapped__,
-                            'access': 'length'
-                        })
-                        return result
-                    return wrapped_method
-                elif name == 'copy' or name == 'count':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        for i, n in enumerate(self.__wrapped__):
-                            runner.__(n, {
-                                'type': TYPES.GET,
-                                'object': self.__wrapped__,
-                                'access': i
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'index':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        start = 0 if len(args) <= 1 else args[1]
-                        for i in range(start, result + 1):
-                            runner.__(self.__wrapped__[i], {
-                                'type': TYPES.GET,
-                                'object': self.__wrapped__,
-                                'access': i
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'remove':
-                    def wrapped_method(*args, **kwargs):
-                        idx = self.index(args[0])
-                        self.pop(idx)
-                        return None
-                    return wrapped_method
-                elif name == 'reverse':
-                    def wrapped_method(*args, **kwargs):
-                        l, r = 0, len(self) - 1
-                        while l < r:
-                            self[l], self[r] = self[r], self[l]
-                            l += 1
-                            r -= 1
-                    return wrapped_method
-                else:
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        return result
-                    return wrapped_method
+                def wrapped_method(*args, **kwargs):
+                    result = attr(*args, **kwargs)
+                    return result
+                return wrapped_method
             else:
                 return attr
 
@@ -388,89 +404,104 @@ def list_proxy(runner):
 
 def dict_proxy(runner):
     class DictProxy(runner.GenericProxy):
+        def get(self, *args, **kwargs):
+            result = super().__getattr__('get')(*args, **kwargs)
+            key = args[0]
+            if key in self.__wrapped__:
+                runner.__(self.__wrapped__[key], {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+            return result
+
+        def update(self, *args, **kwargs):
+            result = super().__getattr__('update')(*args, **kwargs)
+            for key in args[0]:
+                runner.__(self.__wrapped__[key], {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+            return result
+
+        def items(self, *args, **kwargs):
+            result = super().__getattr__('items')(*args, **kwargs)
+            for key in self.__wrapped__:
+                self[key]
+            return result
+
+        def setdefault(self, key, default):
+            if key in self.__wrapped__:
+                return self[key]
+            else:
+                self[key] = default
+                return default
+
+        def clear(self, *args, **kwargs):
+            result = super().__getattr__('clear')(*args, **kwargs)
+            runner.__(None, {
+                'type': TYPES.CLEAR,
+                'object': self.__wrapped__,
+            })
+            return result
+
+        def copy(self, *args, **kwargs):
+            result = super().__getattr__('copy')(*args, **kwargs)
+            for key in self.__wrapped__:
+                self[key]
+            return result
+
+        def values(self, *args, **kwargs):
+            result = super().__getattr__('values')(*args, **kwargs)
+            for key in self.__wrapped__:
+                self[key]
+            return result
+
+        def pop(self, *args, **kwargs):
+            has_key = False if len(
+                args) < 1 else args[0] in self.__wrapped__
+            result = super().__getattr__('pop')(*args, **kwargs)
+            if has_key:
+                key = args[0]
+                runner.__(result, {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+                runner.__(True, {
+                    'type': TYPES.DELETE,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+            return result
+
+        def popitem(self, *args, **kwargs):
+            has_key = False if len(
+                args) < 1 else args[0] in self.__wrapped__
+            result = super().__getattr__('popitem')(*args, **kwargs)
+            if has_key:
+                key = args[0]
+                runner.__(result, {
+                    'type': TYPES.GET,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+                runner.__(True, {
+                    'type': TYPES.DELETE,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+            return result
+
         def __getattr__(self, name):
             attr = super().__getattr__(name)
             t = type(attr).__name__
             if t == 'method' or t == 'builtin_function_or_method' or 'function':
-                if name == 'get':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        key = args[0]
-                        if key in self.__wrapped__:
-                            runner.__(self.__wrapped__[key], {
-                                'type': TYPES.GET,
-                                'object': self.__wrapped__,
-                                'access': key
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'update':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        for key in args[0]:
-                            runner.__(self.__wrapped__[key], {
-                                'type': TYPES.SET,
-                                'object': self.__wrapped__,
-                                'access': key
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'items':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        for key in self.__wrapped__:
-                            self[key]
-                        return result
-                    return wrapped_method
-                elif name == 'setdefault':
-                    def wrapped_method(key, default):
-                        if key in self.__wrapped__:
-                            return self[key]
-                        else:
-                            self[key] = default
-                            return default
-                    return wrapped_method
-                elif name == 'clear':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        runner.__(None, {
-                            'type': TYPES.CLEAR,
-                            'object': self.__wrapped__,
-                            'access': key
-                        })
-                        return result
-                    return wrapped_method
-                elif name == 'copy' or name == 'values':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        for key in self.__wrapped__:
-                            self[key]
-                        return result
-                    return wrapped_method
-                elif name == 'pop' or name == 'popitem':
-                    def wrapped_method(*args, **kwargs):
-                        has_key = False if len(
-                            args) < 1 else args[0] in self.__wrapped__
-                        result = attr(*args, **kwargs)
-                        if has_key:
-                            key = args[0]
-                            runner.__(result, {
-                                'type': TYPES.GET,
-                                'object': self.__wrapped__,
-                                'access': key
-                            })
-                            runner.__(True, {
-                                'type': TYPES.DELETE,
-                                'object': self.__wrapped__,
-                                'access': key
-                            })
-                        return result
-                    return wrapped_method
-                else:
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        return result
-                    return wrapped_method
+                def wrapped_method(*args, **kwargs):
+                    result = attr(*args, **kwargs)
+                    return result
+                return wrapped_method
             else:
                 return attr
     return DictProxy
@@ -478,103 +509,167 @@ def dict_proxy(runner):
 
 def set_proxy(runner):
     class SetProxy(runner.GenericProxy):
+        def issubset(self, *args, **kwargs):
+            result = super.__getattr__('issubset')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def union(self, *args, **kwargs):
+            result = super.__getattr__('union')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def intersection(self, *args, **kwargs):
+            result = super.__getattr__('intersection')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def difference(self, *args, **kwargs):
+            result = super.__getattr__('difference')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def symmetric_difference(self, *args, **kwargs):
+            result = super.__getattr__('symmetric_difference')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def isdisjoint(self, *args, **kwargs):
+            result = super.__getattr__('isdisjoint')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def copy(self, *args, **kwargs):
+            result = super.__getattr__('copy')(*args, **kwargs)
+            for val in self:
+                pass
+            return result
+
+        def issuperset(self, *args, **kwargs):
+            result = super().__getattr__('issuperset')(*args, **kwargs)
+            return result
+
+        def add(self, *args, **kwargs):
+            result = super().__getattr__('add')(*args, **kwargs)
+            runner.__(args[0], {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': args[0]
+            })
+            return result
+
+        def discard(self, *args, **kwargs):
+            had_key = False if len(
+                args) < 1 else (args[0] in self.__wrapped__)
+
+            result = super().__getattr__('discard')(*args, **kwargs)
+            has_key = args[0] in self.__wrapped__
+            if had_key and not has_key:
+                runner.__(True, {
+                    'type': TYPES.DELETE,
+                    'object': self.__wrapped__,
+                    'access': args[0]
+                })
+            return result
+
+        def remove(self, *args, **kwargs):
+            had_key = False if len(
+                args) < 1 else (args[0] in self.__wrapped__)
+
+            result = super().__getattr__('remove')(*args, **kwargs)
+            has_key = args[0] in self.__wrapped__
+            if had_key and not has_key:
+                runner.__(True, {
+                    'type': TYPES.DELETE,
+                    'object': self.__wrapped__,
+                    'access': args[0]
+                })
+            return result
+
+        def pop(self, *args, **kwargs):
+            result = super().__getattr__('pop')(*args, **kwargs)
+            runner.__(result, {
+                'type': TYPES.GET,
+                'object': self.__wrapped__,
+                'access': result
+            })
+            runner.__(True, {
+                'type': TYPES.DELETE,
+                'object': self.__wrapped__,
+                'access': result
+            })
+            return result
+
+        def clear(self, *args, **kwargs):
+            result = super().__getattr__('clear')(*args, **kwargs)
+            runner.__(None, {
+                'type': TYPES.CLEAR,
+                'object': self.__wrapped__,
+            })
+            return result
+
+        def update(self, *args, **kwargs):
+            vals = {val for val in self.__wrapped__}
+            result = super().__getattr__('update')(*args, **kwargs)
+            for val in self.__wrapped__:
+                if val not in vals:
+                    runner.__(val, {
+                        'type': TYPES.SET,
+                        'object': self.__wrapped__,
+                        'access': val
+                    })
+            return result
+
+        def intersection_update(self, *args, **kwargs):
+            vals = {val for val in self.__wrapped__}
+            result = super().__getattr__('intersection_update')(*args, **kwargs)
+            for val in vals:
+                if val not in self.__wrapped__:
+                    runner.__(True, {
+                        'type': TYPES.DELETE,
+                        'object': self.__wrapped__,
+                        'access': val
+                    })
+            return result
+
+        def difference_update(self, *args, **kwargs):
+            vals = {val for val in self.__wrapped__}
+            result = super().__getattr__('difference_update')(*args, **kwargs)
+            for val in vals:
+                if val not in self.__wrapped__:
+                    runner.__(True, {
+                        'type': TYPES.DELETE,
+                        'object': self.__wrapped__,
+                        'access': val
+                    })
+            return result
+
+        def symmetric_difference_update(self, *args, **kwargs):
+            vals = {val for val in self.__wrapped__}
+            result = super().__getattr__('symmetric_difference_update')(*args, **kwargs)
+            for val in vals:
+                if val not in self.__wrapped__:
+                    runner.__(True, {
+                        'type': TYPES.DELETE,
+                        'object': self.__wrapped__,
+                        'access': val
+                    })
+            return result
+
         def __getattr__(self, name):
             attr = super().__getattr__(name)
             t = type(attr).__name__
             if t == 'method' or t == 'builtin_function_or_method' or 'function':
-                if name in {'issubset', 'union', 'intersection', 'difference', 'symmetric_difference', 'isdisjoint', 'copy'}:
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        for val in self:
-                            pass
-                        return result
-                    return wrapped_method
-                elif name == 'issuperset':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        return result
-                    return wrapped_method
-                elif name == 'add':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        runner.__(args[0], {
-                            'type': TYPES.SET,
-                            'object': self.__wrapped__,
-                            'access': args[0]
-                        })
-                        return result
-                    return wrapped_method
-                elif name == 'remove' or name == 'discard':
-                    def wrapped_method(*args, **kwargs):
-                        had_key = False if len(
-                            args) < 1 else (args[0] in self.__wrapped__)
-
-                        result = attr(*args, **kwargs)
-                        has_key = args[0] in self.__wrapped__
-                        if had_key and not has_key:
-                            runner.__(True, {
-                                'type': TYPES.DELETE,
-                                'object': self.__wrapped__,
-                                'access': args[0]
-                            })
-                        return result
-                    return wrapped_method
-                elif name == 'pop':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        runner.__(result, {
-                            'type': TYPES.GET,
-                            'object': self.__wrapped__,
-                            'access': result
-                        })
-                        runner.__(True, {
-                            'type': TYPES.DELETE,
-                            'object': self.__wrapped__,
-                            'access': result
-                        })
-                        return result
-                    return wrapped_method
-                elif name == 'clear':
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        runner.__(None, {
-                            'type': TYPES.CLEAR,
-                            'object': self.__wrapped__,
-                        })
-                        return result
-                    return wrapped_method
-                elif name == 'update':
-                    def wrapped_method(*args, **kwargs):
-                        vals = {val for val in self.__wrapped__}
-                        result = attr(*args, **kwargs)
-                        for val in self.__wrapped__:
-                            if val not in vals:
-                                runner.__(val, {
-                                    'type': TYPES.SET,
-                                    'object': self.__wrapped__,
-                                    'access': val
-                                })
-                        return result
-                    return wrapped_method
-                elif name in {'intersection_update', 'difference_update', 'symmetric_difference_update'}:
-                    def wrapped_method(*args, **kwargs):
-                        vals = {val for val in self.__wrapped__}
-                        result = attr(*args, **kwargs)
-                        for val in vals:
-                            if val not in self.__wrapped__:
-                                runner.__(True, {
-                                    'type': TYPES.DELETE,
-                                    'object': self.__wrapped__,
-                                    'access': val
-                                })
-                        return result
-                    return wrapped_method
-                else:
-                    def wrapped_method(*args, **kwargs):
-                        result = attr(*args, **kwargs)
-                        return result
-                    return wrapped_method
-
+                def wrapped_method(*args, **kwargs):
+                    result = attr(*args, **kwargs)
+                    return result
+                return wrapped_method
             else:
                 return attr
 
@@ -657,6 +752,7 @@ def set_proxy(runner):
                         'access': val
                     })
             return ret
+
         def __ixor__(self, other):
             vals = {v for v in self.__wrapped__}
             ret = super().__ixor__(other)
@@ -680,7 +776,6 @@ def set_proxy(runner):
 
         def __contains__(self, val):
             has = super().__contains__(val)
-            print(has)
             if has:
                 runner.__(val, {
                     'type': TYPES.GET,
@@ -699,3 +794,39 @@ def set_proxy(runner):
                 yield val
 
     return SetProxy
+
+
+def counter_proxy(runner):
+    class CounterProxy(runner.DictProxy):
+        def most_common(self, *args, **kwargs):
+            result = super().__getattr__('most_common')(*args, **kwargs)
+            for val in self:
+                self[val]
+            return result
+
+        def subtract(self, *args, **kwargs):
+            vals = {a:b for a,b in self.__wrapped__.items()}
+            result = super().__getattr__('subtract')(*args, **kwargs)
+            for key in vals:
+                if self.__wrapped__[key] != vals[key]:
+                    runner.__(self.__wrapped__[key], {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+        def elements(self, *args, **kwargs):
+            result = super().__getattr__('elements')(*args, *kwargs)
+            for val in self:
+                self[val]
+            return result
+        def update(self, *args, **kwargs):
+            vals = {a:b for a,b in self.__wrapped__.items()}
+            result = super().__getattr__('update')(*args, **kwargs)
+            for key in vals:
+                if self.__wrapped__[key] != vals[key]:
+                    runner.__(self.__wrapped__[key], {
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': key
+                })
+    return CounterProxy

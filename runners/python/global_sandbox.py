@@ -7,7 +7,8 @@ white_listed_imports = {
     'keyword',
     # 'queue',
     'random',
-    'strings'
+    'strings',
+    'collections'
 }
 
 

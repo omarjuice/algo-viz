@@ -185,9 +185,13 @@ s2 = {3,4,5}
 
 s2 |= s
 
+''',
+    'counter': '''
 
+import collections
+c = collections.Counter('abc')
 
-
+a = None
 
 
 '''
@@ -210,7 +214,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'set':
+    if name != 'counter':
         continue
     input = ["", {}]
     tree = transform(code, input)

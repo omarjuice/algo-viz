@@ -1,7 +1,9 @@
 from wrapper_types import TYPES
 import string
 from random import choice
-from proxy import generic_proxy, list_proxy, dict_proxy, set_proxy
+from proxy import *
+from collections import Counter
+from itertools import chain
 import typing
 
 lettersAndDigits = string.ascii_letters + string.digits
@@ -11,15 +13,7 @@ gen = type((1 for _ in range(1)))
 primitives = {int, str, bool, rng, slice,
               float, complex, fnc, bytes, type(...),
               type(None), tuple, type(lambda: 0),
-              type([].append), typing._GenericAlias, gen}
-
-
-def _hash(obj):
-    try:
-        print(hash(obj))
-        return True
-    except Exception:
-        return False
+              type([].append), typing._GenericAlias, gen, chain}
 
 
 class Runner:
@@ -46,11 +40,11 @@ class Runner:
         self.gc = []
 
         none_literal = self.gen_id(5, 1)
-        self.map[id(None)] = none_literal
+        self.map[None] = none_literal
         self.types[none_literal] = 'None'
 
         ellips_literal = self.gen_id(5, 1)
-        self.map[id(...)] = ellips_literal
+        self.map[...] = ellips_literal
         self.types[ellips_literal] = '...'
 
         self.num_steps = 0
@@ -59,6 +53,7 @@ class Runner:
         self.ListProxy = list_proxy(self)
         self.DictProxy = dict_proxy(self)
         self.SetProxy = set_proxy(self)
+        self.CounterProxy = counter_proxy(self)
 
     def gen_id(self, l=3, num_=2):
 
@@ -83,6 +78,8 @@ class Runner:
             proxy = self.DictProxy(obj)
         elif t == set:
             proxy = self.SetProxy(obj)
+        elif t == Counter:
+            proxy = self.CounterProxy(obj)
         else:
             proxy = self.GenericProxy(obj)
         self.proxies[id(obj)] = (proxy, False)
@@ -97,6 +94,7 @@ class Runner:
 
     def __(self, val, info):
         # if(self.ignore) return val
+        print(self.types[self.map[None]])
         t = info['type']
         if t in [TYPES.FUNC, TYPES.METHOD]:
             self.calls += 1
@@ -124,7 +122,7 @@ class Runner:
     def stringify(self, obj):
         t = type(obj)
         if t in primitives:
-            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias, gen}:
+            if t in {rng, slice, fnc, tuple, type(lambda: 0), type([].append), typing._GenericAlias, gen, chain}:
                 _id = self.gen_id(5, 5)
                 if t == tuple:
                     copy = []
@@ -150,7 +148,7 @@ class Runner:
             if ln not in self.objectIndex:
                 self.objectIndex[ln] = []
             self.objectIndex[ln].append(new_id)
-            if isinstance(obj, dict):
+            if isinstance(obj, (dict, Counter)):
                 copy = {}
                 i = 0
                 for key, value in obj.items():
@@ -177,7 +175,7 @@ class Runner:
                     i += 1
                 self.objects[new_id] = copy
 
-            else:
+            elif hasattr(obj, '__dict__'):
                 copy = {}
                 for key, value in obj.__dict__.items():
                     if key[0] == '_':
@@ -185,8 +183,9 @@ class Runner:
                     copy[key] = self.stringify(value)
                     obj.__dict__[key] = self.virtualize(value)
                 self.objects[new_id] = copy
+            else:
+                self.objects[new_id] = {}
             type_name = t.__name__
-
             self.types[new_id] = type_name
             self.gc.append(obj)
             return new_id
