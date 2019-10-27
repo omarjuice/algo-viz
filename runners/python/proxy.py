@@ -615,6 +615,7 @@ def set_proxy(runner):
                 v in other
 
             return ret
+
         def __xor__(self, other):
             ret = super().__xor__(other)
             for v in self:
@@ -622,6 +623,61 @@ def set_proxy(runner):
             for v in other:
                 pass
             return ret
+
+        def __ior__(self, other):
+            ret = super().__ior__(other)
+            for val in other:
+                runner.__(val, {
+                    'type': TYPES.SET,
+                    'object': self,
+                    'access': val
+                })
+            return ret
+
+        def __iand__(self, other):
+            vals = {v for v in self.__wrapped__}
+            ret = super().__iand__(other)
+            for val in vals:
+                if not val in other:
+                    runner.__(val, {
+                        'type': TYPES.DELETE,
+                        'object': self,
+                        'access': val
+                    })
+            return ret
+
+        def __isub__(self, other):
+            vals = {v for v in self.__wrapped__}
+            ret = super().__isub__(other)
+            for val in other:
+                if val in vals:
+                    runner.__(val, {
+                        'type': TYPES.DELETE,
+                        'object': self,
+                        'access': val
+                    })
+            return ret
+        def __ixor__(self, other):
+            vals = {v for v in self.__wrapped__}
+            ret = super().__ixor__(other)
+            for val in other:
+                pass
+            for val in self.__wrapped__:
+                if val not in vals:
+                    runner.__(val, {
+                        'type': TYPES.SET,
+                        'object': self,
+                        'access': val
+                    })
+            for val in vals:
+                if val not in self.__wrapped__:
+                    runner.__(val, {
+                        'type': TYPES.DELETE,
+                        'object': self,
+                        'access': val
+                    })
+            return ret
+
         def __contains__(self, val):
             has = super().__contains__(val)
             print(has)
