@@ -3,7 +3,7 @@ module.exports = function (obj) {
     if (this.map.has(obj)) {
         return this.map.get(obj)
     }
-    if (obj && typeof obj === 'object') {
+    if (obj && typeof obj === 'object' && !(obj instanceof (this.global ? this.global.RegExp : RegExp)) && !(obj instanceof (this.global ? this.global.Date : Date))) {
         // we want to ignore native objects
         this.checkBanned(obj)
         //Typed arrays cannot be virtualized :(
@@ -81,9 +81,8 @@ module.exports = function (obj) {
             this.throw(new Error('Class name not found. All classes must have a name.'))
         }
         if (
-            obj instanceof (this.global ? this.global.String : String) ||
-            obj instanceof (this.global ? this.global.RegExp : RegExp) ||
-            obj instanceof (this.global ? this.global.Date : Date)
+            obj instanceof (this.global ? this.global.String : String)
+
         ) {
             type = 'Object'
         }
@@ -98,9 +97,14 @@ module.exports = function (obj) {
             this.types[id] = `[Function: ${name}]`
             this.map.set(obj, id)
             return id
-        } else if (typeof obj === 'symbol') {
-            return obj.toString()
+        } else if (typeof obj === 'symbol' || obj instanceof (this.global ? this.global.RegExp : RegExp) || obj instanceof (this.global ? this.global.Date : Date)) {
+            let id = this.genId(5, 5)
+            this.types[id] = obj.toString()
+            this.map.set(obj, id)
+            return id
         }
+
+
         return obj
     }
 }
