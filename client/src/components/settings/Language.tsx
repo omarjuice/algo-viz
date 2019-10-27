@@ -24,11 +24,12 @@ const Language: React.FC = observer(() => {
                     <a href="#/" onClick={() => store.setLanguage('javascript')}>
                         <div className="box"
                             style={store.language === 'javascript' ? active : inactive}>
-                            <div className="columns ">
-                                <div className="column is-half has-text-centered has-text-weight-bold">
+                            <div className="columns is-centered ">
+                                <div className="column is-half has-text-centered is-paddingless has-text-weight-bold">
                                     JavaScript
-                            </div>
-                                <div className="column is-half has-text-centered"
+                                    <p className="is-size-7 has-text-centered" style={{ color: store.language === 'javascript' ? active.color : inactive.color }}>12.13.0</p>
+                                </div>
+                                <div className="column is-half has-text-centered is-paddingless"
                                     style={{ display: 'flex', justifyContent: 'center' }}>
                                     <figure className="image is-32x32">
                                         <img src={process.env.PUBLIC_URL + '/nodejs.svg'} alt="javascript" />
@@ -44,11 +45,12 @@ const Language: React.FC = observer(() => {
 
                         <div className="box"
                             style={store.language === 'python' ? active : inactive}>
-                            <div className="columns ">
-                                <div className="column is-half has-text-centered has-text-weight-bold">
-                                    Python
-                            </div>
-                                <div className="column is-half has-text-centered" style={{ display: 'flex', justifyContent: 'center' }}>
+                            <div className="columns is-centered ">
+                                <div className="column is-half has-text-centered is-paddingless has-text-weight-bold">
+                                    Python (Beta)
+                                    <p className="is-size-7 has-text-centered" style={{ color: store.language === 'python' ? active.color : inactive.color }}>3.7.0</p>
+                                </div>
+                                <div className="column is-half has-text-centered is-paddingless" style={{ display: 'flex', justifyContent: 'center' }}>
                                     <figure className="image is-32x32">
                                         <img src={process.env.PUBLIC_URL + '/python.svg'} alt="python" />
                                     </figure>
