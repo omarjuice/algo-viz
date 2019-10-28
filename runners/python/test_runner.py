@@ -208,6 +208,12 @@ from collections import namedtuple
 
 Point = namedtuple('Point', ['x', 'y'])
 
+''',
+    'var_delete': '''
+a = 1
+del a
+
+
 '''
 }
 

@@ -55,6 +55,8 @@ class Runner:
         self.CounterProxy = counter_proxy(self)
         self.OrderedDictProxy = ordereddict_proxy(self)
 
+        self.global_object = None
+
     def gen_id(self, l=3, num_=2):
 
         _id = None
@@ -189,6 +191,7 @@ class Runner:
             return new_id
 
     def setGlobal(self, g):
+        self.global_object = g
         _id = self.gen_id(5, 4)
         self.map.add(g, _id)
         self.types[_id] = "global"

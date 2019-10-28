@@ -20,20 +20,9 @@ class StateStore {
         this.root = store
     }
 
-    @action next(step: Viz.Step.Any, isBatch: boolean = false) {
+    @action next(step: Viz.Step.Any) {
 
-        // const prev = this.root.iterator.index - 1
-        // if (prev >= 0 && !isBatch) {
-        //     const prevStep = this.root.viz.steps[prev]
-        //     if ('batch' in prevStep) {
-        //         for (const batchStep of prevStep.batch) {
-        //             this.next(batchStep, true)
-        //         }
-        //     }
-        // }
-        // while (this.queue.length) {
-        //     this.next(this.queue.pop())
-        // }
+        console.log(step.type);
         if (step.scope) {
             const [parent, scope] = step.scope;
             if (!(scope in this.identifiers)) {
@@ -276,6 +265,9 @@ class StateStore {
                 const info = {
                     name: id,
                     value: values[values.length - 1]
+                }
+                if (info.value === undefined) {
+                    continue
                 }
                 identifiers[identifiers.length - 1].push(info)
 
