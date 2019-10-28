@@ -71,6 +71,9 @@ def flat_map_assignments(targets, depth=0):
         elif isinstance(target, (ast.Tuple, ast.List)):
             for name in flat_map_assignments(target.elts, depth=depth+1):
                 assignments.append(name)
+        elif isinstance(target, ast.Starred):
+            for name in flat_map_assignments([target.value], depth=depth+1):
+                assignments.append(name)
     return (assignments)
 
 
@@ -186,6 +189,8 @@ class Transformer(ast.NodeTransformer):
             return False
         elif isinstance(parent, ast.comprehension) and node == parent.target:
             return False
+        elif isinstance(parent, ast.Starred) and node == parent.value:
+            return False
         else:
             return True
 
@@ -294,13 +299,6 @@ class Transformer(ast.NodeTransformer):
         self.generic_visit(node)
         assignments = flat_map_assignments([node.target], depth=1)
         elts = []
-        # elts.append(self.wrapper(
-        #     ast.NameConstant(None),
-        #     {
-        #         'type': TYPES.BLOCK,
-        #         'scope': self.scopes.get_scope(node),
-        #     },
-        # ))
         for name in assignments:
             new_name = ast.Name(id=name.id, ctx=ast.Load())
             new_node = self.wrapper(

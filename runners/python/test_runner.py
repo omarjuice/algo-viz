@@ -53,6 +53,8 @@ def g():
     a = b = 10
 
     (a,b,(c,d)) = [1,2,[3,4]]
+    x,*y = (1,2,3,4,5)
+    m,*(n,o) = (6,7,8)
 
 
 g()
@@ -209,12 +211,17 @@ from collections import namedtuple
 Point = namedtuple('Point', ['x', 'y'])
 
 ''',
-    'var_delete': '''
-a = 1
-del a
+
+    'deque': '''
+from collections import deque
 
 
+q = deque([1,2,3,4,5])
+
+q.append(1)
 '''
+
+
 }
 
 
@@ -233,7 +240,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'createclass':
+    if name != 'deque':
         continue
     input = ["", {}]
     tree = transform(code, input)

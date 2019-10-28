@@ -1,6 +1,6 @@
 from wrapt import ObjectProxy
 from wrapper_types import TYPES
-
+from struct_surrogates import DequeSurrogate
 
 def generic_proxy(runner):
 
@@ -841,3 +841,29 @@ def ordereddict_proxy(runner):
             })
             return result
     return OrderedDictProxy
+
+def deque_proxy(runner):
+    class DequeProxy(ObjectProxy):
+
+        def append(self, *args, **kwargs):
+            result = super().__getattr__('append')(*args, **kwargs)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.append(surrogate,*args, **kwargs)
+            return result
+        def appendleft(self, *args, **kwargs):
+            result = super().__getattr__('appendleft')(*args, **kwargs)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.appendleft(surrogate,*args, **kwargs)
+            return result
+        def pop(self, *args, **kwargs):
+            result = super().__getattr__('pop')(*args, **kwargs)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.pop(surrogate,*args, **kwargs)
+            return result
+        def popleft(self, *args, **kwargs):
+            result = super().__getattr__('popleft')(*args, **kwargs)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.popleft(surrogate,*args, **kwargs)
+            return result
+
+    return DequeProxy

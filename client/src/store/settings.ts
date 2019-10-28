@@ -183,6 +183,36 @@ export const pyStructInfo: Viz.structSettings = {
         color: randomColor(),
         textColor: '#0b1423',
         pointers: {}
+    },
+    deque: {
+        order: {
+            front: {
+                pos: 1,
+                isMultiple: false
+            }
+        },
+        main: 'length',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+            end: false
+        }
+    },
+    'deque.block': {
+        order: {
+            next: {
+                pos: 1,
+                isMultiple: false
+            }
+        },
+        main: 'value',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+            prev: false
+        }
     }
 }
 

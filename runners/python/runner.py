@@ -3,8 +3,9 @@ from util import ValueMap
 import string
 from random import choice
 from proxy import *
-from collections import Counter, OrderedDict, defaultdict
+from collections import Counter, OrderedDict, defaultdict, deque
 from itertools import chain
+from struct_surrogates import DequeSurrogate
 import typing
 
 lettersAndDigits = string.ascii_letters + string.digits
@@ -12,7 +13,7 @@ rng = type(range(1))
 fnc = type(range)
 gen = type((1 for _ in range(1)))
 
-primitives = {int, str, bool, float, complex, bytes, type(None)}
+primitives = {int, str, bool, float, complex, bytes}
 others = {rng, slice, fnc, tuple, type(lambda: 0), type(
     [].append), typing._GenericAlias, gen, chain, type}
 
@@ -29,6 +30,7 @@ class Runner:
         self.objects = {}
 
         self.proxies = {}
+        self.surrogates = {}
 
         self.types = {}
 
@@ -54,8 +56,11 @@ class Runner:
         self.SetProxy = set_proxy(self)
         self.CounterProxy = counter_proxy(self)
         self.OrderedDictProxy = ordereddict_proxy(self)
+        self.DequeProxy = deque_proxy(self)
 
         self.global_object = None
+
+        self.ignore = False
 
     def gen_id(self, l=3, num_=2):
 
@@ -96,14 +101,52 @@ class Runner:
 
         return proxy
 
+    def get_surrogate(self, obj):
+        return self.surrogates[id(obj)]
+
+    def virtualize_surrogate(self, obj, surrogate):
+        if id(obj) in self.proxies:
+            return self.proxies[id(obj)][0]
+        t = type(obj)
+        if t == deque:
+            proxy = self.DequeProxy(obj)
+            surrogate_proxy = self.GenericProxy(surrogate)
+        # method_list = [func for func in dir(obj) if callable(
+        #     getattr(obj, func)) and not func.startswith("__")]
+        # self.ignore = True
+        # for method in method_list:
+        #     def wrapped_method(self, *args, **kwargs):
+        #         result = super().__getattr__(method)(*args, **kwargs)
+        #         surrogate_proxy.__getattr__(method)(*args, **kwargs)
+        #         return result
+        #     setattr(proxy, method, wrapped_method)
+        # self.ignore = False
+        self.proxies[id(obj)] = (proxy, False)
+        self.proxies[id(proxy)] = (proxy, True)
+        self.proxies[id(surrogate)] = (proxy, False)
+        self.proxies[id(surrogate_proxy)] = (proxy, False)
+        self.surrogates[id(obj)] = surrogate_proxy
+        self.surrogates[id(proxy)] = surrogate_proxy
+
+        _id = self.map.get(obj) if self.map.has(obj) else self.stringify(obj)
+        self.map.add(proxy, _id)
+        self.map.add(surrogate, _id)
+        self.map.add(surrogate_proxy, _id)
+        return proxy
+
     def __(self, val, info):
-        # if(self.ignore) return val
+        if self.ignore:
+            return self.virtualize(val)
         t = info['type']
         if t in [TYPES.FUNC, TYPES.METHOD]:
             self.calls += 1
+        if t == TYPES.RETURN:
+            self.calls -= 1
         if t in [TYPES.DELETE, TYPES.SET, TYPES.GET]:
             info['object'] = self.stringify(info['object'])
             info['access'] = self.stringify(info['access'])
+        if t == TYPES.CLEAR:
+            info['object'] = self.stringify(info['object'])
         info['value'] = self.stringify(val)
         if t in [TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN]:
             prev = self.steps[-1]
@@ -136,6 +179,7 @@ class Runner:
                 self.types[_id] = str(obj)
             return _id
         else:
+            type_name = t.__name__
             if self.map.has(obj):
                 return self.map.get(obj)
             new_id = self.gen_id(5, 3)
@@ -167,7 +211,11 @@ class Runner:
                     obj.add(self.virtualize(value))
                     i += 1
                 self.objects[new_id] = copy
-
+            elif isinstance(obj, deque):
+                surrogate = DequeSurrogate([self.virtualize(v) for v in obj])
+                new_id = self.stringify(surrogate)
+                self.map.add(obj, new_id)
+                self.virtualize_surrogate(obj, surrogate)
             elif hasattr(obj, '__dict__'):
                 copy = {}
                 for key, value in obj.__dict__.items():
@@ -186,7 +234,7 @@ class Runner:
             if ln not in self.objectIndex:
                 self.objectIndex[ln] = []
             self.objectIndex[ln].append(new_id)
-            type_name = t.__name__
+
             self.types[new_id] = type_name
             return new_id
 
