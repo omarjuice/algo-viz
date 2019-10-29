@@ -4,6 +4,7 @@ class WrapperTypes:
 
         self.DECLARATION = 'DECLARATION'
         self.ASSIGNMENT = 'ASSIGNMENT'
+        self.DELETE_VARIABLE = 'DELETE_VARIABLE'
         self.EXPRESSION = 'EXPRESSION'
         self.CALL = 'CALL'
 

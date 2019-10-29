@@ -60,7 +60,8 @@ class StateStore {
                 ids[id][ids[id].length - 1] = undefined
             }
         }
-        if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
+
+        if (['ASSIGNMENT', 'DECLARATION', 'DELETE_VARIABLE'].includes(step.type) && step.scope && step.varName) {
             let { varName: name, block } = step
             let scope: null | number = step.scope[1]
             if (step.type === 'DECLARATION') {
@@ -93,8 +94,18 @@ class StateStore {
                         val += step.update
                     }
                     vals[vals.length - 1] = val
-
-
+                }
+            } else if (step.type === 'DELETE_VARIABLE') {
+                let current: number | null = scope
+                let vals = null
+                while (!vals) {
+                    vals = this.identifiers[current][name]
+                    current = this.scopeChain[current].parent
+                    if (current === null) break;
+                }
+                if (vals) {
+                    step.prev = vals[vals.length - 1]
+                    vals[vals.length - 1] = undefined
                 }
             }
         }
@@ -167,7 +178,7 @@ class StateStore {
         if (step.scope) {
             this.scopeStack = step.prevScopeStack || this.scopeStack;
         }
-        if (['ASSIGNMENT', 'DECLARATION'].includes(step.type) && step.scope && step.varName) {
+        if (['ASSIGNMENT', 'DECLARATION', 'DELETE_VARIABLE'].includes(step.type) && step.scope && step.varName) {
             let { varName: name, block } = step
             let scope: null | number = step.scope[1]
             if (step.type === 'DECLARATION') {
@@ -180,7 +191,7 @@ class StateStore {
                     const vals = this.identifiers[scope][name]
                     vals[vals.length - 1] = step.prev
                 }
-            } else if (step.type === 'ASSIGNMENT') {
+            } else if (step.type === 'ASSIGNMENT' || step.type === 'DELETE_VARIABLE') {
                 let current: number | null = scope
                 let vals = null
                 while (!vals) {
@@ -193,6 +204,7 @@ class StateStore {
                 }
             }
         }
+
         if (['FUNC', 'METHOD', 'RETURN'].includes(step.type) && step.scope) {
             const fScope = step.scope[1]
             if (step.type === 'RETURN') {

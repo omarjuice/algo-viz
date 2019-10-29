@@ -65,7 +65,7 @@ class SLL:
     def create(elems):
         if type(elems.__wrapped__) != list:
             raise Exception(
-                f'viz.SLL.create: elems must be a list. Got {type(elems.wrapped)}')
+                f'viz.SLL.create: elems must be a list. Got {type(elems.__wrapped__)}')
 
         if not elems:
             return None

@@ -248,6 +248,15 @@ from viz import BTree
 
 tree = BTree.create([1,2,3])
 
+''',
+    'delete_var': '''
+
+x = 3
+y = 4
+z = 5
+
+del (x,(y,z))
+
 '''
 
 
@@ -269,7 +278,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'viz':
+    if name != 'delete_var':
         continue
     input = ["", {}]
     tree = transform(code, input)

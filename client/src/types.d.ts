@@ -128,6 +128,10 @@ declare namespace Viz {
             type: 'ASSIGNMENT'
             update?: number,
         }
+        interface DELETE_VARIABLE extends VarType {
+            type: 'DELETE_VARIABLE'
+            update?: number,
+        }
 
         interface FUNC extends FuncType {
             type: 'FUNC'
@@ -170,7 +174,8 @@ declare namespace Viz {
             SET |
             DELETE |
             CLEAR |
-            ERROR
+            ERROR |
+            DELETE_VARIABLE
         )
     }
 

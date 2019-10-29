@@ -54,6 +54,14 @@ def g():
 
 
 g()
+
+x = 3
+y = 4
+z = 5
+
+del (x,(y,z))
+
+
 ''',
     'func': '''
 class K:
@@ -123,6 +131,7 @@ z = [(a,b) for line in arr if 1+1 if 1 for (a,b) in line]
 
 
 
+
 '''
 
 
@@ -158,7 +167,7 @@ class TestRunner:
 
 
 for name, code in funcs.items():
-    if name != 'comprehensions':
+    if name != 'assignments':
         continue
     try:
         input = ["", {}]

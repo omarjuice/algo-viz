@@ -177,7 +177,7 @@ class Transformer(ast.NodeTransformer):
 
     def should_wrap_list_or_tuple(self, node):
         parent = self.scopes.parents[node]
-        if isinstance(parent, ast.Assign) and node in parent.targets:
+        if isinstance(parent, (ast.Assign, ast.Delete)) and node in parent.targets:
             return False
         elif isinstance(parent, ast.For) and node == parent.target:
             return False
@@ -231,6 +231,22 @@ class Transformer(ast.NodeTransformer):
                 expr=True
             )
             body.insert(idx + 1, new_node)
+        return node
+
+    def visit_Delete(self, node):
+        self.generic_visit(node)
+        deletions = flat_map_assignments(node.targets)
+        parent = self.scopes.parents[node]
+        body, idx = get_body_idx(parent, node)
+        for name in reversed(deletions):
+            details = self.get_assignment_details(name)
+            details["type"] = TYPES.DELETE_VARIABLE
+            new_node = self.wrapper(
+                ast.NameConstant(None),
+                details,
+                expr=True
+            )
+            body.insert(idx+1, new_node)
         return node
 
     def visit_AnnAssign(self, node):
