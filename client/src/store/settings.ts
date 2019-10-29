@@ -213,7 +213,38 @@ export const pyStructInfo: Viz.structSettings = {
         pointers: {
             prev: false
         }
-    }
+    },
+    'viz.BTree': {
+        order: {
+            left: {
+                pos: 1,
+                isMultiple: false
+            },
+            right: {
+                pos: 2,
+                isMultiple: false
+            }
+        },
+        main: 'value',
+        numChildren: 2,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {}
+    },
+    'viz.SLL': {
+        order: {
+            next: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'value',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+        }
+    },
 }
 
 Object.defineProperty(jsStructInfo, 'default', {

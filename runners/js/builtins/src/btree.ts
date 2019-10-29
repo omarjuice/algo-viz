@@ -11,7 +11,7 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
             this.right = null
             this.left = null
         }
-        static create(elems: any[], method: 'inOrder' | 'binary') {
+        static create(elems: any[], method: 'inOrder' | 'binary' = 'inOrder') {
             if (!Array.isArray(elems)) throw new Error('Viz.BTree.create: elems must be an array')
             if (!elems.length) return null
             if (method !== 'inOrder' && method !== 'binary') throw new Error(`Viz.BTree.create: Method must be "inOrder" or "binary". Received ${method}`)
@@ -55,10 +55,10 @@ export default function instantiateBTree(runner: Runner = { ignore: () => { } })
                         return null
                     }
                     const middle = Math.floor((left + right) / 2)
-                    const bst = new BTree(elems[middle])
-                    bst.left = helper(elems, left, middle)
-                    bst.right = helper(elems, middle + 1, right)
-                    return bst
+                    const btree = new BTree(elems[middle])
+                    btree.left = helper(elems, left, middle)
+                    btree.right = helper(elems, middle + 1, right)
+                    return btree
                 }
 
 

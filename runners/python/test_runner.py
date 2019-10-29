@@ -221,16 +221,33 @@ q = deque([1,2,3,4,5])
 q.append(1)
 
 q.count(1)
-# q.appendleft(100)
+q.appendleft(100)
 
 # q.pop()
 
 # q.popleft()
 
+q.clear()
+
+q.extend([40,50])
+q.extendleft([30,20,10])
+
+q.remove(20)
+
+q.reverse()
 
 
-# while q:
-#     q.pop()
+q.rotate(31)
+
+while q:
+    q.pop()
+''',
+
+    'viz': '''
+from viz import BTree
+
+tree = BTree.create([1,2,3])
+
 '''
 
 
@@ -252,7 +269,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'deque':
+    if name != 'viz':
         continue
     input = ["", {}]
     tree = transform(code, input)

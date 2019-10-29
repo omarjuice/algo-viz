@@ -6,7 +6,9 @@ from proxy import *
 from collections import Counter, OrderedDict, defaultdict, deque
 from itertools import chain
 from struct_surrogates import DequeSurrogate
+import viz
 import typing
+
 
 lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
@@ -225,6 +227,8 @@ class Runner:
                 raise Exception(
                     f'{type_name} is too large. All objects are limited to 1000 elements.'
                 )
+            if isinstance(obj, (viz.BTree, viz.SLL)):
+                type_name = 'viz.' + type_name
             ln = len(self.steps)
             if ln not in self.objectIndex:
                 self.objectIndex[ln] = []

@@ -1,4 +1,5 @@
 from proxy import ObjectProxy
+import viz
 import importlib
 import typing
 white_listed_imports = {
@@ -8,7 +9,8 @@ white_listed_imports = {
     # 'queue',
     'random',
     'strings',
-    'collections'
+    'collections',
+    'viz'
 }
 
 
@@ -49,7 +51,7 @@ def create(_name, runner, imports):
         name = imp['module']
         if name not in white_listed_imports:
             raise Exception(f'import {name} is not found or not allowed.')
-        mod = importlib.import_module(name)
+        mod = viz if name == 'viz' else importlib.import_module(name)
         if imp['type'] == 'import':
             if imp['alias']:
                 name = imp['alias']

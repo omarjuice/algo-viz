@@ -22,7 +22,6 @@ class StateStore {
 
     @action next(step: Viz.Step.Any) {
 
-        console.log(step.type);
         if (step.scope) {
             const [parent, scope] = step.scope;
             if (!(scope in this.identifiers)) {
