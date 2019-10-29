@@ -46,7 +46,7 @@ async function execute(code, language) {
     const volume = `-e VOLUME='${folderName}'`
     const mem = `--memory=64m`
     const cpus = `--cpus=1`
-    const timeout = `--stop-timeout=${process.env.EXECUTION_TIMEOUT / 1000 || 5}`
+    const timeout = process.env.EXECUTION_TIMEOUT || 7000
     const path = DATA_PATH + folderName
     await new Promise((resolve, reject) => {
         fs.writeFile(`${path}/${name}`, code, (e) => {
@@ -57,13 +57,14 @@ async function execute(code, language) {
             }
         })
     })
-    const cmd = `docker run --rm ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} ${timeout} -v ${path}:/usr/src/app/${folderName} ${language}`
-
+    const cmd = `docker run --rm --name ${name} ${fileName} ${volume} ${env} ${version} ${mem} ${cpus} -v ${path}:/usr/src/app/${folderName} ${language}`
+    let terminated = false
     const file = `${path}/${name}`
-    await new Promise((resolve, reject) => {
+    await new Promise(async (resolve, reject) => {
         exec(
             cmd,
             (err, stdout) => {
+                terminated = true
                 if (err) {
                     let errData = 'ContainerError: '
                     switch (err.code) {
@@ -88,6 +89,12 @@ async function execute(code, language) {
                     resolve(stdout)
                 }
             })
+        setTimeout(() => {
+            if (!terminated) {
+                exec(`docker stop ${name}`)
+                reject(new Error('Time limit exceeded.'))
+            }
+        }, timeout)
     })
 
     return await new Promise((resolve, reject) => {
