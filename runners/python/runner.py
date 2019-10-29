@@ -176,9 +176,10 @@ class Runner:
             new_id = self.gen_id(5, 3)
             self.map.add(obj, new_id)
 
+            i = 0
+
             if isinstance(obj, (dict, Counter, OrderedDict)):
                 copy = {}
-                i = 0
                 for key, value in obj.items():
                     copy[i] = [self.stringify(key), self.stringify(value)]
                     obj[key] = self.virtualize(value)
@@ -195,7 +196,6 @@ class Runner:
                 self.objects[new_id] = copy
             elif isinstance(obj, set):
                 copy = {}
-                i = 0
                 for value in obj:
                     copy[i] = self.stringify(value)
                     obj.discard(value)
@@ -214,13 +214,17 @@ class Runner:
                         continue
                     copy[key] = self.stringify(value)
                     obj.__dict__[key] = self.virtualize(value)
+                    i += 1
                 self.objects[new_id] = copy
             else:
                 new_id = self.gen_id(5, 5)
                 self.map.add(obj, new_id)
                 self.types[new_id] = str(obj)
                 return new_id
-
+            if i > 1000:
+                raise Exception(
+                    f'{type_name} is too large. All objects are limited to 1000 elements.'
+                )
             ln = len(self.steps)
             if ln not in self.objectIndex:
                 self.objectIndex[ln] = []

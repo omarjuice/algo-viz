@@ -24,12 +24,12 @@ module.exports = function (obj) {
             this.objectIndex[this.steps.length] = []
         };
         this.objectIndex[this.steps.length].push(newId)
+        let i = 0;
         if (obj instanceof (this.global ? this.global.Map : Map)) {
             // maps can have object keys, we need to stringify those too.
 
             // Map & Set virtualization needs a refactor
             const copy = {}
-            let i = 0;
             for (const [key, val] of obj.entries()) {
                 copy[i++] = [this.stringify(key), this.stringify(val)]
             }
@@ -40,7 +40,6 @@ module.exports = function (obj) {
         } else if (obj instanceof (this.global ? this.global.Set : Set)) {
             // same for sets
             const copy = {}
-            let i = 0
             for (const value of obj.values()) {
                 copy[i++] = this.stringify(value)
             }
@@ -50,7 +49,7 @@ module.exports = function (obj) {
         } else if (Array.isArray(obj)) {
             // we store arrays as hashes, they will be easier to modify when the visualizer consumes the data
             const copy = {}
-            for (let i = 0; i < obj.length; i++) {
+            for (i; i < obj.length; i++) {
                 let val = obj[i]
 
                 copy[i] = !(i in obj) ? null : this.stringify(val)
@@ -72,11 +71,15 @@ module.exports = function (obj) {
                 copy[key] = this.stringify(obj[key])
                 if (def.get && !def.set) continue;
                 obj[key] = this.virtualize(obj[key])
+                i++
             }
             this.objects[newId] = copy
         }
 
         let type = obj.constructor.name
+        if (i > 1000) {
+            this.throw(new Error(`${type} is too large. All objects are limited to 1000 elements.`))
+        }
         if (!type) {
             this.throw(new Error('Class name not found. All classes must have a name.'))
         }

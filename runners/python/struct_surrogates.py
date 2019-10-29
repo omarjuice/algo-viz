@@ -144,6 +144,9 @@ class DequeSurrogate:
         DequeSurrogate.remove_node(self, node)
 
 
+DequeSurrogate.__name__ = 'deque'
+
+
 class DequeSurrogateBlock:
     def __init__(self, value, prev=None):
         self.value = value
