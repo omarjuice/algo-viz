@@ -219,6 +219,18 @@ from collections import deque
 q = deque([1,2,3,4,5])
 
 q.append(1)
+
+q.count(1)
+# q.appendleft(100)
+
+# q.pop()
+
+# q.popleft()
+
+
+
+# while q:
+#     q.pop()
 '''
 
 

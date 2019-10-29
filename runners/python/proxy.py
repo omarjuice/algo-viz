@@ -58,7 +58,7 @@ def generic_proxy(runner):
 
             else:
 
-                setattr(self.__wrapped__, name, value)
+                setattr(self.__wrapped__, name, runner.virtualize(value))
                 runner.__(getattr(self.__wrapped__, name), {
                     'type': TYPES.SET,
                     'object': self.__wrapped__,
@@ -67,7 +67,7 @@ def generic_proxy(runner):
 
         def __setitem__(self, key, value):
 
-            result = super().__setitem__(key, value)
+            result = super().__setitem__(key, runner.virtualize(value))
             runner.__(super().__getitem__(key), {
                 'type': TYPES.SET,
                 'object': self.__wrapped__,
@@ -865,5 +865,77 @@ def deque_proxy(runner):
             surrogate = runner.get_surrogate(self)
             DequeSurrogate.popleft(surrogate,*args, **kwargs)
             return result
-
+        def count(self, *args, **kwargs):
+            result = super().__getattr__('count')(*args, **kwargs)
+            surrogate = runner.get_surrogate(self)
+            for val in surrogate:
+                pass
+            return result
+        def clear(self, *args, **kwargs):
+            result = super().__getattr__('clear')(*args, **kwargs)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.clear(surrogate,*args, **kwargs)
+            return result
+        def extend(self, elems):
+            result = super().__getattr__('extend')(elems)
+            surrogate = runner.get_surrogate(self)
+            for el in elems.__wrapped__:
+                DequeSurrogate.append(surrogate,el)
+            return result
+        def extendleft(self, elems):
+            result = super().__getattr__('extendleft')(elems)
+            surrogate = runner.get_surrogate(self)
+            for el in elems:
+                DequeSurrogate.appendleft(surrogate, el)
+            return result
+        def remove(self, value):
+            result = super().__getattr__('remove')(value)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.remove(surrogate, value)
+            return result
+        def reverse(self):
+            result = super().__getattr__('reverse')()
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.reverse(surrogate)
+            return result
+        def rotate(self,n=1):
+            result = super().__getattr__('rotate')(n)
+            surrogate = runner.get_surrogate(self)
+            if n < 0:
+                m = -n % len(self)
+                while m:
+                    DequeSurrogate.append(surrogate, DequeSurrogate.popleft(surrogate))
+                    m -= 1
+            if n > 0:
+                m = n % len(self)
+                while m:
+                    DequeSurrogate.appendleft(surrogate, DequeSurrogate.pop(surrogate))
+                    m -= 1
+        def __iter__(self):
+            surrogate = runner.get_surrogate(self)
+            for val,_ in zip(self.__wrapped__, surrogate):
+                yield val
+        def __reversed__(self):
+            surrogate = runner.get_surrogate(self)
+            for val,_ in zip(reversed(self.__wrapped__), reversed(surrogate)):
+                yield val   
+        def __contains__(self, value):
+            result = super().__contains__(value)
+            value in runner.get_surrogate(self)
+            return result
+        def __getitem__(self, key):
+            result = super().__getitem__(key)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.index(surrogate,key)
+            return result
+        def __delitem__(self, key):
+            result = super().__getitem__(key)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.delete(surrogate,key)
+            return result
+        def __setitem__(self, key, value):
+            result = super().__setitem__(key, value)
+            surrogate = runner.get_surrogate(self)
+            DequeSurrogate.setval(surrogate,key, value)
+            return result
     return DequeProxy
