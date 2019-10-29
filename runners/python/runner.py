@@ -111,16 +111,7 @@ class Runner:
         if t == deque:
             proxy = self.DequeProxy(obj)
             surrogate_proxy = self.GenericProxy(surrogate)
-        # method_list = [func for func in dir(obj) if callable(
-        #     getattr(obj, func)) and not func.startswith("__")]
-        # self.ignore = True
-        # for method in method_list:
-        #     def wrapped_method(self, *args, **kwargs):
-        #         result = super().__getattr__(method)(*args, **kwargs)
-        #         surrogate_proxy.__getattr__(method)(*args, **kwargs)
-        #         return result
-        #     setattr(proxy, method, wrapped_method)
-        # self.ignore = False
+
         self.proxies[id(obj)] = (proxy, False)
         self.proxies[id(proxy)] = (proxy, True)
         self.proxies[id(surrogate)] = (proxy, False)
