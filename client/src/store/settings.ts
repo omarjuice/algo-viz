@@ -459,21 +459,22 @@ class Settings {
             this.viableParents.add('Map')
 
         } else if (lang === 'python') {
-            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4'], ['Counter', '#4682B4'], ['OrderedDict', '#21AF74'], ['defaultdict', '#800080']]
+            unconfigurables = [['list', '#FFFFFF'], ['dict', '#FFFFFF'], ['set', '#FF69B4'], ['collections.Counter', '#4682B4'], ['collections.OrderedDict', '#21AF74'], ['collections.defaultdict', '#800080']]
             this.arrayTypes.add('list')
             this.setTypes.add('set')
             this.hashTypes.add('dict')
-            this.hashTypes.add('Counter')
-            this.hashTypes.add('OrderedDict')
-            this.hashTypes.add('defaultdict')
+            this.hashTypes.add('collections.Counter')
+            this.hashTypes.add('collections.OrderedDict')
+            this.hashTypes.add('collections.defaultdict')
             this.hashTypes.add('set')
             this.mapTypes.add('dict')
-            this.mapTypes.add('defaultdict')
-            this.mapTypes.add('OrderedDict')
+            this.mapTypes.add('collections.defaultdict')
+            this.mapTypes.add('collections.OrderedDict')
+            this.mapTypes.add('collections.Counter')
             this.viableParents.add('list')
             this.viableParents.add('dict')
-            this.viableParents.add('defaultdict')
-            this.viableParents.add('OrderedDict')
+            this.viableParents.add('collections.defaultdict')
+            this.viableParents.add('collections.OrderedDict')
         }
         for (const [t] of unconfigurables) {
             this.unconfigurables.add(t)
