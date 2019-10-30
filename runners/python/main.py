@@ -21,17 +21,17 @@ def type_override(obj):
 def execute():
     code = open(f'{VOL}/{FILENAME}', 'r').read()
 
-    input = ["", {}]
+    inp = ["", {}]
 
     try:
-        tree = transform(code, input)
+        tree = transform(code, inp)
         transpiled = unparse(tree)
     except SyntaxError as syn_e:
         raise syn_e
     except Exception as e:
         raise Exception('TranspilerError: ' + str(e))
 
-    _name, imports = input
+    _name, imports = inp
 
     # open('transpiled.py', "w+").write(transpiled)
 

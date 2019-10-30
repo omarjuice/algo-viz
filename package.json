@@ -7,7 +7,7 @@
     "server": "export DATA_VERSION=$npm_package_dataVersion && npm run dev --prefix server",
     "client": "export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build-client": "export DATA_VERSION=$npm_package_dataVersion && npm run create-default --prefix runners/js && export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm run build --prefix client",
+    "build-client": "export DATA_VERSION=$npm_package_dataVersion && npm run create-default --prefix runners/js && python3 runners/python/create_default.py && export REACT_APP_DATA_VERSION=$npm_package_dataVersion && npm run build --prefix client",
     "install-all": "npm install --prefix client && npm install --prefix server && npm install --prefix runners/js/builtins",
     "postinstall": "npm run install-all && npm run compile --prefix runners/js/builtins && npm run build-client && npm run build-containers",
     "build-containers": "docker build -t javascript runners/js && docker build -t python runners/python && docker system prune -f",

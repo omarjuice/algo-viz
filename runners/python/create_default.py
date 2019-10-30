@@ -1,35 +1,34 @@
 from runner import Runner
 from transpile import transform
 from astunparse import unparse
+import global_sandbox
 import json
 from os import getcwd
+from time import time
 code = '''
 
-class ListNode:
-    def __init__(self, val):
-        self.value = val
-        self.next = None
+from collections import deque
+python = deque('PYTHON')
 
-l = ListNode(0)
+arr = []
 
-c = l
+for char in 'IS':
+    arr.append(char)
 
-for i in range(1,5):
-    c.next = ListNode(i)
-    c = c.next
+cool = [c for c in 'COOL']
 '''
 
-
-input = [""]
-tree = transform(code, input)
+inp = ["", {}]
+tree = transform(code, inp)
 transpiled = unparse(tree)
 
-_name = input[0]
+_name, imports = inp
 
 runner = Runner(_name, code)
-exec(transpiled, {_name: runner,
-                  'dir': None, 'open': None}, {})
-open('../../client/src/store/default_python.json', 'w+').write(
+start = time()
+exec(transpiled, global_sandbox.create(_name, runner, imports))
+runtime = int((time() - start) * 1000)
+open('client/src/store/default_python.json', 'w+').write(
     json.dumps(
         {
             'steps': runner.steps,
@@ -37,7 +36,8 @@ open('../../client/src/store/default_python.json', 'w+').write(
             'types': runner.types,
             'objectIndex': runner.objectIndex,
             'dataVersion': 1,
-            'code': runner.code
+            'code': runner.code,
+            'runtime': runtime
         }
     )
 )

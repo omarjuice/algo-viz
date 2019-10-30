@@ -264,47 +264,59 @@ import heapq
 
 x = heapq.heapify([1,2,3,4,5])
 
+''',
+    'default': '''
+
+from collections import deque
+python = deque('PYTHON')
+
+arr = []
+
+for char in 'IS':
+    arr.append(char)
+
+cool = [c for c in 'COOL']
 '''
 
 }
 
 
 for name, code in funcs.items():
-    try:
-        input = ["", {}]
-        tree = transform(code, input)
-        transpiled = unparse(tree)
+    # try:
+    #     inp = ["", {}]
+    #     tree = transform(code, inp)
+    #     transpiled = unparse(tree)
 
-        _name, imports = input
-        runner = Runner(_name, code)
-        open('transpiled.py', "w+").write(transpiled)
+    #     _name, imports = inp
+    #     runner = Runner(_name, code)
+    #     open('transpiled.py', "w+").write(transpiled)
 
-        exec(transpiled, global_sandbox.create(_name, runner, imports))
-        print(f"✔ {name}")
-    except Exception as e:
-        print(f"✖ {name} -> {e}")
+    #     exec(transpiled, global_sandbox.create(_name, runner, imports))
+    #     print(f"✔ {name}")
+    # except Exception as e:
+    #     print(f"✖ {name} -> {e}")
 
-    # if name != 'heapq':
-    #     continue
-    # input = ["", {}]
-    # tree = transform(code, input)
-    # transpiled = unparse(tree)
+    if name != 'default':
+        continue
+    inp = ["", {}]
+    tree = transform(code, inp)
+    transpiled = unparse(tree)
 
-    # _name, imports = input
+    _name, imports = inp
 
-    # open('transpiled.py', "w+").write(transpiled)
-    # runner = Runner(_name, code)
-    # exec(transpiled, global_sandbox.create(_name, runner, imports))
+    open('transpiled.py', "w+").write(transpiled)
+    runner = Runner(_name, code)
+    exec(transpiled, global_sandbox.create(_name, runner, imports))
 
-    # open('executed.json', 'w+').write(
-    #     json.dumps(
-    #         {
-    #             'steps': runner.steps,
-    #             'objects': runner.objects,
-    #             'types': runner.types,
-    #             'objectIndex': runner.objectIndex,
-    #             'dataVersion': 1
-    #         }
-    #     )
-    # )
-    # print(f"✔ {name}")
+    open('executed.json', 'w+').write(
+        json.dumps(
+            {
+                'steps': runner.steps,
+                'objects': runner.objects,
+                'types': runner.types,
+                'objectIndex': runner.objectIndex,
+                'dataVersion': 1
+            }
+        )
+    )
+    print(f"✔ {name}")
