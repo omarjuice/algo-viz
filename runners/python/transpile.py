@@ -314,15 +314,30 @@ class Transformer(ast.NodeTransformer):
     def visit_comprehension(self, node):
         self.generic_visit(node)
         assignments = flat_map_assignments([node.target], depth=1)
+        declarations = []
         elts = []
         for name in assignments:
             new_name = ast.Name(id=name.id, ctx=ast.Load())
-            new_node = self.wrapper(
-                new_name,
-                self.get_assignment_details(name, True),
+            dec_details = self.get_assignment_details(name, True)
+            assn_details = self.get_assignment_details(name, True)
+            declarations.append(
+                self.wrapper(
+                    ast.NameConstant(None),
+                    dec_details
+                )
             )
-            elts.append(new_node)
+            elts.append(self.wrapper(
+                new_name,
+                assn_details,
+            ))
+
         elts.append(ast.NameConstant(True))
+        declarations.append(node.iter)
+        dec_list_node = ast.List(elts=declarations)
+        node.iter = ast.Subscript(
+            value=dec_list_node,
+            slice=ast.Index(value=ast.Num(-1))
+        )
         assign_list_node = ast.List(elts=elts)
 
         node.ifs.insert(0, ast.Subscript(

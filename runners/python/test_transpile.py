@@ -167,8 +167,8 @@ class TestRunner:
 
 
 for name, code in funcs.items():
-    if name != 'assignments':
-        continue
+    # if name != 'comprehensions':
+    #     continue
     try:
         input = ["", {}]
         tree = transform(code, input)
