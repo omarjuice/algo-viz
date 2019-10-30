@@ -5,7 +5,7 @@ from myheapq import heappush, heappop
 from time import monotonic as time
 try:
     from _queue import SimpleQueue
-except ImportError:
+except Exception:
     SimpleQueue = None
 
 __all__ = ['Empty', 'Full', 'Queue',
@@ -14,7 +14,7 @@ __all__ = ['Empty', 'Full', 'Queue',
 
 try:
     from _queue import Empty
-except AttributeError:
+except Exception:
     class Empty(Exception):
         pass
 
