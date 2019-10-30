@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css'
 import store from '../../store';
-import Pointer from './Pointer';
 import ArrayChild from './ArrayChild';
 import getType from '../../utils/getType';
 import getVal from '../../utils/getVal';
@@ -39,18 +38,30 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         type
     }
     const valType = getType(value)
+    const visible = (!!info.get || !!info.set)
     if (typeof value === 'string' && value in store.structs.objects && store.settings.arrayTypes.has(store.viz.types[value])) {
         const parent = store.structs.pointers.get(value).top
 
         if (parent && parent.id === objectId && parent.key === prop) {
             return (
-                <div className={`columns is-paddingless is-multiline ${className}`}>
+                <div onMouseEnter={() => {
+                    toggle(true)
+                    store.structs.switchOff(info, 'get')
+                    store.structs.switchOff(info, 'set')
+                }}
+                    onMouseLeave={() => {
+                        toggle(false)
+                    }}
+                    className={`columns is-paddingless is-multiline ${className}`}>
                     {!store.settings.setTypes.has(type) && <div className={`column ${store.settings.mapTypes.has(type) && 'has-text-right'}`}>
                         <p className={`is-size-6 ${(displayProps.anim[0] || displayProps.anim[1]) && 'has-text-white'}`}>
-                            {store.settings.mapTypes.has(type) && prop in store.structs.objects ?
-                                <Pointer active={!!displayProps.anim[0]} id={prop} size={displayProps.size} />
-                                :
-                                <Tooltip overlay={() => (
+
+                            <Tooltip
+
+                                placement={'left'}
+                                defaultVisible={true}
+                                trigger={['hover']} visible={store.settings.config.tooltips ? visible || hovered : hovered}
+                                overlay={() => (
                                     <div className="has-text-weight-bold">
                                         {!store.settings.setTypes.has(type) && <span style={{ fontSize: 9 }}>
                                             {store.settings.mapTypes.has(type) ? <ValText value={prop} type={getType(prop)} /> : String(prop)}:{' '}
@@ -58,10 +69,11 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
                                         <ValText value={value} type={valType} textOnly={true} />
                                     </div >
                                 )}>
-                                    {store.settings.mapTypes.has(type) ?
-                                        getVal(prop, { ...displayProps }, getType(prop)) :
-                                        <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
-                                </Tooltip>}
+                                {store.settings.mapTypes.has(type) ?
+                                    getVal(prop, { ...displayProps }, getType(prop)) :
+                                    <span className="prop-name" style={{}}>{(prop).slice(0, 5)}{((prop).length > 5 ? <span style={{ fontSize: 5 }}>...</span> : '')}</span>}
+                            </Tooltip>
+
                         </p>
                     </div>}
                     <div className={`column`}>
@@ -77,7 +89,6 @@ const HashVal: React.FC<ValProps> = observer(({ object, prop, objectId, size, ra
         margin: `${size / 5}px 0px`,
         height: `${Math.max(size * 1.5)}px`,
     }
-    const visible = (!!info.get || !!info.set)
     return (
         <div
             onMouseEnter={() => {

@@ -111,6 +111,7 @@ def generic_proxy(runner):
 def list_proxy(runner):
     class ListProxy(ObjectProxy):
         def __getitem__(self, key):
+
             item = super().__getitem__(key)
             if isinstance(key, slice):
                 for i in range(len(self))[key]:
@@ -410,6 +411,19 @@ def list_proxy(runner):
 
 def dict_proxy(runner):
     class DictProxy(runner.GenericProxy):
+        def __getitem__(self, key):
+            had_key = key in self.__wrapped__
+            item = super().__getitem__(key)
+            if not had_key:
+                self.__wrapped__[key] = runner.virtualize(self.__wrapped__[key])
+                item = super().__getitem__(key)
+            runner.__(item, {
+                'type': TYPES.GET if had_key else TYPES.SET,
+                'object': self.__wrapped__,
+                'access': key,
+            })
+
+            return item
         def get(self, *args, **kwargs):
             result = super().__getattr__('get')(*args, **kwargs)
             key = args[0]

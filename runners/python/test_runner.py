@@ -276,6 +276,35 @@ for char in 'IS':
     arr.append(char)
 
 cool = [c for c in 'COOL']
+''',
+    'defaultdict': '''
+from collections import defaultdict
+import bisect
+class Solution:
+    def shortestWay(_self, source, target):
+        char_indices = defaultdict(list)
+        for i, c in enumerate(source):
+            g = char_indices[c]
+            g.append(i)
+
+        result = 0
+        i = 0                                      
+
+        for c in target:
+            if c not in char_indices:              
+                return -1
+
+            j = bisect.bisect_left(char_indices[c], i) 
+            if j == len(char_indices[c]):           
+                result += 1
+                j = 0
+            i = char_indices[c][j] + 1             
+
+        return result if i == 0 else result + 1   
+source = "abc"
+target = "abcbc"
+Solution().shortestWay(source,target)
+
 '''
 
 }
@@ -296,7 +325,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'default':
+    if name != 'defaultdict':
         continue
     inp = ["", {}]
     tree = transform(code, inp)

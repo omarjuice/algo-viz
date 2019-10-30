@@ -153,6 +153,7 @@ class PointerQueue {
     private getAffinity(parent: string, child: string): number {
         const parentType = this.types[parent]
         const childType = this.types[child]
+
         if (parentType === childType) {
             if (this.baseTypes.hashTypes.has(parentType)) {
                 return 0

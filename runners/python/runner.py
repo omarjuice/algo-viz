@@ -97,16 +97,17 @@ class Runner:
             return self.proxies[id(obj)][0]
         elif t == list:
             proxy = self.ListProxy(obj)
-        elif t == dict or t == defaultdict:
-            proxy = self.DictProxy(obj)
         elif t == set:
             proxy = self.SetProxy(obj)
         elif t == Counter:
             proxy = self.CounterProxy(obj)
         elif t == OrderedDict:
             proxy = self.OrderedDictProxy(obj)
+        elif t == dict or t == defaultdict:
+            proxy = self.DictProxy(obj)
         else:
             proxy = self.GenericProxy(obj)
+
         self.proxies[id(obj)] = (proxy, False)
         self.proxies[id(proxy)] = (proxy, True)
         if self.map.has(obj):
