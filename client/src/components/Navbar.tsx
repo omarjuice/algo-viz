@@ -142,6 +142,16 @@ const Navbar: React.FC = observer(() => {
 
 
                     <div className="navbar-end">
+                        <div className="navbar-item">
+                            <a href="#/" onClick={() => {
+                                store.settings.startEdit()
+                                document.getElementById('Language').click()
+                            }} >
+                                <figure className="image is-32x32">
+                                    <img src={process.env.PUBLIC_URL + `/${store.language}.svg`} alt="python" />
+                                </figure>
+                            </a>
+                        </div>
                         {typeof store.viz.runtime === 'number' && <div className="navbar-item">
                             <span style={{
                                 color: store.settings.configColors["Text"]

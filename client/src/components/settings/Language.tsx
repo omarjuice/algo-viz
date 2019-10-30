@@ -32,7 +32,7 @@ const Language: React.FC = observer(() => {
                                 <div className="column is-half has-text-centered is-paddingless"
                                     style={{ display: 'flex', justifyContent: 'center' }}>
                                     <figure className="image is-32x32">
-                                        <img src={process.env.PUBLIC_URL + '/nodejs.svg'} alt="javascript" />
+                                        <img src={process.env.PUBLIC_URL + '/javascript.svg'} alt="javascript" />
                                     </figure>
                                 </div>
                             </div>

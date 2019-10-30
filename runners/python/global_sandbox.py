@@ -6,16 +6,16 @@ import importlib
 import typing
 white_listed_imports = {
     'bisect',
+    'collections',
+    'datetime',
     'heapq',
     'keyword',
+    'math'
     'queue',
     'random',
-    'string',
-    'collections',
-    'viz',
     're',
-    'datetime',
-    'math'
+    'string',
+    'viz',
 }
 
 import_overrrides = {
@@ -84,5 +84,4 @@ def create(_name, runner, imports):
                 if nm not in exports:
                     raise Exception(f'{nm} is not exported from {name}.')
                 sandbox[alias] = getattr(mod, nm)
-
     return sandbox
