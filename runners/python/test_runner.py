@@ -270,41 +270,41 @@ x = heapq.heapify([1,2,3,4,5])
 
 
 for name, code in funcs.items():
-    # try:
-    #     input = ["", {}]
-    #     tree = transform(code, input)
-    #     transpiled = unparse(tree)
+    try:
+        input = ["", {}]
+        tree = transform(code, input)
+        transpiled = unparse(tree)
 
-    #     _name, imports = input
-    #     runner = Runner(_name, code)
-    #     open('transpiled.py', "w+").write(transpiled)
+        _name, imports = input
+        runner = Runner(_name, code)
+        open('transpiled.py', "w+").write(transpiled)
 
-    #     exec(transpiled, global_sandbox.create(_name, runner, imports))
-    #     print(f"✔ {name}")
-    # except Exception as e:
-    #     print(f"✖ {name} -> {e}")
+        exec(transpiled, global_sandbox.create(_name, runner, imports))
+        print(f"✔ {name}")
+    except Exception as e:
+        print(f"✖ {name} -> {e}")
 
-    if name != 'heapq':
-        continue
-    input = ["", {}]
-    tree = transform(code, input)
-    transpiled = unparse(tree)
+    # if name != 'heapq':
+    #     continue
+    # input = ["", {}]
+    # tree = transform(code, input)
+    # transpiled = unparse(tree)
 
-    _name, imports = input
+    # _name, imports = input
 
-    open('transpiled.py', "w+").write(transpiled)
-    runner = Runner(_name, code)
-    exec(transpiled, global_sandbox.create(_name, runner, imports))
+    # open('transpiled.py', "w+").write(transpiled)
+    # runner = Runner(_name, code)
+    # exec(transpiled, global_sandbox.create(_name, runner, imports))
 
-    open('executed.json', 'w+').write(
-        json.dumps(
-            {
-                'steps': runner.steps,
-                'objects': runner.objects,
-                'types': runner.types,
-                'objectIndex': runner.objectIndex,
-                'dataVersion': 1
-            }
-        )
-    )
-    print(f"✔ {name}")
+    # open('executed.json', 'w+').write(
+    #     json.dumps(
+    #         {
+    #             'steps': runner.steps,
+    #             'objects': runner.objects,
+    #             'types': runner.types,
+    #             'objectIndex': runner.objectIndex,
+    #             'dataVersion': 1
+    #         }
+    #     )
+    # )
+    # print(f"✔ {name}")

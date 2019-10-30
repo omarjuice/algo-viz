@@ -381,7 +381,11 @@ class Transformer(ast.NodeTransformer):
             assn.value = new_node
             setattr(assn, '_wrapper', True)
             new_nodes.append(assn)
-
+        name = node.name
+        parent = self.scopes.parents[node]
+        if isinstance(parent, ast.ClassDef):
+            name = parent.name + '.' + name
+        setattr(node, 'funcName', name)
         self.generic_visit(node)
 
         for new_node in new_nodes:
@@ -391,7 +395,7 @@ class Transformer(ast.NodeTransformer):
             ast.NameConstant(value=None),
             {
                 'type': TYPES.FUNC,
-                'funcName': node.name,
+                'funcName': name,
                 'funcID': getattr(node, 'funcID'),
                 'scope': self.scopes.get_scope(node),
 
@@ -402,7 +406,7 @@ class Transformer(ast.NodeTransformer):
                 ast.NameConstant(value=None),
                 {
                     'type': TYPES.RETURN,
-                    'funcName': node.name,
+                    'funcName': name,
                     'funcID': getattr(node, 'funcID'),
                     'scope': self.scopes.get_scope(node),
                 },
@@ -483,7 +487,7 @@ class Transformer(ast.NodeTransformer):
             parent = self.scopes.parents[parent]
 
         funcID = getattr(parent, 'funcID')
-        funcName = parent.name
+        funcName = getattr(parent, 'funcName')
 
         node.value = self.wrapper(node.value or ast.NameConstant(value=None), {
             'type': TYPES.RETURN,
@@ -519,6 +523,15 @@ class Transformer(ast.NodeTransformer):
             'names': names
         })
         return None
+
+    def visit_Try(self, node):
+        raise SyntaxError('Try blocks are not allowed.')
+
+    def visit_TryFinally(self, node):
+        raise SyntaxError('Try blocks are not allowed.')
+
+    def visit_TryExcept(self, node):
+        raise SyntaxError('Try blocks are not allowed.')
 
 
 class Scopes:
