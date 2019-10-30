@@ -180,7 +180,20 @@ module.exports = function (input) {
                         }
                     },
                 },
-
+                'ForOfStatement|ForInStatement': {
+                    exit(path) {
+                        if (!t.isVariableDeclaration(path.node.left)) {
+                            const details = [];
+                            const base = { type: TYPES.ASSIGNMENT, scope: getScope(path) }
+                            if (t.isIdentifier(path.node.left)) {
+                                details.push({ ...base, varName: path.node.left.name })
+                            } else {
+                                path.get("left").traverse(traverseAssignments(details, base))
+                            }
+                            path.node.body.body = [...details.map((d) => proxy(t.identifier(d.varName), d)), ...path.node.body.body]
+                        }
+                    }
+                },
                 AssignmentExpression: {
                     exit(path) {
                         if (t.isMemberExpression(path.node.left)) {

@@ -111,7 +111,14 @@ describe('VM code execution', function () {
     })
     it('custom test', async () => {
         process.env.CODE = `
+        let a = 1
+        let b = 2
 
+const arr = [1,2,3,4,5]
+
+for (a of arr){
+    a + 1
+}
     `
         let body = execute()
 
