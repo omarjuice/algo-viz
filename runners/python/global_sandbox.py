@@ -1,16 +1,27 @@
 from proxy import ObjectProxy
 import viz
+import myheapq
+import myqueue
 import importlib
 import typing
 white_listed_imports = {
     'bisect',
-    # 'heapq',
+    'heapq',
     'keyword',
-    # 'queue',
+    'queue',
     'random',
-    'strings',
+    'string',
     'collections',
-    'viz'
+    'viz',
+    're',
+    'datetime',
+    'math'
+}
+
+import_overrrides = {
+    'viz': viz,
+    'heapq': myheapq,
+    'queue': myqueue
 }
 
 
@@ -27,7 +38,10 @@ def create(_name, runner, imports):
         'type': type_override,
         'print': lambda *args: None
     }
-
+    for n in dir(typing):
+        if n[0] == '_':
+            continue
+        sandbox[n] = getattr(typing, n)
     ban_list = [
         'compile',
         'dir',
@@ -51,7 +65,8 @@ def create(_name, runner, imports):
         name = imp['module']
         if name not in white_listed_imports:
             raise Exception(f'import {name} is not found or not allowed.')
-        mod = viz if name == 'viz' else importlib.import_module(name)
+        mod = import_overrrides[name] if name in import_overrrides else importlib.import_module(
+            name)
         if imp['type'] == 'import':
             if imp['alias']:
                 name = imp['alias']
@@ -70,6 +85,4 @@ def create(_name, runner, imports):
                     raise Exception(f'{nm} is not exported from {name}.')
                 sandbox[alias] = getattr(mod, nm)
 
-    for n in dir(typing):
-        sandbox[n] = getattr(typing, n)
     return sandbox

@@ -94,11 +94,11 @@ const HashStruct: React.FC<Props> = observer(({ structure, objectId, ratio, poin
     }
     return (
         <div style={{ ...styles, maxHeight: maxHeight + 100 }} className={`hash-struct has-text-centered`}>
-            <div className="is-size-1" style={braceStyle}>{`{`}</div>
+            <div className="is-size-1 has-text-centered" style={braceStyle}>{`{`}</div>
             <div style={{ ...styles, minWidth: (store.settings.hashTypes.has(type) && !store.settings.setTypes.has(type)) ? 200 : 100, minHeight: 50 }} ref={ref}>
                 {obj}
             </div>
-            <div className="is-size-1" style={braceStyle}>{'}'}</div>
+            <div className="is-size-1 has-text-centered" style={braceStyle}>{'}'}</div>
         </div>
     );
 })

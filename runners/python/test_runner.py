@@ -257,8 +257,14 @@ z = 5
 
 del (x,(y,z))
 
-'''
+''',
+    'heapq': '''
 
+import heapq
+
+x = heapq.heapify([1,2,3,4,5])
+
+'''
 
 }
 
@@ -278,7 +284,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'delete_var':
+    if name != 'heapq':
         continue
     input = ["", {}]
     tree = transform(code, input)

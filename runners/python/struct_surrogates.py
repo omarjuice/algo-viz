@@ -5,7 +5,6 @@ class DequeSurrogate:
         self.front = None
         self.end = None
         self.length = 0
-        self.__name__ = 'deque'
         for value in values:
             self.append(value)
 
@@ -143,7 +142,7 @@ class DequeSurrogate:
         DequeSurrogate.remove_node(self, node)
 
 
-DequeSurrogate.__name__ = 'deque'
+DequeSurrogate.__name__ = 'collections.deque'
 
 
 class DequeSurrogateBlock:
@@ -153,4 +152,4 @@ class DequeSurrogateBlock:
         self.prev = prev
 
 
-DequeSurrogateBlock.__name__ = 'deque.block'
+DequeSurrogateBlock.__name__ = 'collections.deque.block'

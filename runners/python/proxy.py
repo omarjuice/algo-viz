@@ -242,7 +242,7 @@ def list_proxy(runner):
 
         def pop(self, *args, **kwargs):
             result = super().__getattr__('pop')(*args, **kwargs)
-            idx = len(self) - 1 if len(args) == 0 else args[0]
+            idx = len(self) if len(args) == 0 else args[0]
             idx = idx if idx >= 0 else (len(self) + (idx) + 1)
             runner.__(result, {
                 'type': TYPES.GET,
@@ -253,6 +253,12 @@ def list_proxy(runner):
                 'type': TYPES.DELETE,
                 'object': self.__wrapped__,
                 'access': idx
+            })
+            for i in range(idx, len(self)):
+                runner.__(self.__wrapped__[i], {
+                'type': TYPES.SET,
+                'object': self.__wrapped__,
+                'access': i
             })
             runner.__(len(self), {
                 'type': TYPES.SET,

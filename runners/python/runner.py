@@ -3,12 +3,16 @@ from util import ValueMap
 import string
 from random import choice
 from proxy import *
-from collections import Counter, OrderedDict, defaultdict, deque
+import collections
+import myqueue
 from itertools import chain
 from struct_surrogates import DequeSurrogate
 import viz
 import typing
+import threading
 
+
+Counter, OrderedDict, defaultdict, deque = collections.Counter, collections.OrderedDict, collections.defaultdict, collections.deque
 
 lettersAndDigits = string.ascii_letters + string.digits
 rng = type(range(1))
@@ -18,6 +22,16 @@ gen = type((1 for _ in range(1)))
 primitives = {int, str, bool, float, complex, bytes}
 others = {rng, slice, fnc, tuple, type(lambda: 0), type(
     [].append), typing._GenericAlias, gen, chain, type}
+
+others |= {getattr(threading, name)
+           for name in dir(threading) if name[0] != '_'}
+
+viz_types = {getattr(viz, name)
+             for name in dir(viz) if name[0] != '_'}
+collections_types = {getattr(collections, name)
+                     for name in dir(collections) if name[0] != '_'}
+queue_types = {getattr(myqueue, name)
+               for name in dir(myqueue) if name[0] != '_'}
 
 
 class Runner:
@@ -227,7 +241,12 @@ class Runner:
                 raise Exception(
                     f'{type_name} is too large. All objects are limited to 1000 elements.'
                 )
-            if isinstance(obj, (viz.BTree, viz.SLL)):
+
+            if t in collections_types:
+                type_name = 'collections.' + type_name
+            elif t in queue_types:
+                type_name = 'queue.' + type_name
+            elif t in viz_types:
                 type_name = 'viz.' + type_name
             ln = len(self.steps)
             if ln not in self.objectIndex:

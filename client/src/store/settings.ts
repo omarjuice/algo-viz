@@ -171,7 +171,7 @@ export const jsStructInfo: Viz.structSettings = {
 }
 
 export const pyStructInfo: Viz.structSettings = {
-    ChainMap: {
+    'collections.ChainMap': {
         order: {
             maps: {
                 pos: 1,
@@ -184,7 +184,7 @@ export const pyStructInfo: Viz.structSettings = {
         textColor: '#0b1423',
         pointers: {}
     },
-    deque: {
+    'collections.deque': {
         order: {
             front: {
                 pos: 1,
@@ -199,7 +199,7 @@ export const pyStructInfo: Viz.structSettings = {
             end: false
         }
     },
-    'deque.block': {
+    'collections.deque.block': {
         order: {
             next: {
                 pos: 1,
@@ -245,6 +245,63 @@ export const pyStructInfo: Viz.structSettings = {
         pointers: {
         }
     },
+    'queue.Queue': {
+        order: {
+            queue: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'maxsize',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+        }
+    },
+    'queue.PriorityQueue': {
+        order: {
+            queue: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'maxsize',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+        }
+    },
+    'queue.LifoQueue': {
+        order: {
+            queue: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'maxsize',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+        }
+    },
+    'queue.SimpleQueue': {
+        order: {
+            queue: {
+                pos: 1,
+                isMultiple: false
+            },
+        },
+        main: 'maxsize',
+        numChildren: 1,
+        color: randomColor(),
+        textColor: '#0b1423',
+        pointers: {
+        }
+    }
+
 }
 
 Object.defineProperty(jsStructInfo, 'default', {

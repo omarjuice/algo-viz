@@ -189,8 +189,17 @@ class StructSettings extends Component<Props> {
             <div className={`box struct-settings-${name}`} style={style}>
 
                 <div className="columns">
-                    <div className="column has-text-left">
-                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"], hyphens: 'auto' }}>{name}</h1>
+                    <div className="column is-4 has-text-left is-paddingless">
+                        <h1 className="title is-6" style={{ color: store.settings.configColors["Text"], hyphens: 'auto', wordBreak: 'break-word' }}>
+                            {
+                                name.split('.').map((w, i, a) => {
+                                    return <>
+                                        {w + (i < a.length - 1 ? '.' : '')}
+                                        <br />
+                                    </>
+                                })
+                            }
+                        </h1>
                     </div>
                     <div className="column has-text-centered">
                         {!isNative && <button onClick={() => this.setState({ editing: !this.state.editing, deleting: false })}
@@ -204,7 +213,7 @@ class StructSettings extends Component<Props> {
                     {!isNative && <div className="column has-text-centered">
                         <input type="color" value={structSettings.textColor} onChange={(e) => structSettings.textColor = e.target.value} />
                     </div>}
-                    <div className="column has-text-right">
+                    <div className={`column has-text-right ${this.state.deleting && 'is-3'}`}>
                         {!isNative && !isBuiltin && !settings.dependentTypes.has(name) && (
                             this.state.deleting ?
                                 <div className="columns">
