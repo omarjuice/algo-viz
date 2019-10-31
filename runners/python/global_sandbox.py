@@ -9,6 +9,8 @@ white_listed_imports = {
     'collections',
     'datetime',
     'heapq',
+    'itertools',
+    'functools',
     'keyword',
     'math'
     'queue',

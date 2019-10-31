@@ -305,6 +305,11 @@ source = "abc"
 target = "abcbc"
 Solution().shortestWay(source,target)
 
+''',
+    'arr': '''
+arr = [1,2,3]
+
+arr[-1] = 4
 '''
 
 }
@@ -325,7 +330,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'defaultdict':
+    if name != 'arr':
         continue
     inp = ["", {}]
     tree = transform(code, inp)

@@ -134,6 +134,7 @@ def list_proxy(runner):
             ln = len(self)
             super().__setitem__(key, value)
             if not isinstance(key, slice):
+                key = key if key >= 0 else (len(self) + (key))
                 runner.__(self.__wrapped__[key], {
                     'type': TYPES.SET,
                     'object': self.__wrapped__,
