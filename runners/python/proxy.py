@@ -415,11 +415,13 @@ def dict_proxy(runner):
         def __getitem__(self, key):
             had_key = key in self.__wrapped__
             item = super().__getitem__(key)
-            if not had_key:
+            t = TYPES.GET
+            if not had_key and key in self.__wrapped__:
                 self.__wrapped__[key] = runner.virtualize(self.__wrapped__[key])
                 item = super().__getitem__(key)
+                t = TYPES.SET
             runner.__(item, {
-                'type': TYPES.GET if had_key else TYPES.SET,
+                'type': t,
                 'object': self.__wrapped__,
                 'access': key,
             })
