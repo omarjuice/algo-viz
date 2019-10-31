@@ -313,20 +313,32 @@ arr[-1] = 4
 ''',
     'flip': '''
 from collections import defaultdict
-def minAreaRect(points: List[List[int]]) -> int:
-        h = defaultdict(set)
-        v = defaultdict(set)
+from queue import PriorityQueue
+def networkDelayTime(times: List[List[int]], N: int, K: int) -> int:
+        network = defaultdict(list)
+        for a,b,t in times:
+            network[a].append((b,t))
+        visited = set()
         
-        for x1,y1 in points:
-            for x2,y2 in points:
-                if x1 == x2 and y1 == y2:
-                    continue
-                if x1 == x2:
-                    v[x1].add(((x1,y1), (x2,y2)))
-                if y1 == y2:
-                    h[y1].add(((x1,y1), (x2,y2))
+        q = PriorityQueue()
+        max_time = -1
+        q.put((0,K))
         
-minAreaRect([[1,1],[1,3],[3,1],[3,3],[4,1],[4,3]])
+        while not q.empty():
+            if len(visited) == N:
+                return max_time
+            time,node = q.get()
+            visited.add(node)
+            if node in network:
+                for v,t in network[node]:
+                    q.put((t + time,v))
+                    
+        return max_time if len(visited) == N else -1
+            
+
+networkDelayTime([[1,2,1],[2,3,2],[1,3,2]],
+3,
+1)
 '''
 
 }

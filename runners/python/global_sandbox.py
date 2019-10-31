@@ -12,7 +12,7 @@ white_listed_imports = {
     'itertools',
     'functools',
     'keyword',
-    'math'
+    'math',
     'queue',
     'random',
     're',
