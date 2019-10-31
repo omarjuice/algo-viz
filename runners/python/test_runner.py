@@ -310,6 +310,10 @@ Solution().shortestWay(source,target)
 arr = [1,2,3]
 
 arr[-1] = 4
+''',
+    'flip': '''
+k = -1
+
 '''
 
 }
@@ -330,7 +334,7 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'arr':
+    if name != 'flip':
         continue
     inp = ["", {}]
     tree = transform(code, inp)

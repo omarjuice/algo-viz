@@ -160,14 +160,13 @@ class Transformer(ast.NodeTransformer):
             return call_node
 
     def visit_expr(self, node):
+        print(node)
         if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp)):
             self.scopes.add_scope(node)
         self.generic_visit(node)
-        return ast.copy_location(
-            self.wrapper(node, {
-                'type': TYPES.EXPRESSION
-            }), node
-        )
+        return self.wrapper(node, {
+            'type': TYPES.EXPRESSION
+        })
 
     def generic_visit(self, node):
 
