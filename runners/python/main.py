@@ -1,5 +1,5 @@
 import os
-from time import time
+from tokenize import TokenError
 from runner import Runner
 from transpile import transform
 from astunparse import unparse
@@ -28,6 +28,8 @@ def execute():
         transpiled = unparse(tree)
     except SyntaxError as syn_e:
         raise syn_e
+    except TokenError as tok_e:
+        raise tok_e
     except Exception as e:
         raise Exception('TranspilerError: ' + str(e))
 

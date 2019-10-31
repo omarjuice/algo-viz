@@ -160,7 +160,6 @@ class Transformer(ast.NodeTransformer):
             return call_node
 
     def visit_expr(self, node):
-        print(node)
         if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp)):
             self.scopes.add_scope(node)
         self.generic_visit(node)

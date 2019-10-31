@@ -312,14 +312,29 @@ arr = [1,2,3]
 arr[-1] = 4
 ''',
     'flip': '''
-k = -1
-
+from collections import defaultdict
+def minAreaRect(points: List[List[int]]) -> int:
+        h = defaultdict(set)
+        v = defaultdict(set)
+        
+        for x1,y1 in points:
+            for x2,y2 in points:
+                if x1 == x2 and y1 == y2:
+                    continue
+                if x1 == x2:
+                    v[x1].add(((x1,y1), (x2,y2)))
+                if y1 == y2:
+                    h[y1].add(((x1,y1), (x2,y2))
+        
+minAreaRect([[1,1],[1,3],[3,1],[3,3],[4,1],[4,3]])
 '''
 
 }
 
 
 for name, code in funcs.items():
+    if name != 'flip':
+        continue
     # try:
     #     inp = ["", {}]
     #     tree = transform(code, inp)
@@ -334,8 +349,6 @@ for name, code in funcs.items():
     # except Exception as e:
     #     print(f"✖ {name} -> {e}")
 
-    if name != 'flip':
-        continue
     inp = ["", {}]
     tree = transform(code, inp)
     transpiled = unparse(tree)
