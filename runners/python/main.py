@@ -1,4 +1,5 @@
 import os
+from time import time
 from tokenize import TokenError
 from runner import Runner
 from transpile import transform
