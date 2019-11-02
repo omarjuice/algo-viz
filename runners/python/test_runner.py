@@ -312,16 +312,7 @@ arr = [1,2,3]
 arr[-1] = 4
 ''',
     'flip': '''
-memo =[0,1]
-def nth_fib(n):
-    if n < len(memo):
-        return memo[n]
-    else:
-        memo.append(nth_fib(n - 1) + nth_fib(n - 2))
-        return memo[n]
-
-
-nth_fib(10)
+g = complex(1,2)
 '''
 
 }

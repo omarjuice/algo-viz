@@ -21,7 +21,7 @@ gen = type((1 for _ in range(1)))
 
 primitives = {int, str, bool, float, bytes}
 others = {complex, rng, slice, fnc, tuple, type(lambda: 0), type(
-    [].append), typing._GenericAlias, gen, chain, type}
+    [].append), typing._GenericAlias, gen, chain, type, float}
 
 others |= {getattr(threading, name)
            for name in dir(threading) if name[0] != '_'}
@@ -175,8 +175,11 @@ class Runner:
     def stringify(self, obj):
         t = type(obj)
         if t in primitives:
-            return obj
-        elif t in others:
+            if obj == float('inf'):
+                pass
+            else:
+                return obj
+        if t in others:
             _id = self.gen_id(5, 5)
             if t == tuple:
                 c = []
