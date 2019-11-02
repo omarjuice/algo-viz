@@ -312,33 +312,16 @@ arr = [1,2,3]
 arr[-1] = 4
 ''',
     'flip': '''
-from collections import defaultdict
-from queue import PriorityQueue
-def networkDelayTime(times: List[List[int]], N: int, K: int) -> int:
-        network = defaultdict(list)
-        for a,b,t in times:
-            network[a].append((b,t))
-        visited = set()
-        
-        q = PriorityQueue()
-        max_time = -1
-        q.put((0,K))
-        
-        while not q.empty():
-            if len(visited) == N:
-                return max_time
-            time,node = q.get()
-            visited.add(node)
-            if node in network:
-                for v,t in network[node]:
-                    q.put((t + time,v))
-                    
-        return max_time if len(visited) == N else -1
-            
+memo =[0,1]
+def nth_fib(n):
+    if n < len(memo):
+        return memo[n]
+    else:
+        memo.append(nth_fib(n - 1) + nth_fib(n - 2))
+        return memo[n]
 
-networkDelayTime([[1,2,1],[2,3,2],[1,3,2]],
-3,
-1)
+
+nth_fib(10)
 '''
 
 }

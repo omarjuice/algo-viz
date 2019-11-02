@@ -19,8 +19,8 @@ rng = type(range(1))
 fnc = type(range)
 gen = type((1 for _ in range(1)))
 
-primitives = {int, str, bool, float, complex, bytes}
-others = {rng, slice, fnc, tuple, type(lambda: 0), type(
+primitives = {int, str, bool, float, bytes}
+others = {complex, rng, slice, fnc, tuple, type(lambda: 0), type(
     [].append), typing._GenericAlias, gen, chain, type}
 
 others |= {getattr(threading, name)
