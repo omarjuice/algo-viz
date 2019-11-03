@@ -39,7 +39,7 @@ export default function instantiateBST(runner: Runner) {
             BST.checkElems(elems, 'insertMany')
             const bst = this
             if (method === 'inOrder') {
-                for (let i = 1; i < elems.length; i++) {
+                for (let i = 0; i < elems.length; i++) {
                     if (i in elems) {
                         bst.insert(elems[i])
                     }

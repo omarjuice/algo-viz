@@ -307,27 +307,26 @@ Solution().shortestWay(source,target)
 
 ''',
     'custom': '''
-def numMatchingSubseq(S, words):
-        ans = 0
-        heads = [[] for _ in range(26)]
+from collections import defaultdict
+def numMatchingSubseq(S: str, words: List[str]) -> int:
+        table = defaultdict(list)
+        count = 0
         for word in words:
-            it = iter(word)
-            heads[ord(next(it)) - ord('a')].append(it)
-
-        for letter in S:
-            letter_index = ord(letter) - ord('a')
-            old_bucket = heads[letter_index]
-            heads[letter_index] = []
-
-            while old_bucket:
-                it = old_bucket.pop()
+            iterator = iter(word)
+            table[next(iterator)].append(iterator)
+        
+        
+        for c in S:
+            bucket = table[c]
+            table[c] = []
+            for it in bucket:
                 nxt = next(it, None)
                 if nxt:
-                    heads[ord(nxt) - ord('a')].append(it)
+                    table[nxt].append(it)
                 else:
-                    ans += 1
-
-        return ans
+                    count += 1
+            
+        return count
 
 numMatchingSubseq("abcde",
 ["a","bb","acd","ace"])
