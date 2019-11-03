@@ -105,9 +105,10 @@ class Runner:
             proxy = self.OrderedDictProxy(obj)
         elif t == dict or t == defaultdict:
             proxy = self.DictProxy(obj)
-        else:
+        elif hasattr(obj, '__dict__'):
             proxy = self.GenericProxy(obj)
-
+        else:
+            return obj
         self.proxies[id(obj)] = (proxy, False)
         self.proxies[id(proxy)] = (proxy, True)
         if self.map.has(obj):

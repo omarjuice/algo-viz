@@ -306,20 +306,38 @@ target = "abcbc"
 Solution().shortestWay(source,target)
 
 ''',
-    'arr': '''
-arr = [1,2,3]
+    'custom': '''
+def numMatchingSubseq(S, words):
+        ans = 0
+        heads = [[] for _ in range(26)]
+        for word in words:
+            it = iter(word)
+            heads[ord(next(it)) - ord('a')].append(it)
 
-arr[-1] = 4
-''',
-    'flip': '''
-g = complex(1,2)
+        for letter in S:
+            letter_index = ord(letter) - ord('a')
+            old_bucket = heads[letter_index]
+            heads[letter_index] = []
+
+            while old_bucket:
+                it = old_bucket.pop()
+                nxt = next(it, None)
+                if nxt:
+                    heads[ord(nxt) - ord('a')].append(it)
+                else:
+                    ans += 1
+
+        return ans
+
+numMatchingSubseq("abcde",
+["a","bb","acd","ace"])
 '''
 
 }
 
 
 for name, code in funcs.items():
-    if name != 'flip':
+    if name != 'custom':
         continue
     # try:
     #     inp = ["", {}]
