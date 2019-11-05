@@ -176,7 +176,7 @@ class Runner:
     def stringify(self, obj):
         t = type(obj)
         if t in primitives:
-            if obj == float('inf'):
+            if t == float and obj == float('inf') or obj == -float('inf'):
                 pass
             else:
                 return obj

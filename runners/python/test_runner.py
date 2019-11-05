@@ -330,6 +330,8 @@ def numMatchingSubseq(S: str, words: List[str]) -> int:
 
 numMatchingSubseq("abcde",
 ["a","bb","acd","ace"])
+
+a = -float('inf')
 '''
 
 }
