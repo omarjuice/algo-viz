@@ -407,6 +407,17 @@ def list_proxy(runner):
                 for i in range(idx + 1):
                     self[i]
             return result
+        def __iadd__(self, other):
+            self.extend(other)
+            return self
+        def __imul__(self, mul):
+            if mul > 1:
+                vals = self[:]
+                vals *= mul - 1
+                self.extend(vals)
+            return self
+            
+            
     return ListProxy
 
 

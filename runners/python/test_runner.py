@@ -307,31 +307,11 @@ Solution().shortestWay(source,target)
 
 ''',
     'custom': '''
-from collections import defaultdict
-def numMatchingSubseq(S: str, words: List[str]) -> int:
-        table = defaultdict(list)
-        count = 0
-        for word in words:
-            iterator = iter(word)
-            table[next(iterator)].append(iterator)
-        
-        
-        for c in S:
-            bucket = table[c]
-            table[c] = []
-            for it in bucket:
-                nxt = next(it, None)
-                if nxt:
-                    table[nxt].append(it)
-                else:
-                    count += 1
-            
-        return count
+a = [1,2]
 
-numMatchingSubseq("abcde",
-["a","bb","acd","ace"])
 
-a = -float('inf')
+
+a *= 1
 '''
 
 }
