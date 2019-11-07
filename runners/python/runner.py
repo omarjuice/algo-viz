@@ -183,10 +183,13 @@ class Runner:
         if t in others:
             _id = self.gen_id(5, 5)
             if t == tuple:
+                if self.map.has(obj):
+                    return self.map.get(obj)
                 c = []
                 for item in obj:
                     c.append(self.stringify(item))
                 self.types[_id] = c
+                self.map.add(obj, _id)
             else:
                 self.types[_id] = str(obj)
             return _id
