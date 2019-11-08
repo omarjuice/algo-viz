@@ -173,16 +173,14 @@ class Transformer(ast.NodeTransformer):
             self.scopes.add_node(node, child)
         return super().generic_visit(node)
 
-    def should_wrap_list_or_tuple(self, node):
+    def should_wrap_list_or_tuple_or_subscript(self, node):
         parent = self.scopes.parents[node]
-        if isinstance(parent, (ast.Assign, ast.Delete)) and node in parent.targets:
+        if isinstance(parent, (ast.Assign, ast.Delete, )) and node in parent.targets:
             return False
-        elif isinstance(parent, ast.For) and node == parent.target:
-            return False
-        elif isinstance(parent, ast.comprehension) and node == parent.target:
+        elif isinstance(parent, (ast.For, ast.AugAssign, ast.comprehension)) and node == parent.target:
             return False
         elif isinstance(parent, (ast.List, ast.Tuple)):
-            return self.should_wrap_list_or_tuple(parent)
+            return self.should_wrap_list_or_tuple_or_subscript(parent)
         elif isinstance(parent, (ast.withitem)) and node == parent.optional_vars:
             return False
         elif isinstance(parent, ast.comprehension) and node == parent.target:
@@ -193,7 +191,14 @@ class Transformer(ast.NodeTransformer):
             return True
 
     def visit_list_or_tuple(self, node):
-        if self.should_wrap_list_or_tuple(node):
+        if self.should_wrap_list_or_tuple_or_subscript(node):
+            return self.visit_expr(node)
+        else:
+            self.generic_visit(node)
+            return node
+
+    def visit_Subscript(self, node):
+        if self.should_wrap_list_or_tuple_or_subscript(node):
             return self.visit_expr(node)
         else:
             self.generic_visit(node)

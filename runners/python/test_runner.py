@@ -318,41 +318,41 @@ a *= 1
 
 
 for name, code in funcs.items():
-    if name != 'custom':
-        continue
-    # try:
-    #     inp = ["", {}]
-    #     tree = transform(code, inp)
-    #     transpiled = unparse(tree)
+    # if name != 'custom':
+    #     continue
+    try:
+        inp = ["", {}]
+        tree = transform(code, inp)
+        transpiled = unparse(tree)
 
-    #     _name, imports = inp
-    #     runner = Runner(_name, code)
-    #     open('transpiled.py', "w+").write(transpiled)
+        _name, imports = inp
+        runner = Runner(_name, code)
+        open('transpiled.py', "w+").write(transpiled)
 
-    #     exec(transpiled, global_sandbox.create(_name, runner, imports))
-    #     print(f"✔ {name}")
-    # except Exception as e:
-    #     print(f"✖ {name} -> {e}")
+        exec(transpiled, global_sandbox.create(_name, runner, imports))
+        print(f"✔ {name}")
+    except Exception as e:
+        print(f"✖ {name} -> {e}")
 
-    inp = ["", {}]
-    tree = transform(code, inp)
-    transpiled = unparse(tree)
+    # inp = ["", {}]
+    # tree = transform(code, inp)
+    # transpiled = unparse(tree)
 
-    _name, imports = inp
+    # _name, imports = inp
 
-    open('transpiled.py', "w+").write(transpiled)
-    runner = Runner(_name, code)
-    exec(transpiled, global_sandbox.create(_name, runner, imports))
+    # open('transpiled.py', "w+").write(transpiled)
+    # runner = Runner(_name, code)
+    # exec(transpiled, global_sandbox.create(_name, runner, imports))
 
-    open('executed.json', 'w+').write(
-        json.dumps(
-            {
-                'steps': runner.steps,
-                'objects': runner.objects,
-                'types': runner.types,
-                'objectIndex': runner.objectIndex,
-                'dataVersion': 1
-            }
-        )
-    )
-    print(f"✔ {name}")
+    # open('executed.json', 'w+').write(
+    #     json.dumps(
+    #         {
+    #             'steps': runner.steps,
+    #             'objects': runner.objects,
+    #             'types': runner.types,
+    #             'objectIndex': runner.objectIndex,
+    #             'dataVersion': 1
+    #         }
+    #     )
+    # )
+    # print(f"✔ {name}")
