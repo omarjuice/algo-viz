@@ -2,6 +2,7 @@ from wrapt import ObjectProxy
 from wrapper_types import TYPES
 from struct_surrogates import DequeSurrogate
 
+
 def generic_proxy(runner):
 
     class GenericProxy(ObjectProxy):
@@ -111,7 +112,6 @@ def generic_proxy(runner):
 def list_proxy(runner):
     class ListProxy(ObjectProxy):
         def __getitem__(self, key):
-
             item = super().__getitem__(key)
             if isinstance(key, slice):
                 for i in range(len(self))[key]:
@@ -125,7 +125,7 @@ def list_proxy(runner):
                 runner.__(self.__wrapped__[key], {
                     'type': TYPES.GET,
                     'object': self.__wrapped__,
-                    'access': key
+                    'access': int(key)
                 })
 
             return item
@@ -138,7 +138,7 @@ def list_proxy(runner):
                 runner.__(self.__wrapped__[key], {
                     'type': TYPES.SET,
                     'object': self.__wrapped__,
-                    'access': key
+                    'access': int(key)
                 })
                 return
             if ln == len(self):
@@ -258,10 +258,10 @@ def list_proxy(runner):
             })
             for i in range(idx, len(self)):
                 runner.__(self.__wrapped__[i], {
-                'type': TYPES.SET,
-                'object': self.__wrapped__,
-                'access': i
-            })
+                    'type': TYPES.SET,
+                    'object': self.__wrapped__,
+                    'access': i
+                })
             runner.__(len(self), {
                 'type': TYPES.SET,
                 'object': self.__wrapped__,
@@ -407,17 +407,18 @@ def list_proxy(runner):
                 for i in range(idx + 1):
                     self[i]
             return result
+
         def __iadd__(self, other):
             self.extend(other)
             return self
+
         def __imul__(self, mul):
             if mul > 1:
                 vals = self[:]
                 vals *= mul - 1
                 self.extend(vals)
             return self
-            
-            
+
     return ListProxy
 
 
@@ -428,7 +429,8 @@ def dict_proxy(runner):
             item = super().__getitem__(key)
             t = TYPES.GET
             if not had_key and key in self.__wrapped__:
-                self.__wrapped__[key] = runner.virtualize(self.__wrapped__[key])
+                self.__wrapped__[key] = runner.virtualize(
+                    self.__wrapped__[key])
                 item = super().__getitem__(key)
                 t = TYPES.SET
             runner.__(item, {
@@ -438,6 +440,7 @@ def dict_proxy(runner):
             })
 
             return item
+
         def get(self, *args, **kwargs):
             result = super().__getattr__('get')(*args, **kwargs)
             key = args[0]
@@ -445,7 +448,7 @@ def dict_proxy(runner):
                 runner.__(self.__wrapped__[key], {
                     'type': TYPES.GET,
                     'object': self.__wrapped__,
-                    'access': key
+                    'access': (key)
                 })
             return result
 
@@ -485,6 +488,7 @@ def dict_proxy(runner):
             for key in self.__wrapped__:
                 self[key]
             return result
+
         def values(self, *args, **kwargs):
             result = super().__getattr__('values')(*args, **kwargs)
             for key in self.__wrapped__:
@@ -838,43 +842,48 @@ def counter_proxy(runner):
             return result
 
         def subtract(self, *args, **kwargs):
-            vals = {a:b for a,b in self.__wrapped__.items()}
+            vals = {a: b for a, b in self.__wrapped__.items()}
             result = super().__getattr__('subtract')(*args, **kwargs)
             for key in vals:
                 if self.__wrapped__[key] != vals[key]:
                     runner.__(self.__wrapped__[key], {
-                    'type': TYPES.SET,
-                    'object': self.__wrapped__,
-                    'access': key
-                })
+                        'type': TYPES.SET,
+                        'object': self.__wrapped__,
+                        'access': key
+                    })
+
         def elements(self, *args, **kwargs):
             result = super().__getattr__('elements')(*args, *kwargs)
             for val in self:
                 self[val]
             return result
+
         def update(self, *args, **kwargs):
-            vals = {a:b for a,b in self.__wrapped__.items()}
+            vals = {a: b for a, b in self.__wrapped__.items()}
             result = super().__getattr__('update')(*args, **kwargs)
             for key in vals:
                 if self.__wrapped__[key] != vals[key]:
                     runner.__(self.__wrapped__[key], {
-                    'type': TYPES.SET,
-                    'object': self.__wrapped__,
-                    'access': key
-                })
+                        'type': TYPES.SET,
+                        'object': self.__wrapped__,
+                        'access': key
+                    })
     return CounterProxy
+
+
 def ordereddict_proxy(runner):
     class OrderedDictProxy(runner.DictProxy):
         def popitem(self, *args, **kwargs):
             result = super().__getattr__('popitem')(*args, **kwargs)
             key, val = result
             runner.__(True, {
-                    'type': TYPES.DELETE,
-                    'object': self.__wrapped__,
-                    'access': key
+                'type': TYPES.DELETE,
+                'object': self.__wrapped__,
+                'access': key
             })
             return result
     return OrderedDictProxy
+
 
 def deque_proxy(runner):
     class DequeProxy(ObjectProxy):
@@ -882,94 +891,112 @@ def deque_proxy(runner):
         def append(self, *args, **kwargs):
             result = super().__getattr__('append')(*args, **kwargs)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.append(surrogate,*args, **kwargs)
+            DequeSurrogate.append(surrogate, *args, **kwargs)
             return result
+
         def appendleft(self, *args, **kwargs):
             result = super().__getattr__('appendleft')(*args, **kwargs)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.appendleft(surrogate,*args, **kwargs)
+            DequeSurrogate.appendleft(surrogate, *args, **kwargs)
             return result
+
         def pop(self, *args, **kwargs):
             result = super().__getattr__('pop')(*args, **kwargs)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.pop(surrogate,*args, **kwargs)
+            DequeSurrogate.pop(surrogate, *args, **kwargs)
             return result
+
         def popleft(self, *args, **kwargs):
             result = super().__getattr__('popleft')(*args, **kwargs)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.popleft(surrogate,*args, **kwargs)
+            DequeSurrogate.popleft(surrogate, *args, **kwargs)
             return result
+
         def count(self, *args, **kwargs):
             result = super().__getattr__('count')(*args, **kwargs)
             surrogate = runner.get_surrogate(self)
             for val in surrogate:
                 pass
             return result
+
         def clear(self, *args, **kwargs):
             result = super().__getattr__('clear')(*args, **kwargs)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.clear(surrogate,*args, **kwargs)
+            DequeSurrogate.clear(surrogate, *args, **kwargs)
             return result
+
         def extend(self, elems):
             result = super().__getattr__('extend')(elems)
             surrogate = runner.get_surrogate(self)
             for el in elems.__wrapped__:
-                DequeSurrogate.append(surrogate,el)
+                DequeSurrogate.append(surrogate, el)
             return result
+
         def extendleft(self, elems):
             result = super().__getattr__('extendleft')(elems)
             surrogate = runner.get_surrogate(self)
             for el in elems:
                 DequeSurrogate.appendleft(surrogate, el)
             return result
+
         def remove(self, value):
             result = super().__getattr__('remove')(value)
             surrogate = runner.get_surrogate(self)
             DequeSurrogate.remove(surrogate, value)
             return result
+
         def reverse(self):
             result = super().__getattr__('reverse')()
             surrogate = runner.get_surrogate(self)
             DequeSurrogate.reverse(surrogate)
             return result
-        def rotate(self,n=1):
+
+        def rotate(self, n=1):
             result = super().__getattr__('rotate')(n)
             surrogate = runner.get_surrogate(self)
             if n < 0:
                 m = -n % len(self)
                 while m:
-                    DequeSurrogate.append(surrogate, DequeSurrogate.popleft(surrogate))
+                    DequeSurrogate.append(
+                        surrogate, DequeSurrogate.popleft(surrogate))
                     m -= 1
             if n > 0:
                 m = n % len(self)
                 while m:
-                    DequeSurrogate.appendleft(surrogate, DequeSurrogate.pop(surrogate))
+                    DequeSurrogate.appendleft(
+                        surrogate, DequeSurrogate.pop(surrogate))
                     m -= 1
+
         def __iter__(self):
             surrogate = runner.get_surrogate(self)
-            for val,_ in zip(self.__wrapped__, surrogate):
+            for val, _ in zip(self.__wrapped__, surrogate):
                 yield val
+
         def __reversed__(self):
             surrogate = runner.get_surrogate(self)
-            for val,_ in zip(reversed(self.__wrapped__), reversed(surrogate)):
-                yield val   
+            for val, _ in zip(reversed(self.__wrapped__), reversed(surrogate)):
+                yield val
+
         def __contains__(self, value):
             result = super().__contains__(value)
             value in runner.get_surrogate(self)
             return result
+
         def __getitem__(self, key):
             result = super().__getitem__(key)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.index(surrogate,key)
+            DequeSurrogate.index(surrogate, key)
             return result
+
         def __delitem__(self, key):
             result = super().__getitem__(key)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.delete(surrogate,key)
+            DequeSurrogate.delete(surrogate, key)
             return result
+
         def __setitem__(self, key, value):
             result = super().__setitem__(key, value)
             surrogate = runner.get_surrogate(self)
-            DequeSurrogate.setval(surrogate,key, value)
+            DequeSurrogate.setval(surrogate, key, value)
             return result
     return DequeProxy

@@ -47,7 +47,7 @@ const Language: React.FC = observer(() => {
                             style={store.language === 'python' ? active : inactive}>
                             <div className="columns is-centered ">
                                 <div className="column is-half has-text-centered is-paddingless has-text-weight-bold">
-                                    Python (Beta)
+                                    Python
                                     <p className="is-size-7 has-text-centered" style={{ color: store.language === 'python' ? active.color : inactive.color }}>3.7.0</p>
                                 </div>
                                 <div className="column is-half has-text-centered is-paddingless" style={{ display: 'flex', justifyContent: 'center' }}>

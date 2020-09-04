@@ -148,7 +148,8 @@ module.exports = function ({ t = types, input, code, Node }) {
                 details.push({
                     ...base,
                     varName: path.node.name,
-                    name: t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)])
+                    name: t.arrayExpression([t.numericLiteral(path.node.start), t.numericLiteral(path.node.end)]),
+                    value: t.identifier(path.node.name)
                 })
             },
             Expression(path) {

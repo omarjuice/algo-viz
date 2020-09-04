@@ -57,7 +57,7 @@ class Tutorial extends Component {
                     this.titles.map((title, i) => {
                         return (
                             <div key={i}>
-                                <button  onClick={() => this.setState({ index: i + 1 })}
+                                <button onClick={() => this.setState({ index: i + 1 })}
                                     className="button is-text has-text-weight-bold">
                                     <ValDisplay color={store.settings.configColors['Step Slider Track']} size={25} anim={[false, false]} textDisplay={String(i + 1)} highlight={false} objectId={String(i)} /> {title}
                                 </button>
@@ -66,7 +66,7 @@ class Tutorial extends Component {
                     })
                 }
             </div>
-        ),(
+        ), (
             <div>
                 <h1 className="title is-4 has-text-centered">
                     About
@@ -76,15 +76,15 @@ class Tutorial extends Component {
                 </h1> */}
                 <div>
                     Hey! My name is Omar. I made AlgoViz to:
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     <b>Level 1:</b> Help visual learners understand code
-                    <br/>
+                    <br />
                     <b>Level 2:</b> Help engineers pass their interviews by creating robust visualizations of Algorithms and Data Structures directly from code
-                    <br/>
-                    <br/>
-                    I would love to hear your thoughts. Feel free to reach out to me here:{' '} 
-                    
+                    <br />
+                    <br />
+                    I would love to hear your thoughts. Feel free to reach out to me here:{' '}
+
                     <div className="columns is-centered">
                         <div className="column is-narrow">
                             <a href="https://www.linkedin.com/in/omarjameer/" target="_blank" rel="noopener noreferrer">
@@ -95,7 +95,7 @@ class Tutorial extends Component {
                         </div>
                     </div>
                 </div>
-                <br/>
+                <br />
                 <div>
                     I hope that AlgoViz helps you in some way. If, not please let me know how it can be improved.
                     This project is totally open source.
@@ -110,25 +110,25 @@ class Tutorial extends Component {
                         </a>
                     </div>
                 </div>
-               
+
             </div>
         ),
-        
+
         (
             <div>
-            <h1 className="title is-4 has-text-centered">
-                {this.titles[1]}
-            </h1>
-            <figure className="image is-16by9">
-                <img src={this.imageUrl('nthFib')} alt="" />
-            </figure>
-            <br />
-            <p >
-               Algo-viz currently has language support for JavaScript. Support for Python will be coming in the near future.
-               <br/>
+                <h1 className="title is-4 has-text-centered">
+                    {this.titles[1]}
+                </h1>
+                <figure className="image is-16by9">
+                    <img src={this.imageUrl('nthFib')} alt="" />
+                </figure>
+                <br />
+                <p >
+                    Algo-viz currently has language support for JavaScript and Python 3.
+               <br />
                 You will have the best experience using the <b>latest</b> versions of Chrome, Firefox, or Safari.
             </p>
-        </div>
+            </div>
         )
         ,
         (<div>
@@ -228,10 +228,10 @@ class Tutorial extends Component {
                     {' '}
                     <b>ASSIGNMENT</b> type.
                     {' '}
-                    
+
                         The slider represents how much time a particular type will execute for. So increasing the value (sliding to the right) will make
                         it execute{' '} <b>slower</b>.
-                    
+
                 </p>
             </div>
         ),
@@ -240,24 +240,24 @@ class Tutorial extends Component {
                 <h1 className="title is-4 has-text-centered">
                     {this.titles[6]}
                 </h1>
-               <div style={{backgroundColor: store.settings.configColors["Primary Background"]}}>
-               {Object.keys(store.settings.config).map((name) => {
-                    const n = name as Viz.configTypes
-                    return (
-                        <div key={name}>
-                            <div className="columns">
-                                <div className="column has-text-white">
-                                    {name}
-                                </div>
-                                <div className="column">
-                                    <SwitchButton onClick={() => {}} size={50} toggled={store.settings.config[n]} />
+                <div style={{ backgroundColor: store.settings.configColors["Primary Background"] }}>
+                    {Object.keys(store.settings.config).map((name) => {
+                        const n = name as Viz.configTypes
+                        return (
+                            <div key={name}>
+                                <div className="columns">
+                                    <div className="column has-text-white">
+                                        {name}
+                                    </div>
+                                    <div className="column">
+                                        <SwitchButton onClick={() => { }} size={50} toggled={store.settings.config[n]} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
-                })}
-               </div>
-               <br/>
+                        )
+                    })}
+                </div>
+                <br />
                 <p>
                     You have a high degree of customization available to you.
                     <br />
@@ -292,7 +292,7 @@ class Tutorial extends Component {
                         Find Object Parents:
                     </span>
                     {' '}
-                    Normally, an object will only find its parent if its parent has an active variable binding. With this enabled, it will find its parent regardless. 
+                    Normally, an object will only find its parent if its parent has an active variable binding. With this enabled, it will find its parent regardless.
                     <br />
                     <span className="has-text-weight-bold">
                         Colors:
@@ -311,7 +311,7 @@ class Tutorial extends Component {
                     <img src={this.imageUrl('structs')} alt="" />
                 </figure>
                 <p>
-                    Anything that is not the language's builtin Array type or Hash type (for JS that includes Object, Map, and Set)
+                    Anything that is not the language's builtin Array type or Hash Table type (for JS that includes Object, Map, and Set)
                     will be treated as a Data Structure. That means that to visualize a particular data structure, you will want to create it from a
                     class constructor in your code.
                     <br />
@@ -329,8 +329,8 @@ class Tutorial extends Component {
                     <img src={this.imageUrl('children')} alt="" />
                 </figure>
                 <p>
-                    You must declare which keys of the object contain children. <b>Children</b> can be any object (Arrays, Hash-like structs, other data structures).
-                    In the <b>Struct Settings</b> panel in settings, when you add children, you will notice that you can drag them around to customize the order. 
+                    You must declare which keys of the object contain children. <b>Children</b> can be any object (Arrays, Hash-Table-like structs, other data structures).
+                    In the <b>Struct Settings</b> panel in settings, when you add children, you will notice that you can drag them around to customize the order.
                     When a structure renders, it will use this order to determine where to put which child.
                     That is how it knows that a Binary Tree's 'left' child is actually to its left.
                 </p>
@@ -379,7 +379,7 @@ class Tutorial extends Component {
                     When the number of children is set to exactly one, it will render horizontally from left to right.
                     Ideal for Linked Lists and similar structures.
                 </p>
-               
+
             </div>
         ),
         (
@@ -399,8 +399,8 @@ class Tutorial extends Component {
                         <li> <b>2.</b> A pointer will not render until the object it is pointing to is on the screen.</li>
                         <li> <b>3.</b> A parent can only have <b>one</b> child reference to a particular object. All other references to that object declared as child
                         references will be treated as pointers.</li>
-                        <li> <b>4.</b> Similarly, a child can only have one parent. All other references to it will be pointers. 
-                        Which parent gets which child is determined by a heap-based algorithm that takes into account which reference occurred first and the types of the 
+                        <li> <b>4.</b> Similarly, a child can only have one parent. All other references to it will be pointers.
+                        Which parent gets which child is determined by a heap-based algorithm that takes into account which reference occurred first and the types of the
                         parent and the child.</li>
                         <li> <b>5.</b> A structure can have any number of pointers to a particular object.</li>
                         <li> <b>6.</b> Children are indicated by straight lines. Pointers will always be arcs. </li>
@@ -434,12 +434,11 @@ class Tutorial extends Component {
                 </figure>
                 <div>
                     There are various <b>builtin</b> data structures. Their rendering details are taken care of for you, although you can still change the colors.
-                    As I figure out how to make the editor's auto-complete work with the type definitions of the builtins,
-                    please refer to this file for documentation:
-                    <br />
+                    Please refer {' '}
                     <a className="has-text-weight-bold" href="https://github.com/omarjuice/algo-viz/blob/master/runners/js/builtins/types.d.ts" target="_blank" rel="noopener noreferrer">
-                        Builtin Type Definitions
-                    </a>
+                        here for JS Builtin documentation
+                    </a>.
+
                 </div>
             </div>
         ), (
@@ -449,18 +448,18 @@ class Tutorial extends Component {
                 </h1>
 
                 <div>
-                   Here are some things to be aware of:
-                    <br/>
+                    Here are some things to be aware of:
+                    <br />
                    1. <b>Typed Arrays, WeakMaps, and WeakSets</b> are not supported.
-                   <br/>
-                   2. <b>Getters and setters</b> will be invoked from outside of your code 
-                   <br/>
+                   <br />
+                   2. <b>Getters and setters</b> will be invoked from outside of your code
+                   <br />
                    3. <b>Generator functions</b> are experimentally supported.
                     To be specific, if your code executes <b>two or more</b> instances of the same generator at the same time,
                     it cannot be guaranteed that the values displayed will be accurate. However, recursive calls to the same generator will work just fine.
-                    <br/>
+                    <br />
                     4. <b>Asynchronous APIs</b> (setImmediate, setTimeout, etc.) are unavailable.
-                    <br/>
+                    <br />
                 </div>
             </div>
         ),
@@ -484,7 +483,7 @@ class Tutorial extends Component {
                 </div>
             </div>
         ),
-        
+
 
 
 
@@ -502,7 +501,7 @@ class Tutorial extends Component {
         return (
             <div className={`modal ${store.tutorial && 'is-active'}`}>
                 <div className="modal-background" onClick={() => store.stopTutorial()} />
-                <div  className="modal-card" style={{ backgroundColor: '#111111', height: '90vh' }}>
+                <div className="modal-card" style={{ backgroundColor: '#111111', height: '90vh' }}>
                     <header style={{ backgroundColor: store.settings.configColors["Secondary Background"] }} className="modal-card-head">
                         <p className="modal-card-title">Tutorial</p>
                         <button onClick={() => store.stopTutorial()} className="delete" aria-label="close"></button>
@@ -523,25 +522,25 @@ class Tutorial extends Component {
                         display: 'flex',
                         justifyContent: 'center',
                         backgroundColor: store.settings.configColors["Secondary Background"]
-                        
+
                     }}>
-                           <div className="buttons has-addons is-centered">
+                        <div className="buttons has-addons is-centered">
                             <button
                                 onClick={() => this.onClick(-1)}
                                 disabled={this.state.index <= 0} className="button">
                                 <figure style={{ marginTop: '-3px' }} className="image is-4by4">
-                            <img src={process.env.PUBLIC_URL + '/baseline-skip_previous-24px.svg'} alt="" />
-                        </figure>
+                                    <img src={process.env.PUBLIC_URL + '/baseline-skip_previous-24px.svg'} alt="" />
+                                </figure>
                             </button>
                             <button
                                 onClick={() => this.onClick(1)}
                                 disabled={this.state.index === this.tutorialCompenents.length - 1} className="button">
-                                 <figure style={{ marginTop: '-3px' }} className="image is-4by4">
+                                <figure style={{ marginTop: '-3px' }} className="image is-4by4">
                                     <img src={process.env.PUBLIC_URL + '/baseline-skip_next-24px.svg'} alt="" />
                                 </figure>
                             </button>
                         </div>
-                     
+
                     </footer>
 
                 </div>

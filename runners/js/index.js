@@ -19,7 +19,7 @@ class TranspilerError extends Error {
 
 function exec() {
     let code;
-    if (env === 'test') {
+    if (!env || env === 'test') {
         code = process.env.CODE
     } else {
         code = fs.readFileSync(`${vol}/${file}`, { encoding: 'utf8' })
@@ -49,7 +49,7 @@ function exec() {
 
 
 
-if (env !== 'test') {
+if (env && env !== 'test') {
     try {
         const data = exec()
         fs.writeFileSync(`${vol}/${file}`, data)

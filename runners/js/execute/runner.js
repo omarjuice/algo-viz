@@ -116,7 +116,7 @@ class Runner {
             if ([TYPES.DELETE, TYPES.SET, TYPES.GET].includes(info.type)) {
                 info.object = this.stringify(info.object)
             }
-            info.value = this.stringify(val)
+            info.value = info.value ? this.stringify(info.value) : this.stringify(val)
             if ([TYPES.FUNC, TYPES.METHOD, TYPES.BLOCK, TYPES.RETURN].includes(info.type)) {
                 const prev = this.steps[this.steps.length - 1];
                 if (this.steps.length > 0) {
