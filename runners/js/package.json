@@ -19,7 +19,7 @@
     "@babel/types": "^7.4.0"
   },
   "devDependencies": {
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "expect": "^24.8.0",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2"
