@@ -18,7 +18,7 @@
     "mobx": "^5.10.1",
     "mobx-react": "^6.0.3",
     "monaco-editor": "^0.17.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "rc-slider": "^8.6.13",
     "rc-tooltip": "^3.7.3",
     "react": "^16.8.6",
